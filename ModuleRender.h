@@ -1,6 +1,8 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "include/Math/float4x4.h"
+#include "include/Math/float3x3.h"
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -20,6 +22,12 @@ public:
 	void WindowResized(unsigned width, unsigned height);
 	void DrawTriangle();
 	void DrawRectangle();
+
+	float aspect = 1.0f;
+
+	float4x4 proj;
+	float4x4 model;
+	float4x4 view;
 
 private:
 	void* context;

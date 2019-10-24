@@ -4,6 +4,9 @@
 #include "ModuleWindow.h"
 #include "SDL.h"
 #include "glew.h"
+#include "include/Geometry/Frustum.h"
+#include <math.h>
+#include "include/Math/float4.h"
 
 ModuleRender::ModuleRender()
 {
@@ -67,8 +70,8 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	//DrawTriangle();
-	DrawRectangle();
+	DrawTriangle();
+	//DrawRectangle();
 	return UPDATE_CONTINUE;
 }
 
@@ -92,7 +95,58 @@ void ModuleRender::DrawTriangle()
 {
 	float buffer_data[] = { -1.0f, -1.0f, 0.0f,
 							 1.0f, -1.0f, 0.0f,
-							 1.0f, 1.0f, 0.0f};
+							 0.0f, 1.0f, 0.0f};
+	int h;
+	int w;
+	SDL_GetWindowSize(App->window->window,
+		&w,
+		&h);
+
+	//Frustum 
+	//Projection Matrix
+	Frustum frustum;
+	frustum.type = FrustumType::PerspectiveFrustum;
+	frustum.pos = float3::zero;
+	frustum.front = -float3::unitZ;
+	frustum.up = float3::unitY;
+	frustum.nearPlaneDistance = 0.1f;
+	frustum.farPlaneDistance = 100.0f;
+	frustum.verticalFov = (float)M_PI / 4.0f;
+	aspect = (float)w / h;
+	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
+	float4x4 proj = frustum.ProjectionMatrix();
+
+	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f),float3x3::RotateY((float)M_PI / 4.0f), float3(1.0f,1.0f, 1.0f));
+	float4x4 transform = proj * float4x4(model);
+
+	//First parameter is eye position, second is target position
+	float4x4 view = float4x4::LookAt(float3(0.0f,0.0f,-1.0f), math::float3(0.0f, 0.0f, 0.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f,1.0f, 0.0f));
+	transform = proj *view*float4x4(model);
+
+	float4 vertex0(buffer_data[0], buffer_data[1], buffer_data[2], 1.0f);
+	float4 tmp = transform * vertex0;
+	float3 final_vertex(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w);
+	buffer_data[0] = final_vertex.x;
+	buffer_data[1] = final_vertex.y;
+	buffer_data[2] = final_vertex.z;
+
+	float4 vertex1(buffer_data[3], buffer_data[4], buffer_data[5], 1.0f);
+	float4 tmp1 = transform * vertex1;
+	float3 final_vertex1(tmp1.x / tmp1.w, tmp1.y / tmp1.w, tmp1.z / tmp1.w);
+	buffer_data[3] = final_vertex1.x;
+	buffer_data[4] = final_vertex1.y;
+	buffer_data[5] = final_vertex1.z;
+
+	float4 vertex2(buffer_data[6], buffer_data[7], buffer_data[8], 1.0f);
+	float4 tmp2 = transform * vertex2;
+	float3 final_vertex2(tmp2.x / tmp2.w, tmp2.y / tmp2.w, tmp2.z / tmp2.w);
+	buffer_data[6] = final_vertex2.x;
+	buffer_data[7] = final_vertex2.y;
+	buffer_data[8] = final_vertex2.z;
+
+
+
+
 
 	GLuint vbo;
 	glGenBuffers(1, &vbo);
@@ -153,10 +207,6 @@ void ModuleRender::DrawRectangle()
 	glEnableVertexAttribArray(0);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-
-
-	//Second triangle
-	GLuint vboTriangle2;
 
 
 }

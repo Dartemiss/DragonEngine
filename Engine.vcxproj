@@ -47,7 +47,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./SDL/include;./Dependencies/glew-2.1.0/include/GL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./SDL/include;./Dependencies/glew-2.1.0/include/GL;./Dependencies/MathGeoLib/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -78,18 +78,120 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="include\Algorithm\Random\LCG.h" />
+    <ClInclude Include="include\Geometry\AABB.h" />
+    <ClInclude Include="include\Geometry\AABB2D.h" />
+    <ClInclude Include="include\Geometry\Capsule.h" />
+    <ClInclude Include="include\Geometry\Circle.h" />
+    <ClInclude Include="include\Geometry\Cone.h" />
+    <ClInclude Include="include\Geometry\Cylinder.h" />
+    <ClInclude Include="include\Geometry\Frustum.h" />
+    <ClInclude Include="include\Geometry\GeometryAll.h" />
+    <ClInclude Include="include\Geometry\GeomType.h" />
+    <ClInclude Include="include\Geometry\HitInfo.h" />
+    <ClInclude Include="include\Geometry\KDTree.h" />
+    <ClInclude Include="include\Geometry\Line.h" />
+    <ClInclude Include="include\Geometry\LineSegment.h" />
+    <ClInclude Include="include\Geometry\OBB.h" />
+    <ClInclude Include="include\Geometry\PBVolume.h" />
+    <ClInclude Include="include\Geometry\Plane.h" />
+    <ClInclude Include="include\Geometry\Polygon.h" />
+    <ClInclude Include="include\Geometry\Polyhedron.h" />
+    <ClInclude Include="include\Geometry\QuadTree.h" />
+    <ClInclude Include="include\Geometry\Ray.h" />
+    <ClInclude Include="include\Geometry\Sphere.h" />
+    <ClInclude Include="include\Geometry\Triangle.h" />
+    <ClInclude Include="include\Geometry\TriangleMesh.h" />
+    <ClInclude Include="include\MathBuildConfig.h" />
+    <ClInclude Include="include\MathGeoLib.h" />
+    <ClInclude Include="include\MathGeoLibFwd.h" />
+    <ClInclude Include="include\Math\assume.h" />
+    <ClInclude Include="include\Math\BitOps.h" />
+    <ClInclude Include="include\Math\Complex.h" />
+    <ClInclude Include="include\Math\CoordinateAxisConvention.h" />
+    <ClInclude Include="include\Math\FixedPoint.h" />
+    <ClInclude Include="include\Math\float2.h" />
+    <ClInclude Include="include\Math\float3.h" />
+    <ClInclude Include="include\Math\float3x3.h" />
+    <ClInclude Include="include\Math\float3x4.h" />
+    <ClInclude Include="include\Math\float4.h" />
+    <ClInclude Include="include\Math\float4x4.h" />
+    <ClInclude Include="include\Math\float4x4_neon.h" />
+    <ClInclude Include="include\Math\float4x4_sse.h" />
+    <ClInclude Include="include\Math\float4_neon.h" />
+    <ClInclude Include="include\Math\float4_sse.h" />
+    <ClInclude Include="include\Math\FloatCmp.h" />
+    <ClInclude Include="include\Math\MathAll.h" />
+    <ClInclude Include="include\Math\MathConstants.h" />
+    <ClInclude Include="include\Math\MathFunc.h" />
+    <ClInclude Include="include\Math\MathLog.h" />
+    <ClInclude Include="include\Math\MathNamespace.h" />
+    <ClInclude Include="include\Math\MathTypes.h" />
+    <ClInclude Include="include\Math\MatrixProxy.h" />
+    <ClInclude Include="include\Math\myassert.h" />
+    <ClInclude Include="include\Math\Polynomial.h" />
+    <ClInclude Include="include\Math\Quat.h" />
+    <ClInclude Include="include\Math\quat_simd.h" />
+    <ClInclude Include="include\Math\Rect.h" />
+    <ClInclude Include="include\Math\Reinterpret.h" />
+    <ClInclude Include="include\Math\SSEMath.h" />
+    <ClInclude Include="include\Math\sse_mathfun.h" />
+    <ClInclude Include="include\Math\TransformOps.h" />
+    <ClInclude Include="include\Time\Clock.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleInput.h" />
+    <ClInclude Include="ModuleProgram.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="include\Algorithm\Random\LCG.cpp" />
+    <ClCompile Include="include\Geometry\AABB.cpp" />
+    <ClCompile Include="include\Geometry\Capsule.cpp" />
+    <ClCompile Include="include\Geometry\Circle.cpp" />
+    <ClCompile Include="include\Geometry\Cone.cpp" />
+    <ClCompile Include="include\Geometry\Cylinder.cpp" />
+    <ClCompile Include="include\Geometry\Frustum.cpp" />
+    <ClCompile Include="include\Geometry\Line.cpp" />
+    <ClCompile Include="include\Geometry\LineSegment.cpp" />
+    <ClCompile Include="include\Geometry\OBB.cpp" />
+    <ClCompile Include="include\Geometry\Plane.cpp" />
+    <ClCompile Include="include\Geometry\Polygon.cpp" />
+    <ClCompile Include="include\Geometry\Polyhedron.cpp" />
+    <ClCompile Include="include\Geometry\Ray.cpp" />
+    <ClCompile Include="include\Geometry\Sphere.cpp" />
+    <ClCompile Include="include\Geometry\Triangle.cpp" />
+    <ClCompile Include="include\Geometry\TriangleMesh.cpp" />
+    <ClCompile Include="include\Math\BitOps.cpp" />
+    <ClCompile Include="include\Math\float2.cpp" />
+    <ClCompile Include="include\Math\float3.cpp" />
+    <ClCompile Include="include\Math\float3x3.cpp" />
+    <ClCompile Include="include\Math\float3x4.cpp" />
+    <ClCompile Include="include\Math\float4.cpp" />
+    <ClCompile Include="include\Math\float4x4.cpp" />
+    <ClCompile Include="include\Math\MathFunc.cpp" />
+    <ClCompile Include="include\Math\MathLog.cpp" />
+    <ClCompile Include="include\Math\MathOps.cpp" />
+    <ClCompile Include="include\Math\Polynomial.cpp" />
+    <ClCompile Include="include\Math\Quat.cpp" />
+    <ClCompile Include="include\Math\SSEMath.cpp" />
+    <ClCompile Include="include\Math\TransformOps.cpp" />
+    <ClCompile Include="include\Time\Clock.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
+    <ClCompile Include="ModuleProgram.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Geometry\KDTree.inl" />
+    <None Include="include\Geometry\QuadTree.inl" />
+    <None Include="include\Geometry\TriangleMesh_IntersectRay_AVX.inl" />
+    <None Include="include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
+    <None Include="include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
+    <None Include="include\Math\Matrix.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
