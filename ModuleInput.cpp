@@ -2,6 +2,16 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "glew.h"
+#include "Application.h"
+#include "ModuleWindow.h"
+
+
+
+
 
 ModuleInput::ModuleInput()
 {}
@@ -30,7 +40,13 @@ bool ModuleInput::Init()
 update_status ModuleInput::Update()
 {
 	SDL_PumpEvents();
-
+	SDL_Event event;
+	SDL_PollEvent(&event);
+	ImGui_ImplSDL2_ProcessEvent(&event);
+	if (event.type == SDL_QUIT)
+		return UPDATE_STOP;
+	if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->window))
+		return UPDATE_STOP;
 	keyboard = SDL_GetKeyboardState(NULL);
 
 	return UPDATE_CONTINUE;
