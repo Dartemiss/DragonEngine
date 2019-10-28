@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "Globals.h"
 
+
 class ModuleIMGUI : public Module
 {
 public:
@@ -15,5 +16,7 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
+
+
 };
 #endif // __ModuleIMGUI_H__

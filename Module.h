@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Globals.h"
-
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
 class Application;
 
 class Module
@@ -24,6 +26,11 @@ public:
 
 	virtual update_status Update()
 	{
+		if(ImGui::BeginMenu("Help"))
+		{
+			//if (ImGui::MenuItem("Guia Demo"))
+				//showcase = !showcase;
+		}
 		return UPDATE_CONTINUE;
 	}
 

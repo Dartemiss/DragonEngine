@@ -9,6 +9,9 @@
 #include <SDL.h>
 
 
+
+
+
 ModuleIMGUI::ModuleIMGUI()
 {
 }
@@ -42,6 +45,8 @@ update_status ModuleIMGUI::Update()
 {
 	bool show_demo_window = true;
 	ImGui::ShowDemoWindow(&show_demo_window);
+	
+	ImGui::TextUnformatted(getBuffer().Buf.begin());
 	
 	return UPDATE_CONTINUE;
 }
