@@ -368,6 +368,8 @@
       <Filter>MathGeoLib</Filter>
     </None>
     <None Include="imgui\.editorconfig" />
+    <None Include="Shaders\FragmentShader.fs" />
+    <None Include="Shaders\VertexShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt">

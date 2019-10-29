@@ -209,6 +209,8 @@
     <None Include="include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
     <None Include="include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
     <None Include="include\Math\Matrix.inl" />
+    <None Include="Shaders\FragmentShader.fs" />
+    <None Include="Shaders\VertexShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt" />

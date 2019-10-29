@@ -3,6 +3,9 @@
 
 #include "Module.h"
 #include "Globals.h"
+#include <string>
+#include <fstream>
+#include <streambuf>
 
 class ModuleProgram : public Module
 {
@@ -16,7 +19,11 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	const char* readFile(char* filename);
+	unsigned int createVertexShader(char* filename);
+	unsigned int createFragmentShader(char* filename);
+	unsigned int createProgram(unsigned int vShader, unsigned int fShader);
+
+	char* readFile(char* filename) const;
 };
 
 #endif // __ModuleProgram_H__

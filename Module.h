@@ -26,11 +26,7 @@ public:
 
 	virtual update_status Update()
 	{
-		if(ImGui::BeginMenu("Help"))
-		{
-			//if (ImGui::MenuItem("Guia Demo"))
-				//showcase = !showcase;
-		}
+
 		return UPDATE_CONTINUE;
 	}
 

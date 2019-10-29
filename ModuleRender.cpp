@@ -104,7 +104,7 @@ void ModuleRender::DrawTriangle()
 		&w,
 		&h);
 
-	/*
+	
 
 	//Frustum 
 	//Projection Matrix
@@ -118,13 +118,16 @@ void ModuleRender::DrawTriangle()
 	frustum.verticalFov = (float)M_PI / 4.0f;
 	aspect = (float)w / h;
 	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
+	
 	float4x4 proj = frustum.ProjectionMatrix();
 
 	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f),float3x3::RotateY((float)M_PI / 4.0f), float3(1.0f,1.0f, 1.0f));
-	float4x4 transform = proj * float4x4(model);
+	//float4x4 transform = proj * float4x4(model);
 
 	//First parameter is eye position, second is target position
 	float4x4 view = float4x4::LookAt(float3(0.0f,0.0f,-1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f,1.0f, 0.0f));
+	
+	/*
 	transform = proj *view*float4x4(model);
 
 	float4 vertex0(buffer_data[0], buffer_data[1], buffer_data[2], 1.0f);
@@ -150,9 +153,19 @@ void ModuleRender::DrawTriangle()
 
 	*/
 
-	glCreateShader(GL_VERTEX_SHADER);
-	//glShaderSource(0,3,&(App->program->readFile("VertexShader.vs")), NULL);
+	
+	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
+	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
 
+	unsigned int prog = App->program->createProgram(vs, fs);
+
+	glUseProgram(prog);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"model"), 1, GL_TRUE, &model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"view"), 1, GL_TRUE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"proj"), 1, GL_TRUE, &proj[0][0]);
 
 
 	GLuint vbo;
