@@ -44,9 +44,10 @@ update_status ModuleIMGUI::PreUpdate()
 update_status ModuleIMGUI::Update()
 {
 	bool show_demo_window = true;
-	//ImGui::ShowDemoWindow(&show_demo_window);
+	bool scrollDownConsole = true;
+	ImGui::ShowDemoWindow(&show_demo_window);
 	
-	//ImGui::TextUnformatted(getBuffer().Buf.begin());
+	console.Draw("Console", &scrollDownConsole);
 	
 	return UPDATE_CONTINUE;
 }
@@ -63,9 +64,11 @@ update_status ModuleIMGUI::PostUpdate()
 
 bool ModuleIMGUI::CleanUp()
 {
+	console.Clear();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+	
 
 	return true;
 }

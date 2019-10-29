@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Globals.h"
+#include "GUIConsole.h"
 
 
 class ModuleIMGUI : public Module
@@ -16,6 +17,8 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
+
+	GUIConsole console;
 
 
 };

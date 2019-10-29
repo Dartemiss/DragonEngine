@@ -42,7 +42,7 @@ update_status ModuleProgram::PostUpdate()
 
 bool ModuleProgram::CleanUp()
 {
-	return false;
+	return true;
 }
 
 unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fShader)
