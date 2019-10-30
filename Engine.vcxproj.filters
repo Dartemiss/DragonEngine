@@ -124,6 +124,7 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="GUIConsole.cpp" />
+    <ClCompile Include="GUIAbout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -341,6 +342,8 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="GUIConsole.h" />
+    <ClInclude Include="GUI.h" />
+    <ClInclude Include="GUIAbout.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

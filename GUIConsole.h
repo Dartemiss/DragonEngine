@@ -1,7 +1,8 @@
 #include "imgui/imgui.h"
 #include "Globals.h"
+#include "GUI.h"
 
-class GUIConsole
+class GUIConsole : public GUI
 {
 
 private:

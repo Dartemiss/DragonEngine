@@ -4,6 +4,7 @@
 
 GUIConsole::GUIConsole()
 {
+	SetEnable(false);
 }
 
 
@@ -23,13 +24,15 @@ void GUIConsole::AddLog(const char * log)
 
 void GUIConsole::Draw(const char * title, bool * p_opened)
 {
-	ImGui::Begin(title, p_opened);
-	ImGui::TextUnformatted(bufferConsole.Buf.begin());
-	if (ScrollToBottom)
-		ImGui::SetScrollHere(1.0f);
-	ScrollToBottom = false;
-	ImGui::End();
-
+	if (isEnabled) 
+	{
+		ImGui::Begin(title, p_opened);
+		ImGui::TextUnformatted(bufferConsole.Buf.begin());
+		if (ScrollToBottom)
+			ImGui::SetScrollHere(1.0f);
+		ScrollToBottom = false;
+		ImGui::End();
+	}
 }
 
 

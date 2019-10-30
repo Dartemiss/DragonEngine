@@ -2,6 +2,7 @@
 #define __ModuleWindow_H__
 
 #include "Module.h"
+#include "Globals.h"
 #include "SDL/include/SDL.h"
 
 class Application;
@@ -9,6 +10,8 @@ class Application;
 class ModuleWindow : public Module
 {
 public:
+
+	bool fullscreen = FULLSCREEN;
 
 	ModuleWindow();
 
@@ -20,6 +23,12 @@ public:
 
 	// Called before quitting
 	bool CleanUp();
+
+	//Update
+	update_status Update();
+
+	//FullScreen
+	void setFullscreen(bool fullscrean);
 
 public:
 	//The window we'll be rendering to

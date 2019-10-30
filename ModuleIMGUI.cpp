@@ -9,7 +9,7 @@
 #include <SDL.h>
 
 
-
+#define DOCUMENTATION "https://github.com/ocornut/imgui/wiki"
 
 
 ModuleIMGUI::ModuleIMGUI()
@@ -45,9 +45,44 @@ update_status ModuleIMGUI::Update()
 {
 	bool show_demo_window = true;
 	bool scrollDownConsole = true;
-	ImGui::ShowDemoWindow(&show_demo_window);
+	bool openAbout = true;
+	//ImGui::ShowDemoWindow(&show_demo_window);
 	
 	console.Draw("Console", &scrollDownConsole);
+	about.Draw("About", &openAbout);
+
+	//Menu
+	if (ImGui::BeginMainMenuBar()) 
+	{
+
+	
+		if(ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("Documentation"))
+				ShellExecuteA(NULL, "open", DOCUMENTATION, NULL, NULL, SW_SHOWNORMAL);
+			
+			if(ImGui::MenuItem("About"))
+			{
+				about.ToggleEnable();
+			}
+			ImGui::EndMenu();
+		}
+
+		if(ImGui::BeginMenu("Debug"))
+		{
+			if(ImGui::MenuItem("Console"))
+			{
+				console.ToggleEnable();
+			}
+			ImGui::EndMenu();
+		}
+	}
+	ImGui::EndMainMenuBar();
+
+
+
+
+
 	
 	return UPDATE_CONTINUE;
 }

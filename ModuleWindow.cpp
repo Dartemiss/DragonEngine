@@ -2,6 +2,9 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "glew.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 ModuleWindow::ModuleWindow()
 {
@@ -76,5 +79,33 @@ bool ModuleWindow::CleanUp()
 	//Quit SDL subsystems
 	SDL_Quit();
 	return true;
+}
+
+update_status ModuleWindow::Update()
+{
+	if (ImGui::Checkbox("FullScreen", &fullscreen))
+	{
+		if (fullscreen) {
+
+			SDL_DisplayMode displayMode;
+			SDL_GetDesktopDisplayMode(0, &displayMode);
+			SDL_SetWindowSize(window, displayMode.w, displayMode.h);
+			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+			//Resize(displayMode.w, displayMode.h);
+		}
+		else
+		{
+			SDL_SetWindowFullscreen(window, 0);
+			SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_WIDTH);
+			//Resize(SCREEN_WIDTH, SCREEN_WIDTH);
+
+		}
+	}
+	return UPDATE_CONTINUE;
+}
+
+void ModuleWindow::setFullscreen(bool fullscrean)
+{
+
 }
 

@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "GUIConsole.h"
+#include "GUIAbout.h"
 
 
 class ModuleIMGUI : public Module
@@ -19,6 +20,7 @@ public:
 	bool CleanUp();
 
 	GUIConsole console;
+	GUIAbout about;
 
 
 };
