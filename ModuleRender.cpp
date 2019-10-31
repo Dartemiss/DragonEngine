@@ -310,7 +310,9 @@ void ModuleRender::DrawRectangle()
 
 	//OpenGL Texture
 	glGenTextures(1, &textureLenna);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textureLenna);
+	glUniform1i(glGetUniformLocation(prog, "texture0"), 1);
 	ILinfo ImageInfo;
 	iluGetImageInfo(&ImageInfo);
 	if(ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
@@ -319,7 +321,7 @@ void ModuleRender::DrawRectangle()
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, TextData);	
 	glGenerateMipmap(GL_TEXTURE_2D);
-	glActiveTexture(GL_TEXTURE0);
+	
 
 	//Texture
 	glEnableVertexAttribArray(1);
