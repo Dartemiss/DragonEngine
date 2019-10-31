@@ -126,6 +126,7 @@
     <ClCompile Include="GUIConsole.cpp" />
     <ClCompile Include="GUIAbout.cpp" />
     <ClCompile Include="GUIWindow.cpp" />
+    <ClCompile Include="ModuleTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -346,6 +347,7 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIAbout.h" />
     <ClInclude Include="GUIWindow.h" />
+    <ClInclude Include="ModuleTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
