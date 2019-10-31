@@ -83,24 +83,7 @@ bool ModuleWindow::CleanUp()
 
 update_status ModuleWindow::Update()
 {
-	if (ImGui::Checkbox("FullScreen", &fullscreen))
-	{
-		if (fullscreen) {
 
-			SDL_DisplayMode displayMode;
-			SDL_GetDesktopDisplayMode(0, &displayMode);
-			SDL_SetWindowSize(window, displayMode.w, displayMode.h);
-			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-			//Resize(displayMode.w, displayMode.h);
-		}
-		else
-		{
-			SDL_SetWindowFullscreen(window, 0);
-			SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_WIDTH);
-			//Resize(SCREEN_WIDTH, SCREEN_WIDTH);
-
-		}
-	}
 	return UPDATE_CONTINUE;
 }
 

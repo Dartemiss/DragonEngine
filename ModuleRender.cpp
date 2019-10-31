@@ -74,6 +74,15 @@ update_status ModuleRender::Update()
 {
 	DrawTriangle();
 	//DrawRectangle();
+
+	//FrameRate Calculation
+	//deltaTime = actualTime - curentTime;
+	//currentTime += deltaTime;
+	//nFrames += 1;
+	//if(currentTime >= 60.0f)
+	//{
+		//currentTime = 0.0f;
+	//}
 	return UPDATE_CONTINUE;
 }
 

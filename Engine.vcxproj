@@ -81,6 +81,7 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIAbout.h" />
     <ClInclude Include="GUIConsole.h" />
+    <ClInclude Include="GUIWindow.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_opengl3.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="GUIAbout.cpp" />
     <ClCompile Include="GUIConsole.cpp" />
+    <ClCompile Include="GUIWindow.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />

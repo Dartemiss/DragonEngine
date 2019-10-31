@@ -125,6 +125,7 @@
     </ClCompile>
     <ClCompile Include="GUIConsole.cpp" />
     <ClCompile Include="GUIAbout.cpp" />
+    <ClCompile Include="GUIWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -344,6 +345,7 @@
     <ClInclude Include="GUIConsole.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIAbout.h" />
+    <ClInclude Include="GUIWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

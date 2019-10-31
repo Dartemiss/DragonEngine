@@ -46,10 +46,12 @@ update_status ModuleIMGUI::Update()
 	bool show_demo_window = true;
 	bool scrollDownConsole = true;
 	bool openAbout = true;
+	bool showWindowConfig = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
 	
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
+	guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window);
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -73,6 +75,15 @@ update_status ModuleIMGUI::Update()
 			if(ImGui::MenuItem("Console"))
 			{
 				console.ToggleEnable();
+			}
+			ImGui::EndMenu();
+		}
+
+		if(ImGui::BeginMenu("View"))
+		{
+			if(ImGui::MenuItem("Window"))
+			{
+				guiWindow.ToggleEnable();
 			}
 			ImGui::EndMenu();
 		}

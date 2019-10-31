@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include "GUIConsole.h"
 #include "GUIAbout.h"
+#include "GUIWindow.h"
 
 
 class ModuleIMGUI : public Module
@@ -21,6 +22,7 @@ public:
 
 	GUIConsole console;
 	GUIAbout about;
+	GUIWindow guiWindow;
 
 
 };
