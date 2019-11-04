@@ -43,10 +43,6 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	bool show_demo_window = true;
-	bool scrollDownConsole = true;
-	bool openAbout = true;
-	bool showWindowConfig = true;
 	//ImGui::ShowDemoWindow(&show_demo_window);
 	
 	console.Draw("Console", &scrollDownConsole);
@@ -85,6 +81,7 @@ update_status ModuleIMGUI::Update()
 			{
 				guiWindow.ToggleEnable();
 			}
+
 			ImGui::EndMenu();
 		}
 	}

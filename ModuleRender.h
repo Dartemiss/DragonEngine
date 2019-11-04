@@ -33,6 +33,20 @@ public:
 
 private:
 	void* context;
+
+	//static float buffer_data_rect;
+	//static unsigned int indices;
+	int height = 0;
+	int width = 0;
+
+	unsigned int vbo;
+	unsigned int index;
+
+	unsigned int textureLenna;
+	bool isLoaded;
+	unsigned int ImageName;
+	unsigned int TexWidth, TexHeight;
+	unsigned char *TextData;
 };
 
 #endif __ModuleRender_H__

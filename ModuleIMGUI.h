@@ -24,6 +24,10 @@ public:
 	GUIAbout about;
 	GUIWindow guiWindow;
 
-
+private:
+	bool show_demo_window = true;
+	bool scrollDownConsole = true;
+	bool openAbout = true;
+	bool showWindowConfig = true;
 };
 #endif // __ModuleIMGUI_H__

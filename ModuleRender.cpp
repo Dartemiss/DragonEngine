@@ -60,8 +60,116 @@ bool ModuleRender::Init()
 	//ilutInit();
 
 
+	SDL_GetWindowSize(App->window->window,
+		&width,
+		&height);
 
-	
+	float buffer_data_rect[] = { -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // bottom left
+							  0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
+							 -0.5f, 0.5f,  0.0f,  0.0f, 1.0f, // top left 
+							  0.5f, 0.5f,  0.0f,  1.0f, 1.0f  // top right
+	};
+
+
+	unsigned int indices[] = {
+		0,1,2,
+		1,3,2
+	};
+
+
+	//Create vbo
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	//Create Buffer index
+	glGenBuffers(1, &index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data_rect), buffer_data_rect, GL_STATIC_DRAW);
+
+
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(
+		0, // attribute 0
+		3, // number of componentes (3 floats)
+		GL_FLOAT, // data type
+		GL_FALSE, // should be normalized?
+		5 * sizeof(float), // stride
+		(void*)0 // array buffer offset
+	);
+
+	glEnableVertexAttribArray(0);
+
+	//Project view model matrix and prog
+	Frustum frustum;
+	frustum.type = FrustumType::PerspectiveFrustum;
+	frustum.pos = float3::zero;
+	frustum.front = -float3::unitZ;
+	frustum.up = float3::unitY;
+	frustum.nearPlaneDistance = 0.1f;
+	frustum.farPlaneDistance = 100.0f;
+	frustum.verticalFov = (float)M_PI / 4.0f;
+	aspect = (float)width / height;
+	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
+
+	float4x4 proj = frustum.ProjectionMatrix();
+
+	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f), float3x3::RotateY((float)M_PI / 4.0f), float3(1.0f, 1.0f, 1.0f));
+
+	//First parameter is eye position, second is target position
+	float4x4 view = float4x4::LookAt(float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f, 1.0f, 0.0f));
+
+
+	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
+	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
+
+	unsigned int prog = App->program->createProgram(vs, fs);
+
+
+	glUseProgram(prog);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"model"), 1, GL_TRUE, &model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"view"), 1, GL_TRUE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"proj"), 1, GL_TRUE, &proj[0][0]);
+
+
+
+
+
+
+	//Texture
+	ilGenImages(1, &ImageName);
+	ilBindImage(ImageName);
+
+	//Load image
+	isLoaded = ilLoadImage("../Textures/Lenna.png");
+
+	TexWidth = ilGetInteger(IL_IMAGE_WIDTH);
+	TexHeight = ilGetInteger(IL_IMAGE_HEIGHT);
+	TextData = ilGetData();
+
+	glGenTextures(1, &textureLenna);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textureLenna);
+	glUniform1i(glGetUniformLocation(prog, "texture0"), 1);
+	ILinfo ImageInfo;
+	iluGetImageInfo(&ImageInfo);
+	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+	{
+		iluFlipImage();
+	}
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TexWidth, TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, TextData);	
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	//Texture
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	return true;
 }
@@ -108,6 +216,7 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 
+	glDeleteTextures(1, &textureLenna);
 	//Destroy window
 
 	return true;
@@ -212,125 +321,8 @@ void ModuleRender::DrawTriangle()
 
 void ModuleRender::DrawRectangle()
 {
-	float buffer_data_rect[] = { -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // bottom left
-								  0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
-								 -0.5f, 0.5f,  0.0f,  0.0f, 1.0f, // top left 
-								  0.5f, 0.5f,  0.0f,  1.0f, 1.0f  // top right
-	}; 
-
-
-	unsigned int indices[] = {
-		0,1,2,
-		1,3,2
-	};
-
-	int h;
-	int w;
-	SDL_GetWindowSize(App->window->window,
-		&w,
-		&h);
-
-	Frustum frustum;
-	frustum.type = FrustumType::PerspectiveFrustum;
-	frustum.pos = float3::zero;
-	frustum.front = -float3::unitZ;
-	frustum.up = float3::unitY;
-	frustum.nearPlaneDistance = 0.1f;
-	frustum.farPlaneDistance = 100.0f;
-	frustum.verticalFov = (float)M_PI / 4.0f;
-	aspect = (float)w / h;
-	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
-
-	float4x4 proj = frustum.ProjectionMatrix();
-
-	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f), float3x3::RotateY((float)M_PI / 4.0f), float3(1.0f, 1.0f, 1.0f));
-
-	//First parameter is eye position, second is target position
-	float4x4 view = float4x4::LookAt(float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f, 1.0f, 0.0f));
-
-
-	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
-	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
-
-	unsigned int prog = App->program->createProgram(vs, fs);
-
-
-	glUseProgram(prog);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
-
-
-
-
-
-
-	GLuint vbo;
-	GLuint index;
-
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data_rect), buffer_data_rect, GL_STATIC_DRAW);
-
-
-	glGenBuffers(1, &index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-
-	glVertexAttribPointer(
-		0, // attribute 0
-		3, // number of componentes (3 floats)
-		GL_FLOAT, // data type
-		GL_FALSE, // should be normalized?
-		5* sizeof(float), // stride
-		(void*)0 // array buffer offset
-	);
-
-	glEnableVertexAttribArray(0);
-
-	//TEXTURES
-	ILuint ImageName;
-	ilGenImages(1, &ImageName);
-	ilBindImage(ImageName);
-
-	//Load image
-	bool isLoaded = ilLoadImage("../Textures/Lenna.png");
-	ILuint Width, Height;
-	Width = ilGetInteger(IL_IMAGE_WIDTH);
-	Height = ilGetInteger(IL_IMAGE_HEIGHT);
-	ILubyte *TextData = ilGetData();
-
-	unsigned int textureLenna;
-	//textureLenna = ilutGLBindTexImage();
-
-	//OpenGL Texture
-	glGenTextures(1, &textureLenna);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, textureLenna);
-	glUniform1i(glGetUniformLocation(prog, "texture0"), 1);
-	ILinfo ImageInfo;
-	iluGetImageInfo(&ImageInfo);
-	if(ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-	{
-		iluFlipImage();
-	}
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, TextData);	
-	glGenerateMipmap(GL_TEXTURE_2D);
-	
-
-	//Texture
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	glDeleteTextures(1, &textureLenna);
 	//After use a vbo assign a 0 for efficency
 
 }
