@@ -5,6 +5,7 @@
 #include "glew.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleTexture.h"
 #include <stdio.h>
 #include <SDL.h>
 
@@ -44,10 +45,11 @@ update_status ModuleIMGUI::PreUpdate()
 update_status ModuleIMGUI::Update()
 {
 	//ImGui::ShowDemoWindow(&show_demo_window);
-	
+	TexInfo texinfo = App->texture->textures[App->texture->indexTex];
+
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
-	guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window);
+	guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window, texinfo);
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -80,6 +82,26 @@ update_status ModuleIMGUI::Update()
 			if(ImGui::MenuItem("Window"))
 			{
 				guiWindow.ToggleEnable();
+			}
+
+			if(ImGui::BeginMenu("Textures"))
+			{
+				if (ImGui::MenuItem("Lenna"))
+				{
+					App->texture->indexTex = 0;
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[0].TexWidth, App->texture->textures[0].TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[0].TexData);
+				}
+				if (ImGui::MenuItem("LET'S GO G2"))
+				{
+					App->texture->indexTex = 1;
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[1].TexWidth, App->texture->textures[1].TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[1].TexData);
+				}
+				if (ImGui::MenuItem("Dragon"))
+				{
+					App->texture->indexTex = 2;
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[2].TexWidth, App->texture->textures[2].TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[2].TexData);
+				}
+				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenu();

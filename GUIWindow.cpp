@@ -1,6 +1,6 @@
 #include "GUIWindow.h"
 #include "Globals.h"
-
+#include "ModuleTexture.h"
 
 
 
@@ -14,7 +14,7 @@ GUIWindow::~GUIWindow()
 {
 }
 
-void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window)
+void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, TexInfo texInfo)
 {
 	if(isEnabled)
 	{
@@ -77,57 +77,57 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window)
 			ImGui::Text("CPUs: %d (Cache: %dkb)", SDL_GetCPUCount(), SDL_GetCPUCacheLineSize());
 			ImGui::Text("System RAM: %dGb", SDL_GetSystemRAM()/1000);
 			ImGui::Text("Caps: ");ImGui::SameLine();
-			if(SDL_Has3DNow)
+			if(SDL_Has3DNow())
 			{
 				ImGui::Text("3DNow,"); ImGui::SameLine();
 			}
 
-			if(SDL_HasAVX)
+			if(SDL_HasAVX())
 			{
 				ImGui::Text("AVX,"); ImGui::SameLine();
 			}
 
-			if (SDL_HasAVX2)
+			if (SDL_HasAVX2())
 			{
 				ImGui::Text("AVX2,"); ImGui::SameLine();
 			}
 
-			if(SDL_HasAltiVec)
+			if(SDL_HasAltiVec())
 			{
 				ImGui::Text("AltiVec,"); ImGui::SameLine();
 			}
 
-			if(SDL_HasMMX)
+			if(SDL_HasMMX())
 			{
 				ImGui::Text("MMX,"); ImGui::SameLine();
 			}
 
-			if(SDL_HasRDTSC)
+			if(SDL_HasRDTSC())
 			{
 				ImGui::Text("RDTSC,"); ImGui::SameLine();
 			}
 
-			if(SDL_HasSSE)
+			if(SDL_HasSSE())
 			{
 				ImGui::Text("SSE,"); ImGui::SameLine();
 			}
 
-			if (SDL_HasSSE2)
+			if (SDL_HasSSE2())
 			{
 				ImGui::Text("SSE2,"); ImGui::SameLine();
 			}
 
-			if (SDL_HasSSE3)
+			if (SDL_HasSSE3())
 			{
 				ImGui::Text("SSE3,"); ImGui::SameLine();
 			}
 
-			if (SDL_HasSSE41)
+			if (SDL_HasSSE41())
 			{
 				ImGui::Text("SSE41,"); ImGui::SameLine();
 			}
 
-			if (SDL_HasSSE42)
+			if (SDL_HasSSE42())
 			{
 				ImGui::Text("SSE42,"); ImGui::SameLine();
 			}
@@ -156,6 +156,18 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window)
 
 
 
+		}
+		if (ImGui::CollapsingHeader("Texture Data"))
+		{
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture width: "); ImGui::SameLine();
+			ImGui::Text("%d(Bytes)", texInfo.TexWidth);
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture height: "); ImGui::SameLine();
+			ImGui::Text("%d(Bytes)", texInfo.TexHeight);
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
+			ImGui::Text("%d", texInfo.TexHeight);
+		
 		}
 
 		ImGui::End();

@@ -8,9 +8,7 @@
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
-#include <il.h>
-#include <ilu.h>
-#include <ilut.h>
+
 
 ModuleRender::ModuleRender()
 {
@@ -51,13 +49,6 @@ bool ModuleRender::Init()
 	glEnable(GL_TEXTURE_2D);
 	glViewport(0, 0, 1024, 768);
 
-
-	//Texture
-	//Initialize Texture
-
-	ilInit();
-	iluInit();
-	//ilutInit();
 
 
 	SDL_GetWindowSize(App->window->window,
@@ -124,7 +115,7 @@ bool ModuleRender::Init()
 	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
 	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
 
-	unsigned int prog = App->program->createProgram(vs, fs);
+	prog = App->program->createProgram(vs, fs);
 
 
 	glUseProgram(prog);
@@ -136,40 +127,6 @@ bool ModuleRender::Init()
 		"proj"), 1, GL_TRUE, &proj[0][0]);
 
 
-
-
-
-
-	//Texture
-	ilGenImages(1, &ImageName);
-	ilBindImage(ImageName);
-
-	//Load image
-	isLoaded = ilLoadImage("../Textures/Lenna.png");
-
-	TexWidth = ilGetInteger(IL_IMAGE_WIDTH);
-	TexHeight = ilGetInteger(IL_IMAGE_HEIGHT);
-	TextData = ilGetData();
-
-	glGenTextures(1, &textureLenna);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, textureLenna);
-	glUniform1i(glGetUniformLocation(prog, "texture0"), 1);
-	ILinfo ImageInfo;
-	iluGetImageInfo(&ImageInfo);
-	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-	{
-		iluFlipImage();
-	}
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TexWidth, TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, TextData);	
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	//Texture
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	return true;
 }
@@ -216,7 +173,7 @@ bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
 
-	glDeleteTextures(1, &textureLenna);
+	
 	//Destroy window
 
 	return true;

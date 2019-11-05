@@ -1,3 +1,6 @@
+#ifndef __GUIConsole_H__
+#define __GUIConsole_H__
+
 #include "imgui/imgui.h"
 #include "Globals.h"
 #include "GUI.h"
@@ -21,4 +24,4 @@ public:
 	void Draw(const char* title, bool* p_opened = NULL);
 
 };
-
+#endif __GUIConsole_H__

@@ -25,9 +25,9 @@ public:
 	GUIWindow guiWindow;
 
 private:
-	bool show_demo_window = true;
-	bool scrollDownConsole = true;
-	bool openAbout = true;
-	bool showWindowConfig = true;
+	bool show_demo_window;
+	bool scrollDownConsole;
+	bool openAbout;
+	bool showWindowConfig;
 };
 #endif // __ModuleIMGUI_H__

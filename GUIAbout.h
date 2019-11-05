@@ -1,3 +1,6 @@
+#ifndef __GUIAbout_H__
+#define __GUIAbout_H__
+
 #include "imgui/imgui.h"
 #include "Globals.h"
 #include "GUI.h"
@@ -11,3 +14,4 @@ public:
 	void Draw(const char * title, bool * p_opened);
 };
 
+#endif _GUIAbout_H__

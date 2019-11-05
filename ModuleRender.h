@@ -31,6 +31,8 @@ public:
 	float4x4 model;
 	float4x4 view;
 
+	unsigned int prog;
+
 private:
 	void* context;
 
@@ -42,11 +44,8 @@ private:
 	unsigned int vbo;
 	unsigned int index;
 
-	unsigned int textureLenna;
-	bool isLoaded;
-	unsigned int ImageName;
-	unsigned int TexWidth, TexHeight;
-	unsigned char *TextData;
+
+
 };
 
 #endif __ModuleRender_H__
