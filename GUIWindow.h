@@ -6,6 +6,7 @@
 #include "GUI.h"
 #include <vector>
 #include "ModuleTexture.h"
+#include "ilu.h"
 
 class GUIWindow : public GUI
 {
@@ -13,7 +14,7 @@ public:
 	GUIWindow();
 	~GUIWindow();
 
-	void Draw(const char* title, bool* p_opened, SDL_Window* window, TexInfo texInfo);
+	void Draw(const char* title, bool* p_opened, SDL_Window* window, ILinfo *texInfo);
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 

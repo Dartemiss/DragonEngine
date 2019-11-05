@@ -1,7 +1,7 @@
 #include "GUIWindow.h"
 #include "Globals.h"
 #include "ModuleTexture.h"
-
+#include "ilu.h"
 
 
 GUIWindow::GUIWindow()
@@ -14,7 +14,7 @@ GUIWindow::~GUIWindow()
 {
 }
 
-void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, TexInfo texInfo)
+void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, ILinfo *texInfo)
 {
 	if(isEnabled)
 	{
@@ -159,14 +159,34 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 		}
 		if (ImGui::CollapsingHeader("Texture Data"))
 		{
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture width: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo.TexWidth);
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Width: "); ImGui::SameLine();
+			ImGui::Text("%d(Bytes)", texInfo->Width);
 
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture height: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo.TexHeight);
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Height: "); ImGui::SameLine();
+			ImGui::Text("%d(Bytes)", texInfo->Width);
+
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Depth: "); ImGui::SameLine();
+			ImGui::Text("%d", texInfo->Depth);
 
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
-			ImGui::Text("%d", texInfo.TexHeight);
+			if(texInfo->Format == IL_TYPE_UNKNOWN)
+			{
+				ImGui::Text("Unknown");
+			}
+			else if(texInfo->Format == IL_PNG)
+			{
+				ImGui::Text("PNG");
+			}
+			else if (texInfo->Format == IL_JPG)
+			{
+				ImGui::Text("JPG");
+			}
+			else if (texInfo->Format == IL_DDS)
+			{
+				ImGui::Text("DDS");
+			}
+			
 		
 		}
 

@@ -31,7 +31,7 @@ bool ModuleTexture::Init()
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textures[0].TexWidth, textures[0].TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textures[0].TexData);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textures[0].Width, textures[0].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, textures[0].Data);
 	//Texture
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -59,7 +59,7 @@ bool ModuleTexture::CleanUp()
 {
 	for(unsigned int i = 0; i < textures.size();++i)
 	{
-		glDeleteTextures(1,&textures[i].TexId);
+		glDeleteTextures(1, &textures[i].Id);
 	}
 	
 	return true;
@@ -76,18 +76,23 @@ void ModuleTexture::LoadTexture(char * path)
 
 	isLoaded = ilLoadImage(path);
 
-	TexInfo texInfo;
+	ILinfo imageInfo;
 
-	texInfo.TexWidth = ilGetInteger(IL_IMAGE_WIDTH);
-	texInfo.TexHeight = ilGetInteger(IL_IMAGE_HEIGHT);
-	texInfo.TexData = ilGetData();
+	imageInfo.Width = ilGetInteger(IL_IMAGE_WIDTH);
+	imageInfo.Height = ilGetInteger(IL_IMAGE_HEIGHT);
+	imageInfo.Data = ilGetData();
+	imageInfo.Depth = ilGetInteger(IL_IMAGE_DEPTH);
+
+
+	iluGetImageInfo(&imageInfo);
+	imageInfo.Format = ilDetermineType(path);
 	
 
-	textures.push_back(texInfo);
+	textures.push_back(imageInfo);
 
-	glGenTextures(1, &texInfo.TexId);
+	glGenTextures(1, &imageInfo.Id);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texInfo.TexId);
+	glBindTexture(GL_TEXTURE_2D, imageInfo.Id);
 	glUniform1i(glGetUniformLocation(App->renderer->prog, "texture0"), 1);
 
 

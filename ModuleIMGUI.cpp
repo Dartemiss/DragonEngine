@@ -45,7 +45,7 @@ update_status ModuleIMGUI::PreUpdate()
 update_status ModuleIMGUI::Update()
 {
 	//ImGui::ShowDemoWindow(&show_demo_window);
-	TexInfo texinfo = App->texture->textures[App->texture->indexTex];
+	ILinfo *texinfo = &App->texture->textures[App->texture->indexTex];
 
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
@@ -89,17 +89,17 @@ update_status ModuleIMGUI::Update()
 				if (ImGui::MenuItem("Lenna"))
 				{
 					App->texture->indexTex = 0;
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[0].TexWidth, App->texture->textures[0].TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[0].TexData);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[0].Width, App->texture->textures[0].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[0].Data);
 				}
 				if (ImGui::MenuItem("LET'S GO G2"))
 				{
 					App->texture->indexTex = 1;
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[1].TexWidth, App->texture->textures[1].TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[1].TexData);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[1].Width, App->texture->textures[1].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[1].Data);
 				}
 				if (ImGui::MenuItem("Dragon"))
 				{
 					App->texture->indexTex = 2;
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[2].TexWidth, App->texture->textures[2].TexHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[2].TexData);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[2].Width, App->texture->textures[2].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[2].Data);
 				}
 				ImGui::EndMenu();
 			}

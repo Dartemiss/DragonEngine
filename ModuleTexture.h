@@ -4,16 +4,10 @@
 #include "Globals.h"
 #include "Module.h"
 #include <vector>
+#include "ilu.h"
 
 class Application;
 
-struct TexInfo
-{
-	unsigned int TexWidth;
-	unsigned int TexHeight;
-	unsigned char *TexData;
-	unsigned int TexId;
-};
 
 class ModuleTexture : public Module
 {
@@ -30,7 +24,7 @@ public:
 
 	void LoadTexture(char* path);
 
-	std::vector<TexInfo> textures;
+	std::vector<ILinfo> textures;
 	std::vector<unsigned int> imagesTex;
 
 	unsigned int indexTex = 0;
