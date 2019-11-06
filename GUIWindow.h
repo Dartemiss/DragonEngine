@@ -22,7 +22,7 @@ public:
 
 private:
 	bool fullscreen = FULLSCREEN;
-	bool resizable = false;
+	bool resizable = true;
 	float currentTime;
 	float deltaTime;
 	float previousTime;

@@ -8,6 +8,7 @@
 
 ModuleWindow::ModuleWindow()
 {
+	
 }
 
 // Destructor

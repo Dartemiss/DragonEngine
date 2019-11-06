@@ -6,6 +6,7 @@
 #include "ModuleProgram.h"
 #include "ModuleIMGUI.h"
 #include "ModuleTexture.h"
+#include "ModuleCamera.h"
 
 using namespace std;
 
@@ -14,10 +15,12 @@ Application::Application()
 	// Order matters: they will Init/start/update in this order
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(imgui = new ModuleIMGUI());
+	modules.push_back(camera = new ModuleCamera());
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(texture = new ModuleTexture());
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(program = new ModuleProgram());
+	
 
 }
 

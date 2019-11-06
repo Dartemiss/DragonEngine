@@ -1,6 +1,7 @@
 #include "GUIWindow.h"
 #include "Globals.h"
 #include "ModuleTexture.h"
+#include "ModuleCamera.h"
 #include "Application.h"
 #include "ilu.h"
 
@@ -44,11 +45,19 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, IL
 		
 		
 		ImGui::SliderFloat("Brightness", &actualBright, 0.000f, 1.000f, "%.3f");
-		ImGui::SliderInt("Width", &width, 0, 2500, "%d");
-		ImGui::SliderInt("Height", &heigth, 0, 2500, "%d");
+		ImGui::SliderInt("Width", &width, 1, 2500, "%d");
+		ImGui::SliderInt("Height", &heigth, 1, 2500, "%d");
 
-		if(resizable)
+		if (resizable) 
+		{
+			//SDL_GetWindowSize(window, &width, &heigth);
 			SDL_SetWindowSize(window, width, heigth);
+			//App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
+			App->camera->width = width;
+			App->camera->height = heigth;
+			App->camera->SetAspectRatio();
+		}
+			
 
 		SDL_SetWindowBrightness(window, actualBright);
 
@@ -244,11 +253,11 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, IL
 			{
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				App->texture->executeTexImage2D();
+				
 			}
 
 		}
 
-		
 		
 
 

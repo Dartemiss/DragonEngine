@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleProgram.h"
+#include "ModuleCamera.h"
 #include "SDL.h"
 #include "glew.h"
 #include "include/Geometry/Frustum.h"
@@ -137,6 +138,11 @@ bool ModuleRender::Init()
 		1,3,2
 	};
 
+	float buffer_data_triangle[] = { -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+									  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+									  0.0f,  0.5f, 0.0f, 0.5f, 1.0f
+	};
+
 
 	//Create vbo
 	glGenBuffers(1, &vbo);
@@ -163,23 +169,12 @@ bool ModuleRender::Init()
 	glEnableVertexAttribArray(0);
 
 	//Project view model matrix and prog
-	Frustum frustum;
-	frustum.type = FrustumType::PerspectiveFrustum;
-	frustum.pos = float3::zero;
-	frustum.front = -float3::unitZ;
-	frustum.up = float3::unitY;
-	frustum.nearPlaneDistance = 0.1f;
-	frustum.farPlaneDistance = 100.0f;
-	frustum.verticalFov = (float)M_PI / 4.0f;
-	aspect = (float)width / height;
-	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
+	proj = App->camera->frustum.ProjectionMatrix();
 
-	float4x4 proj = frustum.ProjectionMatrix();
-
-	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f), float3x3::RotateY((float)M_PI / 4.0f), float3(1.0f, 1.0f, 1.0f));
+	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f), float3x3::RotateX((float)M_PI / 4.0f)* float3x3::RotateY((float)-M_PI / 4.0f), float3(1.0f, 1.0f, 1.0f));
 
 	//First parameter is eye position, second is target position
-	float4x4 view = float4x4::LookAt(float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f, 1.0f, 0.0f));
+	view = float4x4::LookAt(float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f, 1.0f, 0.0f));
 
 
 	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
@@ -189,12 +184,6 @@ bool ModuleRender::Init()
 
 
 	glUseProgram(prog);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
 
 
 
@@ -218,17 +207,16 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"model"), 1, GL_TRUE, &model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"view"), 1, GL_TRUE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"proj"), 1, GL_TRUE, &proj[0][0]);
+
+
 	//DrawTriangle();
 	DrawRectangle();
-
-	//FrameRate Calculation
-	//deltaTime = actualTime - curentTime;
-	//currentTime += deltaTime;
-	//nFrames += 1;
-	//if(currentTime >= 60.0f)
-	//{
-		//currentTime = 0.0f;
-	//}
 	return UPDATE_CONTINUE;
 }
 
@@ -348,8 +336,45 @@ void ModuleRender::DrawTriangle()
 
 void ModuleRender::DrawRectangle()
 {
-
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+	glLineWidth(1.0f);
+	float d = 200.0f;
+	glBegin(GL_LINES);
+	for (float i = -d; i <= d; i += 1.0f)
+	{
+		glVertex3f(i, 0.0f, -d);
+		glVertex3f(i, 0.0f, d);
+		glVertex3f(-d, 0.0f, i);
+		glVertex3f(d, 0.0f, i);
+	}
+	glEnd();
+
+	glLineWidth(2.0f);
+	glBegin(GL_LINES);
+	// red X
+	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
+	glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
+	// green Y
+	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
+	glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
+	glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
+	// blue Z
+	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
+	glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
+	glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
+	glEnd();
+	glLineWidth(1.0f);
+
+
+	
 	//After use a vbo assign a 0 for efficency
 
 }
