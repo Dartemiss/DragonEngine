@@ -1,6 +1,7 @@
 #include "GUIWindow.h"
 #include "Globals.h"
 #include "ModuleTexture.h"
+#include "Application.h"
 #include "ilu.h"
 
 
@@ -28,21 +29,29 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, IL
 				SDL_GetDesktopDisplayMode(0, &displayMode);
 				SDL_SetWindowSize(window, displayMode.w, displayMode.h);
 				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-				//Resize(displayMode.w, displayMode.h);
+				
 			}
 			else
 			{
 				SDL_SetWindowFullscreen(window, 0);
 				SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_WIDTH);
-				//Resize(SCREEN_WIDTH, SCREEN_WIDTH);
+				
 
 			}
 		}
 		ImGui::SameLine();
-		if(ImGui::Checkbox("Resizable",&resizable))
-		{
-			//Do code
-		}
+		ImGui::Checkbox("Resizable", &resizable);
+		
+		
+		ImGui::SliderFloat("Brightness", &actualBright, 0.000f, 1.000f, "%.3f");
+		ImGui::SliderInt("Width", &width, 0, 2500, "%d");
+		ImGui::SliderInt("Height", &heigth, 0, 2500, "%d");
+
+		if(resizable)
+			SDL_SetWindowSize(window, width, heigth);
+
+		SDL_SetWindowBrightness(window, actualBright);
+
 
 		if(ImGui::CollapsingHeader("Framerate"))
 		{
@@ -189,6 +198,59 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, IL
 			
 		
 		}
+		if (ImGui::CollapsingHeader("Texture Options")) 
+		{
+			ImGui::Separator();
+			ImGui::Text("Wrapping Options");
+			ImGui::Text("");
+			if (ImGui::Button("GL_REPEAT"))
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				App->texture->executeTexImage2D();
+				
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("GL_MIRRORED_REPEAT"))
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+				App->texture->executeTexImage2D();
+			}
+
+			if (ImGui::Button("GL_CLAMP_TO_EDGE"))
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				App->texture->executeTexImage2D();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("GL_CLAMP_TO_BORDER"))
+			{
+				float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+				glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+				App->texture->executeTexImage2D();
+			}
+			ImGui::Separator();
+			ImGui::Text("Filtering Options");
+			ImGui::Text("");
+
+			if (ImGui::Button("GL_NEAREST"))
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				App->texture->executeTexImage2D();
+			}
+			if (ImGui::Button("GL_LINEAR "))
+			{
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				App->texture->executeTexImage2D();
+			}
+
+		}
+
+		
+		
+
 
 		ImGui::End();
 	}

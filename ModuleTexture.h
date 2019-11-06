@@ -28,7 +28,7 @@ public:
 	std::vector<unsigned int> imagesTex;
 
 	unsigned int indexTex = 0;
-
+	void executeTexImage2D();
 	bool isLoaded;
 
 

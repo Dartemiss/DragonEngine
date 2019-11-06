@@ -89,17 +89,17 @@ update_status ModuleIMGUI::Update()
 				if (ImGui::MenuItem("Lenna"))
 				{
 					App->texture->indexTex = 0;
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[0].Width, App->texture->textures[0].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[0].Data);
+					App->texture->executeTexImage2D();
 				}
 				if (ImGui::MenuItem("LET'S GO G2"))
 				{
 					App->texture->indexTex = 1;
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[1].Width, App->texture->textures[1].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[1].Data);
+					App->texture->executeTexImage2D();
 				}
 				if (ImGui::MenuItem("Dragon"))
 				{
 					App->texture->indexTex = 2;
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[2].Width, App->texture->textures[2].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[2].Data);
+					App->texture->executeTexImage2D();
 				}
 				ImGui::EndMenu();
 			}

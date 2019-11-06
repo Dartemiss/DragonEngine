@@ -8,6 +8,8 @@
 #include "ModuleTexture.h"
 #include "ilu.h"
 
+class Application;
+
 class GUIWindow : public GUI
 {
 public:
@@ -20,11 +22,14 @@ public:
 
 private:
 	bool fullscreen = FULLSCREEN;
-	bool resizable = RESIZABLE;
+	bool resizable = false;
 	float currentTime;
 	float deltaTime;
 	float previousTime;
 	float timeCounter;
+	float actualBright = 1.000f;
+	int width = SCREEN_WIDTH;
+	int heigth = SCREEN_HEIGHT;
 
 };
 #endif __GUIWindow_H__

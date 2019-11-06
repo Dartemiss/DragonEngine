@@ -111,3 +111,8 @@ void ModuleTexture::LoadTexture(char * path)
 
 	return;
 }
+
+void ModuleTexture::executeTexImage2D()
+{
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[indexTex].Width, App->texture->textures[indexTex].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[indexTex].Data);
+}
