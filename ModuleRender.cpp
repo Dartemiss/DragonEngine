@@ -10,6 +10,67 @@
 #include "include/Math/float4.h"
 
 
+
+const char* GetSourceStr(GLenum source)
+{
+	switch (source)
+	{
+	case GL_DEBUG_SOURCE_API:             return "Source: API"; break;
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   return "Source: Window System"; break;
+	case GL_DEBUG_SOURCE_SHADER_COMPILER: return "Source: Shader Compiler"; break;
+	case GL_DEBUG_SOURCE_THIRD_PARTY:     return "Source: Third Party"; break;
+	case GL_DEBUG_SOURCE_APPLICATION:     return "Source: Application"; break;
+	case GL_DEBUG_SOURCE_OTHER:           return "Source: Other"; break;
+	}
+
+	return "Unkown Source";
+}
+
+const char* GetTypeStr(GLenum type)
+{
+	switch (type)
+	{
+	case GL_DEBUG_TYPE_ERROR:               return "Type: Error"; break;
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Type: Deprecated Behaviour"; break;
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  return "Type: Undefined Behaviour"; break;
+	case GL_DEBUG_TYPE_PORTABILITY:         return "Type: Portability"; break;
+	case GL_DEBUG_TYPE_PERFORMANCE:         return "Type: Performance"; break;
+	case GL_DEBUG_TYPE_MARKER:              return "Type: Marker"; break;
+	case GL_DEBUG_TYPE_PUSH_GROUP:          return "Type: Push Group"; break;
+	case GL_DEBUG_TYPE_POP_GROUP:           return "Type: Pop Group"; break;
+	case GL_DEBUG_TYPE_OTHER:               return "Type: Other"; break;
+	}
+
+	return "Unkown Type";
+}
+
+const char* GetSeverityStr(GLenum severity)
+{
+	switch (severity)
+	{
+	case GL_DEBUG_SEVERITY_HIGH:         return "Severity: high"; break;
+	case GL_DEBUG_SEVERITY_MEDIUM:       return "Severity: medium"; break;
+	case GL_DEBUG_SEVERITY_LOW:          return "Severity: low"; break;
+	case GL_DEBUG_SEVERITY_NOTIFICATION: return "Severity: notification"; break;
+	}
+
+	return "Unkown Severity";
+}
+
+
+void APIENTRY OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	char tmp_string[4096];
+	const char* tmp_source = GetSourceStr(source);
+	const char* tmp_type = GetTypeStr(type);
+	const char* tmp_severity = GetSeverityStr(severity);
+	sprintf_s(tmp_string, 4095, "<Source:%s> <Type:%s> <Severity:%s> <ID:%d> <Message:%s>\n",
+		tmp_source, tmp_type, tmp_severity, id, message);
+	OutputDebugString(tmp_string);
+}
+
+
+
 ModuleRender::ModuleRender()
 {
 }
@@ -29,7 +90,9 @@ bool ModuleRender::Init()
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	//Debugging
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 
 	GLenum err = glewInit();
 	// … check for errors
@@ -47,7 +110,14 @@ bool ModuleRender::Init()
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
+	//Debugging
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glViewport(0, 0, 1024, 768);
+
+	//Debug
+	glDebugMessageCallback(&OurOpenGLErrorFunction, nullptr); // sets the callback
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true); //filters notifications
 
 
 
@@ -287,4 +357,6 @@ void ModuleRender::DrawRectangle()
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
 }
+
+
 

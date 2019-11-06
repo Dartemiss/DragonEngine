@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include "include/Math/float4x4.h"
 #include "include/Math/float3x3.h"
+#include "glew.h"
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -32,6 +33,9 @@ public:
 	float4x4 view;
 
 	unsigned int prog;
+
+	//Debug
+	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
 private:
 	void* context;
