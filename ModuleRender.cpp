@@ -171,7 +171,7 @@ bool ModuleRender::Init()
 	//Project view model matrix and prog
 	proj = App->camera->frustum->ProjectionMatrix();
 
-	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f), float3x3::RotateX((float)M_PI / 4.0f)* float3x3::RotateY((float)-M_PI / 4.0f), float3(1.0f, 1.0f, 1.0f));
+	model = float4x4::FromTRS(float3(0.0f, 0.0f, 0.0f), float3x3::RotateX(0.0f)* float3x3::RotateY(0.0f), float3(1.0f, 1.0f, 1.0f));
 
 	//First parameter is eye position, second is target position
 	view = float4x4::LookAt(float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f, 1.0f, 0.0f));
@@ -183,7 +183,7 @@ bool ModuleRender::Init()
 	prog = App->program->createProgram(vs, fs);
 
 
-	glUseProgram(prog);
+	//glUseProgram(prog);
 
 
 
@@ -207,6 +207,8 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
+	glUseProgram(prog);
+
 	glUniformMatrix4fv(glGetUniformLocation(prog,
 		"model"), 1, GL_TRUE, &model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(prog,
@@ -217,6 +219,8 @@ update_status ModuleRender::Update()
 
 	//DrawTriangle();
 	DrawRectangle();
+	
+
 	return UPDATE_CONTINUE;
 }
 
@@ -230,114 +234,34 @@ update_status ModuleRender::PostUpdate()
 bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
-
-	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	//Destroy window
 
 	return true;
-}
-
-void ModuleRender::DrawTriangle()
-{
-	float buffer_data[] = { -1.0f, -1.0f, 0.0f,
-							 1.0f, -1.0f, 0.0f,
-							 0.0f, 1.0f, 0.0f};
-	int h;
-	int w;
-	SDL_GetWindowSize(App->window->window,
-		&w,
-		&h);
-
-	
-
-	//Frustum 
-	//Projection Matrix
-	Frustum frustum;
-	frustum.type = FrustumType::PerspectiveFrustum;
-	frustum.pos = float3::zero;
-	frustum.front = -float3::unitZ;
-	frustum.up = float3::unitY;
-	frustum.nearPlaneDistance = 0.1f;
-	frustum.farPlaneDistance = 100.0f;
-	frustum.verticalFov = (float)M_PI / 4.0f;
-	aspect = (float)w / h;
-	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
-	
-	float4x4 proj = frustum.ProjectionMatrix();
-
-	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f),float3x3::RotateY((float)M_PI / 4.0f), float3(1.0f,1.0f, 1.0f));
-	//float4x4 transform = proj * float4x4(model);
-
-	//First parameter is eye position, second is target position
-	float4x4 view = float4x4::LookAt(float3(0.0f,0.0f,-1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f,1.0f, 0.0f));
-	
-	/*
-	transform = proj *view*float4x4(model);
-
-	float4 vertex0(buffer_data[0], buffer_data[1], buffer_data[2], 1.0f);
-	float4 tmp = transform * vertex0;
-	float3 final_vertex(tmp.x / tmp.w, tmp.y / tmp.w, tmp.z / tmp.w);
-	buffer_data[0] = final_vertex.x;
-	buffer_data[1] = final_vertex.y;
-	buffer_data[2] = final_vertex.z;
-
-	float4 vertex1(buffer_data[3], buffer_data[4], buffer_data[5], 1.0f);
-	float4 tmp1 = transform * vertex1;
-	float3 final_vertex1(tmp1.x / tmp1.w, tmp1.y / tmp1.w, tmp1.z / tmp1.w);
-	buffer_data[3] = final_vertex1.x;
-	buffer_data[4] = final_vertex1.y;
-	buffer_data[5] = final_vertex1.z;
-
-	float4 vertex2(buffer_data[6], buffer_data[7], buffer_data[8], 1.0f);
-	float4 tmp2 = transform * vertex2;
-	float3 final_vertex2(tmp2.x / tmp2.w, tmp2.y / tmp2.w, tmp2.z / tmp2.w);
-	buffer_data[6] = final_vertex2.x;
-	buffer_data[7] = final_vertex2.y;
-	buffer_data[8] = final_vertex2.z;
-
-	*/
-
-	
-	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
-	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
-
-	unsigned int prog = App->program->createProgram(vs, fs);
-
-	glUseProgram(prog);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
-
-
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glEnableVertexAttribArray(0); // attribute 0
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(
-		0, // attribute 0
-		3, // number of componentes (3 floats)
-		GL_FLOAT, // data type
-		GL_FALSE, // should be normalized?
-		0, // stride
-		(void*)0 // array buffer offset
-	);
-	glDrawArrays(GL_TRIANGLES, 0, 3); // start at 0 and 3 tris
-	glDisableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 }
 
 void ModuleRender::DrawRectangle()
 {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+	glUseProgram(0);
+
+
+	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
+	unsigned int fs2 = App->program->createVertexShader("../Shaders/Grid.fs");
+
+	unsigned int prog2 = App->program->createProgram(vs2, fs2);
+
+
+	glUseProgram(prog2);
+
+	glUniformMatrix4fv(glGetUniformLocation(prog2,
+		"model"), 1, GL_TRUE, &model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog2,
+		"view"), 1, GL_TRUE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog2,
+		"proj"), 1, GL_TRUE, &proj[0][0]);
 
 	glLineWidth(1.0f);
 	float d = 200.0f;
@@ -373,8 +297,8 @@ void ModuleRender::DrawRectangle()
 	glEnd();
 	glLineWidth(1.0f);
 
+	glUseProgram(0);
 
-	
 	//After use a vbo assign a 0 for efficency
 
 }
