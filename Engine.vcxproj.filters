@@ -128,6 +128,7 @@
     <ClCompile Include="GUIWindow.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleCamera.cpp" />
+    <ClCompile Include="GUICamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -350,6 +351,8 @@
     <ClInclude Include="GUIWindow.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleCamera.h" />
+    <ClInclude Include="GUICamera.h" />
+    <ClInclude Include="Point.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

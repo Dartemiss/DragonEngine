@@ -80,6 +80,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIAbout.h" />
+    <ClInclude Include="GUICamera.h" />
     <ClInclude Include="GUIConsole.h" />
     <ClInclude Include="GUIWindow.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -158,10 +159,12 @@
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="Point.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="GUIAbout.cpp" />
+    <ClCompile Include="GUICamera.cpp" />
     <ClCompile Include="GUIConsole.cpp" />
     <ClCompile Include="GUIWindow.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />

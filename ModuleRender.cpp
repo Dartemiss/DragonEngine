@@ -169,7 +169,7 @@ bool ModuleRender::Init()
 	glEnableVertexAttribArray(0);
 
 	//Project view model matrix and prog
-	proj = App->camera->frustum.ProjectionMatrix();
+	proj = App->camera->frustum->ProjectionMatrix();
 
 	model = float4x4::FromTRS(float3(0.0f, 0.0f, -4.0f), float3x3::RotateX((float)M_PI / 4.0f)* float3x3::RotateY((float)-M_PI / 4.0f), float3(1.0f, 1.0f, 1.0f));
 

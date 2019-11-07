@@ -50,6 +50,7 @@ update_status ModuleIMGUI::Update()
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
 	guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window, texinfo);
+	guiCamera.Draw("Camera Settings", &showCameraGUI);
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -102,6 +103,11 @@ update_status ModuleIMGUI::Update()
 					App->texture->executeTexImage2D();
 				}
 				ImGui::EndMenu();
+			}
+
+			if(ImGui::MenuItem("Camera"))
+			{
+				guiCamera.ToggleEnable();
 			}
 
 			ImGui::EndMenu();

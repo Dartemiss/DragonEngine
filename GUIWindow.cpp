@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "ModuleTexture.h"
 #include "ModuleCamera.h"
+#include "ModuleRender.h"
 #include "Application.h"
 #include "ilu.h"
 
@@ -50,9 +51,15 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, IL
 
 		if (resizable) 
 		{
-			//SDL_GetWindowSize(window, &width, &heigth);
+			
 			SDL_SetWindowSize(window, width, heigth);
-			//App->renderer->WindowResized(sdlEvent.window.data1, sdlEvent.window.data2);
+			App->camera->width = width;
+			App->camera->height = heigth;
+			App->camera->SetAspectRatio();
+		}
+		else
+		{
+			SDL_GetWindowSize(window, &width, &heigth);
 			App->camera->width = width;
 			App->camera->height = heigth;
 			App->camera->SetAspectRatio();
@@ -257,8 +264,6 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, IL
 			}
 
 		}
-
-		
 
 
 		ImGui::End();

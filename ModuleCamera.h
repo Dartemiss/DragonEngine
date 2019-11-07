@@ -27,7 +27,7 @@ public:
 	float aspect = 1.0f;
 	unsigned int width = SCREEN_WIDTH;
 	unsigned int height = SCREEN_HEIGHT;
-	Frustum frustum;
+	Frustum *frustum;
 
 };
 

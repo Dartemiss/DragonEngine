@@ -6,6 +6,7 @@
 #include "GUIConsole.h"
 #include "GUIAbout.h"
 #include "GUIWindow.h"
+#include "GUICamera.h"
 
 
 class ModuleIMGUI : public Module
@@ -23,11 +24,13 @@ public:
 	GUIConsole console;
 	GUIAbout about;
 	GUIWindow guiWindow;
+	GUICamera guiCamera;
 
 private:
 	bool show_demo_window;
 	bool scrollDownConsole;
 	bool openAbout;
 	bool showWindowConfig;
+	bool showCameraGUI;
 };
 #endif // __ModuleIMGUI_H__

@@ -3,6 +3,7 @@
 #include "ModuleCamera.h"
 #include "ModuleProgram.h"
 #include "ModuleRender.h"
+#include "ModuleInput.h"
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
@@ -22,16 +23,17 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Init()
 {
-	
-	frustum.type = FrustumType::PerspectiveFrustum;
-	frustum.pos = float3::zero;
-	frustum.front = -float3::unitZ;
-	frustum.up = float3::unitY;
-	frustum.nearPlaneDistance = 0.1f;
-	frustum.farPlaneDistance = 100.0f;
-	frustum.verticalFov = (float)M_PI / 4.0f;
+	frustum = new Frustum();
+	frustum->type = FrustumType::PerspectiveFrustum;
+	frustum->pos = float3::zero;
+	frustum->front = -float3::unitZ;
+	frustum->up = float3::unitY;
+	frustum->nearPlaneDistance = 0.1f;
+	frustum->farPlaneDistance = 100.0f;
+	frustum->verticalFov = (float)M_PI / 4.0f;
 	aspect = (float)width / height;
-	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
+	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+	
 	
 	return true;
 }
@@ -43,7 +45,21 @@ update_status ModuleCamera::PreUpdate()
 
 update_status ModuleCamera::Update()
 {
+	float3 mov = float3::zero;
+
+	if(App->input->GetKey(SDL_SCANCODE_Q))
+	{	
+		mov += float3::unitY;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_E))
+	{
+		mov -= float3::unitY;
+	}
+
+	frustum->Translate(mov);
 	
+	App->renderer->model.SetTranslatePart(frustum->pos);
 	return UPDATE_CONTINUE;
 }
 
@@ -59,14 +75,15 @@ bool ModuleCamera::CleanUp()
 
 void ModuleCamera::SetFOV(float FOV)
 {
-	frustum.verticalFov = FOV;
-	frustum.horizontalFov = 2.f * atanf(tanf(FOV * 0.5f) *aspect);
-	App->renderer->proj = frustum.ProjectionMatrix();
+	float r = frustum->AspectRatio();
+	frustum->verticalFov = FOV;
+	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *r);
+	App->renderer->proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::SetAspectRatio()
 {
 	aspect = ((float)width / height);
-	frustum.horizontalFov = 2.f * atanf(tanf(frustum.verticalFov * 0.5f) *aspect);
-	App->renderer->proj = frustum.ProjectionMatrix();
+	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+	App->renderer->proj = frustum->ProjectionMatrix();
 }
