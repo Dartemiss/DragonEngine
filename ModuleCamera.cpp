@@ -56,10 +56,26 @@ update_status ModuleCamera::Update()
 	{
 		mov -= float3::unitY;
 	}
+	if (App->input->GetKey(SDL_SCANCODE_D))
+	{
+		mov -= float3::unitX;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_A))
+	{
+		mov += float3::unitX;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_W))
+	{
+		mov += float3::unitZ;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S))
+	{
+		mov -= float3::unitZ;
+	}
 
 	frustum->Translate(mov);
 	
-	App->renderer->model.SetTranslatePart(frustum->pos);
+	App->renderer->view.SetTranslatePart(frustum->pos);
 	return UPDATE_CONTINUE;
 }
 
