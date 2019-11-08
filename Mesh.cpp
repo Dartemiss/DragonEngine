@@ -1,5 +1,8 @@
 #include "Mesh.h"
+#include "Application.h"
+#include "ModuleProgram.h"
 #include "glew.h"
+#include <string>
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 {
@@ -17,14 +20,6 @@ Mesh::~Mesh()
 
 void Mesh::Init()
 {
-
-	Vertex vertex;
-	vertex.Position = float3(0.2f, 0.4f, 0.6f);
-	vertex.Normal = float3(0.0f, 1.0f, 0.0f);
-	vertex.TexCoords = float2(1.0f, 0.0f);
-
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices[0], GL_STATIC_DRAW);
-
 }
 
 void Mesh::setupMesh()
@@ -52,5 +47,30 @@ void Mesh::setupMesh()
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
+	glBindVertexArray(0);
+}
+void Mesh::Draw(unsigned int program)
+{
+	unsigned int diffuseNr = 1;
+	unsigned int specularNr = 1;
+	for (unsigned int i = 0; i < textures.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+		// retrieve texture number (the N in diffuse_textureN)
+		std::string number;
+		std::string name = textures[i].type;
+		if (name == "texture_diffuse")
+			number = std::to_string(diffuseNr++);
+		else if (name == "texture_specular")
+			number = std::to_string(specularNr++);
+
+		App->program->setFloat(("material." + name + number).c_str(), (float)i, program);
+		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}
+	glActiveTexture(GL_TEXTURE0);
+
+	// draw mesh
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

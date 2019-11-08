@@ -17,7 +17,7 @@ GUIWindow::~GUIWindow()
 {
 }
 
-void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, ILinfo *texInfo)
+void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Texture *texInfo)
 {
 	if(isEnabled)
 	{
@@ -185,29 +185,29 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, IL
 		if (ImGui::CollapsingHeader("Texture Data"))
 		{
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Width: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo->Width);
+			ImGui::Text("%d(Bytes)", texInfo->width);
 
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Height: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo->Width);
+			ImGui::Text("%d(Bytes)", texInfo->width);
 
 
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Depth: "); ImGui::SameLine();
-			ImGui::Text("%d", texInfo->Depth);
+			ImGui::Text("%d", texInfo->depth);
 
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
-			if(texInfo->Format == IL_TYPE_UNKNOWN)
+			if(texInfo->format == IL_TYPE_UNKNOWN)
 			{
 				ImGui::Text("Unknown");
 			}
-			else if(texInfo->Format == IL_PNG)
+			else if(texInfo->format == IL_PNG)
 			{
 				ImGui::Text("PNG");
 			}
-			else if (texInfo->Format == IL_JPG)
+			else if (texInfo->format == IL_JPG)
 			{
 				ImGui::Text("JPG");
 			}
-			else if (texInfo->Format == IL_DDS)
+			else if (texInfo->format == IL_DDS)
 			{
 				ImGui::Text("DDS");
 			}

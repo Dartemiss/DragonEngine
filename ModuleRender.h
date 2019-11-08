@@ -32,8 +32,9 @@ public:
 	float4x4 model;
 	float4x4 view;
 
-	unsigned int prog;
-	unsigned int prog2;
+	unsigned int progLenna;
+	unsigned int progGrid;
+	unsigned int progModel;
 
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);

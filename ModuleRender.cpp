@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "ModuleModelLoader.h"
 #include "SDL.h"
 #include "glew.h"
 #include "include/Geometry/Frustum.h"
@@ -180,15 +181,18 @@ bool ModuleRender::Init()
 	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
 	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
 
-	prog = App->program->createProgram(vs, fs);
+	progLenna = App->program->createProgram(vs, fs);
 
 
 	//Grid
 	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
 	unsigned int fs2 = App->program->createFragmentShader("../Shaders/Grid.fs");
 
-	prog2 = App->program->createProgram(vs2, fs2);
+	progGrid = App->program->createProgram(vs2, fs2);
 
+	unsigned int fs3 = App->program->createFragmentShader("../Shaders/Model.fs");
+
+	progModel = App->program->createProgram(vs, fs3);
 
 	return true;
 }
@@ -212,13 +216,13 @@ update_status ModuleRender::Update()
 {
 	//Draw Grid
 
-	glUseProgram(prog2);
+	glUseProgram(progGrid);
 
-	glUniformMatrix4fv(glGetUniformLocation(prog2,
+	glUniformMatrix4fv(glGetUniformLocation(progGrid,
 		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog2,
+	glUniformMatrix4fv(glGetUniformLocation(progGrid,
 		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog2,
+	glUniformMatrix4fv(glGetUniformLocation(progGrid,
 		"proj"), 1, GL_TRUE, &proj[0][0]);
 
 	glLineWidth(1.0f);
@@ -259,13 +263,26 @@ update_status ModuleRender::Update()
 	glUseProgram(0);
 
 
-	glUseProgram(prog);
+	glUseProgram(progModel);
 
-	glUniformMatrix4fv(glGetUniformLocation(prog,
+	glUniformMatrix4fv(glGetUniformLocation(progModel,
 		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
+	glUniformMatrix4fv(glGetUniformLocation(progModel,
 		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
+	glUniformMatrix4fv(glGetUniformLocation(progModel,
+		"proj"), 1, GL_TRUE, &proj[0][0]);
+
+	App->modelLoader->Draw(progModel);
+
+	glUseProgram(0);
+
+	glUseProgram(progLenna);
+
+	glUniformMatrix4fv(glGetUniformLocation(progLenna,
+		"model"), 1, GL_TRUE, &model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(progLenna,
+		"view"), 1, GL_TRUE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(progLenna,
 		"proj"), 1, GL_TRUE, &proj[0][0]);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

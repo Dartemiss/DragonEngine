@@ -23,6 +23,10 @@ public:
 	unsigned int createFragmentShader(char* filename);
 	unsigned int createProgram(unsigned int vShader, unsigned int fShader);
 
+	void setBool(const std::string &name, bool value, unsigned int prog) const;
+	void setInt(const std::string &name, int value, unsigned int prog) const;
+	void setFloat(const std::string &name, float value, unsigned int prog) const;
+
 	char* readFile(char* filename) const;
 };
 

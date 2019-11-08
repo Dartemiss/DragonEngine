@@ -80,10 +80,23 @@ unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fSh
 		LOG("ERROR: %s\n", infoLog);
 	}
 
-	glDeleteShader(vShader);
-	glDeleteShader(fShader);
 	
 	return program;
+}
+
+void ModuleProgram::setBool(const std::string & name, bool value, unsigned int prog) const
+{
+	glUniform1i(glGetUniformLocation(prog, name.c_str()), (int)value);
+}
+
+void ModuleProgram::setInt(const std::string & name, int value, unsigned int prog) const
+{
+	glUniform1i(glGetUniformLocation(prog, name.c_str()), value);
+}
+
+void ModuleProgram::setFloat(const std::string & name, float value, unsigned int prog) const
+{
+	glUniform1f(glGetUniformLocation(prog, name.c_str()), value);
 }
 
 

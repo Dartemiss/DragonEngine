@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 #include "include/Math/float2.h"
-
+#include "ModuleTexture.h"
 
 
 struct Vertex {
@@ -16,10 +16,7 @@ struct Vertex {
 	float2 TexCoords;
 };
 
-struct Texture {
-	unsigned int id;
-	std::string type;
-};
+
 
 class Mesh
 {
@@ -32,7 +29,7 @@ public:
 	void Init();
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
 	~Mesh();
-	void Draw(unsigned int shader);
+	void Draw(unsigned int program);
 private:
 	/*  Render data  */
 	unsigned int VAO, VBO, EBO;

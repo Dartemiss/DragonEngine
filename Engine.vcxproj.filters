@@ -390,6 +390,7 @@
     <None Include="Shaders\VertexShader.vs" />
     <None Include="Shaders\Grid.fs" />
     <None Include="Shaders\Grid.vs" />
+    <None Include="Shaders\Model.fs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt">

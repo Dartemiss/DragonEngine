@@ -45,7 +45,7 @@ update_status ModuleIMGUI::PreUpdate()
 update_status ModuleIMGUI::Update()
 {
 	//ImGui::ShowDemoWindow(&show_demo_window);
-	ILinfo *texinfo = &App->texture->textures[App->texture->indexTex];
+	Texture *texinfo = &App->texture->textures_loaded[App->texture->indexTex];
 
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);

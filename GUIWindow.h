@@ -16,7 +16,7 @@ public:
 	GUIWindow();
 	~GUIWindow();
 
-	void Draw(const char* title, bool* p_opened, SDL_Window* window, ILinfo *texInfo);
+	void Draw(const char* title, bool* p_opened, SDL_Window* window, Texture *texInfo);
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 
