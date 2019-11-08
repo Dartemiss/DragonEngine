@@ -6,14 +6,14 @@
 #include "include/Math/float3.h"
 #include <string>
 #include <vector>
-
+#include "include/Math/float2.h"
 
 
 
 struct Vertex {
 	float3 Position;
 	float3 Normal;
-	float3 TexCoords;
+	float2 TexCoords;
 };
 
 struct Texture {
@@ -29,6 +29,7 @@ public:
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 	/*  Functions  */
+	void Init();
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
 	~Mesh();
 	void Draw(unsigned int shader);

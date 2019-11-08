@@ -2,11 +2,9 @@
 
 out vec4 color;
 
-in vec4 colorGrid;
-
-uniform sampler2D texture0;
+in vec3 colorGrid;
 
 void main()
 {
-	color = colorGrid;
+	color = vec4(colorGrid,1.0f);
 }

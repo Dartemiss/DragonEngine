@@ -1,7 +1,6 @@
 #include "Mesh.h"
 #include "glew.h"
 
-
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
 {
 	this->vertices = vertices;
@@ -14,6 +13,18 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 
 Mesh::~Mesh()
 {
+}
+
+void Mesh::Init()
+{
+
+	Vertex vertex;
+	vertex.Position = float3(0.2f, 0.4f, 0.6f);
+	vertex.Normal = float3(0.0f, 1.0f, 0.0f);
+	vertex.TexCoords = float2(1.0f, 0.0f);
+
+	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices[0], GL_STATIC_DRAW);
+
 }
 
 void Mesh::setupMesh()

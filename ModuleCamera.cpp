@@ -52,28 +52,28 @@ update_status ModuleCamera::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_Q))
 	{	
-		mov += float3::unitY * 0.2;
+		mov += frustum->up * (float)0.2;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_E))
 	{
-		mov -= float3::unitY * 0.2;
+		mov -= frustum->up * (float)0.2;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D))
 	{
-		mov += float3::unitX * 0.2;
+		mov += frustum->WorldRight() * (float)0.2;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A))
 	{
-		mov -= float3::unitX * 0.2;
+		mov -= frustum->WorldRight() * (float)0.2;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W))
 	{
-		mov -= float3::unitZ * 0.2;
+		mov += frustum->front * (float)0.2;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S))
 	{
-		mov += float3::unitZ * 0.2;
+		mov -= frustum->front * (float) 0.2;
 	}
 
 	frustum->Translate(mov);
@@ -107,7 +107,8 @@ update_status ModuleCamera::Update()
 	
 
 	frustum->front = rotationY.Transform(frustum->front).Normalized();
-	//frustum-> = rotationX.Transform(frustum->front).Normalized();
+	frustum->front = rotationX.Transform(frustum->front).Normalized();
+	frustum->up = rotationX.Transform(frustum->up).Normalized();
 	App->renderer->view = frustum->ViewMatrix();
 
 

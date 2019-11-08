@@ -51,15 +51,25 @@ unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fSh
 	
 	if (vShader != NULL) 
 	{
+		LOG("Attaching Vertex Shader");
 		glAttachShader(program, vShader);
 	}
 
 	if(fShader != NULL)
 	{
+		LOG("Attaching Fragment Shader");
 		glAttachShader(program, fShader);
 	}
 
+	LOG("Linking program");
 	glLinkProgram(program);
+
+	LOG("Deleting Vertex Shader");
+	glDeleteShader(vShader);
+
+	LOG("Deleting Fragment Shader");
+	glDeleteShader(fShader);
+
 	//Now we can delete shaders
 	int  success;
 	char infoLog[512];
@@ -84,6 +94,7 @@ unsigned int ModuleProgram::createVertexShader(char * filename)
 	unsigned int shaderId = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(shaderId,1,&data,NULL);
 	glCompileShader(shaderId);
+	delete data;
 
 	//glGetShaderiv(shaderId, GL_COMPILE_STATUS,NULL);
 	
@@ -98,7 +109,7 @@ unsigned int ModuleProgram::createFragmentShader(char * filename)
 	unsigned int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(shaderId, 1, &data, NULL);
 	glCompileShader(shaderId);
-
+	delete data;
 	//glGetShaderiv(shaderId, GL_COMPILE_STATUS, NULL);
 
 

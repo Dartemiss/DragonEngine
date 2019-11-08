@@ -183,8 +183,11 @@ bool ModuleRender::Init()
 	prog = App->program->createProgram(vs, fs);
 
 
-	//glUseProgram(prog);
+	//Grid
+	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
+	unsigned int fs2 = App->program->createFragmentShader("../Shaders/Grid.fs");
 
+	prog2 = App->program->createProgram(vs2, fs2);
 
 
 	return true;
@@ -207,52 +210,7 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	glUseProgram(prog);
-
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(prog,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
-
-
-	//DrawTriangle();
-	DrawRectangle();
-	
-
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleRender::PostUpdate()
-{
-	SDL_GL_SwapWindow(App->window->window);
-	return UPDATE_CONTINUE;
-}
-
-// Called before quitting
-bool ModuleRender::CleanUp()
-{
-	LOG("Destroying renderer");
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	//Destroy window
-
-	return true;
-}
-
-void ModuleRender::DrawRectangle()
-{
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	glUseProgram(0);
-
-
-	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
-	unsigned int fs2 = App->program->createVertexShader("../Shaders/Grid.fs");
-
-	unsigned int prog2 = App->program->createProgram(vs2, fs2);
-
+	//Draw Grid
 
 	glUseProgram(prog2);
 
@@ -266,6 +224,7 @@ void ModuleRender::DrawRectangle()
 	glLineWidth(1.0f);
 	float d = 200.0f;
 	glBegin(GL_LINES);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	for (float i = -d; i <= d; i += 1.0f)
 	{
 		glVertex3f(i, 0.0f, -d);
@@ -298,6 +257,44 @@ void ModuleRender::DrawRectangle()
 	glLineWidth(1.0f);
 
 	glUseProgram(0);
+
+
+	glUseProgram(prog);
+
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"model"), 1, GL_TRUE, &model[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"view"), 1, GL_TRUE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(prog,
+		"proj"), 1, GL_TRUE, &proj[0][0]);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	glUseProgram(0);
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleRender::PostUpdate()
+{
+	SDL_GL_SwapWindow(App->window->window);
+	return UPDATE_CONTINUE;
+}
+
+// Called before quitting
+bool ModuleRender::CleanUp()
+{
+	LOG("Destroying renderer");
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//Destroy window
+
+	return true;
+}
+
+void ModuleRender::DrawRectangle()
+{
+	
 
 	//After use a vbo assign a 0 for efficency
 

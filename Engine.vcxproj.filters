@@ -388,6 +388,8 @@
     <None Include="imgui\.editorconfig" />
     <None Include="Shaders\FragmentShader.fs" />
     <None Include="Shaders\VertexShader.vs" />
+    <None Include="Shaders\Grid.fs" />
+    <None Include="Shaders\Grid.vs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt">

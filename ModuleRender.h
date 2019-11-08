@@ -33,6 +33,7 @@ public:
 	float4x4 view;
 
 	unsigned int prog;
+	unsigned int prog2;
 
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
