@@ -175,9 +175,9 @@ bool ModuleRender::Init()
 	model = float4x4::FromTRS(float3(0.0f, 0.0f, 0.0f), float3x3::RotateX(0.0f)* float3x3::RotateY(0.0f), float3(1.0f, 1.0f, 1.0f));
 
 	//First parameter is eye position, second is target position
-	view = float4x4::LookAt(float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 0.0f, -1.0f), math::float3(0.0f, 1.0f, 0.0f), math::float3(0.0f, 1.0f, 0.0f));
+	view = App->camera->frustum->ViewMatrix();
 
-
+	//Lenna
 	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
 	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
 
@@ -190,6 +190,7 @@ bool ModuleRender::Init()
 
 	progGrid = App->program->createProgram(vs2, fs2);
 
+	//Model house
 	unsigned int fs3 = App->program->createFragmentShader("../Shaders/Model.fs");
 
 	progModel = App->program->createProgram(vs, fs3);
@@ -276,6 +277,7 @@ update_status ModuleRender::Update()
 
 	glUseProgram(0);
 
+	/*
 	glUseProgram(progLenna);
 
 	glUniformMatrix4fv(glGetUniformLocation(progLenna,
@@ -288,7 +290,7 @@ update_status ModuleRender::Update()
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glUseProgram(0);
-
+	*/
 	return UPDATE_CONTINUE;
 }
 

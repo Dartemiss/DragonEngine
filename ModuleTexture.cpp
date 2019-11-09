@@ -20,6 +20,7 @@ bool ModuleTexture::Init()
 {
 	//Texture
 	//Initialize Texture
+	LOG("Init Image library");
 	ilInit();
 	iluInit();
 	ilutInit();
@@ -66,7 +67,7 @@ bool ModuleTexture::CleanUp()
 	return true;
 }
 
-void ModuleTexture::LoadTexture(char * path, Texture* textureLoaded, ILuint image)
+void ModuleTexture::LoadTexture(char * path, Texture* textureLoaded, ILuint &image)
 {
 	//Texture
 	

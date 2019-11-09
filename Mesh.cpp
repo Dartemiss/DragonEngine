@@ -16,6 +16,14 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 
 Mesh::~Mesh()
 {
+	vertices.clear();
+	indices.clear();
+	textures.clear();
+
+	glDeleteBuffers(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &EBO);
+
 }
 
 void Mesh::Init()
@@ -64,13 +72,14 @@ void Mesh::Draw(unsigned int program)
 		else if (name == "texture_specular")
 			number = std::to_string(specularNr++);
 
-		App->program->setFloat(("material." + name + number).c_str(), (float)i, program);
+		//App->program->setFloat(("material." + name + number).c_str(), (float)i, program);
+		glUniform1i(glGetUniformLocation(program, (name + number).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
-	glActiveTexture(GL_TEXTURE0);
-
+	glUniform1i(glGetUniformLocation(program, "texture0"), 0);
 	// draw mesh
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+	glActiveTexture(GL_TEXTURE0);
 }

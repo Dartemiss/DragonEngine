@@ -52,31 +52,31 @@ update_status ModuleCamera::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_Q))
 	{	
-		mov += frustum->up * (float)0.2;
+		mov += frustum->up * movementSpeed;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_E))
 	{
-		mov -= frustum->up * (float)0.2;
+		mov -= frustum->up * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D))
 	{
-		mov += frustum->WorldRight() * (float)0.2;
+		mov += frustum->WorldRight() * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A))
 	{
-		mov -= frustum->WorldRight() * (float)0.2;
+		mov -= frustum->WorldRight() * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W))
 	{
-		mov += frustum->front * (float)0.2;
+		mov += frustum->front * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S))
 	{
-		mov -= frustum->front * (float) 0.2;
+		mov -= frustum->front * movementSpeed;
 	}
 
-	frustum->Translate(mov);
+	
 
 	float rotY = 0.0f;
 	float rotX = 0.0f;
@@ -102,15 +102,33 @@ update_status ModuleCamera::Update()
 		rotX = -0.02f;
 	}
 
-	math::float3x3 rotationY = math::float3x3::RotateY(rotY);
-	math::float3x3 rotationX = math::float3x3::RotateX(rotX);
-	
+	//FPS ROTATION
+	if(App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	{
+		float dx = App->input->GetMouseMotion().x;
+		float dy = App->input->GetMouseMotion().y;
 
-	frustum->front = rotationY.Transform(frustum->front).Normalized();
-	frustum->front = rotationX.Transform(frustum->front).Normalized();
-	frustum->up = rotationX.Transform(frustum->up).Normalized();
+
+		Rotate(-dx * rotationSpeed, -dy * rotationSpeed);
+	}
+	else
+	{
+		Rotate(rotY, rotX);
+	}
+
+	Move(mov);
+
+	//Zoom
+	wheelMovement = App->input->GetMouseWheel();
+	if(wheelMovement != 0)
+	{
+		//frustum->verticalFov = frustum->verticalFov - (float) wheelMovement;
+		//frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+	}
+
+
+	//Generate viewing matrix for camera movement/rotation
 	App->renderer->view = frustum->ViewMatrix();
-
 
 	return UPDATE_CONTINUE;
 }
@@ -138,4 +156,33 @@ void ModuleCamera::SetAspectRatio()
 	aspect = ((float)width / height);
 	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 	App->renderer->proj = frustum->ProjectionMatrix();
+}
+
+void ModuleCamera::Rotate(float dx, float dy)
+{
+	if(dx != 0.0f)
+	{
+		math::float3x3 rotationY = math::float3x3::RotateY(dx);
+		frustum->front = rotationY.Transform(frustum->front).Normalized();
+		frustum->up = rotationY.Transform(frustum->up).Normalized();
+	}
+
+	if(dy != 0.0f)
+	{
+		math::float3x3 rotationX = math::float3x3::RotateAxisAngle(frustum->WorldRight(),dy);
+		frustum->up = rotationX.Transform(frustum->up).Normalized();
+		frustum->front = rotationX.Transform(frustum->front).Normalized();
+	}
+
+	
+}
+
+void ModuleCamera::Move(float3 direction)
+{
+	if(App->input->GetKey(SDL_SCANCODE_LSHIFT))
+	{
+		direction *= 3.0f;
+	}
+
+	frustum->Translate(direction);
 }

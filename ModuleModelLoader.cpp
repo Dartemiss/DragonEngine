@@ -18,8 +18,7 @@ ModuleModelLoader::~ModuleModelLoader()
 
 bool ModuleModelLoader::Init()
 {
-	ilInit();
-	iluInit();
+
 
 	loadModel("../Models/baker_house/BakerHouse.fbx");
 
@@ -57,8 +56,8 @@ void ModuleModelLoader::Draw(unsigned int program)
 
 void ModuleModelLoader::loadModel(std::string path)
 {
-	Assimp::Importer import;
-	const aiScene *scene = import.ReadFile(path, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs);
+	LOG("Importing model");
+	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		LOG("ERROR ASSIMP: %s", aiGetErrorString());
@@ -108,10 +107,10 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 		
 		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
 		{
-			float2 textures;
-			textures.x = mesh->mTextureCoords[0][i].x;
-			textures.y = mesh->mTextureCoords[0][i].y;
-			vertex.TexCoords = textures;
+			float2 texturesCoords;
+			texturesCoords.x = mesh->mTextureCoords[0][i].x;
+			texturesCoords.y = mesh->mTextureCoords[0][i].y;
+			vertex.TexCoords = texturesCoords;
 		}
 		else
 			vertex.TexCoords = float2(0.0f, 0.0f);
@@ -126,17 +125,18 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 			indices.push_back(face.mIndices[j]);
 	}
 		// process material
+		
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 			std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
 				aiTextureType_DIFFUSE, "texture_diffuse");
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			std::vector<Texture> specularMaps = loadMaterialTextures(material,
-				aiTextureType_SPECULAR, "texture_specular");
-			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+			//std::vector<Texture> specularMaps = loadMaterialTextures(material,
+				//aiTextureType_SPECULAR, "texture_specular");
+			//textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
-
+		
 	return Mesh(vertices, indices, textures);
 }
 
@@ -146,7 +146,8 @@ std::vector<Texture> ModuleModelLoader::loadMaterialTextures(aiMaterial * mat, a
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
-		mat->GetTexture(type, i, &str);
+		aiTextureMapping mapping = aiTextureMapping_UV;
+		mat->GetTexture(type, i, &str, &mapping, 0);
 		bool skip = false;
 		for (unsigned int j = 0; j < App->texture->textures_loaded.size(); j++)
 		{
@@ -185,7 +186,7 @@ unsigned int ModuleModelLoader::TextureFromFile(const char * path, const std::st
 	char newfilename[100] = "../Models/baker_house/";
 	strcat_s(newfilename, path);
 
-	App->texture->LoadTexture(newfilename, texture,image);
+	App->texture->LoadTexture(newfilename, texture, image);
 	
 	if (texture->data)
 	{
@@ -209,6 +210,7 @@ unsigned int ModuleModelLoader::TextureFromFile(const char * path, const std::st
 		LOG("Texture failed to load at path: &s ",path);
 		iluDeleteImage(image);
 	}
+
 
 	return textureID;
 }

@@ -34,7 +34,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void LoadTexture(char* path, Texture* textureLoaded, ILuint image);
+	void LoadTexture(char* path, Texture* textureLoaded, ILuint &image);
 
 	//Vector of all the textures that have been loaded for avoiding reimporting
 	std::vector<Texture> textures_loaded;

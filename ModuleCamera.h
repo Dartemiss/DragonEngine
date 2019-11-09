@@ -21,13 +21,20 @@ public:
 	bool CleanUp();
 	void SetFOV(float FOV);
 	void SetAspectRatio();
-
+	void Rotate(float dx, float dy);
+	void Move(float3 direction);
 
 	//Variables
 	float aspect = 1.0f;
 	unsigned int width = SCREEN_WIDTH;
 	unsigned int height = SCREEN_HEIGHT;
 	Frustum *frustum;
+	int wheelMovement;
+
+
+	float movementSpeed = 0.2f;
+	float rotationSpeed = 0.02f;
+
 
 };
 
