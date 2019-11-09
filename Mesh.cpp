@@ -4,7 +4,7 @@
 #include "glew.h"
 #include <string>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -57,7 +57,7 @@ void Mesh::setupMesh()
 
 	glBindVertexArray(0);
 }
-void Mesh::Draw(unsigned int program)
+void Mesh::Draw(unsigned int program) const
 {
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
@@ -73,7 +73,7 @@ void Mesh::Draw(unsigned int program)
 			number = std::to_string(specularNr++);
 
 		//App->program->setFloat(("material." + name + number).c_str(), (float)i, program);
-		glUniform1i(glGetUniformLocation(program, (name + number).c_str()), i);
+		glUniform1i(glGetUniformLocation(program, ("material." + name + number).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 	glUniform1i(glGetUniformLocation(program, "texture0"), 0);
