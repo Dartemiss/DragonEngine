@@ -45,11 +45,13 @@ update_status ModuleIMGUI::PreUpdate()
 update_status ModuleIMGUI::Update()
 {
 	//ImGui::ShowDemoWindow(&show_demo_window);
-	Texture *texinfo = &App->texture->textures_loaded[App->texture->indexTex];
-
+	if(App->texture->textures_loaded.size() > 0)
+	{
+		Texture *texinfo = &App->texture->textures_loaded[App->texture->indexTex];
+		guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window, texinfo);
+	}
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
-	guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window, texinfo);
 	guiCamera.Draw("Camera Settings", &showCameraGUI);
 
 	//Menu

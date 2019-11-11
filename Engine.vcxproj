@@ -162,6 +162,8 @@
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="uSTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -218,6 +220,8 @@
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="uSTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig" />

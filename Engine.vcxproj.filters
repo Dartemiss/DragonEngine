@@ -131,6 +131,8 @@
     <ClCompile Include="GUICamera.cpp" />
     <ClCompile Include="ModuleModelLoader.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="uSTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -357,6 +359,8 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="ModuleModelLoader.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="uSTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

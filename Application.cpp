@@ -8,6 +8,8 @@
 #include "ModuleTexture.h"
 #include "ModuleCamera.h"
 #include "ModuleModelLoader.h"
+#include "Timer.h"
+#include "uSTimer.h"
 
 
 using namespace std;
@@ -24,6 +26,7 @@ Application::Application()
 	modules.push_back(program = new ModuleProgram());
 	modules.push_back(modelLoader = new ModuleModelLoader());
 
+
 }
 
 Application::~Application()
@@ -36,10 +39,16 @@ Application::~Application()
 
 bool Application::Init()
 {
+	uSTimer initTimer;
+	initTimer.StartTimer();
+
 	bool ret = true;
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 		ret = (*it)->Init();
+
+	float time = initTimer.StopTimer() / 1000.0f;
+	LOG("Total Time of init is: %.5f seconds", time);
 
 	return ret;
 }

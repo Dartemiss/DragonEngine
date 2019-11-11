@@ -5,7 +5,8 @@
 #include <postprocess.h>
 #include <material.h>
 #include <mesh.h>
-
+#include "Timer.h"
+#include "uSTimer.h"
 
 ModuleModelLoader::ModuleModelLoader()
 {
@@ -19,11 +20,18 @@ ModuleModelLoader::~ModuleModelLoader()
 bool ModuleModelLoader::Init()
 {
 
+	uSTimer initTimer;
+	initTimer.StartTimer();
 
 	loadModel("../Models/baker_house/BakerHouse.fbx");
+
+	float time = initTimer.StopTimer();
+	LOG("Loader takes %.5f miliseconds", time);
+
 	//loadModel("../Models/dragon/blackdragon.fbx");
 	//loadModel("../Models/axe/machado.fbx");
 	//loadModel("../Models/nanosuit/scene.fbx");
+	//loadModel("../Models/penguin/PenguinBaseMesh.fbx");
 	
 	return true;
 }
