@@ -109,7 +109,16 @@ unsigned int ModuleProgram::createVertexShader(char * filename)
 	glCompileShader(shaderId);
 	delete data;
 
-	//glGetShaderiv(shaderId, GL_COMPILE_STATUS,NULL);
+	GLint success = GL_FALSE;
+	int logLength;
+	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+
+	if (!success) {
+		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
+		std::vector<GLchar> vertexShaderError((logLength > 1) ? logLength : 1);
+		glGetShaderInfoLog(shaderId, logLength, NULL, &vertexShaderError[0]);
+		LOG("ERROR: Shader coudn't be compiled : %s\n", &vertexShaderError[0]);
+	}
 	
 
 	return shaderId;
@@ -123,8 +132,17 @@ unsigned int ModuleProgram::createFragmentShader(char * filename)
 	glShaderSource(shaderId, 1, &data, NULL);
 	glCompileShader(shaderId);
 	delete data;
-	//glGetShaderiv(shaderId, GL_COMPILE_STATUS, NULL);
 
+	GLint success = GL_FALSE;
+	int logLength;
+	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+
+	if (!success) {
+		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
+		std::vector<GLchar> fragmentShaderError((logLength > 1) ? logLength : 1);
+		glGetShaderInfoLog(shaderId, logLength, NULL, &fragmentShaderError[0]);
+		LOG("ERROR: Shader coudn't be compiled : %s\n", &fragmentShaderError[0]);
+	}
 
 	return shaderId;
 }

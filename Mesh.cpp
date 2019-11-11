@@ -76,7 +76,6 @@ void Mesh::Draw(unsigned int program) const
 		glUniform1i(glGetUniformLocation(program, ("material." + name + number).c_str()), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
-	glUniform1i(glGetUniformLocation(program, "texture0"), 0);
 	// draw mesh
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

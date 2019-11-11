@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <vector>
 
 class ModuleProgram : public Module
 {

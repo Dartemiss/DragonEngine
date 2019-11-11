@@ -21,7 +21,9 @@ bool ModuleModelLoader::Init()
 
 
 	loadModel("../Models/baker_house/BakerHouse.fbx");
-
+	//loadModel("../Models/dragon/blackdragon.fbx");
+	//loadModel("../Models/axe/machado.fbx");
+	//loadModel("../Models/nanosuit/scene.fbx");
 	
 	return true;
 }
@@ -54,13 +56,13 @@ void ModuleModelLoader::Draw(unsigned int program)
 }
 
 
-void ModuleModelLoader::loadModel(std::string path)
+void ModuleModelLoader::loadModel(const std::string path)
 {
-	LOG("Importing model");
+	LOG("Importing model \n");
 	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		LOG("ERROR ASSIMP: %s", aiGetErrorString());
+		LOG("ERROR ASSIMP: %s \n", aiGetErrorString());
 		return;
 	}
 	directory = path.substr(0, path.find_last_of('/'));
@@ -69,6 +71,7 @@ void ModuleModelLoader::loadModel(std::string path)
 
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 {
+	LOG("For each mesh located on the current node, processing meshes.")
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
@@ -84,6 +87,7 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 
 Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 {
+	//Filling data
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
@@ -117,7 +121,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 
 		vertices.push_back(vertex);
 	}
-	// process indices
+	// process indices of each face
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -129,88 +133,24 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-			std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
-				aiTextureType_DIFFUSE, "texture_diffuse");
+			// 1. diffuse maps
+			std::vector<Texture> diffuseMaps = App->texture->loadMaterialTextures(material,
+				aiTextureType_DIFFUSE, "texture_diffuse", directory);
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			//std::vector<Texture> specularMaps = loadMaterialTextures(material,
-				//aiTextureType_SPECULAR, "texture_specular");
-			//textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+			// 2. specular maps
+			std::vector<Texture> specularMaps = App->texture->loadMaterialTextures(material,
+				aiTextureType_SPECULAR, "texture_specular", directory);
+			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+			// 3. normal maps
+			std::vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
+				aiTextureType_HEIGHT, "texture_normal",directory);
+			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+			// 4. height maps
+			std::vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
+				aiTextureType_AMBIENT, "texture_height",directory);
+			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 		}
 		
 	return Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture> ModuleModelLoader::loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName)
-{
-	std::vector<Texture> textures;
-	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-	{
-		aiString str;
-		aiTextureMapping mapping = aiTextureMapping_UV;
-		mat->GetTexture(type, i, &str, &mapping, 0);
-		bool skip = false;
-		for (unsigned int j = 0; j < App->texture->textures_loaded.size(); j++)
-		{
-			if (std::strcmp(App->texture->textures_loaded[j].path.data(), str.C_Str()) == 0)
-			{
-				textures.push_back(App->texture->textures_loaded[j]);
-				skip = true;
-				break;
-			}
-		}
-
-		if(!skip)
-		{
-			// if texture hasn't been loaded already, load it
-			Texture texture;
-			texture.id = TextureFromFile(str.C_Str(), directory, &texture);
-			texture.type = typeName;
-			texture.path = str.C_Str();
-			textures.push_back(texture);
-			App->texture->textures_loaded.push_back(texture); //adding new texture to texture loaded
-		}
-
-
-	}
-	return textures;
-}
-
-unsigned int ModuleModelLoader::TextureFromFile(const char * path, const std::string & directory, Texture* texture, bool gamma)
-{
-	std::string filename = std::string(path);
-	filename = directory + '/' + filename;
-
-	unsigned int textureID;
-	ILuint image = 0;
-	glGenTextures(1, &textureID);
-	char newfilename[100] = "../Models/baker_house/";
-	strcat_s(newfilename, path);
-
-	App->texture->LoadTexture(newfilename, texture, image);
-	
-	if (texture->data)
-	{
-		GLenum format = GL_RGB;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture->width, texture->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture->data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		iluDeleteImage(image);
-	}
-	else
-	{
-		LOG("Texture failed to load at path: &s ",path);
-		iluDeleteImage(image);
-	}
-
-
-	return textureID;
-}

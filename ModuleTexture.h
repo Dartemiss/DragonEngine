@@ -6,6 +6,9 @@
 #include <vector>
 #include <string>
 #include "ilu.h"
+#include <postprocess.h>
+#include <material.h>
+#include <Mesh.h>
 
 class Application;
 
@@ -15,7 +18,7 @@ struct Texture {
 	unsigned int height = 0;
 	unsigned int depth = 0;
 	unsigned int format = 0;
-	unsigned char* data = nullptr;
+	ILubyte* data = nullptr;
 	std::string type = "";
 	std::string path = "";  // we store the path of the texture to compare with other textures
 };
@@ -35,6 +38,9 @@ public:
 	bool CleanUp();
 
 	void LoadTexture(char* path, Texture* textureLoaded, ILuint &image);
+	void LoadTextureForModels(const char* path, const std::string directory, Texture &texture);
+	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
+		std::string typeName, const std::string directory);
 
 	//Vector of all the textures that have been loaded for avoiding reimporting
 	std::vector<Texture> textures_loaded;
