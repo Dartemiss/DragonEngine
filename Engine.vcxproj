@@ -82,6 +82,7 @@
     <ClInclude Include="GUIAbout.h" />
     <ClInclude Include="GUICamera.h" />
     <ClInclude Include="GUIConsole.h" />
+    <ClInclude Include="GUITime.h" />
     <ClInclude Include="GUIWindow.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="ModuleProgram.h" />
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleTexture.h" />
+    <ClInclude Include="ModuleTimeManager.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Timer.h" />
@@ -170,6 +172,7 @@
     <ClCompile Include="GUIAbout.cpp" />
     <ClCompile Include="GUICamera.cpp" />
     <ClCompile Include="GUIConsole.cpp" />
+    <ClCompile Include="GUITime.cpp" />
     <ClCompile Include="GUIWindow.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -219,6 +222,7 @@
     <ClCompile Include="ModuleProgram.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleTexture.cpp" />
+    <ClCompile Include="ModuleTimeManager.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="uSTimer.cpp" />

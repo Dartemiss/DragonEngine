@@ -53,6 +53,7 @@ update_status ModuleIMGUI::Update()
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
 	guiCamera.Draw("Camera Settings", &showCameraGUI);
+	timeManager.Draw("Timers", &showTimers);
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -77,8 +78,15 @@ update_status ModuleIMGUI::Update()
 			{
 				console.ToggleEnable();
 			}
+			if (ImGui::MenuItem("Time"))
+			{
+				timeManager.ToggleEnable();
+			}
+
 			ImGui::EndMenu();
 		}
+
+
 
 		if(ImGui::BeginMenu("View"))
 		{

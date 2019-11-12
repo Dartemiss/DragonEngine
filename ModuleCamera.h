@@ -14,11 +14,14 @@ public:
 	ModuleCamera();
 	~ModuleCamera();
 
+	//Core
 	bool Init();
 	update_status PreUpdate();
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
+
+	//Methods
 	void SetFOV(float FOV);
 	void SetAspectRatio();
 	void Rotate(float dx, float dy);

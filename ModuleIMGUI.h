@@ -7,6 +7,7 @@
 #include "GUIAbout.h"
 #include "GUIWindow.h"
 #include "GUICamera.h"
+#include "GUITime.h"
 
 
 class ModuleIMGUI : public Module
@@ -25,6 +26,7 @@ public:
 	GUIAbout about;
 	GUIWindow guiWindow;
 	GUICamera guiCamera;
+	GUITime timeManager;
 
 private:
 	bool show_demo_window;
@@ -32,5 +34,6 @@ private:
 	bool openAbout;
 	bool showWindowConfig;
 	bool showCameraGUI;
+	bool showTimers;
 };
 #endif // __ModuleIMGUI_H__

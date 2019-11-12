@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "ModuleTimeManager.h"
 #include "ModuleModelLoader.h"
 #include "SDL.h"
 #include "glew.h"
@@ -297,6 +298,9 @@ update_status ModuleRender::Update()
 update_status ModuleRender::PostUpdate()
 {
 	SDL_GL_SwapWindow(App->window->window);
+	++App->timemanager->frameCount;
+	App->timemanager->computeDeltaTimes();
+	
 	return UPDATE_CONTINUE;
 }
 
