@@ -61,9 +61,11 @@ bool ModuleTexture::CleanUp()
 	for(unsigned int i = 0; i < textures_loaded.size();++i)
 	{
 		glDeleteTextures(1, &textures_loaded[i].id);
-		delete &textures_loaded[i];
+		
 	}
 	
+	textures_loaded.clear();
+
 	return true;
 }
 
@@ -94,16 +96,20 @@ void ModuleTexture::LoadTexture(char * path, Texture* textureLoaded, ILuint &ima
 
 void ModuleTexture::LoadTextureForModels(const char * path, const std::string directory, Texture &texture)
 {
+	std::string filepath = directory;
+	filepath += "/";
+	filepath.append(path);
+
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	LOG("Loading texture %s .", path);
+	LOG("Loading texture %s . \n", filepath);
 
 	//Loading image
 	ILuint image;
 	ilGenImages(1, &image);
 	ilBindImage(image);
-	ilLoadImage(path);
+	ilLoadImage(filepath.c_str());
 	ILinfo ImageInfo;
 	iluGetImageInfo(&ImageInfo);
 	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)

@@ -26,15 +26,13 @@ public:
 
 	//Variables
 	float aspect = 1.0f;
-	unsigned int width = SCREEN_WIDTH;
-	unsigned int height = SCREEN_HEIGHT;
 	Frustum *frustum;
 	int wheelMovement;
 
 
 	float movementSpeed = 0.2f;
 	float rotationSpeed = 0.02f;
-
+	float zoomSpeed = 0.1f;
 
 };
 

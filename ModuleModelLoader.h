@@ -28,16 +28,21 @@ public:
 	bool CleanUp();
 
 	void Draw(unsigned int program);
+	void loadModel(const std::string path);
 
 private:
 
-	std::vector<Mesh> meshes;
+	std::vector<Mesh*> meshes;
 	std::string directory;
 	/*  Functions   */
-	void loadModel(const std::string path);
+	
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 	
+	std::string computeDirectory(const std::string path);
+
 	unsigned int TextureFromFile(const char *path, const std::string &directory, Texture* texture, bool gamma = false);
+	bool isModelLoaded = false;
+	void emptyScene();
 };
 #endif __ModuleModelLoader_h__

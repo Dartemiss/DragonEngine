@@ -11,27 +11,21 @@ void Timer::StartTimer()
 	
 }
 
-void Timer::Update()
+
+float Timer::ReadTimer() const
 {
 	if(isActivated)
 	{
-		float aux = (float)SDL_GetTicks();
-		deltaTime = aux - currentTime - initialTime;
-		currentTime += deltaTime;
+		return (float)SDL_GetTicks() - initialTime;
 	}
-}
-
-float Timer::ReadTimer()
-{
-	Update();
+	
 	return currentTime;
 }
 
 float Timer::StopTimer()
 {
-	Update();
 	isActivated = false;
-	initialTime = 0.0f;
+	currentTime = (float)SDL_GetTicks() - initialTime;
 
 	return currentTime;
 }

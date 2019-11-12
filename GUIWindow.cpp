@@ -3,6 +3,7 @@
 #include "ModuleTexture.h"
 #include "ModuleCamera.h"
 #include "ModuleRender.h"
+#include "ModuleWindow.h"
 #include "Application.h"
 #include "ilu.h"
 
@@ -23,9 +24,9 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 	{
 		assert(window != nullptr);
 		ImGui::Begin(title, p_opened);
-		if (ImGui::Checkbox("FullScreen", &fullscreen))
+		if (ImGui::Checkbox("FullScreen", &App->window->fullscreen))
 		{
-			if (fullscreen) 
+			if (App->window->fullscreen)
 			{
 				SDL_DisplayMode displayMode;
 				SDL_GetDesktopDisplayMode(0, &displayMode);
@@ -42,26 +43,21 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 			}
 		}
 		ImGui::SameLine();
-		ImGui::Checkbox("Resizable", &resizable);
+		ImGui::Checkbox("Resizable", &App->window->resizable);
 		
 		
 		ImGui::SliderFloat("Brightness", &actualBright, 0.000f, 1.000f, "%.3f");
-		ImGui::SliderInt("Width", &width, 1, 2500, "%d");
-		ImGui::SliderInt("Height", &heigth, 1, 2500, "%d");
+		ImGui::SliderInt("Width", &App->window->width, 1, 2500, "%d");
+		ImGui::SliderInt("Height", &App->window->height, 1, 2500, "%d");
 
-		if (resizable) 
-		{
-			
-			SDL_SetWindowSize(window, width, heigth);
-			App->camera->width = width;
-			App->camera->height = heigth;
+		if (App->window->resizable)
+		{	
+			SDL_SetWindowSize(window, App->window->width, App->window->height);
 			App->camera->SetAspectRatio();
 		}
 		else
 		{
-			SDL_GetWindowSize(window, &width, &heigth);
-			App->camera->width = width;
-			App->camera->height = heigth;
+			SDL_GetWindowSize(window, &App->window->width, &App->window->height);
 			App->camera->SetAspectRatio();
 		}
 			

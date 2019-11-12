@@ -7,8 +7,7 @@ public:
 	~uSTimer() = default;
 
 	void StartTimer();
-	void Update();
-	float ReadTimer();
+	float ReadTimer() const;
 	float StopTimer();
 	
 
@@ -18,6 +17,8 @@ private:
 	float currentTime;
 	float deltaTime;
 	float initialTime;
+
+	bool isActivated = false;
 
 };
 #endif __uSTimer_H__

@@ -21,15 +21,12 @@ public:
 	std::vector<float> ms_log;
 
 private:
-	bool fullscreen = FULLSCREEN;
-	bool resizable = true;
 	float currentTime;
 	float deltaTime;
 	float previousTime;
 	float timeCounter;
 	float actualBright = 1.000f;
-	int width = SCREEN_WIDTH;
-	int heigth = SCREEN_HEIGHT;
+
 
 };
 #endif __GUIWindow_H__

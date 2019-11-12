@@ -5,23 +5,23 @@ const static float frequency = (float)SDL_GetPerformanceFrequency();
 
 void uSTimer::StartTimer()
 {
+	isActivated = true;
 	initialTime = (float)SDL_GetPerformanceCounter();
 }
 
-void uSTimer::Update()
-{
-	float now = (float) SDL_GetPerformanceCounter();
-	currentTime = (float)(now - initialTime)*1000 / frequency;
-}
 
-float uSTimer::ReadTimer()
+float uSTimer::ReadTimer() const
 {
-	Update();
+	if(isActivated)
+	{
+		return (float)((float)SDL_GetPerformanceCounter() - initialTime) * 1000 / frequency;
+	}
 	return currentTime;
 }
 
 float uSTimer::StopTimer()
 {
-	Update();
+	isActivated = false;
+	currentTime = (float)((float)SDL_GetPerformanceCounter() - initialTime) * 1000 / frequency;
 	return currentTime;
 }

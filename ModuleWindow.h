@@ -12,7 +12,10 @@ class ModuleWindow : public Module
 public:
 
 	bool fullscreen = FULLSCREEN;
-
+	bool resizable = RESIZABLE;
+	int width = SCREEN_WIDTH;
+	int height = SCREEN_HEIGHT;
+	void Resize(unsigned int width, unsigned int height);
 	ModuleWindow();
 
 	// Destructor

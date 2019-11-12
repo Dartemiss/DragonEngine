@@ -3,6 +3,7 @@
 #include "ModuleCamera.h"
 #include "ModuleProgram.h"
 #include "ModuleRender.h"
+#include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "include/Geometry/Frustum.h"
 #include <math.h>
@@ -31,7 +32,7 @@ bool ModuleCamera::Init()
 	frustum->nearPlaneDistance = 0.1f;
 	frustum->farPlaneDistance = 100.0f;
 	frustum->verticalFov = (float)M_PI / 4.0f;
-	aspect = (float)width / height;
+	aspect = (float)App->window->width / App->window->height;
 	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 
 	frustum->Translate(float3(1.0f, 1.0f, 1.0f));
@@ -115,16 +116,21 @@ update_status ModuleCamera::Update()
 	{
 		Rotate(rotY, rotX);
 	}
+	//Zoom
+	wheelMovement = App->input->GetMouseWheel();
+	if (wheelMovement > 1)
+	{
+		//mov += frustum->front * zoomSpeed;
+	}
+	else if(wheelMovement < 1)
+	{
+		//mov -= frustum->front * zoomSpeed;
+	}
+
 
 	Move(mov);
 
-	//Zoom
-	wheelMovement = App->input->GetMouseWheel();
-	if(wheelMovement != 0)
-	{
-		//frustum->verticalFov = frustum->verticalFov - (float) wheelMovement;
-		//frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
-	}
+
 
 
 	//Generate viewing matrix for camera movement/rotation
@@ -153,7 +159,7 @@ void ModuleCamera::SetFOV(float FOV)
 
 void ModuleCamera::SetAspectRatio()
 {
-	aspect = ((float)width / height);
+	aspect = ((float)App->window->width / App->window->height);
 	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 	App->renderer->proj = frustum->ProjectionMatrix();
 }

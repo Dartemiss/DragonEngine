@@ -13,13 +13,11 @@ public:
 	~Timer() = default;
 
 	void StartTimer();
-	void Update();
-	float ReadTimer();
+	float ReadTimer() const;
 	float StopTimer();
 
 
 private:
-	float deltaTime;
 	float initialTime = 0.0f;
 	float currentTime;
 

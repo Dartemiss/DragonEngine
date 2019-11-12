@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleCamera.h"
 #include "glew.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
@@ -91,5 +92,12 @@ update_status ModuleWindow::Update()
 void ModuleWindow::setFullscreen(bool fullscrean)
 {
 
+}
+
+void ModuleWindow::Resize(unsigned int width, unsigned int height)
+{
+	this->width = width;
+	this->height = height;
+	App->camera->SetAspectRatio();
 }
 

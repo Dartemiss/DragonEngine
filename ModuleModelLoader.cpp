@@ -24,14 +24,21 @@ bool ModuleModelLoader::Init()
 	initTimer.StartTimer();
 
 	loadModel("../Models/baker_house/BakerHouse.fbx");
+	//loadModel("C:\\Users\\Riqui\\Documents\\GitHub\\MyEngine\\Models\\baker_house\\BakerHouse.fbx");
+
+	//loadModel("../Models/spongebob/spongebob.fbx");
 
 	float time = initTimer.StopTimer();
 	LOG("Loader takes %.5f miliseconds", time);
+
+
 
 	//loadModel("../Models/dragon/blackdragon.fbx");
 	//loadModel("../Models/axe/machado.fbx");
 	//loadModel("../Models/nanosuit/scene.fbx");
 	//loadModel("../Models/penguin/PenguinBaseMesh.fbx");
+
+	
 	
 	return true;
 }
@@ -53,6 +60,7 @@ update_status ModuleModelLoader::PostUpdate()
 
 bool ModuleModelLoader::CleanUp()
 {
+	emptyScene();
 	
 	return true;
 }
@@ -60,12 +68,15 @@ bool ModuleModelLoader::CleanUp()
 void ModuleModelLoader::Draw(unsigned int program)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
-		meshes[i].Draw(program);
+		meshes[i]->Draw(program);
 }
 
 
 void ModuleModelLoader::loadModel(const std::string path)
 {
+	if (isModelLoaded)
+		emptyScene();
+
 	LOG("Importing model \n");
 	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -73,8 +84,14 @@ void ModuleModelLoader::loadModel(const std::string path)
 		LOG("ERROR ASSIMP: %s \n", aiGetErrorString());
 		return;
 	}
-	directory = path.substr(0, path.find_last_of('/'));
+
+	directory = computeDirectory(path);
+
+	if (directory == "")
+		return;
 	processNode(scene->mRootNode, scene);
+	isModelLoaded = true;
+
 }
 
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
@@ -84,7 +101,7 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(processMesh(mesh, scene));
+		meshes.push_back(new Mesh(processMesh(mesh, scene)));
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -160,5 +177,41 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 		}
 		
 	return Mesh(vertices, indices, textures);
+}
+
+std::string ModuleModelLoader::computeDirectory(const std::string path)
+{
+	size_t simpleRightSlash = path.find_last_of('/');
+	if (std::string::npos != simpleRightSlash)
+	{
+		LOG("Directory with simpleRightSlashes.")
+		return path.substr(0, path.find_last_of('/'));
+	}
+	size_t doubleRightSlash = path.find_last_of('//');
+	if (std::string::npos != doubleRightSlash)
+	{
+		LOG("Directory with doubleRightSlashes.")
+		return path.substr(0, path.find_last_of('//'));
+	}
+
+	size_t doubleLeftSlash = path.find_last_of('\\');
+	if (std::string::npos != doubleLeftSlash)
+	{
+		LOG("Directory with doubleLeftSlashes.")
+		return path.substr(0, path.find_last_of('\\'));
+	}
+
+	LOG("ERROR: Invalid path.");
+	return "";
+}
+
+void ModuleModelLoader::emptyScene()
+{
+	for(auto mesh : meshes)
+	{
+		delete mesh;
+	}
+
+	meshes.clear();
 }
 

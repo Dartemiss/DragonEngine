@@ -8,6 +8,8 @@
 #include "glew.h"
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleModelLoader.h"
+#include <assert.h>
 
 #define MAX_KEYS 300
 
@@ -84,21 +86,10 @@ update_status ModuleInput::PreUpdate()
 			windowEvents[WE_QUIT] = true;
 			break;
 		
-		case (SDL_DROPFILE): {      // In case if dropped file
-			dropped_filedir = event.drop.file;
-			// Shows directory of dropped file
-			SDL_ShowSimpleMessageBox(
-				SDL_MESSAGEBOX_INFORMATION,
-				"File dropped on window",
-				dropped_filedir,
-				App->window->window
-			);
-			SDL_free(dropped_filedir);    // Free dropped_filedir memory
-			break;
-		}
-
-
 		case SDL_WINDOWEVENT:
+			if (event.window.event == SDL_WINDOWEVENT_RESIZED || event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				App->window->Resize(event.window.data1, event.window.data2);
+			
 			switch (event.window.event)
 			{
 				//case SDL_WINDOWEVENT_LEAVE:
@@ -135,6 +126,20 @@ update_status ModuleInput::PreUpdate()
 		case SDL_MOUSEWHEEL:
 			mouse_wheel = event.wheel.y;
 			break;
+
+		case (SDL_DROPFILE): {      // In case if dropped file
+			dropped_filedir = event.drop.file;
+			// Shows directory of dropped file
+			SDL_ShowSimpleMessageBox(
+				SDL_MESSAGEBOX_INFORMATION,
+				"File dropped on window",
+				dropped_filedir,
+				App->window->window
+			);
+			DropModelFile(dropped_filedir);
+			SDL_free(dropped_filedir);    // Free dropped_filedir memory
+			break;
+			}
 		}
 	}
 
@@ -181,6 +186,27 @@ const fPoint& ModuleInput::GetMousePosition() const
 const int ModuleInput::GetMouseWheel() const
 {
 	return mouse_wheel;
+}
+
+void ModuleInput::DropModelFile(char * dropped_filedir)
+{
+	LOG("Checking if extension of dropped file is correct.");
+	assert(dropped_filedir != NULL);
+	std::string fileExt(dropped_filedir);
+	std::string filedir(dropped_filedir);
+	std::size_t dotFound = fileExt.find_last_of(".");
+	fileExt.erase(0, dotFound + 1);
+	if(fileExt == "fbx")
+	{
+		LOG("File is .fbx: Loading model.");
+
+		App->modelLoader->loadModel(dropped_filedir);
+		return;
+	}
+
+	LOG("File is not an .fbx. File cannot be loaded.");
+	return;
+
 }
 
 const fPoint& ModuleInput::GetMouseMotion() const
