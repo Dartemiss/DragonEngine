@@ -299,7 +299,8 @@ update_status ModuleRender::PostUpdate()
 {
 	SDL_GL_SwapWindow(App->window->window);
 	++App->timemanager->frameCount;
-	App->timemanager->computeDeltaTimes();
+	App->timemanager->FinalDeltaTimes();
+	App->timemanager->InitDeltaTimes();
 	
 	return UPDATE_CONTINUE;
 }

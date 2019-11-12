@@ -4,6 +4,7 @@
 
 ModuleTimeManager::ModuleTimeManager()
 {
+	realTimer = new Timer();
 }
 
 
@@ -13,7 +14,7 @@ ModuleTimeManager::~ModuleTimeManager()
 
 bool ModuleTimeManager::Init()
 {
-	myTimer.StartTimer();
+	realTimer->StartTimer();
 
 	return true;
 }
@@ -25,8 +26,8 @@ update_status ModuleTimeManager::PreUpdate()
 
 update_status ModuleTimeManager::Update()
 {
-	gameTime = myTimer.ReadTimer() * timeScale;
-	realGameTime = myTimer.ReadTimer();
+	gameTime += (realTimer->ReadTimer() - realGameTime) * timeScale;
+	realGameTime = realTimer->ReadTimer();
 
 	//LOG("Time: %.3f ms", realGameTime);
 
@@ -43,13 +44,27 @@ bool ModuleTimeManager::CleanUp()
 	return true;
 }
 
-void ModuleTimeManager::computeDeltaTimes()
+void ModuleTimeManager::InitDeltaTimes()
 {
-	float delta = myTimer.ReadTimer() * timeScale;
-	deltaTime = delta - deltaTime;
+	initialGameFrameTime = gameTime + (realTimer->ReadTimer() - realGameTime) * timeScale;
+	initialRealFrameTime = realTimer->ReadTimer();
+}
 
-	float realDelta = myTimer.ReadTimer();
-	realDeltaTime = realDelta - realDeltaTime;
+void ModuleTimeManager::FinalDeltaTimes()
+{
+	deltaTime = (gameTime + (realTimer->ReadTimer() - realGameTime) * timeScale) - initialGameFrameTime;
+	realDeltaTime = realTimer->ReadTimer()- initialRealFrameTime;
+
+	counterTimeFPS += realDeltaTime;
+	++counterFPS;
+	if(counterTimeFPS > 1000.0f)
+	{
+		FPS = counterFPS;
+		counterFPS = 0;
+		counterTimeFPS = 0.0f;
+	}
+
+	
 }
 
 float ModuleTimeManager::GetGameTime()

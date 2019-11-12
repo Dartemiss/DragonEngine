@@ -22,5 +22,12 @@ void GUITime::Draw(const char * title, bool * p_opened)
 
 		ImGui::Text("Game Time Since Start: %.3f", App->timemanager->GetGameTime()/1000.0f); ImGui::SameLine();
 		ImGui::Text("Game Time dt: %.3f", App->timemanager->GetDeltaTime() / 1000.0f);
+
+		ImGui::SliderFloat("Game Clock Scale", &App->timemanager->timeScale, 0.1f, 2.0f);
+		ImGui::Text("FPS: %d", App->timemanager->FPS); ImGui::SameLine();
+		ImGui::Text("Frame Count: %d", App->timemanager->frameCount);
+
+		ImGui::End();
+
 	}
 }

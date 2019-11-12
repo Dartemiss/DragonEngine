@@ -21,26 +21,32 @@ public:
 	bool CleanUp();
 
 	//Methods
-	void computeDeltaTimes();
+	void InitDeltaTimes();
+	void FinalDeltaTimes();
 	float GetGameTime();
 	float GetRealGameTime();
 	float GetDeltaTime();
 	float GetRealDeltaTime();
 
 	//Variables
-	unsigned int frameCount = 0;
+	long long frameCount = 0;
+	int FPS = 60;
 	float timeScale = 1.0f;
 
 private:
 
-	Timer myTimer;
-
+	Timer* realTimer;
 	
-	float gameTime;
-	float deltaTime;
-	float realGameTime;
-	float realDeltaTime;
+	float gameTime = 0.0f;
+	float deltaTime = 0.0f;
+	float realGameTime = 0.0f;
+	float realDeltaTime = 0.0f;
 
+	float initialGameFrameTime = 0.0f;
+	float initialRealFrameTime = 0.0f;
+
+	unsigned int counterFPS = 0;
+	float counterTimeFPS = 0.0f;
 };
 
 #endif __ModuleTimeManager_H__
