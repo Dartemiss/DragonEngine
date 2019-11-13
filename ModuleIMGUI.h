@@ -29,11 +29,11 @@ public:
 	GUITime timeManager;
 
 private:
-	bool show_demo_window;
-	bool scrollDownConsole;
-	bool openAbout;
-	bool showWindowConfig;
-	bool showCameraGUI;
-	bool showTimers;
+	bool show_demo_window = false;
+	bool scrollDownConsole = false;
+	bool openAbout = false;
+	bool showWindowConfig = false;
+	bool showCameraGUI = false;
+	bool showTimers = false;
 };
 #endif // __ModuleIMGUI_H__

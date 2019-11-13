@@ -67,7 +67,7 @@ update_status ModuleIMGUI::Update()
 			
 			if(ImGui::MenuItem("About"))
 			{
-				about.ToggleEnable();
+				openAbout = !openAbout;
 			}
 			ImGui::EndMenu();
 		}
@@ -76,11 +76,11 @@ update_status ModuleIMGUI::Update()
 		{
 			if(ImGui::MenuItem("Console"))
 			{
-				console.ToggleEnable();
+				scrollDownConsole = !scrollDownConsole;
 			}
 			if (ImGui::MenuItem("Time"))
 			{
-				timeManager.ToggleEnable();
+				showTimers = !showTimers;
 			}
 
 			ImGui::EndMenu();
@@ -92,7 +92,7 @@ update_status ModuleIMGUI::Update()
 		{
 			if(ImGui::MenuItem("Window"))
 			{
-				guiWindow.ToggleEnable();
+				showWindowConfig = !showWindowConfig;
 			}
 
 			if(ImGui::BeginMenu("Textures"))
@@ -117,7 +117,7 @@ update_status ModuleIMGUI::Update()
 
 			if(ImGui::MenuItem("Camera"))
 			{
-				guiCamera.ToggleEnable();
+				showCameraGUI = !showCameraGUI;
 			}
 
 			ImGui::EndMenu();
@@ -126,9 +126,11 @@ update_status ModuleIMGUI::Update()
 	ImGui::EndMainMenuBar();
 
 
-
-
-
+	guiCamera.SetEnable(showCameraGUI);
+	guiWindow.SetEnable(showWindowConfig);
+	timeManager.SetEnable(showTimers);
+	console.SetEnable(scrollDownConsole);
+	about.SetEnable(openAbout);
 	
 	return UPDATE_CONTINUE;
 }
