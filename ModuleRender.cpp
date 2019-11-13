@@ -262,6 +262,55 @@ update_status ModuleRender::Update()
 	glEnd();
 	glLineWidth(1.0f);
 
+	
+	if(App->modelLoader->isModelLoaded && showBoundingBox)
+	{	
+		//Bounding Box
+		glLineWidth(1.0f);
+		float d = 200.0f;
+		glBegin(GL_LINES);
+		glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+		//0->1
+		for(int i = 0; i < 2;++i)
+		{
+			//0->1 4->5
+			glVertex3f(App->modelLoader->modelBox[0 + (i*4)].x, App->modelLoader->modelBox[0 + (i * 4)].y, App->modelLoader->modelBox[0 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[1 + (i * 4)].x, App->modelLoader->modelBox[1 + (i * 4)].y, App->modelLoader->modelBox[1 + (i * 4)].z);
+
+			//1->2 5->6
+			glVertex3f(App->modelLoader->modelBox[1 + (i * 4)].x, App->modelLoader->modelBox[1 + (i * 4)].y, App->modelLoader->modelBox[1 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[2 + (i * 4)].x, App->modelLoader->modelBox[2 + (i * 4)].y, App->modelLoader->modelBox[2 + (i * 4)].z);
+
+			//2->3 6->7
+			glVertex3f(App->modelLoader->modelBox[2 + (i * 4)].x, App->modelLoader->modelBox[2 + (i * 4)].y, App->modelLoader->modelBox[2 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[3 + (i * 4)].x, App->modelLoader->modelBox[3 + (i * 4)].y, App->modelLoader->modelBox[3 + (i * 4)].z);
+
+			//3->0 7->4
+			glVertex3f(App->modelLoader->modelBox[0 + (i * 4)].x, App->modelLoader->modelBox[0 + (i * 4)].y, App->modelLoader->modelBox[0 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[3 + (i * 4)].x, App->modelLoader->modelBox[3 + (i * 4)].y, App->modelLoader->modelBox[3 + (i * 4)].z);
+		}
+
+		//Y lines
+		//0->4
+		glVertex3f(App->modelLoader->modelBox[0].x, App->modelLoader->modelBox[0].y, App->modelLoader->modelBox[0].z);
+		glVertex3f(App->modelLoader->modelBox[4].x, App->modelLoader->modelBox[4].y, App->modelLoader->modelBox[4].z);
+
+		//1->5
+		glVertex3f(App->modelLoader->modelBox[1].x, App->modelLoader->modelBox[1].y, App->modelLoader->modelBox[1].z);
+		glVertex3f(App->modelLoader->modelBox[5].x, App->modelLoader->modelBox[5].y, App->modelLoader->modelBox[5].z);
+
+		//2->6
+		glVertex3f(App->modelLoader->modelBox[2].x, App->modelLoader->modelBox[2].y, App->modelLoader->modelBox[2].z);
+		glVertex3f(App->modelLoader->modelBox[6].x, App->modelLoader->modelBox[6].y, App->modelLoader->modelBox[6].z);
+
+		//3->7
+		glVertex3f(App->modelLoader->modelBox[3].x, App->modelLoader->modelBox[3].y, App->modelLoader->modelBox[3].z);
+		glVertex3f(App->modelLoader->modelBox[7].x, App->modelLoader->modelBox[7].y, App->modelLoader->modelBox[7].z);
+
+		glEnd();
+	}
+	
+
 	glUseProgram(0);
 
 

@@ -118,10 +118,10 @@ update_status ModuleInput::PreUpdate()
 			break;
 
 		case SDL_MOUSEMOTION:
-			mouse_motion.x = event.motion.xrel;
-			mouse_motion.y = event.motion.yrel;
-			mouse.x = event.motion.x / SCREEN_WIDTH;
-			mouse.y = event.motion.y / SCREEN_HEIGHT;
+			mouse_motion.x = (float)event.motion.xrel;
+			mouse_motion.y = (float)event.motion.yrel;
+			mouse.x = (float)event.motion.x / SCREEN_WIDTH;
+			mouse.y = (float)event.motion.y / SCREEN_HEIGHT;
 			
 		case SDL_MOUSEWHEEL:
 			mouse_wheel = event.wheel.y;

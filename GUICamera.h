@@ -16,7 +16,5 @@ public:
 	void Draw(const char* title, bool* p_opened);
 
 
-	float FOV = 1.000f;
-
 };
 #endif __GUICamera_H__

@@ -149,11 +149,9 @@ bool ModuleCamera::CleanUp()
 	return true;
 }
 
-void ModuleCamera::SetFOV(float FOV)
+void ModuleCamera::SetFOV()
 {
-	float r = frustum->AspectRatio();
-	frustum->verticalFov = FOV;
-	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *r);
+	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 	App->renderer->proj = frustum->ProjectionMatrix();
 }
 
@@ -191,4 +189,10 @@ void ModuleCamera::Move(float3 direction)
 	}
 
 	frustum->Translate(direction);
+}
+
+void ModuleCamera::TranslateCameraToPoint(float3 & newPos)
+{
+	frustum->pos = newPos;
+	App->renderer->view = frustum->ViewMatrix();
 }

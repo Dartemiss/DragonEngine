@@ -97,7 +97,6 @@ void ModuleTexture::LoadTexture(char * path, Texture* textureLoaded, ILuint &ima
 void ModuleTexture::LoadTextureForModels(const char * path, const std::string directory, Texture &texture)
 {
 	std::string filepath = directory;
-	filepath += "/";
 	filepath.append(path);
 
 	unsigned int textureID;

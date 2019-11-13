@@ -22,10 +22,11 @@ public:
 	bool CleanUp();
 
 	//Methods
-	void SetFOV(float FOV);
+	void SetFOV();
 	void SetAspectRatio();
 	void Rotate(float dx, float dy);
 	void Move(float3 direction);
+	void TranslateCameraToPoint(float3 &newPos);
 
 	//Variables
 	float aspect = 1.0f;

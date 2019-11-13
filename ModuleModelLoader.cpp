@@ -1,6 +1,7 @@
 #include "ModuleModelLoader.h"
 #include "Application.h"
 #include"ModuleTexture.h"
+#include "ModuleCamera.h"
 #include <cimport.h>
 #include <postprocess.h>
 #include <material.h>
@@ -90,6 +91,7 @@ void ModuleModelLoader::loadModel(const std::string path)
 	if (directory == "")
 		return;
 	processNode(scene->mRootNode, scene);
+	computeModelBoundingBox();
 	isModelLoaded = true;
 
 }
@@ -185,20 +187,20 @@ std::string ModuleModelLoader::computeDirectory(const std::string path)
 	if (std::string::npos != simpleRightSlash)
 	{
 		LOG("Directory with simpleRightSlashes.")
-		return path.substr(0, path.find_last_of('/'));
+		return path.substr(0, path.find_last_of('/') + 1);
 	}
 	size_t doubleRightSlash = path.find_last_of('//');
 	if (std::string::npos != doubleRightSlash)
 	{
 		LOG("Directory with doubleRightSlashes.")
-		return path.substr(0, path.find_last_of('//'));
+		return path.substr(0, path.find_last_of('//') + 1);
 	}
 
 	size_t doubleLeftSlash = path.find_last_of('\\');
 	if (std::string::npos != doubleLeftSlash)
 	{
 		LOG("Directory with doubleLeftSlashes.")
-		return path.substr(0, path.find_last_of('\\'));
+		return path.substr(0, path.find_last_of('\\') + 1);
 	}
 
 	LOG("ERROR: Invalid path.");
@@ -213,5 +215,64 @@ void ModuleModelLoader::emptyScene()
 	}
 
 	meshes.clear();
+	modelBox.clear();
+}
+
+void ModuleModelLoader::computeModelBoundingBox()
+{
+	LOG("Computing Bounding Box from min and max values of the vertices of each mesh.");
+
+	//Min values
+	float minX = 10000000.0f;
+	float minY = 10000000.0f;
+	float minZ = 10000000.0f;
+
+	//Max values
+	float maxX = -1000000.0f;
+	float maxY = -1000000.0f;
+	float maxZ = -1000000.0f;
+
+	for(auto mesh: meshes)
+	{
+		for(auto vertex : mesh->vertices)
+		{
+			//Min vertex
+			if (vertex.Position.x < minX)
+				minX = vertex.Position.x;
+
+			if (vertex.Position.y < minY)
+				minY = vertex.Position.y;
+
+			if (vertex.Position.z < minZ)
+				minZ = vertex.Position.z;
+
+			//Max vertex
+			if (vertex.Position.x > maxX)
+				maxX = vertex.Position.x;
+
+			if (vertex.Position.y > maxY)
+				maxY = vertex.Position.y;
+
+			if (vertex.Position.z > maxZ)
+				maxZ = vertex.Position.z;
+		}
+	}
+	//Representation of a Cube, have exactly 8 vertex
+	//Order of representation:
+	//0-> (-x,-y,-z), 1-> (x,-y,-z), 2-> (x,-y,z), 3-> (-x,-y,z)
+	//4-> (-x,y,-z), 5-> (x,y,-z), 6-> (x,y,z), 7-> (-x,y,z)
+
+	modelBox.push_back(float3(minX, minY, minZ));
+	modelBox.push_back(float3(maxX, minY, minZ));
+	modelBox.push_back(float3(maxX,minY,maxZ));
+	modelBox.push_back(float3(minX, minY, maxZ));
+	modelBox.push_back(float3(minX, maxY, minZ));
+	modelBox.push_back(float3(maxX, maxY, minZ));
+	modelBox.push_back(float3(maxX, maxY, maxZ));
+	modelBox.push_back(float3(minX, maxY, maxZ));
+
+
+	correctCameraPositionForModel = float3((modelBox[1].x + modelBox[0].x)/2, (modelBox[4].y + modelBox[0].y)/2, 2*modelBox[3].z);
+	App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
 }
 

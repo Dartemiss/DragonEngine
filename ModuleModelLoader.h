@@ -15,6 +15,8 @@
 #include <ilut.h>
 #include <material.h>
 
+
+
 class ModuleModelLoader : public Module
 {
 public:
@@ -30,6 +32,15 @@ public:
 	void Draw(unsigned int program);
 	void loadModel(const std::string path);
 
+
+	//Variables
+	//Representation of a Cube, have exactly 8 vertex
+	//Order of representation:
+	//0-> (-x,-y,-z), 1-> (x,-y,-z), 2-> (x,-y,z), 3-> (-x,-y,z)
+	//4-> (-x,y,-z), 5-> (x,y,-z), 6-> (x,y,z), 7-> (-x,y,z)
+	std::vector<float3> modelBox;
+	bool isModelLoaded = false;
+
 private:
 
 	std::vector<Mesh*> meshes;
@@ -40,9 +51,13 @@ private:
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 	
 	std::string computeDirectory(const std::string path);
-
-	unsigned int TextureFromFile(const char *path, const std::string &directory, Texture* texture, bool gamma = false);
-	bool isModelLoaded = false;
 	void emptyScene();
+
+	float3 correctCameraPositionForModel = float3(0.0f,0.0f,0.0f);
+
+	void computeModelBoundingBox();
+
+
+
 };
 #endif __ModuleModelLoader_h__

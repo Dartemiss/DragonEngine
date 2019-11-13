@@ -1,6 +1,6 @@
 #include "GUIAbout.h"
 
-#define ENGINETITLE "Z Engine"
+#define ENGINETITLE "Dragon Engine"
 #define AUTHOR "Enrique Alexandre Gonzalez Sequeira"
 
 GUIAbout::GUIAbout()

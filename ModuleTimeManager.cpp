@@ -64,7 +64,6 @@ void ModuleTimeManager::FinalDeltaTimes()
 		counterTimeFPS = 0.0f;
 	}
 
-	
 }
 
 float ModuleTimeManager::GetGameTime()

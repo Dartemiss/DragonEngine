@@ -23,7 +23,6 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 	void WindowResized(unsigned width, unsigned height);
-	void DrawTriangle();
 	void DrawRectangle();
 
 	float aspect = 1.0f;
@@ -35,6 +34,8 @@ public:
 	unsigned int progLenna;
 	unsigned int progGrid;
 	unsigned int progModel;
+
+	bool showBoundingBox = true;
 
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
@@ -49,6 +50,8 @@ private:
 
 	unsigned int vbo;
 	unsigned int index;
+
+	
 
 
 
