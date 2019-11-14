@@ -6,6 +6,7 @@
 #include "GUI.h"
 #include <vector>
 #include "ModuleTexture.h"
+#include "Timer.h"
 #include "ilu.h"
 
 class Application;
@@ -26,6 +27,8 @@ private:
 	float previousTime;
 	float timeCounter;
 	float actualBright = 1.000f;
+
+	Timer fpsTimer;
 
 
 };

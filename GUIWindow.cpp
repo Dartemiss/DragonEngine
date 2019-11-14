@@ -4,6 +4,7 @@
 #include "ModuleCamera.h"
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
+#include "ModuleTimeManager.h"
 #include "Application.h"
 #include "ilu.h"
 
@@ -11,6 +12,7 @@
 GUIWindow::GUIWindow()
 {
 	SetEnable(false);
+	fpsTimer.StartTimer();
 }
 
 
@@ -32,12 +34,14 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 				SDL_GetDesktopDisplayMode(0, &displayMode);
 				SDL_SetWindowSize(window, displayMode.w, displayMode.h);
 				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+				App->camera->SetAspectRatio();
 				
 			}
 			else
 			{
 				SDL_SetWindowFullscreen(window, 0);
 				SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_WIDTH);
+				App->camera->SetAspectRatio();
 				
 
 			}
@@ -67,7 +71,7 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 
 		if(ImGui::CollapsingHeader("Framerate"))
 		{
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / App->timemanager->FPS, App->timemanager->FPS);
 			char title[25];
 			if (fps_log.size() > 0)
 			{
@@ -81,11 +85,12 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 				ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
 			}
 
-			if (timeCounter > 1000)
+			if (fpsTimer.ReadTimer() > 1000)
 			{
-				timeCounter = 0.0f;
-				fps_log.push_back(ImGui::GetIO().Framerate);
-				ms_log.push_back(1000.0f / ImGui::GetIO().Framerate);
+				fpsTimer.StopTimer();
+				fps_log.push_back(App->timemanager->FPS);
+				ms_log.push_back(1000.0f / App->timemanager->FPS);
+				fpsTimer.StartTimer();
 			}
 			previousTime = currentTime;
 			currentTime = (float)SDL_GetTicks();
