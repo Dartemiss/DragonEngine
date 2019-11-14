@@ -21,12 +21,26 @@ bool ModuleTimeManager::Init()
 
 update_status ModuleTimeManager::PreUpdate()
 {
+	if(waitingToPause)
+	{
+		if(frameCount >= framesToPause)
+		{
+			PauseGame();
+			waitingToPause = false;
+			framesToPause = 0;
+		}
+	}
+
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleTimeManager::Update()
 {
-	gameTime += (realTimer->ReadTimer() - realGameTime) * timeScale;
+	if(!isPaused)
+	{
+		gameTime += (realTimer->ReadTimer() - realGameTime) * timeScale;
+	}
+	
 	realGameTime = realTimer->ReadTimer();
 
 	//LOG("Time: %.3f ms", realGameTime);
@@ -52,7 +66,10 @@ void ModuleTimeManager::InitDeltaTimes()
 
 void ModuleTimeManager::FinalDeltaTimes()
 {
-	deltaTime = (gameTime + (realTimer->ReadTimer() - realGameTime) * timeScale) - initialGameFrameTime;
+	if(!isPaused)
+	{
+		deltaTime = (gameTime + (realTimer->ReadTimer() - realGameTime) * timeScale) - initialGameFrameTime;
+	}
 	realDeltaTime = realTimer->ReadTimer()- initialRealFrameTime;
 
 	counterTimeFPS += realDeltaTime;
@@ -84,4 +101,29 @@ float ModuleTimeManager::GetDeltaTime()
 float ModuleTimeManager::GetRealDeltaTime()
 {
 	return realDeltaTime;
+}
+
+void ModuleTimeManager::PauseGame()
+{
+	isPaused = true;
+}
+
+void ModuleTimeManager::UnPauseGame()
+{
+	isPaused = false;
+}
+
+void ModuleTimeManager::ExecuteNextFrames(int numberFrames)
+{
+	if(isPaused)
+	{
+		waitingToPause = true;
+		UnPauseGame();
+		framesToPause = frameCount + numberFrames;
+		return;
+	}
+
+	LOG("Cannot execute next frames if game is not paused.");
+	return;
+
 }

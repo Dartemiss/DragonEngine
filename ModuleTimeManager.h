@@ -27,11 +27,16 @@ public:
 	float GetRealGameTime();
 	float GetDeltaTime();
 	float GetRealDeltaTime();
+	void PauseGame();
+	void UnPauseGame();
+	void ExecuteNextFrames(int numberFrames);
 
 	//Variables
 	long long frameCount = 0;
 	int FPS = 60;
 	float timeScale = 1.0f;
+	bool isPaused = false;
+	bool waitingToPause = false;
 
 private:
 
@@ -44,6 +49,10 @@ private:
 
 	float initialGameFrameTime = 0.0f;
 	float initialRealFrameTime = 0.0f;
+
+	float timePaused = 0.0f;
+
+	int framesToPause = 0;
 
 	unsigned int counterFPS = 0;
 	float counterTimeFPS = 0.0f;
