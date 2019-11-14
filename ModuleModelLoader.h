@@ -40,6 +40,8 @@ public:
 	//4-> (-x,y,-z), 5-> (x,y,-z), 6-> (x,y,z), 7-> (-x,y,z)
 	std::vector<float3> modelBox;
 	bool isModelLoaded = false;
+	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
+	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
 
 private:
 
@@ -52,8 +54,6 @@ private:
 	
 	std::string computeDirectory(const std::string path);
 	void emptyScene();
-
-	float3 correctCameraPositionForModel = float3(0.0f,0.0f,0.0f);
 
 	void computeModelBoundingBox();
 

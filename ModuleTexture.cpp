@@ -103,7 +103,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string di
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	LOG("Loading texture %s . \n", filepath);
-
+	LOG("Creating image");
 	//Loading image
 	ILuint image;
 	ilGenImages(1, &image);
@@ -113,6 +113,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string di
 	iluGetImageInfo(&ImageInfo);
 	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
 	{
+		LOG("Flipping Image Origin");
 		iluFlipImage();
 	}
 
@@ -142,12 +143,10 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string di
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	//Delete image
+	LOG("Delete image");
 	iluDeleteImage(image);
 
-	//Fill shader render with texture name
-	//GLuint textureOutput = glGetUniformLocation(App->renderer->progModel,
-		//"myTexture");
-	//glUniform1i(textureOutput, textureID);
+
 
 	
 	texture.id = textureID;

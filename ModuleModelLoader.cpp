@@ -90,6 +90,7 @@ void ModuleModelLoader::loadModel(const std::string path)
 
 	if (directory == "")
 		return;
+	LOG("For each mesh located on the current node, processing meshes.")
 	processNode(scene->mRootNode, scene);
 	computeModelBoundingBox();
 	isModelLoaded = true;
@@ -98,7 +99,6 @@ void ModuleModelLoader::loadModel(const std::string path)
 
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 {
-	LOG("For each mesh located on the current node, processing meshes.")
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
@@ -220,7 +220,6 @@ void ModuleModelLoader::emptyScene()
 
 void ModuleModelLoader::computeModelBoundingBox()
 {
-	LOG("Computing Bounding Box from min and max values of the vertices of each mesh.");
 
 	//Min values
 	float minX = 10000000.0f;
@@ -272,7 +271,25 @@ void ModuleModelLoader::computeModelBoundingBox()
 	modelBox.push_back(float3(minX, maxY, maxZ));
 
 
-	correctCameraPositionForModel = float3((modelBox[1].x + modelBox[0].x)/2, (modelBox[4].y + modelBox[0].y)/2, 2*modelBox[3].z);
+	correctCameraPositionForModel = float3((maxX + minX)/2, (maxY + minY)/2, -2 *(maxZ - minZ));
+	LOG("Compute the camera position depending of model size: (%.3f,%.3f,%.3f)", correctCameraPositionForModel.x, correctCameraPositionForModel.y, correctCameraPositionForModel.z);
+
+	modelCenter = correctCameraPositionForModel;
+	modelCenter.z = (maxZ - minZ) / 2;
+	LOG("Computing models center: (%.3f,%.3f,%.3f) ", modelCenter.x, modelCenter.y, modelCenter.z);
+
 	App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
+
+	float dist = 3 * (maxX - minX);
+	if(App->camera->frustum->farPlaneDistance < dist)
+	{
+		App->camera->frustum->farPlaneDistance = dist;
+	}
+	else
+	{
+		App->camera->frustum->farPlaneDistance = 100.0f;
+	}
+		
+
 }
 

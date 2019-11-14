@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
+#include "ModuleModelLoader.h"
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
@@ -130,7 +131,23 @@ update_status ModuleCamera::Update()
 
 	Move(mov);
 
+	if(App->input->GetKey(SDL_SCANCODE_F))
+	{
+		TranslateCameraToPoint(App->modelLoader->correctCameraPositionForModel);
+	}
 
+	if(App->input->GetKey(SDL_SCANCODE_L))
+	{
+		LookAt(App->modelLoader->modelCenter);
+	}
+
+	if(App->input->GetKey(SDL_SCANCODE_LALT) && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	{
+		float dx = App->input->GetMouseMotion().x;
+		float dy = App->input->GetMouseMotion().y;
+
+		Orbit(-dx * rotationSpeed, -dy * rotationSpeed);
+	}
 
 
 	//Generate viewing matrix for camera movement/rotation
@@ -164,21 +181,21 @@ void ModuleCamera::SetAspectRatio()
 
 void ModuleCamera::Rotate(float dx, float dy)
 {
+
 	if(dx != 0.0f)
 	{
-		math::float3x3 rotationY = math::float3x3::RotateY(dx);
+		float3x3 rotationY = float3x3::RotateY(dx);
 		frustum->front = rotationY.Transform(frustum->front).Normalized();
 		frustum->up = rotationY.Transform(frustum->up).Normalized();
 	}
 
 	if(dy != 0.0f)
 	{
-		math::float3x3 rotationX = math::float3x3::RotateAxisAngle(frustum->WorldRight(),dy);
+		float3x3 rotationX = float3x3::RotateAxisAngle(frustum->WorldRight(),dy);
 		frustum->up = rotationX.Transform(frustum->up).Normalized();
 		frustum->front = rotationX.Transform(frustum->front).Normalized();
 	}
 
-	
 }
 
 void ModuleCamera::Move(float3 direction)
@@ -191,8 +208,52 @@ void ModuleCamera::Move(float3 direction)
 	frustum->Translate(direction);
 }
 
+void ModuleCamera::Orbit(float dx, float dy)
+{
+	float3 center = App->modelLoader->modelCenter;
+
+	if(dx != 0.0f)
+	{
+		float3x3 rot = float3x3::RotateY(dx);
+		frustum->pos = rot.Transform(frustum->pos - center) + center;
+	}
+
+	if (dy != 0.0f)
+	{
+		float3x3 rot = float3x3::RotateAxisAngle(frustum->WorldRight(), dy);
+		frustum->pos = rot.Transform(frustum->pos - center) + center;
+	}
+
+	LookAt(center);
+
+}
+
 void ModuleCamera::TranslateCameraToPoint(float3 & newPos)
 {
 	frustum->pos = newPos;
+	frustum->front = -float3::unitZ;
+	frustum->up = float3::unitY;
+
+	LookAt(App->modelLoader->modelCenter);
+
 	App->renderer->view = frustum->ViewMatrix();
+
+}
+
+void ModuleCamera::SetNearPlaneDistance(float nearDist)
+{
+	frustum->nearPlaneDistance = nearDist;
+}
+
+void ModuleCamera::SetFarPlaneDistance(float farDist)
+{
+	frustum->farPlaneDistance = farDist;
+}
+
+void ModuleCamera::LookAt(float3 target)
+{
+	float3 dir = (target - frustum->pos).Normalized();
+	float3x3 rot = float3x3::LookAt(frustum->front, dir, frustum->up, float3::unitY);
+	frustum->front = rot.Transform(frustum->front).Normalized();
+	frustum->up = rot.Transform(frustum->up).Normalized();
 }

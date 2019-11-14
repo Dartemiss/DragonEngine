@@ -11,6 +11,7 @@
 
 
 #define DOCUMENTATION "https://github.com/ocornut/imgui/wiki"
+#define REPOSITORY "https://github.com/Dartemiss/DragonEngine"
 
 
 ModuleIMGUI::ModuleIMGUI()
@@ -62,6 +63,9 @@ update_status ModuleIMGUI::Update()
 	
 		if(ImGui::BeginMenu("Help"))
 		{
+			if (ImGui::MenuItem("Repository"))
+				ShellExecuteA(NULL, "open", REPOSITORY, NULL, NULL, SW_SHOWNORMAL);
+
 			if (ImGui::MenuItem("Documentation"))
 				ShellExecuteA(NULL, "open", DOCUMENTATION, NULL, NULL, SW_SHOWNORMAL);
 			
