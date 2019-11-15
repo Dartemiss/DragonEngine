@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __ModuleInput_H__
+#define __ModuleInput_H__
+
 #include "Module.h"
 #include "Globals.h"
 #include "Point.h"
@@ -69,3 +71,4 @@ private:
 	void DropModelFile(char* dropped_filedir);
 
 };
+#endif __ModuleInput_H__

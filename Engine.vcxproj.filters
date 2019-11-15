@@ -136,6 +136,9 @@
     <ClCompile Include="ModuleTimeManager.cpp" />
     <ClCompile Include="GUITime.cpp" />
     <ClCompile Include="GUIInspector.cpp" />
+    <ClCompile Include="ModuleScene.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="ComponentTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -367,6 +370,10 @@
     <ClInclude Include="ModuleTimeManager.h" />
     <ClInclude Include="GUITime.h" />
     <ClInclude Include="GUIInspector.h" />
+    <ClInclude Include="ModuleScene.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

@@ -22,3 +22,11 @@ enum update_status
 #define RESIZABLE true
 #define VSYNC true
 #define TITLE "Super Awesome Engine"
+
+enum ComponentType
+{
+	TRANSFORM,
+	MESH,
+	MATERIAL,
+	CAMERA
+};
