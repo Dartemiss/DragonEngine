@@ -135,6 +135,7 @@
     <ClCompile Include="uSTimer.cpp" />
     <ClCompile Include="ModuleTimeManager.cpp" />
     <ClCompile Include="GUITime.cpp" />
+    <ClCompile Include="GUIInspector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -365,6 +366,7 @@
     <ClInclude Include="uSTimer.h" />
     <ClInclude Include="ModuleTimeManager.h" />
     <ClInclude Include="GUITime.h" />
+    <ClInclude Include="GUIInspector.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

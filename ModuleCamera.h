@@ -41,6 +41,7 @@ public:
 	float movementSpeed = 0.2f;
 	float rotationSpeed = 0.015f;
 	float zoomSpeed = 0.5f;
+	float motionOffset = 2.5f;
 
 };
 

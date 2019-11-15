@@ -68,6 +68,11 @@ void ModuleModelLoader::loadModel(const std::string &path)
 
 }
 
+const int ModuleModelLoader::GetNumberOfMeshes()
+{
+	return meshes.size();
+}
+
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 {
 	// process all the node's meshes (if any)
@@ -147,6 +152,10 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 			std::vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
 				aiTextureType_AMBIENT, "texture_height",directory);
 			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+
+			//Count number of textures
+			numberOfTextures += textures.size();
+
 		}
 		
 	return Mesh(vertices, indices, textures);
@@ -187,6 +196,8 @@ void ModuleModelLoader::emptyScene()
 
 	meshes.clear();
 	modelBox.clear();
+
+	numberOfTextures = 0;
 }
 
 void ModuleModelLoader::computeModelBoundingBox()

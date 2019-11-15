@@ -54,6 +54,7 @@ update_status ModuleIMGUI::Update()
 	about.Draw("About", &openAbout);
 	guiCamera.Draw("Camera Settings", &showCameraGUI);
 	timeManager.Draw("Timers", &showTimers);
+	inspector.Draw("Properties", &showInspector);
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -72,6 +73,12 @@ update_status ModuleIMGUI::Update()
 			{
 				openAbout = !openAbout;
 			}
+
+			if(ImGui::MenuItem("Quit"))
+			{
+				return UPDATE_STOP;
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -103,6 +110,11 @@ update_status ModuleIMGUI::Update()
 				showCameraGUI = !showCameraGUI;
 			}
 
+			if(ImGui::MenuItem("Properties"))
+			{
+				showInspector = !showInspector;
+			}
+
 			ImGui::EndMenu();
 		}
 	}
@@ -114,6 +126,7 @@ update_status ModuleIMGUI::Update()
 	timeManager.SetEnable(showTimers);
 	console.SetEnable(scrollDownConsole);
 	about.SetEnable(openAbout);
+	inspector.SetEnable(showInspector);
 	
 	return UPDATE_CONTINUE;
 }

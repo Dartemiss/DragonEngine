@@ -310,6 +310,7 @@ update_status ModuleRender::Update()
 
 	glUseProgram(progModel);
 
+
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
 		"model"), 1, GL_TRUE, &model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(progModel,

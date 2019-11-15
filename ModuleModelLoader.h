@@ -31,7 +31,7 @@ public:
 
 	void Draw(unsigned int program);
 	void loadModel(const std::string &path);
-
+	const int GetNumberOfMeshes();
 
 	//Variables
 	//Representation of a Cube, have exactly 8 vertex
@@ -42,6 +42,7 @@ public:
 	bool isModelLoaded = false;
 	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
 	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
+	int numberOfTextures = 0;
 
 private:
 
