@@ -64,7 +64,6 @@ private:
 	fPoint mouse_motion = {0.0f,0.0f};
 	fPoint mouse = { 0.0f, 0.0f };
 	int mouse_wheel;
-	
 	//Dropping files
 	char* dropped_filedir;
 	void DropModelFile(char* dropped_filedir);

@@ -1,14 +1,14 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleModelLoader.h"
 #include "ModuleInput.h"
+#include "ModuleWindow.h"
+#include "ModuleCamera.h"
 #include "SDL/include/SDL.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "glew.h"
-#include "Application.h"
-#include "ModuleWindow.h"
-#include "ModuleModelLoader.h"
 #include <assert.h>
 
 #define MAX_KEYS 300
@@ -42,9 +42,6 @@ bool ModuleInput::Init()
 
 update_status ModuleInput::PreUpdate()
 {
-
-	static SDL_Event event;
-
 	mouse_motion = { 0, 0 };
 	memset(windowEvents, false, WE_COUNT * sizeof(bool));
 	mouse_wheel = 0;
@@ -78,7 +75,11 @@ update_status ModuleInput::PreUpdate()
 			mouse_buttons[i] = KEY_IDLE;
 	}
 
-	while (SDL_PollEvent(&event) != 0)
+
+	SDL_PumpEvents();
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
 		{
@@ -92,20 +93,20 @@ update_status ModuleInput::PreUpdate()
 			
 			switch (event.window.event)
 			{
-				//case SDL_WINDOWEVENT_LEAVE:
-			case SDL_WINDOWEVENT_HIDDEN:
-			case SDL_WINDOWEVENT_MINIMIZED:
-			case SDL_WINDOWEVENT_FOCUS_LOST:
-				windowEvents[WE_HIDE] = true;
-				break;
+					//case SDL_WINDOWEVENT_LEAVE:
+				case SDL_WINDOWEVENT_HIDDEN:
+				case SDL_WINDOWEVENT_MINIMIZED:
+				case SDL_WINDOWEVENT_FOCUS_LOST:
+					windowEvents[WE_HIDE] = true;
+					break;
 
-				//case SDL_WINDOWEVENT_ENTER:
-			case SDL_WINDOWEVENT_SHOWN:
-			case SDL_WINDOWEVENT_FOCUS_GAINED:
-			case SDL_WINDOWEVENT_MAXIMIZED:
-			case SDL_WINDOWEVENT_RESTORED:
-				windowEvents[WE_SHOW] = true;
-				break;
+					//case SDL_WINDOWEVENT_ENTER:
+				case SDL_WINDOWEVENT_SHOWN:
+				case SDL_WINDOWEVENT_FOCUS_GAINED:
+				case SDL_WINDOWEVENT_MAXIMIZED:
+				case SDL_WINDOWEVENT_RESTORED:
+					windowEvents[WE_SHOW] = true;
+					break;
 			}
 			break;
 
@@ -118,13 +119,24 @@ update_status ModuleInput::PreUpdate()
 			break;
 
 		case SDL_MOUSEMOTION:
-			mouse_motion.x = (float)event.motion.xrel;
-			mouse_motion.y = (float)event.motion.yrel;
-			mouse.x = (float)event.motion.x / SCREEN_WIDTH;
-			mouse.y = (float)event.motion.y / SCREEN_HEIGHT;
+			if (event.motion.state & SDL_BUTTON_RMASK) 
+			{
+				mouse_motion.x = event.motion.xrel;
+				mouse_motion.y = event.motion.yrel;
+				mouse.x = (float)event.motion.x / SCREEN_WIDTH;
+				mouse.y = (float)event.motion.y / SCREEN_HEIGHT;
+			}
+			break;
 			
 		case SDL_MOUSEWHEEL:
-			mouse_wheel = event.wheel.y;
+			if (event.wheel.y > 0) // scroll up
+			{
+				App->camera->Zoom(true);
+			}
+			else if (event.wheel.y < 0) // scroll down
+			{
+				App->camera->Zoom(false);
+			}
 			break;
 
 		case (SDL_DROPFILE): {      // In case if dropped file

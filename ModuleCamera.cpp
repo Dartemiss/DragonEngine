@@ -1,16 +1,15 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera.h"
-#include "ModuleProgram.h"
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ModuleModelLoader.h"
 #include "include/Geometry/Frustum.h"
-#include <math.h>
 #include "include/Math/float4.h"
 #include "SDL.h"
 #include "glew.h"
+#include <math.h>
 
 
 ModuleCamera::ModuleCamera()
@@ -117,30 +116,23 @@ update_status ModuleCamera::Update()
 	{
 		Rotate(rotY, rotX);
 	}
-	//Zoom
-	wheelMovement = App->input->GetMouseWheel();
-	if (wheelMovement > 1)
-	{
-		//mov += frustum->front * zoomSpeed;
-	}
-	else if(wheelMovement < 1)
-	{
-		//mov -= frustum->front * zoomSpeed;
-	}
-
-
+	
+	
 	Move(mov);
 
+	//If F is pressed, camera moves to the front of the model
 	if(App->input->GetKey(SDL_SCANCODE_F))
 	{
 		TranslateCameraToPoint(App->modelLoader->correctCameraPositionForModel);
 	}
 
+	//If L is pressed, camera looks at model selected
 	if(App->input->GetKey(SDL_SCANCODE_L))
 	{
 		LookAt(App->modelLoader->modelCenter);
 	}
 
+	//Alt + Left Click Orbit arround center of the objet selected
 	if(App->input->GetKey(SDL_SCANCODE_LALT) && App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 	{
 		float dx = App->input->GetMouseMotion().x;
@@ -179,7 +171,7 @@ void ModuleCamera::SetAspectRatio()
 	App->renderer->proj = frustum->ProjectionMatrix();
 }
 
-void ModuleCamera::Rotate(float dx, float dy)
+void ModuleCamera::Rotate(const float dx, const float dy)
 {
 
 	if(dx != 0.0f)
@@ -205,10 +197,11 @@ void ModuleCamera::Move(float3 direction)
 		direction *= 3.0f;
 	}
 
-	frustum->Translate(direction);
+	if(!direction.Equals(float3::zero))
+		frustum->Translate(direction);
 }
 
-void ModuleCamera::Orbit(float dx, float dy)
+void ModuleCamera::Orbit(const float dx, const float dy)
 {
 	float3 center = App->modelLoader->modelCenter;
 
@@ -228,7 +221,21 @@ void ModuleCamera::Orbit(float dx, float dy)
 
 }
 
-void ModuleCamera::TranslateCameraToPoint(float3 & newPos)
+void ModuleCamera::Zoom(const bool direction)
+{
+	if(direction)
+	{
+		Move(float3(0.0f, 0.0f, 0.1f));
+	}
+	else
+	{
+		Move(float3(0.0f, 0.0f, -0.1f));
+	}
+
+	return;
+}
+
+void ModuleCamera::TranslateCameraToPoint(const float3 & newPos)
 {
 	frustum->pos = newPos;
 	frustum->front = -float3::unitZ;
@@ -240,17 +247,17 @@ void ModuleCamera::TranslateCameraToPoint(float3 & newPos)
 
 }
 
-void ModuleCamera::SetNearPlaneDistance(float nearDist)
+void ModuleCamera::SetNearPlaneDistance(const float nearDist)
 {
 	frustum->nearPlaneDistance = nearDist;
 }
 
-void ModuleCamera::SetFarPlaneDistance(float farDist)
+void ModuleCamera::SetFarPlaneDistance(const float farDist)
 {
 	frustum->farPlaneDistance = farDist;
 }
 
-void ModuleCamera::LookAt(float3 target)
+void ModuleCamera::LookAt(const float3 target)
 {
 	float3 dir = (target - frustum->pos).Normalized();
 	float3x3 rot = float3x3::LookAt(frustum->front, dir, frustum->up, float3::unitY);
