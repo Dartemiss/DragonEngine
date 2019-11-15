@@ -9,17 +9,6 @@
 #include "ilu.h"
 
 
-GUIWindow::GUIWindow()
-{
-	SetEnable(false);
-	fpsTimer.StartTimer();
-}
-
-
-GUIWindow::~GUIWindow()
-{
-}
-
 void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Texture *texInfo)
 {
 	if(isEnabled)
@@ -215,57 +204,6 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 			
 		
 		}
-		if (ImGui::CollapsingHeader("Texture Options")) 
-		{
-			ImGui::Separator();
-			ImGui::Text("Wrapping Options");
-			ImGui::Text("");
-			if (ImGui::Button("GL_REPEAT"))
-			{
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-				App->texture->executeTexImage2D();
-				
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("GL_MIRRORED_REPEAT"))
-			{
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-				App->texture->executeTexImage2D();
-			}
-
-			if (ImGui::Button("GL_CLAMP_TO_EDGE"))
-			{
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				App->texture->executeTexImage2D();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("GL_CLAMP_TO_BORDER"))
-			{
-				float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-				glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-				App->texture->executeTexImage2D();
-			}
-			ImGui::Separator();
-			ImGui::Text("Filtering Options");
-			ImGui::Text("");
-
-			if (ImGui::Button("GL_NEAREST"))
-			{
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				App->texture->executeTexImage2D();
-			}
-			if (ImGui::Button("GL_LINEAR "))
-			{
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				App->texture->executeTexImage2D();
-				
-			}
-
-		}
-
 
 		ImGui::End();
 	}

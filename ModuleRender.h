@@ -14,15 +14,14 @@ struct SDL_Rect;
 class ModuleRender : public Module
 {
 public:
-	ModuleRender();
-	~ModuleRender();
+	ModuleRender() = default;
+	~ModuleRender() = default;
 
 	bool Init();
 	update_status PreUpdate();
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	void WindowResized(unsigned width, unsigned height);
 	void DrawRectangle();
 
 	float aspect = 1.0f;

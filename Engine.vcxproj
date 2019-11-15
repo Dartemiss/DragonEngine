@@ -83,6 +83,7 @@
     <ClInclude Include="GUIAbout.h" />
     <ClInclude Include="GUICamera.h" />
     <ClInclude Include="GUIConsole.h" />
+    <ClInclude Include="GUIInspector.h" />
     <ClInclude Include="GUITime.h" />
     <ClInclude Include="GUIWindow.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="GUIAbout.cpp" />
     <ClCompile Include="GUICamera.cpp" />
     <ClCompile Include="GUIConsole.cpp" />
+    <ClCompile Include="GUIInspector.cpp" />
     <ClCompile Include="GUITime.cpp" />
     <ClCompile Include="GUIWindow.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />

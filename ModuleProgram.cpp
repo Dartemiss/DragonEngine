@@ -1,24 +1,15 @@
-#include "ModuleProgram.h"
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleProgram.h"
 #include "SDL.h"
 #include "glew.h"
-#include <string>
-#include <fstream>
-#include <streambuf>
 #include "SDL.h"
 #include "glew.h"
 #include "assert.h"
+#include <string>
+#include <streambuf>
+#include <fstream>
 
-
-
-ModuleProgram::ModuleProgram()
-{
-}
-
-ModuleProgram::~ModuleProgram()
-{
-}
 
 bool ModuleProgram::Init()
 {

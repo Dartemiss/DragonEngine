@@ -18,25 +18,12 @@ ModuleTexture::~ModuleTexture()
 
 bool ModuleTexture::Init()
 {
-	//Texture
 	//Initialize Texture
 	LOG("Init Image library");
 	ilInit();
 	iluInit();
 	ilutInit();
 
-	/*
-	LoadTexture("../Textures/Lenna.png");
-	LoadTexture("../Textures/g2logo.jpg");
-	LoadTexture("../Textures/blackDragon.dds");
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textures[0].Width, textures[0].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, textures[0].Data);
-	//Texture
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	*/
 	return true;
 }
 
@@ -87,14 +74,14 @@ void ModuleTexture::LoadTexture(char * path, Texture* textureLoaded, ILuint &ima
 	textureLoaded->width = ilGetInteger(IL_IMAGE_WIDTH);
 	textureLoaded->height = ilGetInteger(IL_IMAGE_HEIGHT);
 	textureLoaded->depth = ilGetInteger(IL_IMAGE_DEPTH);
-	textureLoaded->format = ilDetermineType(path);;
+	textureLoaded->format = ilDetermineType(path);
 	textureLoaded->data = (unsigned char*)ilGetData();
 	
 
 	return;
 }
 
-void ModuleTexture::LoadTextureForModels(const char * path, const std::string directory, Texture &texture)
+void ModuleTexture::LoadTextureForModels(const char * path, const std::string &directory, Texture &texture)
 {
 	std::string filepath = directory;
 	filepath.append(path);
@@ -124,7 +111,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string di
 		//Fill texture
 		texture.width = ilGetInteger(IL_IMAGE_WIDTH);
 		texture.height = ilGetInteger(IL_IMAGE_HEIGHT);
-		texture.format = ilDetermineType(path);;
+		texture.format = ilDetermineType(path);
 		texture.data = data;
 
 		//Binding texture and generating mipmaps
@@ -154,7 +141,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string di
 	return;
 }
 
-std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName, std::string directory)
+std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName, const std::string &directory)
 {
 	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
@@ -189,7 +176,3 @@ std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, aiTex
 	return textures;
 }
 
-void ModuleTexture::executeTexImage2D()
-{
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, App->texture->textures[indexTex].Width, App->texture->textures[indexTex].Height, 0, GL_RGB, GL_UNSIGNED_BYTE, App->texture->textures[indexTex].Data);
-}

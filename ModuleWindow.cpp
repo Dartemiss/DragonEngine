@@ -31,8 +31,6 @@ bool ModuleWindow::Init()
 	else
 	{
 		//Create window
-		int width = SCREEN_WIDTH;
-		int height = SCREEN_HEIGHT;
 		Uint32 flags = SDL_WINDOW_SHOWN |  SDL_WINDOW_OPENGL;
 
 		if(FULLSCREEN == true)
@@ -40,7 +38,7 @@ bool ModuleWindow::Init()
 			flags |= SDL_WINDOW_FULLSCREEN;
 		}
 
-		if (RESIZABLE == true)
+		if (RESIZABLE)
 		{
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
@@ -94,10 +92,10 @@ void ModuleWindow::setFullscreen(bool fullscrean)
 
 }
 
-void ModuleWindow::Resize(unsigned int width, unsigned int height)
+void ModuleWindow::Resize(unsigned int newWidth, unsigned int newHeight)
 {
-	this->width = width;
-	this->height = height;
+	width = newWidth;
+	height = newHeight;
 	App->camera->SetAspectRatio();
 }
 

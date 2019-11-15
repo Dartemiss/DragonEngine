@@ -1,46 +1,17 @@
-#include "ModuleModelLoader.h"
 #include "Application.h"
+#include "ModuleModelLoader.h"
 #include"ModuleTexture.h"
 #include "ModuleCamera.h"
-#include <cimport.h>
+#include "Timer.h"
 #include <postprocess.h>
 #include <material.h>
 #include <mesh.h>
-#include "Timer.h"
-#include "uSTimer.h"
-
-ModuleModelLoader::ModuleModelLoader()
-{
-}
-
-
-ModuleModelLoader::~ModuleModelLoader()
-{
-}
+#include <cimport.h>
 
 bool ModuleModelLoader::Init()
 {
-
-	uSTimer initTimer;
-	initTimer.StartTimer();
-
 	loadModel("../Models/baker_house/BakerHouse.fbx");
-	//loadModel("C:\\Users\\Riqui\\Documents\\GitHub\\MyEngine\\Models\\baker_house\\BakerHouse.fbx");
 
-	//loadModel("../Models/spongebob/spongebob.fbx");
-
-	float time = initTimer.StopTimer();
-	LOG("Loader takes %.5f miliseconds", time);
-
-
-
-	//loadModel("../Models/dragon/blackdragon.fbx");
-	//loadModel("../Models/axe/machado.fbx");
-	//loadModel("../Models/nanosuit/scene.fbx");
-	//loadModel("../Models/penguin/PenguinBaseMesh.fbx");
-
-	
-	
 	return true;
 }
 
@@ -73,7 +44,7 @@ void ModuleModelLoader::Draw(unsigned int program)
 }
 
 
-void ModuleModelLoader::loadModel(const std::string path)
+void ModuleModelLoader::loadModel(const std::string &path)
 {
 	if (isModelLoaded)
 		emptyScene();
@@ -95,6 +66,11 @@ void ModuleModelLoader::loadModel(const std::string path)
 	computeModelBoundingBox();
 	isModelLoaded = true;
 
+}
+
+const int ModuleModelLoader::GetNumberOfMeshes()
+{
+	return meshes.size();
 }
 
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
@@ -176,12 +152,16 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 			std::vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
 				aiTextureType_AMBIENT, "texture_height",directory);
 			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+
+			//Count number of textures
+			numberOfTextures += textures.size();
+
 		}
 		
 	return Mesh(vertices, indices, textures);
 }
 
-std::string ModuleModelLoader::computeDirectory(const std::string path)
+std::string ModuleModelLoader::computeDirectory(const std::string &path)
 {
 	size_t simpleRightSlash = path.find_last_of('/');
 	if (std::string::npos != simpleRightSlash)
@@ -216,6 +196,8 @@ void ModuleModelLoader::emptyScene()
 
 	meshes.clear();
 	modelBox.clear();
+
+	numberOfTextures = 0;
 }
 
 void ModuleModelLoader::computeModelBoundingBox()

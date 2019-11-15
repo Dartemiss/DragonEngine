@@ -1,17 +1,6 @@
 #include "GUIConsole.h"
 
 
-
-GUIConsole::GUIConsole()
-{
-	SetEnable(false);
-}
-
-
-GUIConsole::~GUIConsole()
-{
-}
-
 void GUIConsole::Clear()
 {
 	bufferConsole.clear(); 

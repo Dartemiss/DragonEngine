@@ -45,7 +45,6 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	//ImGui::ShowDemoWindow(&show_demo_window);
 	if(App->texture->textures_loaded.size() > 0)
 	{
 		Texture *texinfo = &App->texture->textures_loaded[App->texture->indexTex];
@@ -55,6 +54,7 @@ update_status ModuleIMGUI::Update()
 	about.Draw("About", &openAbout);
 	guiCamera.Draw("Camera Settings", &showCameraGUI);
 	timeManager.Draw("Timers", &showTimers);
+	inspector.Draw("Properties", &showInspector);
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -73,6 +73,12 @@ update_status ModuleIMGUI::Update()
 			{
 				openAbout = !openAbout;
 			}
+
+			if(ImGui::MenuItem("Quit"))
+			{
+				return UPDATE_STOP;
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -99,29 +105,14 @@ update_status ModuleIMGUI::Update()
 				showWindowConfig = !showWindowConfig;
 			}
 
-			if(ImGui::BeginMenu("Textures"))
-			{
-				if (ImGui::MenuItem("Lenna"))
-				{
-					App->texture->indexTex = 0;
-					App->texture->executeTexImage2D();
-				}
-				if (ImGui::MenuItem("LET'S GO G2"))
-				{
-					App->texture->indexTex = 1;
-					App->texture->executeTexImage2D();
-				}
-				if (ImGui::MenuItem("Dragon"))
-				{
-					App->texture->indexTex = 2;
-					App->texture->executeTexImage2D();
-				}
-				ImGui::EndMenu();
-			}
-
 			if(ImGui::MenuItem("Camera"))
 			{
 				showCameraGUI = !showCameraGUI;
+			}
+
+			if(ImGui::MenuItem("Properties"))
+			{
+				showInspector = !showInspector;
 			}
 
 			ImGui::EndMenu();
@@ -135,6 +126,7 @@ update_status ModuleIMGUI::Update()
 	timeManager.SetEnable(showTimers);
 	console.SetEnable(scrollDownConsole);
 	about.SetEnable(openAbout);
+	inspector.SetEnable(showInspector);
 	
 	return UPDATE_CONTINUE;
 }

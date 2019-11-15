@@ -10,6 +10,7 @@ ModuleTimeManager::ModuleTimeManager()
 
 ModuleTimeManager::~ModuleTimeManager()
 {
+	delete realTimer;
 }
 
 bool ModuleTimeManager::Init()
@@ -21,14 +22,11 @@ bool ModuleTimeManager::Init()
 
 update_status ModuleTimeManager::PreUpdate()
 {
-	if(waitingToPause)
+	if(waitingToPause && frameCount >= framesToPause)
 	{
-		if(frameCount >= framesToPause)
-		{
-			PauseGame();
-			waitingToPause = false;
-			framesToPause = 0;
-		}
+		PauseGame();
+		waitingToPause = false;
+		framesToPause = 0;	
 	}
 
 	return UPDATE_CONTINUE;
@@ -42,8 +40,6 @@ update_status ModuleTimeManager::Update()
 	}
 	
 	realGameTime = realTimer->ReadTimer();
-
-	//LOG("Time: %.3f ms", realGameTime);
 
 	return UPDATE_CONTINUE;
 }

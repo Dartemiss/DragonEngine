@@ -1,15 +1,15 @@
 #ifndef __GUIAbout_H__
 #define __GUIAbout_H__
 
-#include "imgui/imgui.h"
 #include "Globals.h"
 #include "GUI.h"
+#include "imgui/imgui.h"
 
 class GUIAbout : public GUI
 {
 public:
-	GUIAbout();
-	~GUIAbout();
+	GUIAbout() = default;
+	~GUIAbout() = default;
 
 	void Draw(const char * title, bool * p_opened);
 };

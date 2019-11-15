@@ -4,15 +4,6 @@
 #include "ModuleRender.h"
 
 
-GUICamera::GUICamera()
-{
-	SetEnable(false);
-}
-
-
-GUICamera::~GUICamera()
-{
-}
 
 void GUICamera::Draw(const char * title, bool * p_opened)
 {
