@@ -33,7 +33,7 @@ bool ModuleCamera::Init()
 	frustum->farPlaneDistance = 100.0f;
 	frustum->verticalFov = (float)M_PI / 4.0f;
 	aspect = (float)App->window->width / App->window->height;
-	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 
 	frustum->Translate(float3(1.0f, 1.0f, 1.0f));
 	
@@ -49,7 +49,6 @@ update_status ModuleCamera::PreUpdate()
 update_status ModuleCamera::Update()
 {
 	float3 mov = float3::zero;
-	float3 rot = float3::zero;
 
 	if(App->input->GetKey(SDL_SCANCODE_Q))
 	{	
@@ -160,14 +159,14 @@ bool ModuleCamera::CleanUp()
 
 void ModuleCamera::SetFOV()
 {
-	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 	App->renderer->proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::SetAspectRatio()
 {
 	aspect = ((float)App->window->width / App->window->height);
-	frustum->horizontalFov = 2.f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 	App->renderer->proj = frustum->ProjectionMatrix();
 }
 

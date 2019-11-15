@@ -45,7 +45,6 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	//ImGui::ShowDemoWindow(&show_demo_window);
 	if(App->texture->textures_loaded.size() > 0)
 	{
 		Texture *texinfo = &App->texture->textures_loaded[App->texture->indexTex];
@@ -97,26 +96,6 @@ update_status ModuleIMGUI::Update()
 			if(ImGui::MenuItem("Window"))
 			{
 				showWindowConfig = !showWindowConfig;
-			}
-
-			if(ImGui::BeginMenu("Textures"))
-			{
-				if (ImGui::MenuItem("Lenna"))
-				{
-					App->texture->indexTex = 0;
-					App->texture->executeTexImage2D();
-				}
-				if (ImGui::MenuItem("LET'S GO G2"))
-				{
-					App->texture->indexTex = 1;
-					App->texture->executeTexImage2D();
-				}
-				if (ImGui::MenuItem("Dragon"))
-				{
-					App->texture->indexTex = 2;
-					App->texture->executeTexImage2D();
-				}
-				ImGui::EndMenu();
 			}
 
 			if(ImGui::MenuItem("Camera"))

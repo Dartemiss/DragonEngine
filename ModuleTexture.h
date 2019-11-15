@@ -38,15 +38,14 @@ public:
 	bool CleanUp();
 
 	void LoadTexture(char* path, Texture* textureLoaded, ILuint &image);
-	void LoadTextureForModels(const char* path, const std::string directory, Texture &texture);
+	void LoadTextureForModels(const char* path, const std::string &directory, Texture &texture);
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
-		std::string typeName, const std::string directory);
+		std::string typeName, const std::string &directory);
 
 	//Vector of all the textures that have been loaded for avoiding reimporting
 	std::vector<Texture> textures_loaded;
 
 	unsigned int indexTex = 0;
-	void executeTexImage2D();
 	bool isLoaded;
 
 

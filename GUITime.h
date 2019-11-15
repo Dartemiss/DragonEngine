@@ -10,8 +10,8 @@ class Application;
 class GUITime : public GUI
 {
 public:
-	GUITime();
-	~GUITime();
+	GUITime() = default;
+	~GUITime() = default;
 
 	void Draw(const char* title, bool* p_opened);
 };

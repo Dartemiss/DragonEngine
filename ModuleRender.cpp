@@ -18,12 +18,13 @@ const char* GetSourceStr(GLenum source)
 {
 	switch (source)
 	{
-	case GL_DEBUG_SOURCE_API:             return "Source: API"; break;
-	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   return "Source: Window System"; break;
-	case GL_DEBUG_SOURCE_SHADER_COMPILER: return "Source: Shader Compiler"; break;
-	case GL_DEBUG_SOURCE_THIRD_PARTY:     return "Source: Third Party"; break;
-	case GL_DEBUG_SOURCE_APPLICATION:     return "Source: Application"; break;
-	case GL_DEBUG_SOURCE_OTHER:           return "Source: Other"; break;
+		case GL_DEBUG_SOURCE_API:             return "Source: API"; break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   return "Source: Window System"; break;
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: return "Source: Shader Compiler"; break;
+		case GL_DEBUG_SOURCE_THIRD_PARTY:     return "Source: Third Party"; break;
+		case GL_DEBUG_SOURCE_APPLICATION:     return "Source: Application"; break;
+		case GL_DEBUG_SOURCE_OTHER:           return "Source: Other"; break;
+		default: return "Unkown Source."; break;
 	}
 
 	return "Unkown Source";
@@ -33,15 +34,16 @@ const char* GetTypeStr(GLenum type)
 {
 	switch (type)
 	{
-	case GL_DEBUG_TYPE_ERROR:               return "Type: Error"; break;
-	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Type: Deprecated Behaviour"; break;
-	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  return "Type: Undefined Behaviour"; break;
-	case GL_DEBUG_TYPE_PORTABILITY:         return "Type: Portability"; break;
-	case GL_DEBUG_TYPE_PERFORMANCE:         return "Type: Performance"; break;
-	case GL_DEBUG_TYPE_MARKER:              return "Type: Marker"; break;
-	case GL_DEBUG_TYPE_PUSH_GROUP:          return "Type: Push Group"; break;
-	case GL_DEBUG_TYPE_POP_GROUP:           return "Type: Pop Group"; break;
-	case GL_DEBUG_TYPE_OTHER:               return "Type: Other"; break;
+		case GL_DEBUG_TYPE_ERROR:               return "Type: Error"; break;
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Type: Deprecated Behaviour"; break;
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  return "Type: Undefined Behaviour"; break;
+		case GL_DEBUG_TYPE_PORTABILITY:         return "Type: Portability"; break;
+		case GL_DEBUG_TYPE_PERFORMANCE:         return "Type: Performance"; break;
+		case GL_DEBUG_TYPE_MARKER:              return "Type: Marker"; break;
+		case GL_DEBUG_TYPE_PUSH_GROUP:          return "Type: Push Group"; break;
+		case GL_DEBUG_TYPE_POP_GROUP:           return "Type: Pop Group"; break;
+		case GL_DEBUG_TYPE_OTHER:               return "Type: Other"; break;
+		default: return "Unkown Type."; break;
 	}
 
 	return "Unkown Type";
@@ -51,10 +53,11 @@ const char* GetSeverityStr(GLenum severity)
 {
 	switch (severity)
 	{
-	case GL_DEBUG_SEVERITY_HIGH:         return "Severity: high"; break;
-	case GL_DEBUG_SEVERITY_MEDIUM:       return "Severity: medium"; break;
-	case GL_DEBUG_SEVERITY_LOW:          return "Severity: low"; break;
-	case GL_DEBUG_SEVERITY_NOTIFICATION: return "Severity: notification"; break;
+		case GL_DEBUG_SEVERITY_HIGH:         return "Severity: high"; break;
+		case GL_DEBUG_SEVERITY_MEDIUM:       return "Severity: medium"; break;
+		case GL_DEBUG_SEVERITY_LOW:          return "Severity: low"; break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION: return "Severity: notification"; break;
+		default: return "Unkown Severity"; break;
 	}
 
 	return "Unkown Severity";
@@ -73,15 +76,6 @@ void APIENTRY OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLen
 }
 
 
-
-ModuleRender::ModuleRender()
-{
-}
-
-// Destructor
-ModuleRender::~ModuleRender()
-{
-}
 
 // Called before render is available
 bool ModuleRender::Init()
@@ -107,7 +101,7 @@ bool ModuleRender::Init()
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glClearDepth(1.0f);
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
@@ -327,20 +321,6 @@ update_status ModuleRender::Update()
 
 	glUseProgram(0);
 
-	/*
-	glUseProgram(progLenna);
-
-	glUniformMatrix4fv(glGetUniformLocation(progLenna,
-		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progLenna,
-		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progLenna,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	glUseProgram(0);
-	*/
 	return UPDATE_CONTINUE;
 }
 
@@ -371,10 +351,6 @@ void ModuleRender::DrawRectangle()
 
 	//After use a vbo assign a 0 for efficency
 
-}
-
-void ModuleRender::WindowResized(unsigned width, unsigned height)
-{
 }
 
 

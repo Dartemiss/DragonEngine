@@ -77,7 +77,7 @@ update_status ModuleInput::PreUpdate()
 
 
 	SDL_PumpEvents();
-	SDL_Event event;
+	static SDL_Event event;
 
 	while (SDL_PollEvent(&event))
 	{
@@ -107,6 +107,9 @@ update_status ModuleInput::PreUpdate()
 				case SDL_WINDOWEVENT_RESTORED:
 					windowEvents[WE_SHOW] = true;
 					break;
+				default:
+					break;
+
 			}
 			break;
 
@@ -119,13 +122,11 @@ update_status ModuleInput::PreUpdate()
 			break;
 
 		case SDL_MOUSEMOTION:
-			if (event.motion.state & SDL_BUTTON_RMASK) 
-			{
-				mouse_motion.x = event.motion.xrel;
-				mouse_motion.y = event.motion.yrel;
-				mouse.x = (float)event.motion.x / SCREEN_WIDTH;
-				mouse.y = (float)event.motion.y / SCREEN_HEIGHT;
-			}
+			mouse_motion.x = event.motion.xrel;
+			mouse_motion.y = event.motion.yrel;
+			mouse.x = (float)event.motion.x / SCREEN_WIDTH;
+			mouse.y = (float)event.motion.y / SCREEN_HEIGHT;
+			
 			break;
 			
 		case SDL_MOUSEWHEEL:
@@ -139,7 +140,8 @@ update_status ModuleInput::PreUpdate()
 			}
 			break;
 
-		case (SDL_DROPFILE): {      // In case if dropped file
+		case (SDL_DROPFILE): 
+		    // In case if dropped file
 			dropped_filedir = event.drop.file;
 			// Shows directory of dropped file
 			SDL_ShowSimpleMessageBox(
@@ -151,7 +153,10 @@ update_status ModuleInput::PreUpdate()
 			DropModelFile(dropped_filedir);
 			SDL_free(dropped_filedir);    // Free dropped_filedir memory
 			break;
-			}
+			
+		default:
+			break;
+
 		}
 	}
 
@@ -172,7 +177,6 @@ update_status ModuleInput::Update()
 		return UPDATE_STOP;
 	if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->window))
 		return UPDATE_STOP;
-	//keyboard = SDL_GetKeyboardState(NULL);
 
 	return UPDATE_CONTINUE;
 }

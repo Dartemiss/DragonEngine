@@ -1,9 +1,9 @@
 #ifndef __GUIConsole_H__
 #define __GUIConsole_H__
 
-#include "imgui/imgui.h"
 #include "Globals.h"
 #include "GUI.h"
+#include "imgui/imgui.h"
 
 class GUIConsole : public GUI
 {
@@ -12,8 +12,8 @@ private:
 	bool ScrollToBottom = true;
 
 public:
-	GUIConsole();
-	~GUIConsole();
+	GUIConsole() = default;
+	~GUIConsole() = default;
 
 	void Clear();
 

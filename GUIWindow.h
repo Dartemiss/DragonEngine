@@ -1,21 +1,21 @@
 #ifndef __GUIWindow_H__
 #define __GUIWindow_H__
 
-#include "imgui/imgui.h"
 #include "Globals.h"
 #include "GUI.h"
-#include <vector>
 #include "ModuleTexture.h"
 #include "Timer.h"
+#include "imgui/imgui.h"
 #include "ilu.h"
+#include <vector>
 
 class Application;
 
 class GUIWindow : public GUI
 {
 public:
-	GUIWindow();
-	~GUIWindow();
+	GUIWindow() = default;
+	~GUIWindow() = default;
 
 	void Draw(const char* title, bool* p_opened, SDL_Window* window, Texture *texInfo);
 	std::vector<float> fps_log;

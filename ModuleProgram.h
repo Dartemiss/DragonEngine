@@ -11,8 +11,8 @@
 class ModuleProgram : public Module
 {
 public:
-	ModuleProgram();
-	~ModuleProgram();
+	ModuleProgram() = default;
+	~ModuleProgram() = default;
 
 	bool Init();
 	update_status PreUpdate();

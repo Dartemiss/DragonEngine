@@ -15,7 +15,7 @@ public:
 	bool resizable = RESIZABLE;
 	int width = SCREEN_WIDTH;
 	int height = SCREEN_HEIGHT;
-	void Resize(unsigned int width, unsigned int height);
+	void Resize(unsigned int newWidth, unsigned int newHeight);
 	ModuleWindow();
 
 	// Destructor

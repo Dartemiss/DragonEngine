@@ -1,46 +1,17 @@
-#include "ModuleModelLoader.h"
 #include "Application.h"
+#include "ModuleModelLoader.h"
 #include"ModuleTexture.h"
 #include "ModuleCamera.h"
-#include <cimport.h>
+#include "Timer.h"
 #include <postprocess.h>
 #include <material.h>
 #include <mesh.h>
-#include "Timer.h"
-#include "uSTimer.h"
-
-ModuleModelLoader::ModuleModelLoader()
-{
-}
-
-
-ModuleModelLoader::~ModuleModelLoader()
-{
-}
+#include <cimport.h>
 
 bool ModuleModelLoader::Init()
 {
-
-	uSTimer initTimer;
-	initTimer.StartTimer();
-
 	loadModel("../Models/baker_house/BakerHouse.fbx");
-	//loadModel("C:\\Users\\Riqui\\Documents\\GitHub\\MyEngine\\Models\\baker_house\\BakerHouse.fbx");
 
-	//loadModel("../Models/spongebob/spongebob.fbx");
-
-	float time = initTimer.StopTimer();
-	LOG("Loader takes %.5f miliseconds", time);
-
-
-
-	//loadModel("../Models/dragon/blackdragon.fbx");
-	//loadModel("../Models/axe/machado.fbx");
-	//loadModel("../Models/nanosuit/scene.fbx");
-	//loadModel("../Models/penguin/PenguinBaseMesh.fbx");
-
-	
-	
 	return true;
 }
 
@@ -73,7 +44,7 @@ void ModuleModelLoader::Draw(unsigned int program)
 }
 
 
-void ModuleModelLoader::loadModel(const std::string path)
+void ModuleModelLoader::loadModel(const std::string &path)
 {
 	if (isModelLoaded)
 		emptyScene();
@@ -181,7 +152,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 	return Mesh(vertices, indices, textures);
 }
 
-std::string ModuleModelLoader::computeDirectory(const std::string path)
+std::string ModuleModelLoader::computeDirectory(const std::string &path)
 {
 	size_t simpleRightSlash = path.find_last_of('/');
 	if (std::string::npos != simpleRightSlash)

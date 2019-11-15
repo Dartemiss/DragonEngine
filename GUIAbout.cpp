@@ -3,15 +3,6 @@
 #define ENGINETITLE "Dragon Engine"
 #define AUTHOR "Enrique Alexandre Gonzalez Sequeira"
 
-GUIAbout::GUIAbout()
-{
-	SetEnable(false);
-}
-
-
-GUIAbout::~GUIAbout()
-{
-}
 
 void GUIAbout::Draw(const char * title, bool * p_opened)
 {

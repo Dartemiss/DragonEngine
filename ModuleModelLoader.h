@@ -20,8 +20,8 @@
 class ModuleModelLoader : public Module
 {
 public:
-	ModuleModelLoader();
-	~ModuleModelLoader();
+	ModuleModelLoader() = default;
+	~ModuleModelLoader() = default;
 
 	bool Init();
 	update_status PreUpdate();
@@ -30,7 +30,7 @@ public:
 	bool CleanUp();
 
 	void Draw(unsigned int program);
-	void loadModel(const std::string path);
+	void loadModel(const std::string &path);
 
 
 	//Variables
@@ -52,7 +52,7 @@ private:
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 	
-	std::string computeDirectory(const std::string path);
+	std::string computeDirectory(const std::string &path);
 	void emptyScene();
 
 	void computeModelBoundingBox();

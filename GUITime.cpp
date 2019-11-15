@@ -2,16 +2,6 @@
 #include "Application.h"
 #include "ModuleTimeManager.h"
 
-
-GUITime::GUITime()
-{
-}
-
-
-GUITime::~GUITime()
-{
-}
-
 void GUITime::Draw(const char * title, bool * p_opened)
 {
 	if (isEnabled)
