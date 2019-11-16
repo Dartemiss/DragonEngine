@@ -6,6 +6,11 @@
 #include <string>
 #include <vector>
 
+class ComponentTransform;
+class ComponentMesh;
+class ComponentMaterial;
+
+
 class GameObject
 {
 public:
@@ -19,12 +24,17 @@ public:
 
 	//Component Creation
 	Component* CreateComponent(ComponentType type);
+	void LoadModel(const char* name);
 
 	//Variables
 	//ID are unique
 	//TODO: ID system
 	unsigned int ID;
-	
+
+	//All GameObjects have a transform
+	ComponentTransform* myTransform = nullptr;
+	ComponentMesh* myMeshes = nullptr;
+	ComponentMaterial* myMaterial = nullptr;
 
 private:
 	std::string name;
@@ -34,6 +44,8 @@ private:
 	GameObject* parent;
 	//Chilren
 	std::vector<GameObject*> children;
+
+
 
 };
 

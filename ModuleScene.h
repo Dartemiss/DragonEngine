@@ -24,6 +24,9 @@ public:
 	//Drawing Methods
 	void DrawUIBarMenuGameObject();
 
+	//AllGameObjectsCreated
+	std::vector<GameObject*> allGameObjects;
+
 private:
 	//Root
 	GameObject* root;
@@ -31,8 +34,8 @@ private:
 	//GameObjects Counter
 	unsigned int numberOfGameObjects;
 
-	//AllGameObjectsCreated
-	std::vector<GameObject*> allGameObjects;
+	
+	
 
 };
 

@@ -1,4 +1,6 @@
 #include "GameObject.h"
+#include "Application.h"
+#include "ModuleModelLoader.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
@@ -10,6 +12,8 @@ GameObject::GameObject()
 GameObject::GameObject(const char * name)
 {
 	this->name = name;
+	CreateComponent(TRANSFORM);
+
 }
 
 
@@ -44,16 +48,20 @@ Component * GameObject::CreateComponent(ComponentType type)
 	{
 		case TRANSFORM:
 			component = new ComponentTransform();
+			myTransform = (ComponentTransform*)component;
 			break;
 		case MESH:
 			component = new ComponentMesh();
+			myMeshes = (ComponentMesh*)component;
 			break;
 		case MATERIAL:
 			component = new ComponentMaterial();
+			myMaterial = (ComponentMaterial*)component;
 			break;
 		default:
 			LOG("ERROR: INVALID TYPE OF COMPONENT");
 			return nullptr;
+			break;
 	}
 
 	component->myGameObject = this;
@@ -62,4 +70,16 @@ Component * GameObject::CreateComponent(ComponentType type)
 
 
 	return component;
+}
+
+void GameObject::LoadModel(const char * path)
+{
+	if(myMeshes == nullptr || myMaterial == nullptr)
+	{
+		LOG("ERROR: Cannot load a model without a Mesh and a Material components");
+		return;
+	}
+
+	App->modelLoader->loadModel(path);
+
 }

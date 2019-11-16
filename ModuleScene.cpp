@@ -65,6 +65,14 @@ void ModuleScene::DrawUIBarMenuGameObject()
 		if (ImGui::MenuItem("Create House GameObject"))
 		{
 			GameObject* newGameObject = CreateGameObject();
+			newGameObject->CreateComponent(MESH);
+			newGameObject->CreateComponent(MATERIAL);
+
+			if(newGameObject->myMeshes != nullptr)
+			{
+				newGameObject->LoadModel("../Models/baker_house/BakerHouse.fbx");
+			}
+
 			allGameObjects.push_back(newGameObject);
 		}
 
