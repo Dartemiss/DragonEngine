@@ -73,6 +73,11 @@ const int ModuleModelLoader::GetNumberOfMeshes()
 	return meshes.size();
 }
 
+void ModuleModelLoader::GetMeshes(std::vector<Mesh*> &meshes)
+{
+	meshes = this->meshes;
+}
+
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 {
 	// process all the node's meshes (if any)
@@ -260,7 +265,7 @@ void ModuleModelLoader::computeModelBoundingBox()
 	modelCenter.z = (maxZ - minZ) / 2;
 	LOG("Computing models center: (%.3f,%.3f,%.3f) ", modelCenter.x, modelCenter.y, modelCenter.z);
 
-	App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
+	//App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
 
 	float dist = 3 * (maxX - minX);
 	if(App->camera->frustum->farPlaneDistance < dist)

@@ -6,6 +6,9 @@
 #include "ModuleCamera.h"
 #include "ModuleTimeManager.h"
 #include "ModuleModelLoader.h"
+#include "ModuleScene.h"
+#include "ComponentTransform.h"
+#include "ComponentMesh.h"
 #include "SDL.h"
 #include "glew.h"
 #include "include/Geometry/Frustum.h"
@@ -266,20 +269,12 @@ update_status ModuleRender::Update()
 	glUseProgram(0);
 
 
-	glUseProgram(progModel);
 
-
-	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
 
 	//App->modelLoader->Draw(progModel);
 	DrawAllGameObjects();
 
-	glUseProgram(0);
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -364,6 +359,28 @@ void ModuleRender::DrawGrid()
 void ModuleRender::DrawAllGameObjects()
 {
 
+	glUseProgram(progModel);
+
+
+	glUniformMatrix4fv(glGetUniformLocation(progModel,
+		"view"), 1, GL_TRUE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(progModel,
+		"proj"), 1, GL_TRUE, &proj[0][0]);
+
+
+	for(auto gameObject : App->scene->allGameObjects)
+	{
+		glUniformMatrix4fv(glGetUniformLocation(progModel,
+			"model"), 1, GL_TRUE, &gameObject->myTransform->localModelMatrix[0][0]);
+
+		for(auto mesh : gameObject->myMeshes->meshes)
+		{
+			mesh->Draw(progModel);
+		}
+	}
+
+
+	glUseProgram(0);
 }
 
 

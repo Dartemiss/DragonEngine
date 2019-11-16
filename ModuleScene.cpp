@@ -1,4 +1,5 @@
 #include "ModuleScene.h"
+#include "ComponentTransform.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -6,6 +7,7 @@
 
 ModuleScene::ModuleScene()
 {
+	root = new GameObject("World");
 }
 
 
@@ -67,6 +69,9 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			GameObject* newGameObject = CreateGameObject();
 			newGameObject->CreateComponent(MESH);
 			newGameObject->CreateComponent(MATERIAL);
+
+			newGameObject->myTransform->position += float3(numberOfGameObjects * 4.0f, 0.0f, 0.0f);
+			newGameObject->myTransform->UpdateMatrices();
 
 			if(newGameObject->myMeshes != nullptr)
 			{

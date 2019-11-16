@@ -32,6 +32,7 @@ public:
 	void Draw(unsigned int program);
 	void loadModel(const std::string &path);
 	const int GetNumberOfMeshes();
+	void GetMeshes(std::vector<Mesh*> &meshes);
 
 	//Variables
 	//Representation of a Cube, have exactly 8 vertex
@@ -43,6 +44,7 @@ public:
 	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
 	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
 	int numberOfTextures = 0;
+	void emptyScene();
 
 private:
 
@@ -54,7 +56,7 @@ private:
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 	
 	std::string computeDirectory(const std::string &path);
-	void emptyScene();
+	
 
 	void computeModelBoundingBox();
 

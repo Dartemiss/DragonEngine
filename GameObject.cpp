@@ -81,5 +81,7 @@ void GameObject::LoadModel(const char * path)
 	}
 
 	App->modelLoader->loadModel(path);
+	App->modelLoader->GetMeshes(myMeshes->meshes);
+	//App->modelLoader->emptyScene();
 
 }

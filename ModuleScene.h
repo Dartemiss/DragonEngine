@@ -32,7 +32,7 @@ private:
 	GameObject* root;
 
 	//GameObjects Counter
-	unsigned int numberOfGameObjects;
+	unsigned int numberOfGameObjects = 0;
 
 	
 	
