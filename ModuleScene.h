@@ -19,10 +19,20 @@ public:
 
 	//Methods
 	GameObject* CreateGameObject();
+	GameObject* CreateGameObject(const char* name, GameObject* parent);
+	
+	//Drawing Methods
+	void DrawUIBarMenuGameObject();
 
 private:
 	//Root
 	GameObject* root;
+
+	//GameObjects Counter
+	unsigned int numberOfGameObjects;
+
+	//AllGameObjectsCreated
+	std::vector<GameObject*> allGameObjects;
 
 };
 

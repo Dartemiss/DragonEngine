@@ -10,16 +10,25 @@ class GameObject
 {
 public:
 	GameObject();
+	GameObject(const char* name);
 	~GameObject();
 
 	//Core
 	void Update();
+	void SetParent(GameObject* newParent);
 
 	//Component Creation
 	Component* CreateComponent(ComponentType type);
 
+	//Variables
+	//ID are unique
+	//TODO: ID system
+	unsigned int ID;
+	
+
 private:
 	std::string name;
+	//Components assigned to gameObject
 	std::vector<Component*> components;
 	//Parent
 	GameObject* parent;

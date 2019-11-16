@@ -1,5 +1,7 @@
 #include "ModuleScene.h"
-
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 
 ModuleScene::ModuleScene()
@@ -23,6 +25,7 @@ update_status ModuleScene::PreUpdate()
 
 update_status ModuleScene::Update()
 {
+
 	return UPDATE_CONTINUE;
 }
 
@@ -33,5 +36,39 @@ bool ModuleScene::CleanUp()
 
 GameObject * ModuleScene::CreateGameObject()
 {
-	return nullptr;
+	std::string defaultName = "NewGameObject" + numberOfGameObjects;
+	GameObject* gameObject = new GameObject(defaultName.c_str());
+	gameObject->SetParent(root);
+
+	LOG("Creating new GameObject with name: %s", defaultName);
+
+	++numberOfGameObjects;
+
+	return gameObject;
 }
+
+GameObject * ModuleScene::CreateGameObject(const char * name, GameObject * parent)
+{
+	GameObject* gameObject = new GameObject(name);
+	gameObject->SetParent(parent);
+
+	LOG("Creating new GameObject with name: %s", name);
+
+	++numberOfGameObjects;
+	return gameObject;
+}
+
+void ModuleScene::DrawUIBarMenuGameObject()
+{
+	if (ImGui::BeginMenu("GameObject"))
+	{
+		if (ImGui::MenuItem("Create House GameObject"))
+		{
+			GameObject* newGameObject = CreateGameObject();
+			allGameObjects.push_back(newGameObject);
+		}
+
+		ImGui::EndMenu();
+	}
+}
+

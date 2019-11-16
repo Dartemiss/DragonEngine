@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleTexture.h"
+#include "ModuleScene.h"
 #include <stdio.h>
 #include <SDL.h>
 
@@ -81,6 +82,8 @@ update_status ModuleIMGUI::Update()
 
 			ImGui::EndMenu();
 		}
+
+		App->scene->DrawUIBarMenuGameObject();
 
 		if(ImGui::BeginMenu("Debug"))
 		{

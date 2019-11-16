@@ -2,7 +2,18 @@
 #define __Component_H__
 
 #include "Globals.h"
-#include "GameObject.h"
+#include <string>
+
+enum ComponentType
+{
+	TRANSFORM = 0,
+	MESH,
+	MATERIAL,
+	CAMERA
+};
+
+class GameObject;
+
 
 class Component
 {
@@ -10,6 +21,11 @@ public:
 
 	Component()
 	{
+	}
+
+	Component(const char* componentName)
+	{
+		name = componentName;
 	}
 
 	virtual void Enable()
@@ -33,11 +49,14 @@ public:
 		return true;
 	}
 
-	ComponentType myType = TRANSFORM;
-	bool isActive = false;
+	
 
-	//GameObject Parent: IMPORTANT, THIS POINTER MUST BE SYNC WITH PARENTS CHILDREN, BE CAREFUL
-	GameObject* componentParent;
+	//GameObject Parent: 
+	//IMPORTANT, THIS POINTER MUST BE SYNC WITH PARENTS CHILDREN, BE CAREFUL
+	GameObject* myGameObject = nullptr;
+	ComponentType myType = TRANSFORM;
+	bool isActive = true;
+	std::string name = "NewComponent";
 };
 
 #endif __Component_H__

@@ -139,6 +139,8 @@
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="ComponentMesh.cpp" />
+    <ClCompile Include="ComponentMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -374,6 +376,8 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentTransform.h" />
+    <ClInclude Include="ComponentMesh.h" />
+    <ClInclude Include="ComponentMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
