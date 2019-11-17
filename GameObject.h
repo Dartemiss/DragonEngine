@@ -26,6 +26,9 @@ public:
 	Component* CreateComponent(ComponentType type);
 	void LoadModel(const char* name);
 
+	//Hierarchy
+	void DrawHierarchy(GameObject* selected);
+
 	//Variables
 	//ID are unique
 	//TODO: ID system

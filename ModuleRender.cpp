@@ -353,7 +353,7 @@ void ModuleRender::DrawAllGameObjects()
 	for(auto gameObject : App->scene->allGameObjects)
 	{
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
-			"model"), 1, GL_TRUE, &gameObject->myTransform->localModelMatrix[0][0]);
+			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
 		for(auto mesh : gameObject->myMeshes->meshes)
 		{

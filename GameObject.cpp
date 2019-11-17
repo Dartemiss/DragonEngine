@@ -4,6 +4,9 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 GameObject::GameObject()
 {
@@ -82,4 +85,36 @@ void GameObject::LoadModel(const char * path)
 
 	myMeshes->LoadMeshes(path);
 
+}
+
+void GameObject::DrawHierarchy(GameObject * selected)
+{
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen
+		| ImGuiTreeNodeFlags_OpenOnDoubleClick | (selected == this ? ImGuiTreeNodeFlags_Selected : 0);
+
+	ImGui::PushID(this);
+	if (children.empty())
+	{
+		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+	}
+	bool objOpen = ImGui::TreeNodeEx(this, flags, name.c_str());
+
+	if(ImGui::IsItemClicked())
+	{
+		//Hola
+		//App->scene->SelectObjectInHierarchy();
+	}
+
+	if(objOpen)
+	{
+		for(auto child : children)
+		{
+			child->DrawHierarchy(selected);
+		}
+		if (!(flags & ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		{
+			ImGui::TreePop();
+		}
+	}
+	ImGui::PopID();
 }

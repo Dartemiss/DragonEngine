@@ -23,16 +23,17 @@ public:
 	
 	//Drawing Methods
 	void DrawUIBarMenuGameObject();
-
+	void DrawHierarchy();
 	//AllGameObjectsCreated
 	std::vector<GameObject*> allGameObjects;
 
 private:
 	//Root
-	GameObject* root;
-
+	GameObject* root = nullptr;
+	GameObject* selectedByHierarchy = nullptr;
 	//GameObjects Counter
 	unsigned int numberOfGameObjects = 0;
+	bool showHierarchy = true;
 
 	
 	

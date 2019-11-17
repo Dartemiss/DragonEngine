@@ -15,7 +15,7 @@ ComponentTransform::~ComponentTransform()
 
 void ComponentTransform::UpdateMatrices()
 {
-	globalModelMatrix = globalModelMatrix * localModelMatrix.Inverse();
+	globalModelMatrix = globalModelMatrix * localModelMatrix.Inverted();
 	localModelMatrix = float4x4::FromTRS(position, rotation, scale);
 	globalModelMatrix = globalModelMatrix * localModelMatrix;
 }

@@ -27,7 +27,7 @@ update_status ModuleScene::PreUpdate()
 
 update_status ModuleScene::Update()
 {
-
+	DrawHierarchy();
 	return UPDATE_CONTINUE;
 }
 
@@ -38,7 +38,7 @@ bool ModuleScene::CleanUp()
 
 GameObject * ModuleScene::CreateGameObject()
 {
-	std::string defaultName = "NewGameObject" + numberOfGameObjects;
+	std::string defaultName = "NewGameObject" + std::to_string(numberOfGameObjects);
 	GameObject* gameObject = new GameObject(defaultName.c_str());
 	gameObject->SetParent(root);
 
@@ -84,5 +84,14 @@ void ModuleScene::DrawUIBarMenuGameObject()
 
 		ImGui::EndMenu();
 	}
+}
+
+void ModuleScene::DrawHierarchy()
+{
+	unsigned int flags = ImGuiTreeNodeFlags_OpenOnArrow;
+
+	ImGui::Begin("Hierarchy", &showHierarchy);
+	root->DrawHierarchy(selectedByHierarchy);
+	ImGui::End();
 }
 
