@@ -28,7 +28,15 @@ public:
 	void setInt(const std::string &name, int value, unsigned int prog) const;
 	void setFloat(const std::string &name, float value, unsigned int prog) const;
 
+	void SetUpUniformsBuffer();
+
 	char* readFile(char* filename) const;
+
+	//Programs
+	unsigned int gridProg;
+	unsigned int defaultProg;
+	unsigned int uniformsBuffer;
+
 };
 
 #endif // __ModuleProgram_H__

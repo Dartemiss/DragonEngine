@@ -30,7 +30,7 @@ public:
 	bool CleanUp();
 
 	void Draw(unsigned int program);
-	void loadModel(const std::string &path);
+	void loadModel(const std::string &path, std::vector<Mesh*> &loadedMeshes);
 	const int GetNumberOfMeshes();
 	void GetMeshes(std::vector<Mesh*> &meshes);
 

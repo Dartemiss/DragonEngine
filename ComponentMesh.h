@@ -13,6 +13,9 @@ public:
 
 	void Update();
 
+	void LoadMeshes(const char* path);
+
+
 	std::vector<Mesh*> meshes;
 
 };

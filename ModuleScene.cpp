@@ -81,6 +81,7 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			allGameObjects.push_back(newGameObject);
 		}
 
+
 		ImGui::EndMenu();
 	}
 }

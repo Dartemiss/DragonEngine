@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "include/Geometry/Frustum.h"
+#include "include/Math/float4x4.h"
 
 class Application;
 
@@ -33,10 +34,16 @@ public:
 	void SetFarPlaneDistance(const float farDist);
 	void LookAt(const float3 target);
 
+	//Update Projection and View matrices
+	void UpdateUniformShaderMatrices();
+
 	//Variables
 	float aspect = 1.0f;
 	Frustum *frustum;
 
+	//Matrices
+	float4x4 proj = float4x4::zero;
+	float4x4 view = float4x4::zero;
 
 	float movementSpeed = 0.2f;
 	float rotationSpeed = 0.015f;

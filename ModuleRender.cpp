@@ -168,31 +168,9 @@ bool ModuleRender::Init()
 	glEnableVertexAttribArray(0);
 
 	//Project view model matrix and prog
-	proj = App->camera->frustum->ProjectionMatrix();
 
 	model = float4x4::FromTRS(float3(0.0f, 0.0f, 0.0f), float3x3::RotateX(0.0f)* float3x3::RotateY(0.0f), float3(1.0f, 1.0f, 1.0f));
-	
 
-	//First parameter is eye position, second is target position
-	view = App->camera->frustum->ViewMatrix();
-
-	//Lenna
-	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
-	unsigned int fs = App->program->createFragmentShader("../Shaders/FragmentShader.fs");
-
-	progLenna = App->program->createProgram(vs, fs);
-
-
-	//Grid
-	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
-	unsigned int fs2 = App->program->createFragmentShader("../Shaders/Grid.fs");
-
-	progGrid = App->program->createProgram(vs2, fs2);
-
-	//Model house
-	unsigned int fs3 = App->program->createFragmentShader("../Shaders/Model.fs");
-
-	progModel = App->program->createProgram(vs, fs3);
 
 	return true;
 }
@@ -311,14 +289,18 @@ void ModuleRender::DrawRectangle()
 void ModuleRender::DrawGrid()
 {
 	//Draw Grid
+	unsigned int progGrid = App->program->gridProg;
 	glUseProgram(progGrid);
 
 	glUniformMatrix4fv(glGetUniformLocation(progGrid,
 		"model"), 1, GL_TRUE, &model[0][0]);
+
+	//Temporary as std140 doesnt work
 	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"view"), 1, GL_TRUE, &view[0][0]);
+		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
+		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
+	
 
 	glLineWidth(1.0f);
 	float d = 200.0f;
@@ -358,15 +340,15 @@ void ModuleRender::DrawGrid()
 
 void ModuleRender::DrawAllGameObjects()
 {
+	unsigned int progModel = App->program->defaultProg;
 
 	glUseProgram(progModel);
 
-
+	//Temporary as std140 doesnt work
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"view"), 1, GL_TRUE, &view[0][0]);
+		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"proj"), 1, GL_TRUE, &proj[0][0]);
-
+		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
 
 	for(auto gameObject : App->scene->allGameObjects)
 	{

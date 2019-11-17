@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
+#include "ModuleProgram.h"
 #include "ModuleModelLoader.h"
 #include "include/Geometry/Frustum.h"
 #include "include/Math/float4.h"
@@ -36,13 +37,20 @@ bool ModuleCamera::Init()
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 
 	frustum->Translate(float3(1.0f, 1.0f, 1.0f));
-	
+
+	proj = frustum->ProjectionMatrix();
+	view = frustum->ViewMatrix();
+
+	UpdateUniformShaderMatrices();
+
 	
 	return true;
 }
 
 update_status ModuleCamera::PreUpdate()
 {
+	UpdateUniformShaderMatrices();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -142,7 +150,7 @@ update_status ModuleCamera::Update()
 
 
 	//Generate viewing matrix for camera movement/rotation
-	App->renderer->view = frustum->ViewMatrix();
+	view = frustum->ViewMatrix();
 
 	return UPDATE_CONTINUE;
 }
@@ -160,14 +168,14 @@ bool ModuleCamera::CleanUp()
 void ModuleCamera::SetFOV()
 {
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
-	App->renderer->proj = frustum->ProjectionMatrix();
+	proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::SetAspectRatio()
 {
 	aspect = ((float)App->window->width / App->window->height);
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
-	App->renderer->proj = frustum->ProjectionMatrix();
+	proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::Rotate(const float dx, const float dy)
@@ -242,7 +250,7 @@ void ModuleCamera::TranslateCameraToPoint(const float3 & newPos)
 
 	LookAt(App->modelLoader->modelCenter);
 
-	App->renderer->view = frustum->ViewMatrix();
+	view = frustum->ViewMatrix();
 
 }
 
@@ -262,4 +270,15 @@ void ModuleCamera::LookAt(const float3 target)
 	float3x3 rot = float3x3::LookAt(frustum->front, dir, frustum->up, float3::unitY);
 	frustum->front = rot.Transform(frustum->front).Normalized();
 	frustum->up = rot.Transform(frustum->up).Normalized();
+}
+
+void ModuleCamera::UpdateUniformShaderMatrices()
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, App->program->uniformsBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float4x4), &proj[0][0]);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, App->program->uniformsBuffer);
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float4x4), sizeof(float4x4), &view[0][0]);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

@@ -10,7 +10,6 @@
 
 bool ModuleModelLoader::Init()
 {
-	//loadModel("../Models/baker_house/BakerHouse.fbx");
 
 	return true;
 }
@@ -44,11 +43,8 @@ void ModuleModelLoader::Draw(unsigned int program)
 }
 
 
-void ModuleModelLoader::loadModel(const std::string &path)
+void ModuleModelLoader::loadModel(const std::string &path, std::vector<Mesh*> &loadedMeshes)
 {
-	if (isModelLoaded)
-		emptyScene();
-
 	LOG("Importing model \n");
 	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -63,8 +59,10 @@ void ModuleModelLoader::loadModel(const std::string &path)
 		return;
 	LOG("For each mesh located on the current node, processing meshes.")
 	processNode(scene->mRootNode, scene);
-	computeModelBoundingBox();
-	isModelLoaded = true;
+	//computeModelBoundingBox();
+	loadedMeshes = meshes;
+
+	return;
 
 }
 
@@ -194,11 +192,6 @@ std::string ModuleModelLoader::computeDirectory(const std::string &path)
 
 void ModuleModelLoader::emptyScene()
 {
-	for(auto mesh : meshes)
-	{
-		delete mesh;
-	}
-
 	meshes.clear();
 	modelBox.clear();
 

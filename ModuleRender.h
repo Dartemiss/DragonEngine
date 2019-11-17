@@ -26,13 +26,7 @@ public:
 
 	float aspect = 1.0f;
 
-	float4x4 proj = float4x4::zero;
 	float4x4 model = float4x4::zero;
-	float4x4 view = float4x4::zero;
-
-	unsigned int progLenna;
-	unsigned int progGrid;
-	unsigned int progModel;
 
 	bool showBoundingBox = false;
 

@@ -5,6 +5,7 @@
 #include "glew.h"
 #include "SDL.h"
 #include "glew.h"
+#include "include/Math/float4x4.h"
 #include "assert.h"
 #include <string>
 #include <streambuf>
@@ -13,6 +14,21 @@
 
 bool ModuleProgram::Init()
 {
+
+	//Grid shader
+	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
+	unsigned int fs2 = App->program->createFragmentShader("../Shaders/Grid.fs");
+
+	gridProg = App->program->createProgram(vs2, fs2);
+
+	//Default shader
+	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
+	unsigned int fs = App->program->createFragmentShader("../Shaders/Model.fs");
+
+	defaultProg = App->program->createProgram(vs, fs);
+
+	SetUpUniformsBuffer();
+
 	return true;
 }
 
@@ -33,6 +49,9 @@ update_status ModuleProgram::PostUpdate()
 
 bool ModuleProgram::CleanUp()
 {
+	glDeleteProgram(defaultProg);
+	glDeleteProgram(gridProg);
+
 	return true;
 }
 
@@ -88,6 +107,25 @@ void ModuleProgram::setInt(const std::string & name, int value, unsigned int pro
 void ModuleProgram::setFloat(const std::string & name, float value, unsigned int prog) const
 {
 	glUniform1f(glGetUniformLocation(prog, name.c_str()), value);
+}
+
+void ModuleProgram::SetUpUniformsBuffer()
+{
+	unsigned int uniformBlockIndexGrid = glGetUniformBlockIndex(gridProg, "Matrices");
+	glUniformBlockBinding(gridProg, uniformBlockIndexGrid, 0);
+
+	unsigned int uniformBlockIndexDefault = glGetUniformBlockIndex(defaultProg, "Matrices");
+	glUniformBlockBinding(defaultProg, uniformBlockIndexDefault, 0);
+
+
+	glGenBuffers(1, &uniformsBuffer);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, uniformsBuffer);
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(float4x4), NULL, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uniformsBuffer, 0, 2 * sizeof(float4x4));
+
 }
 
 

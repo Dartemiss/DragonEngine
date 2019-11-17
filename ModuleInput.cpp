@@ -216,7 +216,7 @@ void ModuleInput::DropModelFile(char * dropped_filedir)
 	{
 		LOG("File is .fbx: Loading model.");
 
-		App->modelLoader->loadModel(dropped_filedir);
+		//App->modelLoader->loadModel(dropped_filedir);
 		return;
 	}
 
