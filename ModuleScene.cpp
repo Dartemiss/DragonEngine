@@ -100,12 +100,15 @@ void ModuleScene::DrawUIBarMenuGameObject()
 void ModuleScene::DrawGUI()
 {
 	unsigned int flags = ImGuiTreeNodeFlags_OpenOnArrow;
+	if(showHierarchy)
+	{
+		ImGui::Begin("Hierarchy", &showHierarchy);
+		root->DrawHierarchy(selectedByHierarchy);
+		ImGui::End();
+	}
 
-	ImGui::Begin("Hierarchy", &showHierarchy);
-	root->DrawHierarchy(selectedByHierarchy);
-	ImGui::End();
 
-	if(selectedByHierarchy != nullptr)
+	if(selectedByHierarchy != nullptr && showInspector)
 	{
 		ImGui::Begin("Inspector", &showInspector);
 		if(ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
