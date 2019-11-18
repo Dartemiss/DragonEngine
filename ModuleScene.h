@@ -26,6 +26,8 @@ public:
 	void DrawGUI();
 	//AllGameObjectsCreated
 	std::vector<GameObject*> allGameObjects;
+	bool showHierarchy = true;
+	bool showInspector = true;
 
 private:
 	//Root
@@ -33,8 +35,7 @@ private:
 	GameObject* selectedByHierarchy = nullptr;
 	//GameObjects Counter
 	unsigned int numberOfGameObjects = 0;
-	bool showHierarchy = true;
-	bool showInspector = true;
+
 
 	
 	

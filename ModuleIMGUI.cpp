@@ -118,6 +118,16 @@ update_status ModuleIMGUI::Update()
 				showInspector = !showInspector;
 			}
 
+			if(ImGui::MenuItem("Show Hierarchy"))
+			{
+				App->scene->showHierarchy = true;
+			}
+
+			if (ImGui::MenuItem("Show Inspector"))
+			{
+				App->scene->showInspector = true;
+			}
+
 			ImGui::EndMenu();
 		}
 	}
