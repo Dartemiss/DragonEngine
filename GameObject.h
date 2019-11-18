@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+
+//Class declaration is way faster than include header
 class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
