@@ -32,6 +32,9 @@ void GUITime::Draw(const char * title, bool * p_opened)
 			App->timemanager->ExecuteNextFrames(2);
 		}
 
+		ImGui::Checkbox("Fix FPS", &App->timemanager->fixFPS);
+		ImGui::SliderInt("FPS", &App->timemanager->fixedFPS, 10, 60);
+
 		ImGui::End();
 
 	}

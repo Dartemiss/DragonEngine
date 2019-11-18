@@ -68,8 +68,21 @@ void ModuleTimeManager::FinalDeltaTimes()
 	}
 	realDeltaTime = realTimer->ReadTimer()- initialRealFrameTime;
 
-	counterTimeFPS += realDeltaTime;
+	float timeToWait = 0.0f;
+	if(fixFPS)
+	{
+		float timeperFrame = (1000.0f / fixedFPS);
+		timeToWait = timeperFrame - realDeltaTime;
+
+		if(timeToWait > 0.0f)
+		{
+			Wait(timeToWait);
+		}
+	}
+
+	counterTimeFPS += realDeltaTime + timeToWait;
 	++counterFPS;
+
 	if(counterTimeFPS > 1000.0f)
 	{
 		FPS = counterFPS;
@@ -122,4 +135,9 @@ void ModuleTimeManager::ExecuteNextFrames(int numberFrames)
 	LOG("Cannot execute next frames if game is not paused.");
 	return;
 
+}
+
+void ModuleTimeManager::Wait(float timeToWait)
+{
+	SDL_Delay(timeToWait);
 }

@@ -30,13 +30,16 @@ public:
 	void PauseGame();
 	void UnPauseGame();
 	void ExecuteNextFrames(int numberFrames);
+	void Wait(float timeToWait);
 
 	//Variables
 	long long frameCount = 0;
 	int FPS = 60;
+	int fixedFPS = 60;
 	float timeScale = 1.0f;
 	bool isPaused = false;
 	bool waitingToPause = false;
+	bool fixFPS = false;
 
 private:
 

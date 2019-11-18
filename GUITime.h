@@ -14,6 +14,9 @@ public:
 	~GUITime() = default;
 
 	void Draw(const char* title, bool* p_opened);
+
+	
+
 };
 
 #endif __GUITime_H__
