@@ -27,7 +27,13 @@ update_status ModuleScene::PreUpdate()
 
 update_status ModuleScene::Update()
 {
-	DrawHierarchy();
+	for(auto gameObject : allGameObjects)
+	{
+		gameObject->UpdateTransform();
+	}
+
+	DrawGUI();
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -60,6 +66,11 @@ GameObject * ModuleScene::CreateGameObject(const char * name, GameObject * paren
 	return gameObject;
 }
 
+void ModuleScene::SelectObjectInHierarchy(GameObject * selected)
+{
+	selectedByHierarchy = selected;
+}
+
 void ModuleScene::DrawUIBarMenuGameObject()
 {
 	if (ImGui::BeginMenu("GameObject"))
@@ -86,12 +97,31 @@ void ModuleScene::DrawUIBarMenuGameObject()
 	}
 }
 
-void ModuleScene::DrawHierarchy()
+void ModuleScene::DrawGUI()
 {
 	unsigned int flags = ImGuiTreeNodeFlags_OpenOnArrow;
 
 	ImGui::Begin("Hierarchy", &showHierarchy);
 	root->DrawHierarchy(selectedByHierarchy);
 	ImGui::End();
+
+	if(selectedByHierarchy != nullptr)
+	{
+		ImGui::Begin("Inspector", &showInspector);
+		if(ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Text("Position");
+			ImGui::DragFloat3("Position", (float *)&selectedByHierarchy->myTransform->position);
+			ImGui::Text("Rotation");
+			ImGui::DragFloat3("Rotation", (float *)&selectedByHierarchy->myTransform->eulerRotation, 1.0f, -360.0f, 360.0f);
+			ImGui::Text("Scale");
+			ImGui::DragFloat3("Scale", (float *)&selectedByHierarchy->myTransform->scale, 1.0f, 0.01f, 1000.0f);
+			
+		}
+		ImGui::End();
+		//Change EulerRotation to Quat
+		selectedByHierarchy->myTransform->EulerToQuat();
+	}
+
 }
 

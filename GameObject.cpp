@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "ModuleModelLoader.h"
+#include "ModuleScene.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
@@ -26,6 +27,7 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
+	
 	return;
 }
 
@@ -102,7 +104,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 	if(ImGui::IsItemClicked())
 	{
 		//Hola
-		//App->scene->SelectObjectInHierarchy();
+		App->scene->SelectObjectInHierarchy(this);
 	}
 
 	if(objOpen)
@@ -117,4 +119,12 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		}
 	}
 	ImGui::PopID();
+}
+
+void GameObject::UpdateTransform()
+{
+	if(myTransform != nullptr)
+	{
+		myTransform->UpdateMatrices();
+	}
 }

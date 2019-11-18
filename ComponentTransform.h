@@ -13,6 +13,7 @@ public:
 	ComponentTransform();
 	~ComponentTransform();
 
+	void EulerToQuat();
 	void UpdateMatrices();
 
 	//Variables

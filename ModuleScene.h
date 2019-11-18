@@ -20,10 +20,10 @@ public:
 	//Methods
 	GameObject* CreateGameObject();
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
-	
+	void SelectObjectInHierarchy(GameObject* selected);
 	//Drawing Methods
 	void DrawUIBarMenuGameObject();
-	void DrawHierarchy();
+	void DrawGUI();
 	//AllGameObjectsCreated
 	std::vector<GameObject*> allGameObjects;
 
@@ -34,6 +34,7 @@ private:
 	//GameObjects Counter
 	unsigned int numberOfGameObjects = 0;
 	bool showHierarchy = true;
+	bool showInspector = true;
 
 	
 	

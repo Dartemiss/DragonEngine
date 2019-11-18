@@ -29,6 +29,9 @@ public:
 	//Hierarchy
 	void DrawHierarchy(GameObject* selected);
 
+	//Update
+	void UpdateTransform();
+
 	//Variables
 	//ID are unique
 	//TODO: ID system

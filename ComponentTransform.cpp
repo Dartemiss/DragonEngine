@@ -1,5 +1,5 @@
 #include "ComponentTransform.h"
-
+#include "include/Math/MathFunc.h"
 
 
 ComponentTransform::ComponentTransform()
@@ -11,6 +11,11 @@ ComponentTransform::ComponentTransform()
 
 ComponentTransform::~ComponentTransform()
 {
+}
+
+void ComponentTransform::EulerToQuat()
+{
+	rotation = rotation.FromEulerXYX(DegToRad(eulerRotation).x, DegToRad(eulerRotation).y, DegToRad(eulerRotation).z);
 }
 
 void ComponentTransform::UpdateMatrices()
