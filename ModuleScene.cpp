@@ -90,6 +90,21 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			}
 
 			allGameObjects.push_back(newGameObject);
+
+
+			GameObject* newGameObjectChild = CreateGameObject("Child", newGameObject);
+			newGameObjectChild->CreateComponent(MESH);
+			newGameObjectChild->CreateComponent(MATERIAL);
+
+			newGameObjectChild->myTransform->position += float3(8.0f, 0.0f, 0.0f);
+			newGameObjectChild->myTransform->UpdateMatrices();
+			if (newGameObjectChild->myMeshes != nullptr)
+			{
+				newGameObjectChild->LoadModel("../Models/baker_house/BakerHouse.fbx");
+			}
+
+			allGameObjects.push_back(newGameObjectChild);
+
 		}
 
 
@@ -114,11 +129,11 @@ void ModuleScene::DrawGUI()
 		if(ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Text("Position");
-			ImGui::DragFloat3("Position", (float *)&selectedByHierarchy->myTransform->position);
+			ImGui::DragFloat3("Position", (float *)&selectedByHierarchy->myTransform->position, 0.1f);
 			ImGui::Text("Rotation");
 			ImGui::DragFloat3("Rotation", (float *)&selectedByHierarchy->myTransform->eulerRotation, 1.0f, -360.0f, 360.0f);
 			ImGui::Text("Scale");
-			ImGui::DragFloat3("Scale", (float *)&selectedByHierarchy->myTransform->scale, 1.0f, 0.01f, 1000.0f);
+			ImGui::DragFloat3("Scale", (float *)&selectedByHierarchy->myTransform->scale, 0.01f, 0.01f, 1000.0f);
 			
 		}
 		ImGui::End();

@@ -42,14 +42,16 @@ public:
 	ComponentMesh* myMeshes = nullptr;
 	ComponentMaterial* myMaterial = nullptr;
 
-private:
-	std::string name;
-	//Components assigned to gameObject
-	std::vector<Component*> components;
 	//Parent
 	GameObject* parent;
 	//Chilren
 	std::vector<GameObject*> children;
+
+
+private:
+	std::string name;
+	//Components assigned to gameObject
+	std::vector<Component*> components;
 
 
 

@@ -10,11 +10,12 @@
 class ComponentTransform : public Component
 {
 public:
-	ComponentTransform();
+	ComponentTransform(GameObject* gameObject);
 	~ComponentTransform();
 
 	void EulerToQuat();
 	void UpdateMatrices();
+	void SetGlobalMatrix(float4x4 &parentGlobal);
 
 	//Variables
 	//Local Transform

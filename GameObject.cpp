@@ -52,7 +52,7 @@ Component * GameObject::CreateComponent(ComponentType type)
 	switch(type)
 	{
 		case TRANSFORM:
-			component = new ComponentTransform();
+			component = new ComponentTransform(this);
 			myTransform = (ComponentTransform*)component;
 			break;
 		case MESH:
@@ -125,6 +125,10 @@ void GameObject::UpdateTransform()
 {
 	if(myTransform != nullptr)
 	{
+		if(parent != nullptr && parent->myTransform != nullptr)
+		{
+			myTransform->SetGlobalMatrix(parent->myTransform->globalModelMatrix);
+		}
 		myTransform->UpdateMatrices();
 	}
 }
