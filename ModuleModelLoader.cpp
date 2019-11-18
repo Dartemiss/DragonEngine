@@ -7,6 +7,11 @@
 #include <material.h>
 #include <mesh.h>
 #include <cimport.h>
+#include "Logger.hpp"
+#include "DefaultLogger.hpp"
+#include "myStream.h"
+
+using namespace Assimp;
 
 bool ModuleModelLoader::Init()
 {
@@ -50,6 +55,12 @@ void ModuleModelLoader::loadModel(const std::string &path)
 		emptyScene();
 
 	LOG("Importing model \n");
+
+	const unsigned int severity = Logger::Debugging | Logger::Info | Logger::Err | Logger::Warn;
+	DefaultLogger::create("", Logger::NORMAL);
+	Assimp::DefaultLogger::get()->attachStream(new myStream(), severity);
+
+
 	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -66,6 +77,7 @@ void ModuleModelLoader::loadModel(const std::string &path)
 	computeModelBoundingBox();
 	isModelLoaded = true;
 
+	DefaultLogger::kill();
 }
 
 const int ModuleModelLoader::GetNumberOfMeshes()

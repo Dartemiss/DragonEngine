@@ -14,7 +14,7 @@ class Application;
 class GUIWindow : public GUI
 {
 public:
-	GUIWindow() = default;
+	GUIWindow();
 	~GUIWindow() = default;
 
 	void Draw(const char* title, bool* p_opened, SDL_Window* window, Texture *texInfo);

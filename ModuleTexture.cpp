@@ -95,7 +95,36 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	ILuint image;
 	ilGenImages(1, &image);
 	ilBindImage(image);
-	ilLoadImage(filepath.c_str());
+
+	
+	bool isLoaded = ilLoadImage(filepath.c_str());
+	if(isLoaded)
+	{
+		LOG("Texture found in path described in the FBX");
+	}
+	else
+	{
+		bool isLoaded = ilLoadImage(path);
+		if(isLoaded)
+		{
+			LOG("Texture found in same folder than model.");
+		}
+		else
+		{
+			std::string texturePath = "../Textures/";
+			texturePath.append(path);
+			bool isLoaded = ilLoadImage(texturePath.c_str());
+			if(isLoaded)
+			{
+				LOG("Texture found in Textures directory.");
+			}
+			else
+			{
+				LOG("Cannot find textures");
+			}
+		}
+	}
+	
 	ILinfo ImageInfo;
 	iluGetImageInfo(&ImageInfo);
 	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)

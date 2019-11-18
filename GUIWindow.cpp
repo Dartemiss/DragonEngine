@@ -9,6 +9,11 @@
 #include "ilu.h"
 
 
+GUIWindow::GUIWindow()
+{
+	fpsTimer.StartTimer();
+}
+
 void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Texture *texInfo)
 {
 	if(isEnabled)
@@ -185,11 +190,11 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 			ImGui::Text("%d", texInfo->depth);
 
 			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
-			if(texInfo->format == IL_TYPE_UNKNOWN)
+			if (texInfo->format == IL_TYPE_UNKNOWN)
 			{
 				ImGui::Text("Unknown");
 			}
-			else if(texInfo->format == IL_PNG)
+			else if (texInfo->format == IL_PNG)
 			{
 				ImGui::Text("PNG");
 			}
@@ -201,8 +206,11 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 			{
 				ImGui::Text("DDS");
 			}
-			
-		
+		}
+		if (ImGui::CollapsingHeader("Variables")
+		{
+
+
 		}
 
 		ImGui::End();

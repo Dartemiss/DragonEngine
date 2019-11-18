@@ -165,6 +165,7 @@
     <ClInclude Include="ModuleTexture.h" />
     <ClInclude Include="ModuleTimeManager.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="myStream.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="uSTimer.h" />

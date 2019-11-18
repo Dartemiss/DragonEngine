@@ -367,6 +367,7 @@
     <ClInclude Include="ModuleTimeManager.h" />
     <ClInclude Include="GUITime.h" />
     <ClInclude Include="GUIInspector.h" />
+    <ClInclude Include="myStream.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
