@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleTimeManager.h"
+#include "ModuleInput.h"
 #include "Application.h"
 #include "ilu.h"
 
@@ -14,10 +15,11 @@ GUIWindow::GUIWindow()
 	fpsTimer.StartTimer();
 }
 
-void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Texture *texInfo)
+void GUIWindow::Draw(const char * title, bool * p_opened)
 {
 	if(isEnabled)
 	{
+		SDL_Window* window = App->window->window;
 		assert(window != nullptr);
 		ImGui::Begin(title, p_opened);
 		if (ImGui::Checkbox("FullScreen", &App->window->fullscreen))
@@ -27,7 +29,7 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 				SDL_DisplayMode displayMode;
 				SDL_GetDesktopDisplayMode(0, &displayMode);
 				SDL_SetWindowSize(window, displayMode.w, displayMode.h);
-				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 				App->camera->SetAspectRatio();
 				
 			}
@@ -179,38 +181,87 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 		}
 		if (ImGui::CollapsingHeader("Texture Data"))
 		{
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Width: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo->width);
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Height: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo->width);
-
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Depth: "); ImGui::SameLine();
-			ImGui::Text("%d", texInfo->depth);
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
-			if (texInfo->format == IL_TYPE_UNKNOWN)
+			for (auto texInfo : App->texture->textures_loaded) 
 			{
-				ImGui::Text("Unknown");
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Path: "); ImGui::SameLine();
+				ImGui::Text("%s", texInfo.path.c_str());
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Width: "); ImGui::SameLine();
+				ImGui::Text("%d(Bytes)", texInfo.width);
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Height: "); ImGui::SameLine();
+				ImGui::Text("%d(Bytes)", texInfo.width);
+
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Depth: "); ImGui::SameLine();
+				ImGui::Text("%d", texInfo.depth);
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
+				if (texInfo.format == IL_TYPE_UNKNOWN)
+				{
+					ImGui::Text("Unknown");
+				}
+				else if (texInfo.format == IL_PNG)
+				{
+					ImGui::Text("PNG");
+				}
+				else if (texInfo.format == IL_JPG)
+				{
+					ImGui::Text("JPG");
+				}
+				else if (texInfo.format == IL_DDS)
+				{
+					ImGui::Text("DDS");
+				}
+
+				ImGui::Separator();
 			}
-			else if (texInfo->format == IL_PNG)
-			{
-				ImGui::Text("PNG");
-			}
-			else if (texInfo->format == IL_JPG)
-			{
-				ImGui::Text("JPG");
-			}
-			else if (texInfo->format == IL_DDS)
-			{
-				ImGui::Text("DDS");
-			}
+
+
 		}
-		if (ImGui::CollapsingHeader("Variables")
+		if (ImGui::CollapsingHeader("Variables"))
 		{
+			if (ImGui::CollapsingHeader("Renderer"))
+			{
+				//Face Culling
+				ImGui::Checkbox("Face Culling", &App->renderer->faceCullingIsActive);
+				App->renderer->EnableFaceCulling();
 
+				//GL_DEPTH_TEST
+				ImGui::Checkbox("Depth Test", &App->renderer->dephtTestIsActive);
+				App->renderer->EnableDepthTest();
 
+				//Changing front face
+				ImGui::Checkbox("Front Face: CWW/CW", &App->renderer->changingFrontFace);
+				App->renderer->ChangeFrontFace();
+				//Texture2D
+				ImGui::Checkbox("Texture2D", &App->renderer->texture2DIsActive);
+				App->renderer->EnableTexture2D();
+
+				//Fill triangles
+				ImGui::Checkbox("Fill Triangles", &App->renderer->fillTrianglesIsActive);
+				App->renderer->FillTriangles();
+
+				//Alpha test
+				ImGui::Checkbox("Alpha test", &App->renderer->alphaTestIsActive);
+				App->renderer->EnableAlphaTest();
+
+			}
+
+			if (ImGui::CollapsingHeader("Input"))
+			{
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f,1.0f), "Mouse");
+				ImGui::Text("Mouse Position: (%f , %f)", App->input->GetMousePosition().x, App->input->GetMousePosition().y);
+				ImGui::Text("Mouse delta motion: (%f, %f)", App->input->GetMouseMotion().x, App->input->GetMouseMotion().y);
+				ImGui::Text("Mouse Wheel: %d", App->input->GetMouseWheel());
+				ImGui::Text("Mouse Right Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT ? 1 : 0);
+				ImGui::Text("Mouse Left Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT ? 1 : 0);
+				ImGui::Separator();
+
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "KeyBoard");
+				ImGui::Text("Keys down:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_DOWN) { ImGui::SameLine(); ImGui::Text("%d ", i); }
+				ImGui::Text("Keys repeat:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_REPEAT) { ImGui::SameLine(); ImGui::Text("%d ", i); }
+			}
 		}
 
 		ImGui::End();

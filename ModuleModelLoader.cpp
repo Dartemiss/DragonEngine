@@ -158,7 +158,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 			// 3. normal maps
 			std::vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
-				aiTextureType_HEIGHT, "texture_normal",directory);
+				aiTextureType_NORMALS, "texture_normal",directory);
 			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 			// 4. height maps
 			std::vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
@@ -168,6 +168,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 			//Count number of textures
 			numberOfTextures += textures.size();
 
+			
 		}
 		
 	return Mesh(vertices, indices, textures);

@@ -104,16 +104,19 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	}
 	else
 	{
-		bool isLoaded = ilLoadImage(path);
+		filepath.clear();
+		filepath = path;
+		bool isLoaded = ilLoadImage(filepath.c_str());
 		if(isLoaded)
 		{
 			LOG("Texture found in same folder than model.");
 		}
 		else
 		{
-			std::string texturePath = "../Textures/";
-			texturePath.append(path);
-			bool isLoaded = ilLoadImage(texturePath.c_str());
+			filepath.clear();
+			std::string filepath = "../Textures/";
+			filepath.append(path);
+			bool isLoaded = ilLoadImage(filepath.c_str());
 			if(isLoaded)
 			{
 				LOG("Texture found in Textures directory.");
@@ -140,7 +143,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 		//Fill texture
 		texture.width = ilGetInteger(IL_IMAGE_WIDTH);
 		texture.height = ilGetInteger(IL_IMAGE_HEIGHT);
-		texture.format = ilDetermineType(path);
+		texture.format = ilDetermineType(filepath.c_str());
 		texture.data = data;
 
 		//Binding texture and generating mipmaps

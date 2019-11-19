@@ -354,5 +354,80 @@ void ModuleRender::DrawRectangle()
 
 }
 
+void ModuleRender::EnableFaceCulling()
+{
+	if(faceCullingIsActive)
+	{
+		glEnable(GL_CULL_FACE);
+	}
+	else
+	{
+		glDisable(GL_CULL_FACE);
+	}
+}
+
+void ModuleRender::EnableDepthTest()
+{
+	if(dephtTestIsActive)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	else
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+}
+
+void ModuleRender::ChangeFrontFace()
+{
+	if(changingFrontFace)
+	{
+		glFrontFace(GL_CCW);
+	}
+	else
+	{
+		glFrontFace(GL_CW);
+	}
+}
+
+void ModuleRender::EnableTexture2D()
+{
+	if(texture2DIsActive)
+	{
+		glEnable(GL_TEXTURE_2D);
+	}
+	else
+	{
+		glDisable(GL_TEXTURE_2D);
+	}
+}
+
+void ModuleRender::FillTriangles()
+{
+	if(fillTrianglesIsActive)
+	{
+		glPolygonMode(GL_FRONT, GL_FILL);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT, GL_LINE);
+	}
+}
+
+void ModuleRender::EnableAlphaTest()
+{
+	if(alphaTestIsActive)
+	{
+		glEnable(GL_ALPHA_TEST);
+	}
+	else
+	{
+		glDisable(GL_ALPHA_TEST);
+	}
+}
+
+
+
+
 
 

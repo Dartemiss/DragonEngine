@@ -132,10 +132,12 @@ update_status ModuleInput::PreUpdate()
 		case SDL_MOUSEWHEEL:
 			if (event.wheel.y > 0) // scroll up
 			{
+				mouse_wheel = event.wheel.y;
 				App->camera->Zoom(true);
 			}
 			else if (event.wheel.y < 0) // scroll down
 			{
+				mouse_wheel = event.wheel.y;
 				App->camera->Zoom(false);
 			}
 			break;

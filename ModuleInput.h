@@ -50,6 +50,12 @@ public:
 		return mouse_buttons[id - 1];
 	}
 
+	KeyState* GetKeyBoard() const
+	{
+	
+		return keyboard;
+	}
+
 	bool GetWindowEvent(EventWindow code) const;
 	// Get mouse / axis position
 	const fPoint& GetMouseMotion() const;

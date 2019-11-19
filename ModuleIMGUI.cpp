@@ -45,11 +45,7 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	if(App->texture->textures_loaded.size() > 0)
-	{
-		Texture *texinfo = &App->texture->textures_loaded[App->texture->indexTex];
-		guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window, texinfo);
-	}
+	guiWindow.Draw("Window Configuration", &showWindowConfig);
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
 	guiCamera.Draw("Camera Settings", &showCameraGUI);
