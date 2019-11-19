@@ -214,7 +214,7 @@ void ModuleInput::DropModelFile(char * dropped_filedir)
 	std::string filedir(dropped_filedir);
 	std::size_t dotFound = fileExt.find_last_of(".");
 	fileExt.erase(0, dotFound + 1);
-	if(fileExt == "fbx")
+	if(fileExt == "fbx" || fileExt == "FBX")
 	{
 		LOG("File is .fbx: Loading model.");
 

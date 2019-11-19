@@ -257,7 +257,7 @@ update_status ModuleRender::Update()
 	glLineWidth(1.0f);
 
 	
-	if(App->modelLoader->isModelLoaded && showBoundingBox)
+	if(App->modelLoader->isModelLoaded && showBoundingBox && App->modelLoader->modelBox.size() == 8)
 	{	
 		//Bounding Box
 		glLineWidth(1.0f);

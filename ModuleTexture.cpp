@@ -89,7 +89,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	LOG("Loading texture %s . \n", filepath);
+	LOG("Loading texture %s . \n", filepath.c_str());
 	LOG("Creating image");
 	//Loading image
 	ILuint image;
@@ -97,8 +97,8 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	ilBindImage(image);
 
 	
-	bool isLoaded = ilLoadImage(filepath.c_str());
-	if(isLoaded)
+	bool isLoaded1 = ilLoadImage(filepath.c_str());
+	if(isLoaded1)
 	{
 		LOG("Texture found in path described in the FBX");
 	}
@@ -106,8 +106,8 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	{
 		filepath.clear();
 		filepath = path;
-		bool isLoaded = ilLoadImage(filepath.c_str());
-		if(isLoaded)
+		bool isLoaded2 = ilLoadImage(filepath.c_str());
+		if(isLoaded2)
 		{
 			LOG("Texture found in same folder than model.");
 		}
@@ -116,8 +116,8 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 			filepath.clear();
 			std::string filepath = "../Textures/";
 			filepath.append(path);
-			bool isLoaded = ilLoadImage(filepath.c_str());
-			if(isLoaded)
+			bool isLoaded3 = ilLoadImage(filepath.c_str());
+			if(isLoaded3)
 			{
 				LOG("Texture found in Textures directory.");
 			}

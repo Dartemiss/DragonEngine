@@ -165,6 +165,8 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 				aiTextureType_AMBIENT, "texture_height",directory);
 			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+			
+
 			//Count number of textures
 			numberOfTextures += textures.size();
 
@@ -265,8 +267,11 @@ void ModuleModelLoader::computeModelBoundingBox()
 	modelBox.push_back(float3(maxX, maxY, maxZ));
 	modelBox.push_back(float3(minX, maxY, maxZ));
 
-
-	correctCameraPositionForModel = float3((maxX + minX)/2, (maxY + minY)/2, -2 *(maxZ - minZ));
+	if((maxZ - minZ) <= 2 * (maxY - minY))
+		correctCameraPositionForModel = float3((maxX + minX)/2, (maxY + minY)/2, -2 *(maxZ - minZ));
+	else
+		correctCameraPositionForModel = float3((maxX + minX) / 2, -2 * (maxY + minY) / 2, (maxZ - minZ)/2);
+	
 	LOG("Compute the camera position depending of model size: (%.3f,%.3f,%.3f)", correctCameraPositionForModel.x, correctCameraPositionForModel.y, correctCameraPositionForModel.z);
 
 	modelCenter = correctCameraPositionForModel;
