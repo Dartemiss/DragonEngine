@@ -14,7 +14,7 @@
 #include <ilu.h>
 #include <ilut.h>
 #include <material.h>
-
+#include <set>
 
 
 class ModuleModelLoader : public Module
@@ -32,6 +32,8 @@ public:
 	void Draw(unsigned int program);
 	void loadModel(const std::string &path);
 	const int GetNumberOfMeshes();
+	const int GetNumberOfTriangles();
+	void AddTextureIndex(std::vector<Texture> &textures);
 
 	//Variables
 	//Representation of a Cube, have exactly 8 vertex
@@ -43,6 +45,8 @@ public:
 	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
 	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
 	int numberOfTextures = 0;
+
+	std::set<unsigned int> indicesOfCurrentTextures;
 
 private:
 
@@ -57,6 +61,8 @@ private:
 	void emptyScene();
 
 	void computeModelBoundingBox();
+
+	
 
 
 

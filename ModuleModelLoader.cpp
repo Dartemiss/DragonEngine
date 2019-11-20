@@ -78,12 +78,46 @@ void ModuleModelLoader::loadModel(const std::string &path)
 	isModelLoaded = true;
 
 	DefaultLogger::kill();
+
+	indicesOfCurrentTextures.size();
 }
 
 const int ModuleModelLoader::GetNumberOfMeshes()
 {
 	return meshes.size();
 }
+
+const int ModuleModelLoader::GetNumberOfTriangles()
+{
+	int counter = 0;
+
+	for(auto mesh: meshes)
+	{
+		counter += mesh->indices.size();
+	}
+	return counter / 3;
+}
+
+void ModuleModelLoader::AddTextureIndex(std::vector<Texture> &textures)
+{
+	std::vector<Texture> loaded = App->texture->textures_loaded;
+	for(auto tex : textures)
+	{
+		unsigned int index = 0;
+		for(auto load : loaded)
+		{
+			if(tex.id == load.id)
+			{
+				indicesOfCurrentTextures.insert(index);
+			}
+			++index;
+		}
+	}
+
+	return;
+}
+
+
 
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 {
@@ -165,7 +199,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 				aiTextureType_AMBIENT, "texture_height",directory);
 			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-			
+			AddTextureIndex(textures);
 
 			//Count number of textures
 			numberOfTextures += textures.size();
@@ -211,6 +245,7 @@ void ModuleModelLoader::emptyScene()
 
 	meshes.clear();
 	modelBox.clear();
+	indicesOfCurrentTextures.clear();
 
 	numberOfTextures = 0;
 }
@@ -278,16 +313,19 @@ void ModuleModelLoader::computeModelBoundingBox()
 	modelCenter.z = (maxZ - minZ) / 2;
 	LOG("Computing models center: (%.3f,%.3f,%.3f) ", modelCenter.x, modelCenter.y, modelCenter.z);
 
+
+
+	//Adapt camera to the size of the model
 	App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
 
-	float dist = 3 * (maxX - minX);
+	float dist = 3 * max(maxZ - minZ, max(maxX - minX, maxY - minY));
 	if(App->camera->frustum->farPlaneDistance < dist)
 	{
-		App->camera->frustum->farPlaneDistance = dist;
+		App->camera->SetFarPlaneDistance(dist);
 	}
 	else
 	{
-		App->camera->frustum->farPlaneDistance = 100.0f;
+		App->camera->SetFarPlaneDistance(100.0f);
 	}
 		
 
