@@ -11,6 +11,9 @@
 #include "ComponentMesh.h"
 #include "SDL.h"
 #include "glew.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
@@ -193,66 +196,34 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 
-	DrawGrid();
+	//Draw Scene and Game Windows
+	bool isEnabled = true;
+	//First Scene window is created
+	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-	//TODO: Separate the bounding box code into a different class
-	if(App->modelLoader->isModelLoaded && showBoundingBox)
-	{	
-		//Bounding Box
-		glLineWidth(1.0f);
-		float d = 200.0f;
-		glBegin(GL_LINES);
-		glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-		//0->1
-		for(int i = 0; i < 2;++i)
-		{
-			//0->1 4->5
-			glVertex3f(App->modelLoader->modelBox[0 + (i*4)].x, App->modelLoader->modelBox[0 + (i * 4)].y, App->modelLoader->modelBox[0 + (i * 4)].z);
-			glVertex3f(App->modelLoader->modelBox[1 + (i * 4)].x, App->modelLoader->modelBox[1 + (i * 4)].y, App->modelLoader->modelBox[1 + (i * 4)].z);
+	ImVec2 wSize = ImGui::GetWindowSize();
+	App->camera->SetAspectRatio((int) wSize.x, (int) wSize.y);
 
-			//1->2 5->6
-			glVertex3f(App->modelLoader->modelBox[1 + (i * 4)].x, App->modelLoader->modelBox[1 + (i * 4)].y, App->modelLoader->modelBox[1 + (i * 4)].z);
-			glVertex3f(App->modelLoader->modelBox[2 + (i * 4)].x, App->modelLoader->modelBox[2 + (i * 4)].y, App->modelLoader->modelBox[2 + (i * 4)].z);
-
-			//2->3 6->7
-			glVertex3f(App->modelLoader->modelBox[2 + (i * 4)].x, App->modelLoader->modelBox[2 + (i * 4)].y, App->modelLoader->modelBox[2 + (i * 4)].z);
-			glVertex3f(App->modelLoader->modelBox[3 + (i * 4)].x, App->modelLoader->modelBox[3 + (i * 4)].y, App->modelLoader->modelBox[3 + (i * 4)].z);
-
-			//3->0 7->4
-			glVertex3f(App->modelLoader->modelBox[0 + (i * 4)].x, App->modelLoader->modelBox[0 + (i * 4)].y, App->modelLoader->modelBox[0 + (i * 4)].z);
-			glVertex3f(App->modelLoader->modelBox[3 + (i * 4)].x, App->modelLoader->modelBox[3 + (i * 4)].y, App->modelLoader->modelBox[3 + (i * 4)].z);
-		}
-
-		//Y lines
-		//0->4
-		glVertex3f(App->modelLoader->modelBox[0].x, App->modelLoader->modelBox[0].y, App->modelLoader->modelBox[0].z);
-		glVertex3f(App->modelLoader->modelBox[4].x, App->modelLoader->modelBox[4].y, App->modelLoader->modelBox[4].z);
-
-		//1->5
-		glVertex3f(App->modelLoader->modelBox[1].x, App->modelLoader->modelBox[1].y, App->modelLoader->modelBox[1].z);
-		glVertex3f(App->modelLoader->modelBox[5].x, App->modelLoader->modelBox[5].y, App->modelLoader->modelBox[5].z);
-
-		//2->6
-		glVertex3f(App->modelLoader->modelBox[2].x, App->modelLoader->modelBox[2].y, App->modelLoader->modelBox[2].z);
-		glVertex3f(App->modelLoader->modelBox[6].x, App->modelLoader->modelBox[6].y, App->modelLoader->modelBox[6].z);
-
-		//3->7
-		glVertex3f(App->modelLoader->modelBox[3].x, App->modelLoader->modelBox[3].y, App->modelLoader->modelBox[3].z);
-		glVertex3f(App->modelLoader->modelBox[7].x, App->modelLoader->modelBox[7].y, App->modelLoader->modelBox[7].z);
-
-		glEnd();
-	}
-	
-
-	glUseProgram(0);
+	CreateFrameBuffer((int) wSize.x, (int) wSize.y);
+	GenerateTexture((int)wSize.x, (int)wSize.y);
 
 
+	widthScene = (int) wSize.x;
+	heightScene = (int) wSize.y;
+
+	ImGui::GetWindowDrawList()->AddImage(
+		(void *)sceneTexture,
+		ImVec2(ImGui::GetCursorScreenPos()),
+		ImVec2(
+			ImGui::GetCursorScreenPos().x + wSize.x,
+			ImGui::GetCursorScreenPos().y + wSize.y
+		),
+		ImVec2(0, 1),
+		ImVec2(1, 0)
+	);
 
 
-	//App->modelLoader->Draw(progModel);
-	DrawAllGameObjects();
-
-	
+	ImGui::End();
 
 	return UPDATE_CONTINUE;
 }
@@ -274,17 +245,12 @@ bool ModuleRender::CleanUp()
 	LOG("Destroying renderer");
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDeleteTextures(1, &sceneTexture);
+	glDeleteRenderbuffers(1, &renderBufferObject);
+	glDeleteFramebuffers(1, &frameBufferObject);
 	//Destroy window
 
 	return true;
-}
-
-void ModuleRender::DrawRectangle()
-{
-	
-
-	//After use a vbo assign a 0 for efficency
-
 }
 
 void ModuleRender::DrawGrid()
@@ -337,6 +303,8 @@ void ModuleRender::DrawGrid()
 	glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
 	glEnd();
 	glLineWidth(1.0f);
+
+	glUseProgram(0);
 }
 
 void ModuleRender::DrawAllGameObjects()
@@ -364,6 +332,106 @@ void ModuleRender::DrawAllGameObjects()
 
 
 	glUseProgram(0);
+}
+
+void ModuleRender::DrawBoundingBoxes()
+{
+	//TODO: Separate the bounding box code into a different class
+	if (App->modelLoader->isModelLoaded && showBoundingBox)
+	{
+		//Bounding Box
+		glLineWidth(1.0f);
+		float d = 200.0f;
+		glBegin(GL_LINES);
+		glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+		//0->1
+		for (int i = 0; i < 2; ++i)
+		{
+			//0->1 4->5
+			glVertex3f(App->modelLoader->modelBox[0 + (i * 4)].x, App->modelLoader->modelBox[0 + (i * 4)].y, App->modelLoader->modelBox[0 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[1 + (i * 4)].x, App->modelLoader->modelBox[1 + (i * 4)].y, App->modelLoader->modelBox[1 + (i * 4)].z);
+
+			//1->2 5->6
+			glVertex3f(App->modelLoader->modelBox[1 + (i * 4)].x, App->modelLoader->modelBox[1 + (i * 4)].y, App->modelLoader->modelBox[1 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[2 + (i * 4)].x, App->modelLoader->modelBox[2 + (i * 4)].y, App->modelLoader->modelBox[2 + (i * 4)].z);
+
+			//2->3 6->7
+			glVertex3f(App->modelLoader->modelBox[2 + (i * 4)].x, App->modelLoader->modelBox[2 + (i * 4)].y, App->modelLoader->modelBox[2 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[3 + (i * 4)].x, App->modelLoader->modelBox[3 + (i * 4)].y, App->modelLoader->modelBox[3 + (i * 4)].z);
+
+			//3->0 7->4
+			glVertex3f(App->modelLoader->modelBox[0 + (i * 4)].x, App->modelLoader->modelBox[0 + (i * 4)].y, App->modelLoader->modelBox[0 + (i * 4)].z);
+			glVertex3f(App->modelLoader->modelBox[3 + (i * 4)].x, App->modelLoader->modelBox[3 + (i * 4)].y, App->modelLoader->modelBox[3 + (i * 4)].z);
+		}
+
+		//Y lines
+		//0->4
+		glVertex3f(App->modelLoader->modelBox[0].x, App->modelLoader->modelBox[0].y, App->modelLoader->modelBox[0].z);
+		glVertex3f(App->modelLoader->modelBox[4].x, App->modelLoader->modelBox[4].y, App->modelLoader->modelBox[4].z);
+
+		//1->5
+		glVertex3f(App->modelLoader->modelBox[1].x, App->modelLoader->modelBox[1].y, App->modelLoader->modelBox[1].z);
+		glVertex3f(App->modelLoader->modelBox[5].x, App->modelLoader->modelBox[5].y, App->modelLoader->modelBox[5].z);
+
+		//2->6
+		glVertex3f(App->modelLoader->modelBox[2].x, App->modelLoader->modelBox[2].y, App->modelLoader->modelBox[2].z);
+		glVertex3f(App->modelLoader->modelBox[6].x, App->modelLoader->modelBox[6].y, App->modelLoader->modelBox[6].z);
+
+		//3->7
+		glVertex3f(App->modelLoader->modelBox[3].x, App->modelLoader->modelBox[3].y, App->modelLoader->modelBox[3].z);
+		glVertex3f(App->modelLoader->modelBox[7].x, App->modelLoader->modelBox[7].y, App->modelLoader->modelBox[7].z);
+
+		glEnd();
+	}
+}
+
+void ModuleRender::CreateFrameBuffer(int width, int height)
+{
+	if (width != widthScene || height != heightScene)
+	{
+		if (frameBufferObject == 0)
+		{
+			//Generate FrameBuffer if necessary
+			glCreateFramebuffers(1, &frameBufferObject);
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+		}
+
+		glGenTextures(1, &sceneTexture);
+		glBindTexture(GL_TEXTURE_2D, sceneTexture);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTexture, 0);
+
+		//Generate RenderBuffers
+		glGenRenderbuffers(1, &renderBufferObject);
+		glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject);
+
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			LOG("ERROR: Cannot create or render Scene framebuffer.");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+}
+
+void ModuleRender::GenerateTexture(int width, int height)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	DrawGrid();
+	DrawAllGameObjects();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 

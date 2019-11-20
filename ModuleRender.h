@@ -22,7 +22,6 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	void DrawRectangle();
 
 	float aspect = 1.0f;
 
@@ -32,21 +31,33 @@ public:
 
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+	//Draw
+	void DrawGrid();
+	void DrawAllGameObjects();
+	void DrawBoundingBoxes();
+	void CreateFrameBuffer(int width, int height);
+	void GenerateTexture(int width, int height);
 
 private:
 	void* context;
 
-	//static float buffer_data_rect;
-	//static unsigned int indices;
 	int height = 0;
 	int width = 0;
 
 	unsigned int vbo;
 	unsigned int index;
 
-	//Draw
-	void DrawGrid();
-	void DrawAllGameObjects();
+	//Framebuffer windows variables
+	unsigned int frameBufferObject = 0; // FBO
+	unsigned int renderBufferObject = 0; // RBO
+
+	int heightScene, widthScene;
+	int heightGame, widthGame;
+
+	unsigned int sceneTexture = 0;
+
+	
+
 	
 
 

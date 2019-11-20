@@ -25,6 +25,7 @@ public:
 	//Methods
 	void SetFOV();
 	void SetAspectRatio();
+	void SetAspectRatio(int newHeight, int newWidth);
 	void Rotate(const float dx, const float dy);
 	void Move(float3 direction);
 	void Orbit(const float dx,const float dy);

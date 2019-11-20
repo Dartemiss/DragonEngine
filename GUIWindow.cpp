@@ -22,7 +22,7 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 				SDL_DisplayMode displayMode;
 				SDL_GetDesktopDisplayMode(0, &displayMode);
 				SDL_SetWindowSize(window, displayMode.w, displayMode.h);
-				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 				App->camera->SetAspectRatio();
 				
 			}

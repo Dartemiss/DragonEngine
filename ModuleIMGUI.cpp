@@ -53,7 +53,7 @@ update_status ModuleIMGUI::Update()
 	}
 	console.Draw("Console", &scrollDownConsole);
 	about.Draw("About", &openAbout);
-	guiCamera.Draw("Camera Settings", &showCameraGUI);
+	guiCamera.Draw("Camera Settings");
 	timeManager.Draw("Timers", &showTimers);
 	inspector.Draw("Properties", &showInspector);
 
@@ -110,7 +110,9 @@ update_status ModuleIMGUI::Update()
 
 			if(ImGui::MenuItem("Camera"))
 			{
-				showCameraGUI = !showCameraGUI;
+				//showCameraGUI = !showCameraGUI;
+				guiCamera.ToggleEnable();
+				
 			}
 
 			if(ImGui::MenuItem("Properties"))
@@ -134,13 +136,14 @@ update_status ModuleIMGUI::Update()
 	ImGui::EndMainMenuBar();
 
 
-	guiCamera.SetEnable(showCameraGUI);
+	//guiCamera.SetEnable(showCameraGUI);
 	guiWindow.SetEnable(showWindowConfig);
 	timeManager.SetEnable(showTimers);
 	console.SetEnable(scrollDownConsole);
 	about.SetEnable(openAbout);
 	inspector.SetEnable(showInspector);
 	
+
 	return UPDATE_CONTINUE;
 }
 

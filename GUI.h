@@ -50,5 +50,10 @@ public:
 		return;
 	}
 
+	virtual void ToggleEnable()
+	{
+		isEnabled = !isEnabled;
+	}
+
 	bool isEnabled = false;
 };

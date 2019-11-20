@@ -5,11 +5,11 @@
 
 
 
-void GUICamera::Draw(const char * title, bool * p_opened)
+void GUICamera::Draw(const char * title)
 {
 	if (isEnabled) 
 	{
-		ImGui::Begin(title, p_opened);
+		ImGui::Begin(title, &isEnabled);
 
 		ImGui::SliderFloat("FOV", &App->camera->frustum->verticalFov, 0.100f, 3.000f, "%.3f");
 		App->camera->SetFOV();
