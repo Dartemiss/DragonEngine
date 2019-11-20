@@ -8,6 +8,7 @@ void GUIAbout::Draw(const char * title, bool * p_opened)
 {
 	if (isEnabled)
 	{
+		ImGui::SetNextWindowSize(ImVec2(600,200), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, p_opened);
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: "); ImGui::SameLine();
 		ImGui::Text(ENGINETITLE);

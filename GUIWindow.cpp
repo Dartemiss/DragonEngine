@@ -19,6 +19,7 @@ void GUIWindow::Draw(const char * title, bool * p_opened)
 {
 	if(isEnabled)
 	{
+		ImGui::SetNextWindowSize(ImVec2(600, 600));
 		SDL_Window* window = App->window->window;
 		assert(window != nullptr);
 		ImGui::Begin(title, p_opened);
@@ -67,7 +68,7 @@ void GUIWindow::Draw(const char * title, bool * p_opened)
 
 		if(ImGui::CollapsingHeader("Framerate"))
 		{
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / App->timemanager->FPS, App->timemanager->FPS);
+			ImGui::Text("Application average %.3f ms/frame (%d FPS)", 1000.0f / App->timemanager->FPS, App->timemanager->FPS);
 			char title[25];
 			if (fps_log.size() > 0)
 			{

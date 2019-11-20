@@ -15,6 +15,7 @@ void GUIConsole::Draw(const char * title, bool * p_opened)
 {
 	if (isEnabled) 
 	{
+		ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, p_opened);
 		ImGui::TextUnformatted(bufferConsole.Buf.begin());
 		if (ScrollToBottom)

@@ -9,6 +9,7 @@ void GUICamera::Draw(const char * title, bool * p_opened)
 {
 	if (isEnabled) 
 	{
+		ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, p_opened);
 
 		ImGui::SliderFloat("FOV", &App->camera->frustum->verticalFov, 0.100f, 3.000f, "%.3f");

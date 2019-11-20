@@ -8,6 +8,7 @@ void GUIInspector::Draw(const char * title, bool * p_opened)
 {
 	if(isEnabled)
 	{
+		ImGui::SetNextWindowSize(ImVec2(500, 700), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, p_opened);
 		ImGui::Text("Transform");
 		ImGui::DragFloat3("Position (x,y,z)", (float *)&float3(0.0f, 0.0f, 0.0f), 0.1f, -1000.f, 1000.f);
