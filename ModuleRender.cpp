@@ -396,6 +396,16 @@ void ModuleRender::CreateFrameBuffer(int width, int height)
 			glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
 		}
 
+		if (sceneTexture != 0)
+		{
+			glDeleteTextures(1, &sceneTexture);
+		}
+
+		if(renderBufferObject != 0)
+		{
+			glDeleteRenderbuffers(1, &renderBufferObject);
+		}
+
 		glGenTextures(1, &sceneTexture);
 		glBindTexture(GL_TEXTURE_2D, sceneTexture);
 
@@ -425,6 +435,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height)
 void ModuleRender::GenerateTexture(int width, int height)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+	glViewport(0, 0, width, height);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

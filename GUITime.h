@@ -13,7 +13,7 @@ public:
 	GUITime() = default;
 	~GUITime() = default;
 
-	void Draw(const char* title, bool* p_opened);
+	void Draw(const char* title);
 
 	
 

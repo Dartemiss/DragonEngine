@@ -21,7 +21,7 @@ public:
 	
 	void AddLog(const char* log);
 
-	void Draw(const char* title, bool* p_opened = NULL);
+	void Draw(const char* title);
 
 };
 #endif __GUIConsole_H__

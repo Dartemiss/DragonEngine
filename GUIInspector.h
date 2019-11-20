@@ -11,7 +11,7 @@ public:
 	GUIInspector() = default;
 	~GUIInspector() = default;
 
-	void Draw(const char* title, bool* p_opened);
+	void Draw(const char* title);
 
 };
 #endif __GUIInspector_H__

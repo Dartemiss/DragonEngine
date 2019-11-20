@@ -46,16 +46,12 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	if(App->texture->textures_loaded.size() > 0)
-	{
-		Texture *texinfo = &App->texture->textures_loaded[App->texture->indexTex];
-		guiWindow.Draw("Window Configuration", &showWindowConfig, App->window->window, texinfo);
-	}
-	console.Draw("Console", &scrollDownConsole);
-	about.Draw("About", &openAbout);
+	guiWindow.Draw("Window Configuration");
+	console.Draw("Console");
+	about.Draw("About");
 	guiCamera.Draw("Camera Settings");
-	timeManager.Draw("Timers", &showTimers);
-	inspector.Draw("Properties", &showInspector);
+	timeManager.Draw("Timers");
+	inspector.Draw("Properties");
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -72,7 +68,7 @@ update_status ModuleIMGUI::Update()
 			
 			if(ImGui::MenuItem("About"))
 			{
-				openAbout = !openAbout;
+				about.ToggleEnable();
 			}
 
 			if(ImGui::MenuItem("Quit"))
@@ -89,11 +85,11 @@ update_status ModuleIMGUI::Update()
 		{
 			if(ImGui::MenuItem("Console"))
 			{
-				scrollDownConsole = !scrollDownConsole;
+				console.ToggleEnable();
 			}
 			if (ImGui::MenuItem("Time"))
 			{
-				showTimers = !showTimers;
+				timeManager.ToggleEnable();
 			}
 
 			ImGui::EndMenu();
@@ -105,19 +101,17 @@ update_status ModuleIMGUI::Update()
 		{
 			if(ImGui::MenuItem("Window"))
 			{
-				showWindowConfig = !showWindowConfig;
+				guiWindow.ToggleEnable();
 			}
 
 			if(ImGui::MenuItem("Camera"))
 			{
-				//showCameraGUI = !showCameraGUI;
 				guiCamera.ToggleEnable();
-				
 			}
 
 			if(ImGui::MenuItem("Properties"))
 			{
-				showInspector = !showInspector;
+				inspector.ToggleEnable();
 			}
 
 			if(ImGui::MenuItem("Show Hierarchy"))
@@ -134,15 +128,6 @@ update_status ModuleIMGUI::Update()
 		}
 	}
 	ImGui::EndMainMenuBar();
-
-
-	//guiCamera.SetEnable(showCameraGUI);
-	guiWindow.SetEnable(showWindowConfig);
-	timeManager.SetEnable(showTimers);
-	console.SetEnable(scrollDownConsole);
-	about.SetEnable(openAbout);
-	inspector.SetEnable(showInspector);
-	
 
 	return UPDATE_CONTINUE;
 }

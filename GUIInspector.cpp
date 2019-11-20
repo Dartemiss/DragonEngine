@@ -4,11 +4,11 @@
 #include "ModuleModelLoader.h"
 #include "include/Math/float3.h"
 
-void GUIInspector::Draw(const char * title, bool * p_opened)
+void GUIInspector::Draw(const char * title)
 {
 	if(isEnabled)
 	{
-		ImGui::Begin(title, p_opened);
+		ImGui::Begin(title, &isEnabled);
 		ImGui::Text("Transform");
 		ImGui::DragFloat3("Position (x,y,z)", (float *)&float3(0.0f, 0.0f, 0.0f), 0.1f, -1000.f, 1000.f);
 		ImGui::DragFloat3("Rotation (x,y,z)", (float *)&float3(0.0f, 0.0f, 0.0f), 0.1f, -1000.f, 1000.f);

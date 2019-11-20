@@ -4,11 +4,11 @@
 #define AUTHOR "Enrique Alexandre Gonzalez Sequeira"
 
 
-void GUIAbout::Draw(const char * title, bool * p_opened)
+void GUIAbout::Draw(const char * title)
 {
 	if (isEnabled)
 	{
-		ImGui::Begin(title, p_opened);
+		ImGui::Begin(title, &isEnabled);
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Name: "); ImGui::SameLine();
 		ImGui::Text(ENGINETITLE);
 		ImGui::Separator();

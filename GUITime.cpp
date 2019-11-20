@@ -2,11 +2,11 @@
 #include "Application.h"
 #include "ModuleTimeManager.h"
 
-void GUITime::Draw(const char * title, bool * p_opened)
+void GUITime::Draw(const char * title)
 {
 	if (isEnabled)
 	{
-		ImGui::Begin(title, p_opened);
+		ImGui::Begin(title, &isEnabled);
 		ImGui::Text("Real Time Since Start: %.3f", App->timemanager->GetRealGameTime()/1000.0f); ImGui::SameLine();
 		ImGui::Text("Real Time dt: %.3f", App->timemanager->GetRealDeltaTime() / 1000.0f);
 

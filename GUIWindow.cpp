@@ -9,12 +9,13 @@
 #include "ilu.h"
 
 
-void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Texture *texInfo)
+void GUIWindow::Draw(const char * title)
 {
 	if(isEnabled)
 	{
+		SDL_Window* window = App->window->window;
 		assert(window != nullptr);
-		ImGui::Begin(title, p_opened);
+		ImGui::Begin(title, &isEnabled);
 		if (ImGui::Checkbox("FullScreen", &App->window->fullscreen))
 		{
 			if (App->window->fullscreen)
@@ -174,32 +175,40 @@ void GUIWindow::Draw(const char * title, bool * p_opened, SDL_Window* window, Te
 		}
 		if (ImGui::CollapsingHeader("Texture Data"))
 		{
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Width: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo->width);
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Height: "); ImGui::SameLine();
-			ImGui::Text("%d(Bytes)", texInfo->width);
-
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Depth: "); ImGui::SameLine();
-			ImGui::Text("%d", texInfo->depth);
-
-			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
-			if(texInfo->format == IL_TYPE_UNKNOWN)
+			for (auto texInfo : App->texture->textures_loaded)
 			{
-				ImGui::Text("Unknown");
-			}
-			else if(texInfo->format == IL_PNG)
-			{
-				ImGui::Text("PNG");
-			}
-			else if (texInfo->format == IL_JPG)
-			{
-				ImGui::Text("JPG");
-			}
-			else if (texInfo->format == IL_DDS)
-			{
-				ImGui::Text("DDS");
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Path: "); ImGui::SameLine();
+				ImGui::Text("%s", texInfo.path.c_str());
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Width: "); ImGui::SameLine();
+				ImGui::Text("%d(Bytes)", texInfo.width);
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Height: "); ImGui::SameLine();
+				ImGui::Text("%d(Bytes)", texInfo.width);
+
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Depth: "); ImGui::SameLine();
+				ImGui::Text("%d", texInfo.depth);
+
+				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
+				if (texInfo.format == IL_TYPE_UNKNOWN)
+				{
+					ImGui::Text("Unknown");
+				}
+				else if (texInfo.format == IL_PNG)
+				{
+					ImGui::Text("PNG");
+				}
+				else if (texInfo.format == IL_JPG)
+				{
+					ImGui::Text("JPG");
+				}
+				else if (texInfo.format == IL_DDS)
+				{
+					ImGui::Text("DDS");
+				}
+
+				ImGui::Separator();
 			}
 			
 		

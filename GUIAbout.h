@@ -11,7 +11,7 @@ public:
 	GUIAbout() = default;
 	~GUIAbout() = default;
 
-	void Draw(const char * title, bool * p_opened);
+	void Draw(const char * title);
 };
 
 #endif _GUIAbout_H__
