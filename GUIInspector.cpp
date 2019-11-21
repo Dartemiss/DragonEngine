@@ -20,12 +20,12 @@ void GUIInspector::Draw(const char * title, bool * p_opened)
 		ImGui::Text("Geometry");
 		int aux = App->modelLoader->GetNumberOfMeshes();
 		ImGui::DragInt("Number of meshes", (int *)&aux, 1, -1000, 1000);
-		ImGui::Text("Number of triangles: %d", App->modelLoader->GetNumberOfTriangles());
+		ImGui::Text("Number of triangles: %d", App->modelLoader->GetNumberOfTriangles(true));
+		ImGui::Text("Number of vertices: %d", App->modelLoader->GetNumberOfTriangles(false));
 
 		ImGui::Separator();
 
-		ImGui::Text("Texture");
-		ImGui::Text("Textures loaded");
+		ImGui::Text("Current textures loaded");
 		for(auto index : App->modelLoader->indicesOfCurrentTextures)
 		{
 			int window_width = ImGui::GetWindowWidth();
@@ -34,9 +34,6 @@ void GUIInspector::Draw(const char * title, bool * p_opened)
 			ImGui::Image((ImTextureID)App->texture->textures_loaded[index].id, ImVec2(window_height * 0.5f, window_width * 0.5f), ImVec2(0, 1), ImVec2(1, 0));
 		}
 		
-
-
-
 		ImGui::End();
 	}
 }

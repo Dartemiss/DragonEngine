@@ -97,9 +97,13 @@ void GUIWindow::Draw(const char * title, bool * p_opened)
 
 		if (ImGui::CollapsingHeader("Hardware"))
 		{
-			ImGui::Text("CPUs: %d (Cache: %dkb)", SDL_GetCPUCount(), SDL_GetCPUCacheLineSize());
-			ImGui::Text("System RAM: %dGb", SDL_GetSystemRAM()/1000);
-			ImGui::Text("Caps: ");ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "CPUs: "); ImGui::SameLine();
+			ImGui::Text("%d(Cache: %dkb)", SDL_GetCPUCount(), SDL_GetCPUCacheLineSize());
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "System RAM: "); ImGui::SameLine();
+			ImGui::Text("%dGb", SDL_GetSystemRAM() / 1000);
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f),"Caps: ");ImGui::SameLine();
 			if(SDL_Has3DNow())
 			{
 				ImGui::Text("3DNow,"); ImGui::SameLine();
@@ -159,8 +163,11 @@ void GUIWindow::Draw(const char * title, bool * p_opened)
 
 			ImGui::Separator();
 
-			ImGui::Text("GPU: %s", glGetString(GL_VENDOR));
-			ImGui::Text("Brand: %s", glGetString(GL_RENDERER));
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "GPU: "); ImGui::SameLine();
+			ImGui::Text("%s", glGetString(GL_VENDOR));
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Brand: "); ImGui::SameLine();
+			ImGui::Text("%s", glGetString(GL_RENDERER));
 
 			#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
 			#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
@@ -173,14 +180,19 @@ void GUIWindow::Draw(const char * title, bool * p_opened)
 			glGetIntegerv(GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX,
 				&cur_avail_mem_kb);
 
-			ImGui::Text("VRAM Total: %d(Mb)", total_mem_kb/1000);
-			ImGui::Text("VRAM Available: %d(Mb)", cur_avail_mem_kb/1000);
-			ImGui::Text("VRAM Usage: %d(Mb)", (total_mem_kb/1000) - (cur_avail_mem_kb / 1000));
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f),"VRAM Total: "); ImGui::SameLine();
+			ImGui::Text("%d(Mb)", total_mem_kb / 1000);
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f),"VRAM Available: "); ImGui::SameLine();
+			ImGui::Text("%d(Mb)", cur_avail_mem_kb / 1000);
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f),"VRAM Usage: "); ImGui::SameLine();
+			ImGui::Text("%d(Mb)", (total_mem_kb / 1000) - (cur_avail_mem_kb / 1000));
 
 
 
 		}
-		if (ImGui::CollapsingHeader("Texture Data"))
+		if (ImGui::CollapsingHeader("All Textures Loaded"))
 		{
 			for (auto texInfo : App->texture->textures_loaded) 
 			{

@@ -32,7 +32,7 @@ public:
 	void Draw(unsigned int program);
 	void loadModel(const std::string &path);
 	const int GetNumberOfMeshes();
-	const int GetNumberOfTriangles();
+	const int GetNumberOfTriangles(bool triangles);
 	void AddTextureIndex(std::vector<Texture> &textures);
 	void ChangeTexture(const std::string &path);
 

@@ -87,7 +87,7 @@ const int ModuleModelLoader::GetNumberOfMeshes()
 	return meshes.size();
 }
 
-const int ModuleModelLoader::GetNumberOfTriangles()
+const int ModuleModelLoader::GetNumberOfTriangles(bool triangles)
 {
 	int counter = 0;
 
@@ -95,8 +95,9 @@ const int ModuleModelLoader::GetNumberOfTriangles()
 	{
 		counter += mesh->indices.size();
 	}
-	return counter / 3;
+	return triangles ? counter / 3 : counter;
 }
+
 
 void ModuleModelLoader::AddTextureIndex(std::vector<Texture> &textures)
 {
@@ -127,11 +128,14 @@ void ModuleModelLoader::ChangeTexture(const std::string & path)
 
 	Texture newTexture;
 	App->texture->LoadTextureForModels(path.c_str(), "", newTexture);
-	
+	App->texture->textures_loaded.push_back(newTexture);
 	for(auto mesh: meshes)
 	{
 		mesh->textures[0] = newTexture;
 	}
+
+	indicesOfCurrentTextures.erase(0);
+	indicesOfCurrentTextures.insert(App->texture->textures_loaded.size() - 1);
 
 }
 
