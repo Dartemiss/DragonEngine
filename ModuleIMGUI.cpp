@@ -33,6 +33,9 @@ bool ModuleIMGUI::Init()
 
 	ImGui::StyleColorsDark();
 
+	//Console is active by default
+	//console.SetEnable(true);
+
 	return true;
 }
 

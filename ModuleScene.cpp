@@ -17,6 +17,13 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
+	//Creating the main camera of the game
+	mainCamera = CreateGameObject("Main Camera", root);
+	mainCamera->CreateComponent(CAMERA);
+
+
+	allGameObjects.push_back(mainCamera);
+
 	return true;
 }
 
@@ -30,6 +37,7 @@ update_status ModuleScene::Update()
 	for(auto gameObject : allGameObjects)
 	{
 		gameObject->UpdateTransform();
+		gameObject->Update();
 	}
 
 	DrawGUI();
@@ -98,6 +106,7 @@ void ModuleScene::DrawUIBarMenuGameObject()
 
 			newGameObjectChild->myTransform->position += float3(8.0f, 0.0f, 0.0f);
 			newGameObjectChild->myTransform->UpdateMatrices();
+
 			if (newGameObjectChild->myMeshes != nullptr)
 			{
 				newGameObjectChild->LoadModel("../Models/baker_house/BakerHouse.fbx");
@@ -114,10 +123,12 @@ void ModuleScene::DrawUIBarMenuGameObject()
 
 void ModuleScene::DrawGUI()
 {
-	unsigned int flags = ImGuiTreeNodeFlags_OpenOnArrow;
+	unsigned int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiCond_FirstUseEver;
+	
 	if(showHierarchy)
 	{
-		ImGui::Begin("Hierarchy", &showHierarchy);
+		ImGui::Begin("Hierarchy", &showHierarchy, flags);
+		ImGui::SetWindowSize("Hierarchy",ImVec2(350, 750));
 		root->DrawHierarchy(selectedByHierarchy);
 		ImGui::End();
 	}

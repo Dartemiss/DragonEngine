@@ -11,7 +11,7 @@
 class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
-
+class ComponentCamera;
 
 class GameObject
 {
@@ -30,6 +30,9 @@ public:
 
 	//Hierarchy
 	void DrawHierarchy(GameObject* selected);
+
+	//Draw Main Camera
+	void DrawCamera();
 
 	//Update
 	void UpdateTransform();

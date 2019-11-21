@@ -11,6 +11,8 @@ public:
 	ComponentMaterial();
 	~ComponentMaterial();
 
+	void Update();
+
 	std::vector<Texture*> textures;
 
 };

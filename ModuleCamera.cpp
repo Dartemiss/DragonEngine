@@ -182,6 +182,7 @@ void ModuleCamera::SetAspectRatio(int newHeight, int newWidth)
 {
 	aspect = ((float)newWidth / newHeight);
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+
 	proj = frustum->ProjectionMatrix();
 
 }

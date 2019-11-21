@@ -1,42 +1,31 @@
-#ifndef __ModuleCamera_H__
-#define __ModuleCamera_H__
+#ifndef __ComponentCamera_H__
+#define __ComponentCamera_H__
 
-#include "Module.h"
 #include "Globals.h"
+#include "Component.h"
 #include "include/Geometry/Frustum.h"
 #include "include/Math/float4x4.h"
 
-class Application;
-
-class ModuleCamera : public Module
+class ComponentCamera : public Component
 {
 public:
-	//Methods
-	ModuleCamera();
-	~ModuleCamera();
+	ComponentCamera();
+	~ComponentCamera();
 
-	//Core
-	bool Init();
-	update_status PreUpdate();
-	update_status Update();
-	update_status PostUpdate();
-	bool CleanUp();
+	void Update();
 
 	//Methods
 	void SetFOV();
-	void SetAspectRatio();
 	void SetAspectRatio(int newHeight, int newWidth);
 	void Rotate(const float dx, const float dy);
 	void Move(float3 direction);
-	void Orbit(const float dx,const float dy);
-	void Zoom(const bool direction);
 	void TranslateCameraToPoint(const float3 &newPos);
 	void SetNearPlaneDistance(const float nearDist);
 	void SetFarPlaneDistance(const float farDist);
 	void LookAt(const float3 target);
 
-	//Update Projection and View matrices
-	void UpdateUniformShaderMatrices();
+	//Drawing
+	void DrawFrustum();
 
 	//Variables
 	float aspect = 1.0f;
@@ -51,6 +40,12 @@ public:
 	float zoomSpeed = 0.5f;
 	float motionOffset = 2.5f;
 
+	unsigned int frustumVAO = 0; 
+	
+
+
 };
 
-#endif __ModuleCamera_H_
+
+
+#endif __ComponentCamera_H__

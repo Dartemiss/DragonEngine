@@ -185,6 +185,9 @@
     <ClCompile Include="log.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentCamera.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -471,6 +474,9 @@
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentCamera.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

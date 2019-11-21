@@ -28,6 +28,8 @@ public:
 	std::vector<GameObject*> allGameObjects;
 	bool showHierarchy = true;
 	bool showInspector = true;
+	//Game's Main Camera Object
+	GameObject* mainCamera = nullptr;
 
 private:
 	//Root

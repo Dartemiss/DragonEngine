@@ -12,7 +12,7 @@ private:
 	bool ScrollToBottom = true;
 
 public:
-	GUIConsole() = default;
+	GUIConsole();
 	~GUIConsole() = default;
 
 	void Clear();
@@ -22,6 +22,9 @@ public:
 	void AddLog(const char* log);
 
 	void Draw(const char* title);
+
+	//Variables
+	bool firstTime = true;
 
 };
 #endif __GUIConsole_H__

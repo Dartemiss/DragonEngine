@@ -11,3 +11,8 @@ ComponentMaterial::ComponentMaterial()
 ComponentMaterial::~ComponentMaterial()
 {
 }
+
+void ComponentMaterial::Update()
+{
+	return;
+}

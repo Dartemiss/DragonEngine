@@ -5,6 +5,7 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
+#include "ComponentCamera.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -27,7 +28,12 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	
+	for(auto component : components)
+	{
+		if (component->myType != TRANSFORM)
+			component->Update();
+	}
+
 	return;
 }
 
@@ -38,6 +44,7 @@ void GameObject::SetParent(GameObject * newParent)
 		LOG("Setting new GamesObject parent and children.")
 		parent = newParent;
 		parent->children.push_back(this);
+		return;
 	}
 
 	LOG("ERROR: Cannot set parent because new Parent is nullptr.");
@@ -62,6 +69,10 @@ Component * GameObject::CreateComponent(ComponentType type)
 		case MATERIAL:
 			component = new ComponentMaterial();
 			myMaterial = (ComponentMaterial*)component;
+			break;
+
+		case CAMERA:
+			component = new ComponentCamera();
 			break;
 		default:
 			LOG("ERROR: INVALID TYPE OF COMPONENT");
@@ -119,6 +130,18 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		}
 	}
 	ImGui::PopID();
+}
+
+void GameObject::DrawCamera()
+{
+	for(auto comp : components)
+	{
+		if(comp->myType == CAMERA)
+		{
+			ComponentCamera* mainCamera = (ComponentCamera*)comp;
+			mainCamera->DrawFrustum();
+		}
+	}
 }
 
 void GameObject::UpdateTransform()

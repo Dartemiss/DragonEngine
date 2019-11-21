@@ -56,4 +56,6 @@ public:
 	}
 
 	bool isEnabled = false;
+	int width;
+	int height;
 };

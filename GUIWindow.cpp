@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleTimeManager.h"
+#include "ModuleInput.h"
 #include "Application.h"
 #include "ilu.h"
 
@@ -210,13 +211,25 @@ void GUIWindow::Draw(const char * title)
 
 				ImGui::Separator();
 			}
-			
-		
 		}
+		if (ImGui::CollapsingHeader("Input"))
+		{
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Mouse");
+			ImGui::Text("Mouse Position: (%f , %f)", App->input->GetMousePosition().x, App->input->GetMousePosition().y);
+			ImGui::Text("Mouse delta motion: (%f, %f)", App->input->GetMouseMotion().x, App->input->GetMouseMotion().y);
+			ImGui::Text("Mouse Wheel: %d", App->input->GetMouseWheel());
+			ImGui::Text("Mouse Right Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT ? 1 : 0);
+			ImGui::Text("Mouse Left Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT ? 1 : 0);
+			ImGui::Separator();
+
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "KeyBoard");
+			ImGui::Text("Keys down:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_DOWN) { ImGui::SameLine(); ImGui::Text("%d ", i); }
+			ImGui::Text("Keys repeat:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_REPEAT) { ImGui::SameLine(); ImGui::Text("%d ", i); }
+		}
+		
+		
 
 		ImGui::End();
 	}
-
-
 
 }

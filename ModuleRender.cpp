@@ -268,7 +268,7 @@ void ModuleRender::DrawGrid()
 	glUniformMatrix4fv(glGetUniformLocation(progGrid,
 		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
 	
-
+	/*
 	glLineWidth(1.0f);
 	float d = 200.0f;
 	glBegin(GL_LINES);
@@ -281,7 +281,7 @@ void ModuleRender::DrawGrid()
 		glVertex3f(d, 0.0f, i);
 	}
 	glEnd();
-
+	*/
 	glLineWidth(2.0f);
 	glBegin(GL_LINES);
 	// red X
@@ -324,10 +324,14 @@ void ModuleRender::DrawAllGameObjects()
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-		for(auto mesh : gameObject->myMeshes->meshes)
+		if(gameObject->myMeshes != nullptr)
 		{
-			mesh->Draw(progModel);
+			for (auto mesh : gameObject->myMeshes->meshes)
+			{
+				mesh->Draw(progModel);
+			}
 		}
+
 	}
 
 
@@ -393,8 +397,9 @@ void ModuleRender::CreateFrameBuffer(int width, int height)
 		{
 			//Generate FrameBuffer if necessary
 			glCreateFramebuffers(1, &frameBufferObject);
-			glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
 		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
 
 		if (sceneTexture != 0)
 		{
@@ -439,8 +444,10 @@ void ModuleRender::GenerateTexture(int width, int height)
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	App->scene->mainCamera->DrawCamera();
 	DrawGrid();
 	DrawAllGameObjects();
+	
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
