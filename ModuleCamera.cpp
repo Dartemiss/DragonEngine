@@ -31,7 +31,7 @@ bool ModuleCamera::Init()
 	frustum->front = -float3::unitZ;
 	frustum->up = float3::unitY;
 	frustum->nearPlaneDistance = 0.1f;
-	frustum->farPlaneDistance = 100.0f;
+	frustum->farPlaneDistance = 300.0f;
 	frustum->verticalFov = (float)M_PI / 4.0f;
 	aspect = (float)App->window->width / App->window->height;
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);

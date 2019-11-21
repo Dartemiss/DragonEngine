@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "Component.h"
 #include "Mesh.h"
+#include "include/Geometry/AABB.h"
 
 class ComponentMesh : public Component
 {
@@ -14,9 +15,11 @@ public:
 	void Update();
 
 	void LoadMeshes(const char* path);
-
+	void ComputeBoundingBox();
 
 	std::vector<Mesh*> meshes;
+
+	AABB* boundingBox = nullptr;
 
 };
 

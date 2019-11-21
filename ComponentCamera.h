@@ -42,7 +42,29 @@ public:
 
 	unsigned int frustumVAO = 0; 
 	
+	float3 oldPosition;
 
+	float Hnear;
+	float Wnear;
+
+	//Then we do the same for the far plane
+	float Hfar;
+	float Wfar;
+
+	//Now we get the center of the planes
+	float3 centerNear;
+	float3 centerFar;
+
+	//And now we get our points
+	float3 NearTopLeft;
+	float3 NearTopRight;
+	float3 NearBottomLeft;
+	float3 NearBottomRight;
+
+	float3 FarTopLeft;
+	float3 FarTopRight;
+	float3 FarBottomLeft;
+	float3 FarBottomRight;
 
 };
 

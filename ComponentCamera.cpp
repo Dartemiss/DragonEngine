@@ -30,7 +30,7 @@ ComponentCamera::ComponentCamera()
 	proj = frustum->ProjectionMatrix();
 	view = frustum->ViewMatrix();
 
-	DrawFrustum();
+	oldPosition = float3{5.0f,2.0f,1000.0f};
 }
 
 
@@ -130,31 +130,33 @@ void ComponentCamera::DrawFrustum()
 		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
 
 
+	if(oldPosition.x != frustum->pos.x || oldPosition.y != frustum->pos.y || oldPosition.z != frustum->pos.z)
+	{
+		oldPosition = frustum->pos;
+		//First we will get the width and height of the near plane
+		Hnear = 2 * tan(frustum->verticalFov / 2) * frustum->nearPlaneDistance;
+		Wnear = Hnear * aspect;
 
-	//First we will get the width and height of the near plane
-	float Hnear = 2 * tan(frustum->verticalFov / 2) * frustum->nearPlaneDistance;
-	float Wnear = Hnear * aspect;
+		//Then we do the same for the far plane
+		Hfar = 2 * tan(frustum->verticalFov / 2) * frustum->farPlaneDistance;
+		Wfar = Hfar * aspect;
 
-	//Then we do the same for the far plane
-	float Hfar = 2 * tan(frustum->verticalFov / 2) * frustum->farPlaneDistance;
-	float Wfar = Hfar * aspect;
+		//Now we get the center of the planes
+		centerNear = frustum->pos + frustum->front * frustum->nearPlaneDistance;
+		centerFar = frustum->pos + frustum->front * frustum->farPlaneDistance;
 
-	//Now we get the center of the planes
-	float3 centerNear = frustum->pos + frustum->front * frustum->nearPlaneDistance;
-	float3 centerFar = frustum->pos + frustum->front * frustum->farPlaneDistance;
+		//And now we get our points
+		NearTopLeft = centerNear + (frustum->up * (Hnear / 2)) - (frustum->WorldRight() * (Wnear / 2));
+		NearTopRight = centerNear + (frustum->up * (Hnear / 2)) + (frustum->WorldRight() * (Wnear / 2));
+		NearBottomLeft = centerNear - (frustum->up * (Hnear / 2)) - (frustum->WorldRight() * (Wnear / 2));
+		NearBottomRight = centerNear - (frustum->up * (Hnear / 2)) + (frustum->WorldRight() * (Wnear / 2));
 
-	//And now we get our points
-	float3 NearTopLeft = centerNear + (frustum->up * (Hnear / 2)) - (frustum->WorldRight() * (Wnear / 2));
-	float3 NearTopRight = centerNear + (frustum->up * (Hnear / 2)) + (frustum->WorldRight() * (Wnear / 2));
-	float3 NearBottomLeft = centerNear - (frustum->up * (Hnear / 2)) - (frustum->WorldRight() * (Wnear / 2));
-	float3 NearBottomRight = centerNear - (frustum->up * (Hnear / 2)) + (frustum->WorldRight() * (Wnear / 2));
+		FarTopLeft = centerFar + (frustum->up * (Hfar / 2)) - (frustum->WorldRight() * (Wfar / 2));
+		FarTopRight = centerFar + (frustum->up * (Hfar / 2)) + (frustum->WorldRight() * (Wfar / 2));
+		FarBottomLeft = centerFar - (frustum->up * (Hfar / 2)) - (frustum->WorldRight() * (Wfar / 2));
+		FarBottomRight = centerFar - (frustum->up * (Hfar / 2)) + (frustum->WorldRight() * (Wfar / 2));
+	}
 
-	float3 FarTopLeft = centerFar + (frustum->up * (Hfar / 2)) - (frustum->WorldRight() * (Wfar / 2));
-	float3 FarTopRight = centerFar + (frustum->up * (Hfar / 2)) + (frustum->WorldRight() * (Wfar / 2));
-	float3 FarBottomLeft = centerFar - (frustum->up * (Hfar / 2)) - (frustum->WorldRight() * (Wfar / 2));
-	float3 aux1 = (frustum->up * (Hfar / 2));
-	float3 aux2 = (frustum->WorldRight() * (Wfar / 2));
-	float3 FarBottomRight = centerFar - aux1 + aux2;
 
 	//Draw Lines
 	glLineWidth(2.0f);
