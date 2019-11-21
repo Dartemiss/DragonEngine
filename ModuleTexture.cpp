@@ -16,6 +16,10 @@ ModuleTexture::~ModuleTexture()
 {
 }
 
+//TODO: DragAndDrop textures into the model
+//TODO: Read assimp transformation of the model
+
+
 bool ModuleTexture::Init()
 {
 	//Initialize Texture
