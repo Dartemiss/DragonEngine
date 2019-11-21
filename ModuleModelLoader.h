@@ -34,6 +34,7 @@ public:
 	const int GetNumberOfMeshes();
 	const int GetNumberOfTriangles();
 	void AddTextureIndex(std::vector<Texture> &textures);
+	void ChangeTexture(const std::string &path);
 
 	//Variables
 	//Representation of a Cube, have exactly 8 vertex

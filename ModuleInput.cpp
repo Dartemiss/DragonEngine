@@ -222,7 +222,15 @@ void ModuleInput::DropModelFile(char * dropped_filedir)
 		return;
 	}
 
-	LOG("File is not an .fbx. File cannot be loaded.");
+	if(fileExt == "png" || fileExt == "PNG" || fileExt == "JPG" || fileExt == "jpg" || fileExt == "DDS" || fileExt == "dds")
+	{
+		//Use texture
+		App->modelLoader->ChangeTexture(dropped_filedir);
+		return;
+	}
+
+	LOG("File is not an .fbx or texture invalid extension. File or texture cannot be loaded.");
+
 	return;
 
 }

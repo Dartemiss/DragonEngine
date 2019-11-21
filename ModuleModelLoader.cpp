@@ -117,6 +117,24 @@ void ModuleModelLoader::AddTextureIndex(std::vector<Texture> &textures)
 	return;
 }
 
+void ModuleModelLoader::ChangeTexture(const std::string & path)
+{
+	if(!isModelLoaded)
+	{
+		LOG("Can not load a texture without a model loaded.");
+		return;
+	}
+
+	Texture newTexture;
+	App->texture->LoadTextureForModels(path.c_str(), "", newTexture);
+	
+	for(auto mesh: meshes)
+	{
+		mesh->textures[0] = newTexture;
+	}
+
+}
+
 
 
 void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)

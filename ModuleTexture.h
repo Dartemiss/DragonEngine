@@ -37,7 +37,6 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void LoadTexture(char* path, Texture* textureLoaded, ILuint &image);
 	void LoadTextureForModels(const char* path, const std::string &directory, Texture &texture);
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type,
 		std::string typeName, const std::string &directory);

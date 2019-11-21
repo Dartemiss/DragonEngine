@@ -60,30 +60,6 @@ bool ModuleTexture::CleanUp()
 	return true;
 }
 
-void ModuleTexture::LoadTexture(char * path, Texture* textureLoaded, ILuint &image)
-{
-	//Texture
-	
-	ilGenImages(1,&image);
-	ilBindImage(image);
-	ilLoadImage(path);
-
-	ILinfo ImageInfo;
-	iluGetImageInfo(&ImageInfo);
-	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-	{
-		iluFlipImage();
-	}
-
-	textureLoaded->width = ilGetInteger(IL_IMAGE_WIDTH);
-	textureLoaded->height = ilGetInteger(IL_IMAGE_HEIGHT);
-	textureLoaded->depth = ilGetInteger(IL_IMAGE_DEPTH);
-	textureLoaded->format = ilDetermineType(path);
-	textureLoaded->data = (unsigned char*)ilGetData();
-	
-
-	return;
-}
 
 void ModuleTexture::LoadTextureForModels(const char * path, const std::string &directory, Texture &texture)
 {
@@ -147,6 +123,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 		//Fill texture
 		texture.width = ilGetInteger(IL_IMAGE_WIDTH);
 		texture.height = ilGetInteger(IL_IMAGE_HEIGHT);
+		texture.depth = ilGetInteger(IL_IMAGE_DEPTH);
 		texture.format = ilDetermineType(filepath.c_str());
 		texture.data = data;
 
@@ -169,9 +146,6 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	LOG("Delete image");
 	iluDeleteImage(image);
 
-
-
-	
 	texture.id = textureID;
 
 	return;
