@@ -52,7 +52,7 @@ private:
 
 	float timePaused = 0.0f;
 
-	int framesToPause = 0;
+	long long framesToPause = 0;
 
 	unsigned int counterFPS = 0;
 	float counterTimeFPS = 0.0f;

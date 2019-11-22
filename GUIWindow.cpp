@@ -85,7 +85,7 @@ void GUIWindow::Draw(const char * title, bool * p_opened)
 			if (fpsTimer.ReadTimer() > 1000)
 			{
 				fpsTimer.StopTimer();
-				fps_log.push_back(App->timemanager->FPS);
+				fps_log.push_back((float)App->timemanager->FPS);
 				ms_log.push_back(1000.0f / App->timemanager->FPS);
 				fpsTimer.StartTimer();
 			}
