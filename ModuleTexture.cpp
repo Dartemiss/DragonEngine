@@ -76,27 +76,38 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	ilGenImages(1, &image);
 	ilBindImage(image);
 
-	
+	LOG("Trying to load texture from path described on FBX.");
 	bool isLoaded1 = ilLoadImage(filepath.c_str());
 
 	if(isLoaded1)
 	{
-		LOG("Texture found in path described in the FBX");
+		LOG("Texture found in path described on FBX");
 	}
 	else
 	{
+		LOG("Can not find texture in path described on FBX.")
+
 		filepath.clear();
 		filepath = path;
+
+		LOG("Trying to load texture from same folder than model.")
+
 		bool isLoaded2 = ilLoadImage(filepath.c_str());
+
 		if(isLoaded2)
 		{
 			LOG("Texture found in same folder than model.");
 		}
 		else
 		{
+			LOG("Can not find texture in same folder than model.")
+
 			filepath.clear();
 			std::string filepath = "../Textures/";
 			filepath.append(path);
+
+			LOG("Trying to load texture from Textures directory.")
+
 			bool isLoaded3 = ilLoadImage(filepath.c_str());
 			if(isLoaded3)
 			{
@@ -104,7 +115,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 			}
 			else
 			{
-				LOG("Cannot find textures");
+				LOG("Can not find textures");
 			}
 		}
 	}
