@@ -249,11 +249,13 @@ void ModuleCamera::TranslateCameraToPoint(const float3 & newPos)
 void ModuleCamera::SetNearPlaneDistance(const float nearDist)
 {
 	frustum->nearPlaneDistance = nearDist;
+	App->renderer->proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::SetFarPlaneDistance(const float farDist)
 {
 	frustum->farPlaneDistance = farDist;
+	App->renderer->proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::LookAt(const float3 target)

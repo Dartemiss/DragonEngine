@@ -22,6 +22,7 @@ MouseWheel -> Zoom
 
 Dragging and Dropping an fbx to the scene will load the model with their textures.
 
+Pressing ESC will quit the app.
 
 #Windows
 For knowing more about the project click on the menu bar on "Help" and then "About".

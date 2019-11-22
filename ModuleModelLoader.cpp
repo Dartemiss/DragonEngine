@@ -343,7 +343,7 @@ void ModuleModelLoader::computeModelBoundingBox()
 	//Adapt camera to the size of the model
 	App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
 
-	float dist = 8 * max(maxZ - minZ, max(maxX - minX, maxY - minY));
+	float dist = 4 * max(maxZ - minZ, max(maxX - minX, maxY - minY));
 	if(App->camera->frustum->farPlaneDistance < dist)
 	{
 		App->camera->SetFarPlaneDistance(dist);
