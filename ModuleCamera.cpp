@@ -110,6 +110,7 @@ update_status ModuleCamera::Update()
 
 
 		Rotate(-dx * rotationSpeed, -dy * rotationSpeed);
+		Move(mov);
 	}
 	else
 	{
@@ -117,7 +118,6 @@ update_status ModuleCamera::Update()
 	}
 	
 	
-	Move(mov);
 
 	//If F is pressed, camera moves to the front of the model
 	if(App->input->GetKey(SDL_SCANCODE_F))
@@ -224,11 +224,11 @@ void ModuleCamera::Zoom(const bool direction)
 {
 	if(direction)
 	{
-		Move(float3(0.0f, 0.0f, 0.1f));
+		Move(frustum->front);
 	}
 	else
 	{
-		Move(float3(0.0f, 0.0f, -0.1f));
+		Move(frustum->front * -1.0f);
 	}
 
 	return;

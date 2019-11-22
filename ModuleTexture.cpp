@@ -78,6 +78,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 
 	
 	bool isLoaded1 = ilLoadImage(filepath.c_str());
+
 	if(isLoaded1)
 	{
 		LOG("Texture found in path described in the FBX");
@@ -108,6 +109,15 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 		}
 	}
 	
+	//Make sure image is in RGB or devil will return an empty string
+	bool converted = ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+	if(!converted)
+	{
+		ILenum error = ilGetError();
+		LOG("Error converting image to rgb: %s - %s", std::to_string(error), iluErrorString(error));
+		return;
+	}
+
 	ILinfo ImageInfo;
 	iluGetImageInfo(&ImageInfo);
 	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)

@@ -62,6 +62,7 @@ void ModuleModelLoader::loadModel(const std::string &path)
 
 
 	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
+
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		LOG("ERROR ASSIMP: %s \n", aiGetErrorString());
@@ -133,9 +134,11 @@ void ModuleModelLoader::ChangeTexture(const std::string & path)
 	{
 		mesh->textures[0] = newTexture;
 	}
+	std::set<unsigned int>::iterator it = indicesOfCurrentTextures.begin();
 
-	indicesOfCurrentTextures.erase(0);
-	indicesOfCurrentTextures.insert(App->texture->textures_loaded.size() - 1);
+	indicesOfCurrentTextures.erase(it);
+	it = indicesOfCurrentTextures.begin();
+	indicesOfCurrentTextures.insert(it, App->texture->textures_loaded.size() - 1);
 
 }
 
@@ -340,7 +343,7 @@ void ModuleModelLoader::computeModelBoundingBox()
 	//Adapt camera to the size of the model
 	App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
 
-	float dist = 3 * max(maxZ - minZ, max(maxX - minX, maxY - minY));
+	float dist = 8 * max(maxZ - minZ, max(maxX - minX, maxY - minY));
 	if(App->camera->frustum->farPlaneDistance < dist)
 	{
 		App->camera->SetFarPlaneDistance(dist);

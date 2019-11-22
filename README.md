@@ -23,5 +23,19 @@ MouseWheel -> Zoom
 Dragging and Dropping an fbx to the scene will load the model with their textures.
 
 
+#Windows
+For knowing more about the project click on the menu bar on "Help" and then "About".
+
+For showing the console click on the menu bar on "Debug" and then on "Console".
+
+For showing information about variables of the window, framerate, hardware, information about all the textures
+loaded or OpenGL and Input options click on the menu bar "View" and then on Window.
+
+For showing the camera position, change the vertical fov and enable and disable the boundig box drawing
+click on the menu bar on "View" and then on "Camera".
+
+For showing model information and more accurate texture information of the current loaded textures,
+click on the menu bar on "View" and then on "Properties".
+
 
 Enjoy! :)
