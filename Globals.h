@@ -21,4 +21,4 @@ enum update_status
 #define FULLSCREEN false
 #define RESIZABLE true
 #define VSYNC true
-#define TITLE "Super Awesome Engine"
+#define TITLE "Dragon Engine"

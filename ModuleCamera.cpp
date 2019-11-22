@@ -154,6 +154,7 @@ update_status ModuleCamera::PostUpdate()
 
 bool ModuleCamera::CleanUp()
 {
+	delete frustum;
 	return true;
 }
 

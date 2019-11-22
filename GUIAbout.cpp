@@ -23,8 +23,11 @@ void GUIAbout::Draw(const char * title, bool * p_opened)
 		
 		ImGui::Separator();
 
-		ImGui::Text("Libraries: SDL2, OpenGL 4.3, glew 2.1.0 , MathGeoLib and IMGUI.");
-		ImGui::Text("Licence: MIT");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Libraries: "); ImGui::SameLine();
+		ImGui::Text("SDL2, OpenGL 4.3, glew 2.1.0 , MathGeoLib and IMGUI.");
+
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Licence: "); ImGui::SameLine();
+		ImGui::Text("MIT.");
 		ImGui::End();
 	}
 }
