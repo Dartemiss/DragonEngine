@@ -167,8 +167,9 @@ bool ModuleRender::Init()
 	//Project view model matrix and prog
 	proj = App->camera->frustum->ProjectionMatrix();
 
-	model = float4x4::FromTRS(float3(0.0f, 0.0f, 0.0f), float3x3::RotateX(0.0f)* float3x3::RotateY(0.0f), float3(1.0f, 1.0f, 1.0f));
-
+	model = float4x4::FromTRS(float3(0.0f, 0.0f, 0.0f), float3x3::RotateX(0.0f), float3(1.0f, 1.0f, 1.0f));
+	
+	
 	//First parameter is eye position, second is target position
 	view = App->camera->frustum->ViewMatrix();
 

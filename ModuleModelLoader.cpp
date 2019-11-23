@@ -17,6 +17,7 @@ bool ModuleModelLoader::Init()
 {
 	loadModel("../Models/baker_house/BakerHouse.fbx");
 
+
 	return true;
 }
 

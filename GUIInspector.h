@@ -12,6 +12,14 @@ public:
 	~GUIInspector() = default;
 
 	void Draw(const char* title, bool* p_opened);
+	void ComputeRotation();
+
+private:
+	float rotX = 0.0f;
+	float rotY = 0.0f;
+	float rotZ = 0.0f;
+	
+	bool computed = false;
 
 };
 #endif __GUIInspector_H__
