@@ -1,6 +1,7 @@
 <h1 align="center" style="border-bottom: none;">Dragon Engine</h1>
 
 
+## What is Dragon Engine?
 - Game Engine developed with C++.
 - Libraries used: [SDL 2.0](https://www.libsdl.org/), [glew 2.1.0](http://glew.sourceforge.net/), [MathGeoLib 3.0.0](https://github.com/juj/MathGeoLib/), [Dear ImGui 1.73](https://github.com/ocornut/imgui/), [DevIL 1.8](http://openil.sourceforge.net/), [assimp 5.0](https://github.com/assimp/assimp/) and [OpenGL](https://www.opengl.org/). 
 
