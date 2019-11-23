@@ -29,11 +29,11 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void Draw(unsigned int program);
+	void Draw(const unsigned int program);
 	void loadModel(const std::string &path);
-	const int GetNumberOfMeshes();
-	const int GetNumberOfTriangles(bool triangles);
-	void AddTextureIndex(std::vector<Texture> &textures);
+	const int GetNumberOfMeshes() const;
+	const int GetNumberOfTriangles(const bool triangles) const;
+	void AddTextureIndex(const std::vector<Texture> &textures);
 	void ChangeTexture(const std::string &path);
 
 	//Variables
@@ -42,23 +42,28 @@ public:
 	//0-> (-x,-y,-z), 1-> (x,-y,-z), 2-> (x,-y,z), 3-> (-x,-y,z)
 	//4-> (-x,y,-z), 5-> (x,y,-z), 6-> (x,y,z), 7-> (-x,y,z)
 	std::vector<float3> modelBox;
+
 	bool isModelLoaded = false;
+
 	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
 	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
 	int numberOfTextures = 0;
 
+	//Indices cannot be repeated (Set)
 	std::set<unsigned int> indicesOfCurrentTextures;
 
 private:
 
 	std::vector<Mesh*> meshes;
 	std::string directory;
+
 	/*  Functions   */
 	
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 	
-	std::string computeDirectory(const std::string &path);
+	std::string computeDirectory(const std::string &path) const;
+
 	void emptyScene();
 
 	void computeModelBoundingBox();

@@ -23,10 +23,10 @@ public:
 	//Methods
 	void InitDeltaTimes();
 	void FinalDeltaTimes();
-	float GetGameTime();
-	float GetRealGameTime();
-	float GetDeltaTime();
-	float GetRealDeltaTime();
+	float GetGameTime() const;
+	float GetRealGameTime() const;
+	float GetDeltaTime() const;
+	float GetRealDeltaTime() const;
 	void PauseGame();
 	void UnPauseGame();
 	void ExecuteNextFrames(int numberFrames);

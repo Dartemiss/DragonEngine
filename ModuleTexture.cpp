@@ -172,7 +172,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	return;
 }
 
-std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName, const std::string &directory)
+std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, const aiTextureType type, const std::string typeName, const std::string &directory)
 {
 	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)

@@ -26,7 +26,7 @@ public:
 	void Init();
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
 	~Mesh();
-	void Draw(unsigned int program) const;
+	void Draw(const unsigned int program) const;
 private:
 	/*  Render data  */
 	unsigned int VAO, VBO, EBO;

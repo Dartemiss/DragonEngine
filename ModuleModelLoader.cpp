@@ -42,7 +42,7 @@ bool ModuleModelLoader::CleanUp()
 	return true;
 }
 
-void ModuleModelLoader::Draw(unsigned int program)
+void ModuleModelLoader::Draw(const unsigned int program)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i]->Draw(program);
@@ -83,12 +83,12 @@ void ModuleModelLoader::loadModel(const std::string &path)
 	indicesOfCurrentTextures.size();
 }
 
-const int ModuleModelLoader::GetNumberOfMeshes()
+const int ModuleModelLoader::GetNumberOfMeshes() const
 {
 	return meshes.size();
 }
 
-const int ModuleModelLoader::GetNumberOfTriangles(bool triangles)
+const int ModuleModelLoader::GetNumberOfTriangles(const bool triangles) const
 {
 	int counter = 0;
 
@@ -100,7 +100,7 @@ const int ModuleModelLoader::GetNumberOfTriangles(bool triangles)
 }
 
 
-void ModuleModelLoader::AddTextureIndex(std::vector<Texture> &textures)
+void ModuleModelLoader::AddTextureIndex(const std::vector<Texture> &textures)
 {
 	std::vector<Texture> loaded = App->texture->textures_loaded;
 	for(auto tex : textures)
@@ -235,7 +235,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 	return Mesh(vertices, indices, textures);
 }
 
-std::string ModuleModelLoader::computeDirectory(const std::string &path)
+std::string ModuleModelLoader::computeDirectory(const std::string &path) const
 {
 	size_t simpleRightSlash = path.find_last_of('/');
 	if (std::string::npos != simpleRightSlash)

@@ -57,7 +57,7 @@ void Mesh::setupMesh()
 
 	glBindVertexArray(0);
 }
-void Mesh::Draw(unsigned int program) const
+void Mesh::Draw(const unsigned int program) const
 {
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;

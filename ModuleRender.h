@@ -22,7 +22,6 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
-	void DrawRectangle();
 
 	float aspect = 1.0f;
 
@@ -38,12 +37,12 @@ public:
 
 
 	//Touch renderer variables
-	void EnableFaceCulling();
-	void EnableDepthTest();
-	void ChangeFrontFace();
-	void EnableTexture2D();
-	void FillTriangles();
-	void EnableAlphaTest();
+	void EnableFaceCulling() const;
+	void EnableDepthTest() const;
+	void ChangeFrontFace() const;
+	void EnableTexture2D() const;
+	void FillTriangles() const;
+	void EnableAlphaTest() const;
 
 
 	//Touch booleans

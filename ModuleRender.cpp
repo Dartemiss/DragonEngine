@@ -346,15 +346,8 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::DrawRectangle()
-{
-	
 
-	//After use a vbo assign a 0 for efficency
-
-}
-
-void ModuleRender::EnableFaceCulling()
+void ModuleRender::EnableFaceCulling() const
 {
 	if(faceCullingIsActive)
 	{
@@ -366,7 +359,7 @@ void ModuleRender::EnableFaceCulling()
 	}
 }
 
-void ModuleRender::EnableDepthTest()
+void ModuleRender::EnableDepthTest() const
 {
 	if(dephtTestIsActive)
 	{
@@ -378,7 +371,7 @@ void ModuleRender::EnableDepthTest()
 	}
 }
 
-void ModuleRender::ChangeFrontFace()
+void ModuleRender::ChangeFrontFace() const
 {
 	if(changingFrontFace)
 	{
@@ -390,7 +383,7 @@ void ModuleRender::ChangeFrontFace()
 	}
 }
 
-void ModuleRender::EnableTexture2D()
+void ModuleRender::EnableTexture2D() const
 {
 	if(texture2DIsActive)
 	{
@@ -402,7 +395,7 @@ void ModuleRender::EnableTexture2D()
 	}
 }
 
-void ModuleRender::FillTriangles()
+void ModuleRender::FillTriangles() const
 {
 	if(fillTrianglesIsActive)
 	{
@@ -414,7 +407,7 @@ void ModuleRender::FillTriangles()
 	}
 }
 
-void ModuleRender::EnableAlphaTest()
+void ModuleRender::EnableAlphaTest() const
 {
 	if(alphaTestIsActive)
 	{
