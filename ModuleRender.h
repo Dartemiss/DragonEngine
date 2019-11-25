@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include "include/Math/float4x4.h"
 #include "include/Math/float3x3.h"
+#include "ComponentCamera.h"
 #include "glew.h"
 
 struct SDL_Texture;
@@ -50,9 +51,12 @@ public:
 	//Draw
 	void DrawGrid();
 	void DrawAllGameObjects();
+	void DrawGame();
 	void DrawBoundingBoxes();
-	void CreateFrameBuffer(int width, int height);
+	//If scene create buffer for scene else create buffer for game window
+	void CreateFrameBuffer(int width, int height, bool scene = true);
 	void GenerateTexture(int width, int height);
+	void GenerateTextureGame(int width, int height);
 
 private:
 	void* context;
@@ -67,15 +71,17 @@ private:
 	unsigned int frameBufferObject = 0; // FBO
 	unsigned int renderBufferObject = 0; // RBO
 
+	//Framebuffer windows variables
+	unsigned int frameBufferObjectGame = 0; // FBO
+	unsigned int renderBufferObjectGame = 0; // RBO
+
 	int heightScene, widthScene;
 	int heightGame, widthGame;
 
 	unsigned int sceneTexture = 0;
-
+	unsigned int gameTexture = 0;
 	
-
-	
-
+	ComponentCamera* gameCamera = nullptr;
 
 
 };

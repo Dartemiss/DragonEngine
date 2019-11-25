@@ -41,6 +41,7 @@ ComponentCamera::~ComponentCamera()
 void ComponentCamera::Update()
 {
 	frustum->pos = myGameObject->myTransform->position;
+	view = frustum->ViewMatrix();
 
 	return;
 }

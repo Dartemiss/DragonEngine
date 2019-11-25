@@ -51,12 +51,12 @@ public:
 	GameObject* parent;
 	//Chilren
 	std::vector<GameObject*> children;
-
+	//Components assigned to gameObject
+	std::vector<Component*> components;
 
 private:
 	std::string name;
-	//Components assigned to gameObject
-	std::vector<Component*> components;
+
 
 
 

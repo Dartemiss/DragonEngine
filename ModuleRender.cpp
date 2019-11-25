@@ -9,6 +9,8 @@
 #include "ModuleScene.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "GameObject.h"
+#include "ComponentCamera.h"
 #include "SDL.h"
 #include "glew.h"
 #include "imgui/imgui.h"
@@ -183,16 +185,49 @@ update_status ModuleRender::Update()
 
 
 	ImGui::End();
-
+	
 	bool gameIsEnabled = true;
+	ImGui::SetNextWindowSize(ImVec2(600, 600));
 	//Game Window
 	ImGui::Begin("Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-	ImVec2 wSize = ImGui::GetWindowSize();
-	//App->scene->mainCamera->
+	ImVec2 wSizeGame = ImGui::GetWindowSize();
+	
+	if(App->scene->mainCamera == nullptr)
+	{
+		ImGui::End();
+		LOG("Main camera is nullptr.");
+		return UPDATE_CONTINUE;
+	}
+
+	for (auto comp : App->scene->mainCamera->components)
+	{
+		if (comp->myType == CAMERA)
+		{
+			gameCamera = (ComponentCamera*)comp;
+		}
+	}
+
+	gameCamera->SetAspectRatio((int)wSize.x, (int)wSize.y);
+	CreateFrameBuffer((int)wSizeGame.x, (int)wSizeGame.y, false);
+	GenerateTextureGame((int)wSizeGame.x, (int)wSizeGame.y);
+
+	widthGame = (int)wSizeGame.x;
+	heightGame = (int)wSizeGame.y;
+
+	ImGui::GetWindowDrawList()->AddImage(
+		(void *)gameTexture,
+		ImVec2(ImGui::GetCursorScreenPos()),
+		ImVec2(
+			ImGui::GetCursorScreenPos().x + wSizeGame.x,
+			ImGui::GetCursorScreenPos().y + wSizeGame.y
+		),
+		ImVec2(0, 1),
+		ImVec2(1, 0)
+	);
 
 	ImGui::End();
-
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -307,6 +342,34 @@ void ModuleRender::DrawAllGameObjects()
 	glUseProgram(0);
 }
 
+void ModuleRender::DrawGame()
+{
+	unsigned int progModel = App->program->defaultProg;
+	glUseProgram(progModel);
+
+	glUniformMatrix4fv(glGetUniformLocation(progModel,
+		"proj"), 1, GL_TRUE, &gameCamera->proj[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(progModel,
+		"view"), 1, GL_TRUE, &gameCamera->view[0][0]);
+
+	for (auto gameObject : App->scene->allGameObjects)
+	{
+		glUniformMatrix4fv(glGetUniformLocation(progModel,
+			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
+
+		if (gameObject->myMeshes != nullptr)
+		{
+			for (auto mesh : gameObject->myMeshes->meshes)
+			{
+				mesh->Draw(progModel);
+			}
+		}
+
+	}
+
+	glUseProgram(0);
+}
+
 void ModuleRender::DrawBoundingBoxes()
 {
 	//TODO: Separate the bounding box code into a different class
@@ -358,52 +421,106 @@ void ModuleRender::DrawBoundingBoxes()
 	}
 }
 
-void ModuleRender::CreateFrameBuffer(int width, int height)
+void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 {
-	if (width != widthScene || height != heightScene)
+	if(scene)
 	{
-		if (frameBufferObject == 0)
+	
+		if (width != widthScene || height != heightScene)
 		{
-			//Generate FrameBuffer if necessary
-			glCreateFramebuffers(1, &frameBufferObject);
+			if (frameBufferObject == 0)
+			{
+				//Generate FrameBuffer if necessary
+				glCreateFramebuffers(1, &frameBufferObject);
+			}
+
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+
+			if (sceneTexture != 0)
+			{
+				glDeleteTextures(1, &sceneTexture);
+			}
+
+			if (renderBufferObject != 0)
+			{
+				glDeleteRenderbuffers(1, &renderBufferObject);
+			}
+
+			glGenTextures(1, &sceneTexture);
+			glBindTexture(GL_TEXTURE_2D, sceneTexture);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTexture, 0);
+
+			//Generate RenderBuffers
+			glGenRenderbuffers(1, &renderBufferObject);
+			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject);
+
+
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+				LOG("ERROR: Cannot create or render Scene framebuffer.");
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
-
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
-
-		if (sceneTexture != 0)
-		{
-			glDeleteTextures(1, &sceneTexture);
-		}
-
-		if(renderBufferObject != 0)
-		{
-			glDeleteRenderbuffers(1, &renderBufferObject);
-		}
-
-		glGenTextures(1, &sceneTexture);
-		glBindTexture(GL_TEXTURE_2D, sceneTexture);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTexture, 0);
-
-		//Generate RenderBuffers
-		glGenRenderbuffers(1, &renderBufferObject);
-		glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-		glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject);
-
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			LOG("ERROR: Cannot create or render Scene framebuffer.");
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
+	else
+	{
+	
+		if (width != widthGame || height != heightGame)
+		{
+			if (frameBufferObjectGame == 0)
+			{
+				//Generate FrameBuffer if necessary
+				glCreateFramebuffers(1, &frameBufferObjectGame);
+			}
+
+			glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObjectGame);
+
+			if (gameTexture != 0)
+			{
+				glDeleteTextures(1, &gameTexture);
+			}
+
+			if (renderBufferObjectGame != 0)
+			{
+				glDeleteRenderbuffers(1, &renderBufferObjectGame);
+			}
+
+			glGenTextures(1, &gameTexture);
+			glBindTexture(GL_TEXTURE_2D, gameTexture);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gameTexture, 0);
+
+			//Generate RenderBuffers
+			glGenRenderbuffers(1, &renderBufferObjectGame);
+			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObjectGame);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObjectGame);
+
+
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+				LOG("ERROR: Cannot create or render Scene framebuffer.");
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+	}
+
+
 }
 
 void ModuleRender::GenerateTexture(int width, int height)
@@ -417,6 +534,17 @@ void ModuleRender::GenerateTexture(int width, int height)
 	DrawGrid();
 	DrawAllGameObjects();
 	
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ModuleRender::GenerateTextureGame(int width, int height)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObjectGame);
+	glViewport(0, 0, width, height);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	DrawGame();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
