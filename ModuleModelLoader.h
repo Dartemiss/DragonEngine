@@ -52,6 +52,11 @@ public:
 	//Indices cannot be repeated (Set)
 	std::set<unsigned int> indicesOfCurrentTextures;
 
+	//Assimp transformation
+	aiVector3D pos;
+	aiQuaternion rot;
+	aiVector3D scale;
+
 private:
 
 	std::vector<Mesh*> meshes;
@@ -67,6 +72,7 @@ private:
 	void emptyScene();
 
 	void computeModelBoundingBox();
+
 
 	
 

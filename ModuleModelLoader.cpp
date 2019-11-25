@@ -18,6 +18,7 @@ bool ModuleModelLoader::Init()
 	loadModel("../Models/baker_house/BakerHouse.fbx");
 
 
+
 	return true;
 }
 
@@ -63,6 +64,10 @@ void ModuleModelLoader::loadModel(const std::string &path)
 
 
 	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
+
+	aiMatrix4x4 mod =  scene->mRootNode->mChildren[0]->mTransformation;
+	mod.Decompose(scale,rot,pos);
+	
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -274,6 +279,7 @@ void ModuleModelLoader::emptyScene()
 	indicesOfCurrentTextures.clear();
 
 	numberOfTextures = 0;
+
 }
 
 void ModuleModelLoader::computeModelBoundingBox()

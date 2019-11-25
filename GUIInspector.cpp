@@ -5,7 +5,10 @@
 #include "include/Math/float3.h"
 #include "include/Math/float4.h"
 #include "include/Math/float4x4.h"
+#include "include/Math/Quat.h"
 #include <math.h>
+
+using namespace Assimp;
 
 void GUIInspector::Draw(const char * title, bool * p_opened)
 {
@@ -14,17 +17,20 @@ void GUIInspector::Draw(const char * title, bool * p_opened)
 		ImGui::SetNextWindowSize(ImVec2(500, 700), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, p_opened);
 		//Get position from model matrix
-		float4 position = App->renderer->model.Col(3);
-		if (!computed)
-		{
-			ComputeRotation();
-			computed = true;
-		}
+		aiVector3D position = App->modelLoader->pos;
+		aiQuaternion rot = App->modelLoader->rot;
+		Quat myRot;
+		myRot.x = rot.x;
+		myRot.y = rot.y;
+		myRot.z = rot.z;
+		myRot.w = rot.w;
+		float3 realRot = myRot.ToEulerXYZ();
+		aiVector3D scale = App->modelLoader->scale;
 			
 		ImGui::TextColored(ImVec4(1.0f,0.0,1.0f,1.0f), "Transform");
 		ImGui::DragFloat3("Position (x,y,z)", (float *)&float3(position.x, position.y, position.z), 0.1f, -1000.f, 1000.f);
-		ImGui::DragFloat3("Rotation (x,y,z)", (float *)&float3(rotX, rotY, rotZ), 0.1f, -1000.f, 1000.f);
-		ImGui::DragFloat3("Scale (x,y,z)", (float *)&App->renderer->model.GetScale(), 0.1f, -1000.f, 1000.f);
+		ImGui::DragFloat3("Rotation (x,y,z)", (float *)&float3(realRot.x * 180.0f / M_PI, realRot.y * 180.0f / M_PI, realRot.z * 180.0f / M_PI), 0.1f, -1000.f, 1000.f);
+		ImGui::DragFloat3("Scale (x,y,z)", (float *)&float3(scale.x, scale.y, scale.z), 0.1f, -1000.f, 1000.f);
 
 		ImGui::Separator();
 
