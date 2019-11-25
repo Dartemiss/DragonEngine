@@ -43,7 +43,7 @@ bool ModuleModelLoader::CleanUp()
 	return true;
 }
 
-void ModuleModelLoader::Draw(const unsigned int program)
+void ModuleModelLoader::Draw(const unsigned int program) const
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i]->Draw(program);
