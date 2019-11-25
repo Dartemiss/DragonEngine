@@ -21,6 +21,9 @@ public:
 
 	AABB* boundingBox = nullptr;
 
+private:
+	void DrawAABB();
+
 };
 
 #endif __ComponentMesh_H__

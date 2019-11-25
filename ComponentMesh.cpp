@@ -20,6 +20,8 @@ ComponentMesh::~ComponentMesh()
 
 void ComponentMesh::Update()
 {
+	DrawAABB();
+
 	return;
 }
 
@@ -63,4 +65,8 @@ void ComponentMesh::ComputeBoundingBox()
 
 	boundingBox = new AABB(min,max);
 
+}
+
+void ComponentMesh::DrawAABB()
+{
 }
