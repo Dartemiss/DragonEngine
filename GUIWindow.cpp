@@ -19,7 +19,7 @@ void GUIWindow::Draw(const char * title, bool * p_opened)
 {
 	if(isEnabled)
 	{
-		ImGui::SetNextWindowSize(ImVec2(600, 600));
+		ImGui::SetNextWindowSize(ImVec2(600, 600), ImGuiCond_Once);
 		SDL_Window* window = App->window->window;
 		assert(window != nullptr);
 		ImGui::Begin(title, p_opened);
