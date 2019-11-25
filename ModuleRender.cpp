@@ -128,47 +128,6 @@ bool ModuleRender::Init()
 		&width,
 		&height);
 
-	float buffer_data_rect[] = { -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // bottom left
-							  0.5f, -0.5f, 0.0f,  1.0f, 0.0f, // bottom right
-							 -0.5f, 0.5f,  0.0f,  0.0f, 1.0f, // top left 
-							  0.5f, 0.5f,  0.0f,  1.0f, 1.0f  // top right
-	};
-
-
-	unsigned int indices[] = {
-		0,1,2,
-		1,3,2
-	};
-
-	float buffer_data_triangle[] = { -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-									  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-									  0.0f,  0.5f, 0.0f, 0.5f, 1.0f
-	};
-
-
-	//Create vbo
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	//Create Buffer index
-	glGenBuffers(1, &index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data_rect), buffer_data_rect, GL_STATIC_DRAW);
-
-
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(
-		0, // attribute 0
-		3, // number of componentes (3 floats)
-		GL_FLOAT, // data type
-		GL_FALSE, // should be normalized?
-		5 * sizeof(float), // stride
-		(void*)0 // array buffer offset
-	);
-
-	glEnableVertexAttribArray(0);
 
 	//Project view model matrix and prog
 
@@ -224,6 +183,16 @@ update_status ModuleRender::Update()
 
 
 	ImGui::End();
+
+	bool gameIsEnabled = true;
+	//Game Window
+	ImGui::Begin("Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+	ImVec2 wSize = ImGui::GetWindowSize();
+	//App->scene->mainCamera->
+
+	ImGui::End();
+
 
 	return UPDATE_CONTINUE;
 }
