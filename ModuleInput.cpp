@@ -146,12 +146,6 @@ update_status ModuleInput::PreUpdate()
 		    // In case if dropped file
 			dropped_filedir = event.drop.file;
 			// Shows directory of dropped file
-			SDL_ShowSimpleMessageBox(
-				SDL_MESSAGEBOX_INFORMATION,
-				"File dropped on window",
-				dropped_filedir,
-				App->window->window
-			);
 			DropModelFile(dropped_filedir);
 			SDL_free(dropped_filedir);    // Free dropped_filedir memory
 			break;

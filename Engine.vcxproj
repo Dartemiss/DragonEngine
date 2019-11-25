@@ -65,7 +65,7 @@
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalIncludeDirectories>./SDL/include;./Dependencies/glew-2.1.0/include/GL;./Dependencies/MathGeoLib/include;./Dependencies/DevIL Windows SDK/include/IL;./Dependencies/assimp/include/assimp</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -25,6 +25,8 @@
 
 - `RightClick` + Mouse movement &rarr; FPS camera
 
+- `Keyboard Arrows` for rotating the camera.
+
 - `Alt` + `Left Click` &rarr; Orbit arround the model.
 
 - `MouseWheel` &rarr; Zoom
