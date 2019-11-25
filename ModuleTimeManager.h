@@ -23,10 +23,10 @@ public:
 	//Methods
 	void InitDeltaTimes();
 	void FinalDeltaTimes();
-	float GetGameTime();
-	float GetRealGameTime();
-	float GetDeltaTime();
-	float GetRealDeltaTime();
+	float GetGameTime() const;
+	float GetRealGameTime() const;
+	float GetDeltaTime() const;
+	float GetRealDeltaTime() const;
 	void PauseGame();
 	void UnPauseGame();
 	void ExecuteNextFrames(int numberFrames);
@@ -55,7 +55,7 @@ private:
 
 	float timePaused = 0.0f;
 
-	int framesToPause = 0;
+	long long framesToPause = 0;
 
 	unsigned int counterFPS = 0;
 	float counterTimeFPS = 0.0f;

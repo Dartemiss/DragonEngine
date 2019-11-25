@@ -62,7 +62,7 @@ void GUIWindow::Draw(const char * title)
 
 		if(ImGui::CollapsingHeader("Framerate"))
 		{
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / App->timemanager->FPS, App->timemanager->FPS);
+			ImGui::Text("Application average %.3f ms/frame (%d FPS)", 1000.0f / App->timemanager->FPS, App->timemanager->FPS);
 			char title[25];
 			if (fps_log.size() > 0)
 			{
@@ -79,7 +79,7 @@ void GUIWindow::Draw(const char * title)
 			if (fpsTimer.ReadTimer() > 1000)
 			{
 				fpsTimer.StopTimer();
-				fps_log.push_back(App->timemanager->FPS);
+				fps_log.push_back((float)App->timemanager->FPS);
 				ms_log.push_back(1000.0f / App->timemanager->FPS);
 				fpsTimer.StartTimer();
 			}
@@ -91,9 +91,14 @@ void GUIWindow::Draw(const char * title)
 
 		if (ImGui::CollapsingHeader("Hardware"))
 		{
-			ImGui::Text("CPUs: %d (Cache: %dkb)", SDL_GetCPUCount(), SDL_GetCPUCacheLineSize());
-			ImGui::Text("System RAM: %dGb", SDL_GetSystemRAM()/1000);
-			ImGui::Text("Caps: ");ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "CPUs: "); ImGui::SameLine();
+			ImGui::Text("%d(Cache: %dkb)", SDL_GetCPUCount(), SDL_GetCPUCacheLineSize());
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "System RAM: "); ImGui::SameLine();
+			ImGui::Text("%dGb", SDL_GetSystemRAM() / 1000);
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Caps: "); ImGui::SameLine();
+
 			if(SDL_Has3DNow())
 			{
 				ImGui::Text("3DNow,"); ImGui::SameLine();
@@ -153,8 +158,10 @@ void GUIWindow::Draw(const char * title)
 
 			ImGui::Separator();
 
-			ImGui::Text("GPU: %s", glGetString(GL_VENDOR));
-			ImGui::Text("Brand: %s", glGetString(GL_RENDERER));
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "GPU: "); ImGui::SameLine();
+			ImGui::Text("%s", glGetString(GL_VENDOR));
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Brand: "); ImGui::SameLine();
+			ImGui::Text("%s", glGetString(GL_RENDERER));
 
 			#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
 			#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
@@ -167,10 +174,14 @@ void GUIWindow::Draw(const char * title)
 			glGetIntegerv(GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX,
 				&cur_avail_mem_kb);
 
-			ImGui::Text("VRAM Total: %d(Mb)", total_mem_kb/1000);
-			ImGui::Text("VRAM Available: %d(Mb)", cur_avail_mem_kb/1000);
-			ImGui::Text("VRAM Usage: %d(Mb)", (total_mem_kb/1000) - (cur_avail_mem_kb / 1000));
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "VRAM Total: "); ImGui::SameLine();
+			ImGui::Text("%d(Mb)", total_mem_kb / 1000);
 
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "VRAM Available: "); ImGui::SameLine();
+			ImGui::Text("%d(Mb)", cur_avail_mem_kb / 1000);
+
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "VRAM Usage: "); ImGui::SameLine();
+			ImGui::Text("%d(Mb)", (total_mem_kb / 1000) - (cur_avail_mem_kb / 1000));
 
 
 		}
@@ -212,23 +223,57 @@ void GUIWindow::Draw(const char * title)
 				ImGui::Separator();
 			}
 		}
-		if (ImGui::CollapsingHeader("Input"))
+
+
+		if (ImGui::CollapsingHeader("Variables"))
 		{
-			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Mouse");
-			ImGui::Text("Mouse Position: (%f , %f)", App->input->GetMousePosition().x, App->input->GetMousePosition().y);
-			ImGui::Text("Mouse delta motion: (%f, %f)", App->input->GetMouseMotion().x, App->input->GetMouseMotion().y);
-			ImGui::Text("Mouse Wheel: %d", App->input->GetMouseWheel());
-			ImGui::Text("Mouse Right Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT ? 1 : 0);
-			ImGui::Text("Mouse Left Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT ? 1 : 0);
-			ImGui::Separator();
+			if (ImGui::CollapsingHeader("Renderer"))
+			{
+				//Face Culling
+				ImGui::Checkbox("Face Culling", &App->renderer->faceCullingIsActive);
+				App->renderer->EnableFaceCulling();
 
-			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "KeyBoard");
-			ImGui::Text("Keys down:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_DOWN) { ImGui::SameLine(); ImGui::Text("%d ", i); }
-			ImGui::Text("Keys repeat:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_REPEAT) { ImGui::SameLine(); ImGui::Text("%d ", i); }
+
+				//GL_DEPTH_TEST
+				ImGui::Checkbox("Depth Test", &App->renderer->dephtTestIsActive);
+				App->renderer->EnableDepthTest();
+
+
+				//Changing front face
+				ImGui::Checkbox("Front Face: CWW/CW", &App->renderer->changingFrontFace);
+				App->renderer->ChangeFrontFace();
+
+				//Texture2D
+				ImGui::Checkbox("Texture2D", &App->renderer->texture2DIsActive);
+				App->renderer->EnableTexture2D();
+
+
+				//Fill triangles
+				ImGui::Checkbox("Fill Triangles", &App->renderer->fillTrianglesIsActive);
+				App->renderer->FillTriangles();
+
+				//Alpha test
+				ImGui::Checkbox("Alpha test", &App->renderer->alphaTestIsActive);
+				App->renderer->EnableAlphaTest();
+			}
+
+			if (ImGui::CollapsingHeader("Input"))
+			{
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Mouse");
+				ImGui::Text("Mouse Position: (%f , %f)", App->input->GetMousePosition().x, App->input->GetMousePosition().y);
+				ImGui::Text("Mouse delta motion: (%f, %f)", App->input->GetMouseMotion().x, App->input->GetMouseMotion().y);
+				ImGui::Text("Mouse Wheel: %d", App->input->GetMouseWheel());
+				ImGui::Text("Mouse Right Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT ? 1 : 0);
+				ImGui::Text("Mouse Left Click: %d", App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT ? 1 : 0);
+				ImGui::Separator();
+
+				ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "KeyBoard");
+				ImGui::Text("Keys down:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_DOWN) { ImGui::SameLine(); ImGui::Text("%d ", i); }
+				ImGui::Text("Keys repeat:");      for (int i = 0; i < 300; i++) if (App->input->GetKey(i) == KEY_REPEAT) { ImGui::SameLine(); ImGui::Text("%d ", i); }
+			}
 		}
-		
-		
 
+		
 		ImGui::End();
 	}
 

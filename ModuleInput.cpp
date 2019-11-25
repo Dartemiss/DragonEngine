@@ -122,8 +122,8 @@ update_status ModuleInput::PreUpdate()
 			break;
 
 		case SDL_MOUSEMOTION:
-			mouse_motion.x = event.motion.xrel;
-			mouse_motion.y = event.motion.yrel;
+			mouse_motion.x = (float)event.motion.xrel;
+			mouse_motion.y = (float)event.motion.yrel;
 			mouse.x = (float)event.motion.x / SCREEN_WIDTH;
 			mouse.y = (float)event.motion.y / SCREEN_HEIGHT;
 			
@@ -132,10 +132,12 @@ update_status ModuleInput::PreUpdate()
 		case SDL_MOUSEWHEEL:
 			if (event.wheel.y > 0) // scroll up
 			{
+				mouse_wheel = event.wheel.y;
 				App->camera->Zoom(true);
 			}
 			else if (event.wheel.y < 0) // scroll down
 			{
+				mouse_wheel = event.wheel.y;
 				App->camera->Zoom(false);
 			}
 			break;
@@ -184,6 +186,7 @@ update_status ModuleInput::Update()
 // Called before quitting
 bool ModuleInput::CleanUp()
 {
+	delete keyboard;
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
@@ -212,7 +215,7 @@ void ModuleInput::DropModelFile(char * dropped_filedir)
 	std::string filedir(dropped_filedir);
 	std::size_t dotFound = fileExt.find_last_of(".");
 	fileExt.erase(0, dotFound + 1);
-	if(fileExt == "fbx")
+	if(fileExt == "fbx" || fileExt == "FBX")
 	{
 		LOG("File is .fbx: Loading model.");
 

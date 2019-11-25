@@ -454,3 +454,79 @@ void ModuleRender::GenerateTexture(int width, int height)
 
 
 
+void ModuleRender::EnableFaceCulling() const
+{
+		if (faceCullingIsActive)
+		{
+			glEnable(GL_CULL_FACE);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
+}
+
+
+//After use a vbo assign a 0 for efficency
+void ModuleRender::EnableDepthTest() const
+{
+	if (dephtTestIsActive)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	else
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+}
+
+
+void ModuleRender::ChangeFrontFace() const
+{
+	if (changingFrontFace)
+	{
+		glFrontFace(GL_CCW);
+	}
+	else
+	{
+		glFrontFace(GL_CW);
+	}
+}
+
+
+
+void ModuleRender::EnableTexture2D() const
+{
+	if (texture2DIsActive)
+	{
+		glEnable(GL_TEXTURE_2D);
+	}
+	else
+	{
+		glDisable(GL_TEXTURE_2D);
+	}
+}
+
+void ModuleRender::FillTriangles() const
+{
+	if (fillTrianglesIsActive)
+	{
+		glPolygonMode(GL_FRONT, GL_FILL);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT, GL_LINE);
+	}
+}
+
+void ModuleRender::EnableAlphaTest() const
+{
+	if (alphaTestIsActive)
+	{
+		glEnable(GL_ALPHA_TEST);
+	}
+	else
+	{
+		glDisable(GL_ALPHA_TEST);
+	}
+}

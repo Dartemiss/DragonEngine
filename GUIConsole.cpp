@@ -21,6 +21,7 @@ void GUIConsole::Draw(const char * title)
 {
 	if (isEnabled) 
 	{
+		ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, &isEnabled);
 
 		if(firstTime)

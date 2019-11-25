@@ -55,7 +55,7 @@ bool ModuleProgram::CleanUp()
 	return true;
 }
 
-unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fShader)
+unsigned int ModuleProgram::createProgram(const unsigned int vShader, const unsigned int fShader)
 {
 	unsigned int program = glCreateProgram();
 	

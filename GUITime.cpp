@@ -6,6 +6,7 @@ void GUITime::Draw(const char * title)
 {
 	if (isEnabled)
 	{
+		ImGui::SetNextWindowSize(ImVec2(500, 200), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, &isEnabled);
 		ImGui::Text("Real Time Since Start: %.3f", App->timemanager->GetRealGameTime()/1000.0f); ImGui::SameLine();
 		ImGui::Text("Real Time dt: %.3f", App->timemanager->GetRealDeltaTime() / 1000.0f);

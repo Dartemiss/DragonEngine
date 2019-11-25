@@ -7,6 +7,12 @@
 #include <material.h>
 #include <mesh.h>
 #include <cimport.h>
+#include "Logger.hpp"
+#include "DefaultLogger.hpp"
+#include "myStream.h"
+
+using namespace Assimp;
+
 
 bool ModuleModelLoader::Init()
 {
@@ -36,7 +42,7 @@ bool ModuleModelLoader::CleanUp()
 	return true;
 }
 
-void ModuleModelLoader::Draw(unsigned int program)
+void ModuleModelLoader::Draw(const unsigned int program) const
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i]->Draw(program);
@@ -46,6 +52,10 @@ void ModuleModelLoader::Draw(unsigned int program)
 void ModuleModelLoader::loadModel(const std::string &path, std::vector<Mesh*> &loadedMeshes)
 {
 	LOG("Importing model \n");
+	const unsigned int severity = Logger::Debugging | Logger::Info | Logger::Err | Logger::Warn;
+	DefaultLogger::create("", Logger::NORMAL);
+	Assimp::DefaultLogger::get()->attachStream(new myStream(), severity);
+
 	const aiScene* scene = aiImportFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -62,13 +72,26 @@ void ModuleModelLoader::loadModel(const std::string &path, std::vector<Mesh*> &l
 	//computeModelBoundingBox();
 	loadedMeshes = meshes;
 
+	DefaultLogger::kill();
+
 	return;
 
 }
 
-const int ModuleModelLoader::GetNumberOfMeshes()
+const int ModuleModelLoader::GetNumberOfMeshes() const
 {
 	return meshes.size();
+}
+
+const int ModuleModelLoader::GetNumberOfTriangles(const bool triangles) const
+{
+	int counter = 0;
+
+	for (auto mesh : meshes)
+	{
+		counter += mesh->indices.size();
+	}
+	return triangles ? counter / 3 : counter;
 }
 
 void ModuleModelLoader::GetMeshes(std::vector<Mesh*> &meshes)
@@ -149,7 +172,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 			// 3. normal maps
 			std::vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
-				aiTextureType_HEIGHT, "texture_normal",directory);
+				aiTextureType_NORMALS, "texture_normal",directory);
 			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 			// 4. height maps
 			std::vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
@@ -164,7 +187,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 	return Mesh(vertices, indices, textures);
 }
 
-std::string ModuleModelLoader::computeDirectory(const std::string &path)
+std::string ModuleModelLoader::computeDirectory(const std::string &path) const
 {
 	size_t simpleRightSlash = path.find_last_of('/');
 	if (std::string::npos != simpleRightSlash)
@@ -254,8 +277,7 @@ void ModuleModelLoader::computeModelBoundingBox()
 	correctCameraPositionForModel = float3((maxX + minX)/2, (maxY + minY)/2, -2 *(maxZ - minZ));
 	LOG("Compute the camera position depending of model size: (%.3f,%.3f,%.3f)", correctCameraPositionForModel.x, correctCameraPositionForModel.y, correctCameraPositionForModel.z);
 
-	modelCenter = correctCameraPositionForModel;
-	modelCenter.z = (maxZ - minZ) / 2;
+	modelCenter = float3((maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2);
 	LOG("Computing models center: (%.3f,%.3f,%.3f) ", modelCenter.x, modelCenter.y, modelCenter.z);
 
 	//App->camera->TranslateCameraToPoint(correctCameraPositionForModel);

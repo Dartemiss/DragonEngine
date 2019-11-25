@@ -29,9 +29,10 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void Draw(unsigned int program);
+	void Draw(const unsigned int program) const;
 	void loadModel(const std::string &path, std::vector<Mesh*> &loadedMeshes);
-	const int GetNumberOfMeshes();
+	const int GetNumberOfMeshes() const;
+	const int GetNumberOfTriangles(const bool triangles) const;
 	void GetMeshes(std::vector<Mesh*> &meshes);
 
 	//Variables
@@ -55,7 +56,7 @@ private:
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 	
-	std::string computeDirectory(const std::string &path);
+	std::string computeDirectory(const std::string &path) const;
 	
 
 	void computeModelBoundingBox();

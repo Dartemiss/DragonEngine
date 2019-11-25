@@ -478,6 +478,7 @@
     <ClInclude Include="ComponentCamera.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="myStream.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

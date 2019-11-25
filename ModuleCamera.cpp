@@ -162,6 +162,7 @@ update_status ModuleCamera::PostUpdate()
 
 bool ModuleCamera::CleanUp()
 {
+	delete frustum;
 	return true;
 }
 
@@ -241,11 +242,11 @@ void ModuleCamera::Zoom(const bool direction)
 {
 	if(direction)
 	{
-		Move(float3(0.0f, 0.0f, 0.1f));
+		Move(frustum->front);
 	}
 	else
 	{
-		Move(float3(0.0f, 0.0f, -0.1f));
+		Move(frustum->front * -1.0f);
 	}
 
 	return;
@@ -266,11 +267,13 @@ void ModuleCamera::TranslateCameraToPoint(const float3 & newPos)
 void ModuleCamera::SetNearPlaneDistance(const float nearDist)
 {
 	frustum->nearPlaneDistance = nearDist;
+	proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::SetFarPlaneDistance(const float farDist)
 {
 	frustum->farPlaneDistance = farDist;
+	proj = frustum->ProjectionMatrix();
 }
 
 void ModuleCamera::LookAt(const float3 target)

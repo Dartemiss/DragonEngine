@@ -23,6 +23,22 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+
+	//Touch render variables
+	void EnableFaceCulling() const;
+	void EnableDepthTest() const;
+	void ChangeFrontFace() const;
+	void EnableTexture2D() const;
+	void FillTriangles() const;
+	void EnableAlphaTest() const;
+
+	bool faceCullingIsActive = true;
+	bool dephtTestIsActive = true;
+	bool changingFrontFace = true;
+	bool texture2DIsActive = true;
+	bool fillTrianglesIsActive = true;
+	bool alphaTestIsActive = false;
+
 	float aspect = 1.0f;
 
 	float4x4 model = float4x4::zero;

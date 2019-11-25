@@ -92,22 +92,22 @@ void ModuleTimeManager::FinalDeltaTimes()
 
 }
 
-float ModuleTimeManager::GetGameTime()
+float ModuleTimeManager::GetGameTime() const
 {
 	return gameTime;
 }
 
-float ModuleTimeManager::GetRealGameTime()
+float ModuleTimeManager::GetRealGameTime() const
 {
 	return realGameTime;
 }
 
-float ModuleTimeManager::GetDeltaTime()
+float ModuleTimeManager::GetDeltaTime() const
 {
 	return deltaTime;
 }
 
-float ModuleTimeManager::GetRealDeltaTime()
+float ModuleTimeManager::GetRealDeltaTime() const
 {
 	return realDeltaTime;
 }

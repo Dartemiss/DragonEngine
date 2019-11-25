@@ -56,31 +56,6 @@ bool ModuleTexture::CleanUp()
 	return true;
 }
 
-void ModuleTexture::LoadTexture(char * path, Texture* textureLoaded, ILuint &image)
-{
-	//Texture
-	
-	ilGenImages(1,&image);
-	ilBindImage(image);
-	ilLoadImage(path);
-
-	ILinfo ImageInfo;
-	iluGetImageInfo(&ImageInfo);
-	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-	{
-		iluFlipImage();
-	}
-
-	textureLoaded->width = ilGetInteger(IL_IMAGE_WIDTH);
-	textureLoaded->height = ilGetInteger(IL_IMAGE_HEIGHT);
-	textureLoaded->depth = ilGetInteger(IL_IMAGE_DEPTH);
-	textureLoaded->format = ilDetermineType(path);
-	textureLoaded->data = (unsigned char*)ilGetData();
-	
-
-	return;
-}
-
 void ModuleTexture::LoadTextureForModels(const char * path, const std::string &directory, Texture &texture)
 {
 	std::string filepath = directory;
@@ -89,13 +64,68 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	LOG("Loading texture %s . \n", filepath);
+	LOG("Loading texture %s . \n", filepath.c_str());
 	LOG("Creating image");
 	//Loading image
 	ILuint image;
 	ilGenImages(1, &image);
 	ilBindImage(image);
-	ilLoadImage(filepath.c_str());
+
+
+	LOG("Trying to load texture from path described on FBX.");
+	bool isLoaded1 = ilLoadImage(filepath.c_str());
+
+	if (isLoaded1)
+	{
+		LOG("Texture found in path described on FBX");
+	}
+	else
+	{
+		LOG("Can not find texture in path described on FBX.")
+
+			filepath.clear();
+		filepath = path;
+
+		LOG("Trying to load texture from same folder than model.")
+
+			bool isLoaded2 = ilLoadImage(filepath.c_str());
+
+		if (isLoaded2)
+		{
+			LOG("Texture found in same folder than model.");
+		}
+		else
+		{
+			LOG("Can not find texture in same folder than model.")
+
+				filepath.clear();
+			std::string filepath = "../Textures/";
+			filepath.append(path);
+
+			LOG("Trying to load texture from Textures directory.")
+
+				bool isLoaded3 = ilLoadImage(filepath.c_str());
+			if (isLoaded3)
+			{
+				LOG("Texture found in Textures directory.");
+			}
+			else
+			{
+				LOG("Can not find textures");
+			}
+		}
+	}
+
+	//Make sure image is in RGB or devil will return an empty string
+	bool converted = ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+	if (!converted)
+	{
+		ILenum error = ilGetError();
+		LOG("Error converting image to rgb: %s - %s", std::to_string(error), iluErrorString(error));
+		return;
+	}
+
+
 	ILinfo ImageInfo;
 	iluGetImageInfo(&ImageInfo);
 	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
@@ -111,6 +141,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 		//Fill texture
 		texture.width = ilGetInteger(IL_IMAGE_WIDTH);
 		texture.height = ilGetInteger(IL_IMAGE_HEIGHT);
+		texture.depth = ilGetInteger(IL_IMAGE_DEPTH);
 		texture.format = ilDetermineType(path);
 		texture.data = data;
 
@@ -141,7 +172,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	return;
 }
 
-std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, aiTextureType type, std::string typeName, const std::string &directory)
+std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, const aiTextureType type, const std::string typeName, const std::string &directory)
 {
 	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
