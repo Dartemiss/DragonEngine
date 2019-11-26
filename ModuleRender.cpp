@@ -331,7 +331,10 @@ void ModuleRender::DrawAllGameObjects()
 		if(gameObject->myMesh != nullptr)
 		{
 			gameObject->myMesh->Draw(progModel);
+			
 		}
+		if(gameObject->boundingBox != nullptr)
+			gameObject->DrawAABB();
 
 	}
 
