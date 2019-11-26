@@ -3,6 +3,7 @@
 
 #include "Globals.h"
 #include "Component.h"
+#include "include/Geometry/AABB.h"
 #include <string>
 #include <vector>
 
@@ -48,15 +49,28 @@ public:
 
 	//Parent
 	GameObject* parent;
+
 	//Chilren
 	std::vector<GameObject*> children;
+
 	//Components assigned to gameObject
 	std::vector<Component*> components;
 	void SetName(const std::string &newName);
+	
+	//ID substitute
+	bool isRoot = false;
+
+
+	//Compute
+	void ComputeAABB();
+	void DrawAABB() const;
+
+	AABB* boundingBox = nullptr;
 
 private:
 	std::string name;
 
+	
 
 
 };

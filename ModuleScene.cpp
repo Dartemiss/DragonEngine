@@ -11,6 +11,7 @@
 ModuleScene::ModuleScene()
 {
 	root = new GameObject("World");
+	root->isRoot = true;
 }
 
 
@@ -50,6 +51,13 @@ update_status ModuleScene::Update()
 
 bool ModuleScene::CleanUp()
 {
+	for(auto GO : allGameObjects)
+	{
+		delete GO;
+	}
+
+	delete root;
+
 	return true;
 }
 
@@ -95,6 +103,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 		ComponentMesh* myMeshCreated = (ComponentMesh*)newMeshObject->CreateComponent(MESH);
 		
 		myMeshCreated->LoadMesh(mesh);
+		newMeshObject->ComputeAABB();
 		allGameObjects.push_back(newMeshObject);
 
 		++numObject;
@@ -102,6 +111,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 
 	LOG("Deliting info from ModelLoader");
 	App->modelLoader->emptyScene();
+	parent->ComputeAABB();
 
 	return;
 }

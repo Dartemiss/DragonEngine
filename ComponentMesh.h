@@ -19,10 +19,7 @@ public:
 
 	Mesh* mesh;
 
-	
 
-private:
-	void DrawAABB();
 
 };
 
