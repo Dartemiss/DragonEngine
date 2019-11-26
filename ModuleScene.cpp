@@ -172,20 +172,7 @@ void ModuleScene::DrawGUI()
 
 	if(selectedByHierarchy != nullptr && showInspector)
 	{
-		ImGui::Begin("Inspector", &showInspector);
-		if(ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::Text("Position");
-			ImGui::DragFloat3("Position", (float *)&selectedByHierarchy->myTransform->position, 0.1f);
-			ImGui::Text("Rotation");
-			ImGui::DragFloat3("Rotation", (float *)&selectedByHierarchy->myTransform->eulerRotation, 1.0f, -360.0f, 360.0f);
-			ImGui::Text("Scale");
-			ImGui::DragFloat3("Scale", (float *)&selectedByHierarchy->myTransform->scale, 0.01f, 0.01f, 1000.0f);
-			
-		}
-		ImGui::End();
-		//Change EulerRotation to Quat
-		selectedByHierarchy->myTransform->EulerToQuat();
+		selectedByHierarchy->DrawInspector(showInspector);
 	}
 
 }

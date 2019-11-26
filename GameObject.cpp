@@ -279,3 +279,34 @@ void GameObject::DrawAABB() const
 
 	glEnd();
 }
+
+void GameObject::DrawInspector(bool &showInspector)
+{
+	ImGui::Begin("Inspector", &showInspector);
+
+	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
+	
+	char* go_name = new char[64];
+	strcpy(go_name, name.c_str());
+	ImGui::InputText("Name", go_name, 64); ImGui::SameLine();
+	name = go_name;
+
+	delete[] go_name;
+
+	ImGui::Checkbox("Static", &isStatic);
+
+
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text("Position");
+		ImGui::DragFloat3("Position", (float *)&myTransform->position, 0.1f);
+		ImGui::Text("Rotation");
+		ImGui::DragFloat3("Rotation", (float *)&myTransform->eulerRotation, 1.0f, -360.0f, 360.0f);
+		ImGui::Text("Scale");
+		ImGui::DragFloat3("Scale", (float *)&myTransform->scale, 0.01f, 0.01f, 1000.0f);
+
+	}
+	ImGui::End();
+	//Change EulerRotation to Quat
+	myTransform->EulerToQuat();
+}

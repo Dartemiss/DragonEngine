@@ -59,7 +59,8 @@ public:
 	
 	//ID substitute
 	bool isRoot = false;
-
+	bool isEnabled = true;
+	bool isStatic = false;
 
 	//Compute
 	void ComputeAABB();
@@ -67,11 +68,10 @@ public:
 
 	AABB* boundingBox = nullptr;
 
+	void DrawInspector(bool &showInspector);
+
 private:
 	std::string name;
-
-	
-
 
 };
 
