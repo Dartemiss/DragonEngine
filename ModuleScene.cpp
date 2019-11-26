@@ -1,5 +1,8 @@
 #include "ModuleScene.h"
+#include "Application.h"
+#include "ModuleModelLoader.h"
 #include "ComponentTransform.h"
+#include "ComponentMesh.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -74,6 +77,35 @@ GameObject * ModuleScene::CreateGameObject(const char * name, GameObject * paren
 	return gameObject;
 }
 
+void ModuleScene::LoadModel(const char * path, GameObject* parent)
+{
+	LOG("Trying to load model in path : %s", path);
+	App->modelLoader->loadModel(path);
+
+	int numObject = 0;
+	std::string name = App->modelLoader->nameOfModel;
+	LOG("Creating parent gameObject %s", name.c_str());
+	parent->SetName(name);
+
+	LOG("For each mesh of the model we create a gameObject.");
+	for(auto mesh : App->modelLoader->meshes)
+	{
+		std::string newName = name + std::to_string(numObject);
+		GameObject* newMeshObject = CreateGameObject(newName.c_str(), parent);
+		ComponentMesh* myMeshCreated = (ComponentMesh*)newMeshObject->CreateComponent(MESH);
+		
+		myMeshCreated->LoadMesh(mesh);
+		allGameObjects.push_back(newMeshObject);
+
+		++numObject;
+	}
+
+	LOG("Deliting info from ModelLoader");
+	App->modelLoader->emptyScene();
+
+	return;
+}
+
 void ModuleScene::SelectObjectInHierarchy(GameObject * selected)
 {
 	selectedByHierarchy = selected;
@@ -86,31 +118,25 @@ void ModuleScene::DrawUIBarMenuGameObject()
 		if (ImGui::MenuItem("Create House GameObject"))
 		{
 			GameObject* newGameObject = CreateGameObject();
-			newGameObject->CreateComponent(MESH);
-			newGameObject->CreateComponent(MATERIAL);
 
 			newGameObject->myTransform->position += float3(numberOfGameObjects * 4.0f, 0.0f, 0.0f);
 			newGameObject->myTransform->UpdateMatrices();
 
-			if(newGameObject->myMeshes != nullptr)
-			{
-				newGameObject->LoadModel("../Models/baker_house/BakerHouse.fbx");
-			}
-
 			allGameObjects.push_back(newGameObject);
 
 
+			LoadModel("../Models/baker_house/BakerHouse.fbx",newGameObject);
+			
+			//-----------------------------------------------------------------//
+
 			GameObject* newGameObjectChild = CreateGameObject("Child", newGameObject);
-			newGameObjectChild->CreateComponent(MESH);
-			newGameObjectChild->CreateComponent(MATERIAL);
 
 			newGameObjectChild->myTransform->position += float3(8.0f, 0.0f, 0.0f);
 			newGameObjectChild->myTransform->UpdateMatrices();
 
-			if (newGameObjectChild->myMeshes != nullptr)
-			{
-				newGameObjectChild->LoadModel("../Models/baker_house/BakerHouse.fbx");
-			}
+
+			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObjectChild);
+			
 
 			allGameObjects.push_back(newGameObjectChild);
 

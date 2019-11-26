@@ -10,28 +10,27 @@ ComponentMesh::ComponentMesh()
 
 ComponentMesh::~ComponentMesh()
 {
-	for (auto mesh : meshes)
-	{
-		delete mesh;
-	}
-
-	delete boundingBox;
+	delete mesh;
+	
 }
 
 void ComponentMesh::Update()
 {
-	DrawAABB();
 
 	return;
 }
 
-void ComponentMesh::LoadMeshes(const char * path)
+void ComponentMesh::LoadMesh(Mesh* loadedMesh)
 {
-	App->modelLoader->loadModel(path, meshes);
-	App->modelLoader->emptyScene();
-	LOG("GameObject have %d number of meshes.", meshes.size());
+	mesh = loadedMesh;
 }
 
+void ComponentMesh::Draw(const unsigned int program) const
+{
+	mesh->Draw(program);
+}
+
+/*
 void ComponentMesh::ComputeBoundingBox()
 {
 	float3 min = float3::zero;
@@ -66,7 +65,6 @@ void ComponentMesh::ComputeBoundingBox()
 	boundingBox = new AABB(min,max);
 
 }
+*/
 
-void ComponentMesh::DrawAABB()
-{
-}
+

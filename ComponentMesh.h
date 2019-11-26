@@ -14,12 +14,12 @@ public:
 
 	void Update();
 
-	void LoadMeshes(const char* path);
-	void ComputeBoundingBox();
+	void LoadMesh(Mesh* mesh);
+	void Draw(const unsigned int program) const;
 
-	std::vector<Mesh*> meshes;
+	Mesh* mesh;
 
-	AABB* boundingBox = nullptr;
+	
 
 private:
 	void DrawAABB();

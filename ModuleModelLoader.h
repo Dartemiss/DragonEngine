@@ -30,7 +30,7 @@ public:
 	bool CleanUp();
 
 	void Draw(const unsigned int program) const;
-	void loadModel(const std::string &path, std::vector<Mesh*> &loadedMeshes);
+	void loadModel(const std::string &path);
 	const int GetNumberOfMeshes() const;
 	const int GetNumberOfTriangles(const bool triangles) const;
 	void GetMeshes(std::vector<Mesh*> &meshes);
@@ -47,9 +47,12 @@ public:
 	int numberOfTextures = 0;
 	void emptyScene();
 
+	std::vector<Mesh*> meshes;
+	std::string nameOfModel;
+
 private:
 
-	std::vector<Mesh*> meshes;
+	
 	std::string directory;
 	/*  Functions   */
 	
@@ -57,7 +60,7 @@ private:
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 	
 	std::string computeDirectory(const std::string &path) const;
-	
+	std::string ComputeName(const std::string &path) const;
 
 	void computeModelBoundingBox();
 

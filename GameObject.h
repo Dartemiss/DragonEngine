@@ -26,7 +26,6 @@ public:
 
 	//Component Creation
 	Component* CreateComponent(ComponentType type);
-	void LoadModel(const char* name);
 
 	//Hierarchy
 	void DrawHierarchy(GameObject* selected);
@@ -44,7 +43,7 @@ public:
 
 	//All GameObjects have a transform
 	ComponentTransform* myTransform = nullptr;
-	ComponentMesh* myMeshes = nullptr;
+	ComponentMesh* myMesh = nullptr;
 	ComponentMaterial* myMaterial = nullptr;
 
 	//Parent
@@ -53,10 +52,10 @@ public:
 	std::vector<GameObject*> children;
 	//Components assigned to gameObject
 	std::vector<Component*> components;
+	void SetName(const std::string &newName);
 
 private:
 	std::string name;
-
 
 
 

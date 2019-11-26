@@ -27,7 +27,7 @@ ModuleIMGUI::~ModuleIMGUI()
 bool ModuleIMGUI::Init()
 {
 	ImGui::CreateContext();
-	const char* glsl_version = "#version 150";
+	const char* glsl_version = "#version 330";
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->window->glcontext);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 

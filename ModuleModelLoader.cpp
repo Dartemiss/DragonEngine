@@ -49,7 +49,7 @@ void ModuleModelLoader::Draw(const unsigned int program) const
 }
 
 
-void ModuleModelLoader::loadModel(const std::string &path, std::vector<Mesh*> &loadedMeshes)
+void ModuleModelLoader::loadModel(const std::string &path)
 {
 	LOG("Importing model \n");
 	const unsigned int severity = Logger::Debugging | Logger::Info | Logger::Err | Logger::Warn;
@@ -64,13 +64,12 @@ void ModuleModelLoader::loadModel(const std::string &path, std::vector<Mesh*> &l
 	}
 
 	directory = computeDirectory(path);
+	nameOfModel = ComputeName(path);
 
 	if (directory == "")
 		return;
 	LOG("For each mesh located on the current node, processing meshes.")
 	processNode(scene->mRootNode, scene);
-	//computeModelBoundingBox();
-	loadedMeshes = meshes;
 
 	DefaultLogger::kill();
 
@@ -211,6 +210,32 @@ std::string ModuleModelLoader::computeDirectory(const std::string &path) const
 
 	LOG("ERROR: Invalid path.");
 	return "";
+}
+
+std::string ModuleModelLoader::ComputeName(const std::string & path) const
+{
+
+	size_t simpleRightSlash = path.find_last_of('/');
+	if (std::string::npos != simpleRightSlash)
+	{
+		LOG("Directory with simpleRightSlashes.")
+		return path.substr(path.find_last_of('/') + 1, path.size()-1);
+	}
+	size_t doubleRightSlash = path.find_last_of('//');
+	if (std::string::npos != doubleRightSlash)
+	{
+		LOG("Directory with doubleRightSlashes.")
+		return path.substr(path.find_last_of('//') + 1, path.size()-1);
+	}
+
+	size_t doubleLeftSlash = path.find_last_of('\\');
+	if (std::string::npos != doubleLeftSlash)
+	{
+		LOG("Directory with doubleLeftSlashes.")
+		return path.substr(path.find_last_of('\\') + 1,path.size() -1);
+	}
+
+	return path;
 }
 
 void ModuleModelLoader::emptyScene()

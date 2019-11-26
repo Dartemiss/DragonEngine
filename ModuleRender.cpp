@@ -328,12 +328,9 @@ void ModuleRender::DrawAllGameObjects()
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-		if(gameObject->myMeshes != nullptr)
+		if(gameObject->myMesh != nullptr)
 		{
-			for (auto mesh : gameObject->myMeshes->meshes)
-			{
-				mesh->Draw(progModel);
-			}
+			gameObject->myMesh->Draw(progModel);
 		}
 
 	}
@@ -357,12 +354,9 @@ void ModuleRender::DrawGame()
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-		if (gameObject->myMeshes != nullptr)
+		if (gameObject->myMesh != nullptr)
 		{
-			for (auto mesh : gameObject->myMeshes->meshes)
-			{
-				mesh->Draw(progModel);
-			}
+			gameObject->myMesh->Draw(progModel);
 		}
 
 	}

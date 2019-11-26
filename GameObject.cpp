@@ -64,7 +64,7 @@ Component * GameObject::CreateComponent(ComponentType type)
 			break;
 		case MESH:
 			component = new ComponentMesh();
-			myMeshes = (ComponentMesh*)component;
+			myMesh = (ComponentMesh*)component;
 			break;
 		case MATERIAL:
 			component = new ComponentMaterial();
@@ -88,17 +88,6 @@ Component * GameObject::CreateComponent(ComponentType type)
 	return component;
 }
 
-void GameObject::LoadModel(const char * path)
-{
-	if(myMeshes == nullptr || myMaterial == nullptr)
-	{
-		LOG("ERROR: Cannot load a model without a Mesh and a Material components");
-		return;
-	}
-
-	myMeshes->LoadMeshes(path);
-
-}
 
 void GameObject::DrawHierarchy(GameObject * selected)
 {
@@ -154,4 +143,9 @@ void GameObject::UpdateTransform()
 		}
 		myTransform->UpdateMatrices();
 	}
+}
+
+void GameObject::SetName(const std::string &newName)
+{
+	name = newName;
 }
