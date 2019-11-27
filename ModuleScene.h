@@ -22,6 +22,9 @@ public:
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
 	void LoadModel(const char* path, GameObject* parent);
 
+	//Creators
+	void CreateEmpy(GameObject* parent);
+
 	void SelectObjectInHierarchy(GameObject* selected);
 	//Drawing Methods
 	void DrawUIBarMenuGameObject();

@@ -128,7 +128,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		App->scene->SelectObjectInHierarchy(this);
 	}
 
-	if(ImGui::IsItemHovered() && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT)) // Could be also || ImGui::IsWindowHovered())
+	if(App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN && ImGui::IsItemHovered()) // Could be also || ImGui::IsWindowHovered())
 	{
 		ImGui::OpenPopup("Creation Popup");
 	}
@@ -166,6 +166,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		if(ImGui::Selectable("Create Empty"))
 		{
 			//TODO: Create empty gameobject
+			App->scene->CreateEmpy(this);
 		}
 
 		if (ImGui::BeginMenu("Create 3D Object"))
@@ -191,6 +192,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			
 		ImGui::EndPopup();
 	}
+
 
 	CheckDragAndDrop(this);
 

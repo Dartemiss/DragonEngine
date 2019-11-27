@@ -116,6 +116,17 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 	return;
 }
 
+void ModuleScene::CreateEmpy(GameObject* parent)
+{
+	std::string defaultName = "NewGameObject" + std::to_string(numberOfGameObjects + 1);
+	GameObject* empty = CreateGameObject(defaultName.c_str(), parent);
+	
+
+	allGameObjects.push_back(empty);
+
+	return;
+}
+
 void ModuleScene::SelectObjectInHierarchy(GameObject * selected)
 {
 	selectedByHierarchy = selected;
