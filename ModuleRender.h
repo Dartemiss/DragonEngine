@@ -52,7 +52,7 @@ public:
 	void DrawGrid();
 	void DrawAllGameObjects();
 	void DrawGame();
-	void DrawBoundingBoxes();
+	
 	//If scene create buffer for scene else create buffer for game window
 	void CreateFrameBuffer(int width, int height, bool scene = true);
 	void GenerateTexture(int width, int height);

@@ -165,7 +165,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 		if(ImGui::Selectable("Create Empty"))
 		{
-			//TODO: Create empty gameobject
+			//Create empty gameobject
 			App->scene->CreateEmpy(this);
 		}
 
