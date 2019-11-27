@@ -19,6 +19,11 @@ void ComponentTransform::EulerToQuat()
 	rotation = rotation.FromEulerXYX(DegToRad(eulerRotation).x, DegToRad(eulerRotation).y, DegToRad(eulerRotation).z);
 }
 
+void ComponentTransform::QuatToEuler()
+{
+	eulerRotation = rotation.ToEulerXYZ();
+}
+
 void ComponentTransform::UpdateMatrices()
 {
 	globalModelMatrix = globalModelMatrix * localModelMatrix.Inverted();
@@ -30,3 +35,12 @@ void ComponentTransform::SetGlobalMatrix(float4x4 &parentGlobal)
 {
 	globalModelMatrix = parentGlobal * localModelMatrix;
 }
+
+void ComponentTransform::SetLocalMatrix(float4x4 &newParentGlobalMatrix)
+{
+	localModelMatrix = newParentGlobalMatrix.Inverted() *  globalModelMatrix;
+	localModelMatrix.Decompose(position, rotation, scale);
+	QuatToEuler();
+}
+
+

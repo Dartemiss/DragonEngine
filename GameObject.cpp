@@ -45,7 +45,10 @@ void GameObject::SetParent(GameObject * newParent)
 {
 	//Erase me from previous father
 	if (parent != nullptr)
+	{
 		parent->RemoveChildren(this);
+	}
+		
 	
 	if(newParent != nullptr)
 	{
@@ -414,6 +417,8 @@ void GameObject::CheckDragAndDrop(GameObject * go)
 		if (payload != nullptr) {
 			GameObject * newChild = *reinterpret_cast<GameObject**>(payload->Data);
 			newChild->SetParent(go);
+			if(newChild->parent->myTransform != nullptr)
+				newChild->myTransform->SetLocalMatrixToWorld(newChild->parent->myTransform->globalModelMatrix);
 		}
 		ImGui::EndDragDropTarget();
 	}

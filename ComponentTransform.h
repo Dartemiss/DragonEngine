@@ -14,8 +14,10 @@ public:
 	~ComponentTransform();
 
 	void EulerToQuat();
+	void QuatToEuler();
 	void UpdateMatrices();
 	void SetGlobalMatrix(float4x4 &parentGlobal);
+	void SetLocalMatrix(float4x4 &newParentGlobalMatrix);
 
 	//Variables
 	//Local Transform
