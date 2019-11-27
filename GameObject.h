@@ -24,6 +24,7 @@ public:
 	//Core
 	void Update();
 	void SetParent(GameObject* newParent);
+	void RemoveChildren(GameObject* child);
 
 	//Component Creation
 	Component* CreateComponent(ComponentType type);
@@ -48,7 +49,7 @@ public:
 	ComponentMaterial* myMaterial = nullptr;
 
 	//Parent
-	GameObject* parent;
+	GameObject* parent = nullptr;
 
 	//Chilren
 	std::vector<GameObject*> children;
@@ -72,6 +73,9 @@ public:
 
 private:
 	std::string name;
+
+	void CheckDragAndDrop(GameObject* go);
+
 
 };
 

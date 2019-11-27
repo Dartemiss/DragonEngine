@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
+#include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
@@ -9,6 +10,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "SDL.h"
 
 GameObject::GameObject()
 {
@@ -39,18 +41,37 @@ void GameObject::Update()
 }
 
 void GameObject::SetParent(GameObject * newParent)
+
 {
+	//Erase me from previous father
+	if (parent != nullptr)
+		parent->RemoveChildren(this);
+	
 	if(newParent != nullptr)
 	{
 		LOG("Setting new GamesObject parent and children.")
 		parent = newParent;
 		parent->children.push_back(this);
+
 		return;
 	}
+
+
 
 	LOG("ERROR: Cannot set parent because new Parent is nullptr.");
 	return;
 
+}
+
+void GameObject::RemoveChildren(GameObject * child)
+{
+
+	if(!children.empty())
+	{
+		children.erase(std::remove(children.begin(), children.end(), child), children.end());
+	}
+	
+	return;
 }
 
 Component * GameObject::CreateComponent(ComponentType type)
@@ -104,9 +125,74 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 	if(ImGui::IsItemClicked())
 	{
-		//Hola
 		App->scene->SelectObjectInHierarchy(this);
 	}
+
+	if(ImGui::IsItemHovered() && App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT)) // Could be also || ImGui::IsWindowHovered())
+	{
+		ImGui::OpenPopup("Creation Popup");
+	}
+
+	if (ImGui::BeginPopup("Creation Popup"))
+	{
+		
+		if (ImGui::Selectable("Copy"))
+		{
+			//TODO: Copy gameobjects
+		}
+		if (ImGui::Selectable("Paste"))
+		{
+			//TODO: Paste gameobjects
+		}
+		
+		ImGui::Separator();
+
+		if (ImGui::Selectable("Rename"))
+		{
+			//TODO: Rename gameobjects
+		}
+		if (ImGui::Selectable("Duplicate"))
+		{
+			//TODO: Duplicate gameobjects
+		}
+
+		if (ImGui::Selectable("Delete"))
+		{
+			//TODO: Delete gameobjects
+		}
+
+		ImGui::Separator();
+
+		if(ImGui::Selectable("Create Empty"))
+		{
+			//TODO: Create empty gameobject
+		}
+
+		if (ImGui::BeginMenu("Create 3D Object"))
+		{
+			if(ImGui::MenuItem("Cube"))
+			{
+				// TODO :CreateGameObjecCube();
+			}
+
+			if (ImGui::MenuItem("Sphere"))
+			{
+				// TODO :CreateGameObjecSphere();
+			}
+
+			if (ImGui::MenuItem("Baker House"))
+			{
+				// TODO :CreateGameObjecBakerHouse();
+			}
+
+			ImGui::EndMenu();
+		}
+
+			
+		ImGui::EndPopup();
+	}
+
+	CheckDragAndDrop(this);
 
 	if(objOpen)
 	{
@@ -288,8 +374,11 @@ void GameObject::DrawInspector(bool &showInspector)
 	
 	char* go_name = new char[64];
 	strcpy(go_name, name.c_str());
-	ImGui::InputText("Name", go_name, 64); ImGui::SameLine();
-	name = go_name;
+	if(ImGui::InputText("##Name", go_name, 64))
+	{
+		name = std::string(go_name);
+	}
+	ImGui::SameLine();
 
 	delete[] go_name;
 
@@ -309,4 +398,21 @@ void GameObject::DrawInspector(bool &showInspector)
 	ImGui::End();
 	//Change EulerRotation to Quat
 	myTransform->EulerToQuat();
+}
+
+void GameObject::CheckDragAndDrop(GameObject * go)
+{
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+		ImGui::SetDragDropPayload("DRAG", &go, sizeof(GameObject*));
+		ImGui::EndDragDropSource();
+	}
+
+	if (ImGui::BeginDragDropTarget()) {
+		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAG");
+		if (payload != nullptr) {
+			GameObject * newChild = *reinterpret_cast<GameObject**>(payload->Data);
+			newChild->SetParent(go);
+		}
+		ImGui::EndDragDropTarget();
+	}
 }

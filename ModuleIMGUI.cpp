@@ -49,6 +49,8 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
+	ImGui::ShowDemoWindow();
+
 	guiWindow.Draw("Window Configuration");
 	console.Draw("Console");
 	about.Draw("About");
