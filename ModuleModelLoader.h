@@ -34,6 +34,9 @@ public:
 	const int GetNumberOfMeshes() const;
 	const int GetNumberOfTriangles(const bool triangles) const;
 	void GetMeshes(std::vector<Mesh*> &meshes);
+	bool LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,
+		unsigned slices, unsigned stacks, const math::float4& color);
+
 
 	//Variables
 	//Representation of a Cube, have exactly 8 vertex

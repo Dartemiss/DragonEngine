@@ -10,6 +10,7 @@
 #include "Logger.hpp"
 #include "DefaultLogger.hpp"
 #include "myStream.h"
+#include "Utils/par_shapes.h"
 
 using namespace Assimp;
 
@@ -320,3 +321,58 @@ void ModuleModelLoader::computeModelBoundingBox()
 
 }
 
+bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,
+	unsigned slices, unsigned stacks, const math::float4& color)
+{
+	par_shapes_mesh* mesh = par_shapes_create_parametric_sphere(int(slices), int(stacks));
+
+	if (mesh)
+	{
+		par_shapes_scale(mesh, size, size, size);
+
+		//Filling data
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		std::vector<Texture> textures;
+
+
+		for (unsigned int i = 0; i < mesh->npoints; ++i)
+		{
+			Vertex vertex;
+			// process vertex positions, normals and texture coordinates
+			float3 positions(mesh->points[i * 3], mesh->points[i * 3 + 1], mesh->points[i * 3 + 2]);
+			vertex.Position = positions;
+
+			float3 normals(mesh->normals[i * 3], mesh->normals[i * 3 + 1], mesh->normals[i * 3 + 2]);
+			vertex.Normal = normals;
+
+
+			if (mesh->tcoords[0]) // does the mesh contain texture coordinates?
+			{
+				float2 texturesCoords(mesh->tcoords[i * 2], mesh->tcoords[i * 2 + 1]);
+				vertex.TexCoords = texturesCoords;
+			}
+			else
+				vertex.TexCoords = float2(0.0f, 0.0f);
+
+			vertices.push_back(vertex);
+		}
+
+		for(int j = 0; j < mesh->ntriangles;++j)
+		{
+			indices.push_back(mesh->triangles[j * 3]);
+			indices.push_back(mesh->triangles[j * 3 + 1]);
+			indices.push_back(mesh->triangles[j * 3 + 2]);
+		}
+
+			
+		par_shapes_free_mesh(mesh);
+
+
+		Mesh* sphere = new Mesh(vertices, indices, textures);
+
+		return true;
+	}
+
+	return false;
+}
