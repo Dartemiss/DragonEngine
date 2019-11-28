@@ -6,6 +6,14 @@
 #include "include/Geometry/Frustum.h"
 #include "include/Math/float4x4.h"
 
+
+const int AABB_OUT = 0;
+const int AABB_IN = 1;
+const int AABB_INTERSECT = 2;
+
+const bool FRONT = true;
+const bool BEHIND = false;
+
 class ComponentCamera : public Component
 {
 public:
@@ -23,6 +31,12 @@ public:
 	void SetNearPlaneDistance(const float nearDist);
 	void SetFarPlaneDistance(const float farDist);
 	void LookAt(const float3 target);
+
+	//Frutum intersection
+	int AABBWithinFrustum(const AABB &aabb);
+	bool SideOfPlane(float3 &point, Plane &plane);
+
+
 
 	//Drawing
 	void DrawFrustum();

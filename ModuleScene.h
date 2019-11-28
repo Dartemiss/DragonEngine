@@ -24,6 +24,10 @@ public:
 
 	//Creators
 	void CreateEmpy(GameObject* parent);
+	void CreateGameObjectBakerHouse(GameObject* parent);
+
+	//Delete
+	void RemoveGameObject(GameObject* go);
 
 	void SelectObjectInHierarchy(GameObject* selected);
 	//Drawing Methods
@@ -42,6 +46,7 @@ private:
 	GameObject* selectedByHierarchy = nullptr;
 	//GameObjects Counter
 	unsigned int numberOfGameObjects = 0;
+	unsigned int numberOfBakerHouse = 0;
 
 
 	

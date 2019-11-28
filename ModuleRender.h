@@ -46,6 +46,10 @@ public:
 
 	bool showBoundingBox = false;
 
+	//Frustum Culling
+	bool frustumCullingIsActivated = false;
+
+
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
@@ -82,6 +86,7 @@ private:
 	unsigned int gameTexture = 0;
 	
 	ComponentCamera* gameCamera = nullptr;
+
 
 
 };

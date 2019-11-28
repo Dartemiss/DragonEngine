@@ -77,6 +77,26 @@ void GameObject::RemoveChildren(GameObject * child)
 	return;
 }
 
+void GameObject::DeleteGameObject()
+{
+	parent->RemoveChildren(this);
+	App->scene->RemoveGameObject(this);
+	CleanUp();
+}
+
+void GameObject::CleanUp()
+{
+	for(auto comp : components)
+	{
+		delete comp;
+	}
+	
+	delete boundingBox;
+	delete globalBoundingBox;
+
+	delete this;
+}
+
 Component * GameObject::CreateComponent(ComponentType type)
 {
 	Component* component = nullptr;
@@ -162,6 +182,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		if (ImGui::Selectable("Delete"))
 		{
 			//TODO: Delete gameobjects
+			//DeleteGameObject();
 		}
 
 		ImGui::Separator();
@@ -186,7 +207,8 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 			if (ImGui::MenuItem("Baker House"))
 			{
-				// TODO :CreateGameObjecBakerHouse();
+				// TODO :CreateGameObjectBakerHouse();
+				App->scene->CreateGameObjectBakerHouse(this);
 			}
 
 			ImGui::EndMenu();
@@ -234,12 +256,30 @@ void GameObject::UpdateTransform()
 			myTransform->SetGlobalMatrix(parent->myTransform->globalModelMatrix);
 		}
 		myTransform->UpdateMatrices();
+
+		if(globalBoundingBox != nullptr && boundingBox != nullptr)
+		{
+			//AABB Global Update
+			//Compute globalBoundingBox
+
+			float3 globalPos, globalScale;
+			float3x3 globalRot;
+			myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
+
+			globalBoundingBox->minPoint = (boundingBox->minPoint + globalPos);
+			globalBoundingBox->maxPoint = (boundingBox->maxPoint + globalPos);
+		}
 	}
 }
 
 void GameObject::SetName(const std::string &newName)
 {
 	name = newName;
+}
+
+std::string GameObject::GetName() const
+{
+	return name;
 }
 
 void GameObject::ComputeAABB()
@@ -279,6 +319,11 @@ void GameObject::ComputeAABB()
 		}
 
 		boundingBox = new AABB(min, max);
+		//Compute globalBoundingBox
+		float3 globalPos, globalScale;
+		float3x3 globalRot;
+		myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
+		globalBoundingBox = new AABB(min + globalPos, max + globalPos);
 
 		return;
 	}
@@ -303,7 +348,13 @@ void GameObject::ComputeAABB()
 	}
 	
 	boundingBox = new AABB(min, max);
-	
+
+	//Compute globalBoundingBox
+	float3 globalPos, globalScale;
+	float3x3 globalRot;
+	myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
+	globalBoundingBox = new AABB(min + globalPos, max + globalPos);
+
 	return;
 }
 
@@ -418,7 +469,7 @@ void GameObject::CheckDragAndDrop(GameObject * go)
 			GameObject * newChild = *reinterpret_cast<GameObject**>(payload->Data);
 			newChild->SetParent(go);
 			if(newChild->parent->myTransform != nullptr)
-				newChild->myTransform->SetLocalMatrixToWorld(newChild->parent->myTransform->globalModelMatrix);
+				newChild->myTransform->SetLocalMatrix(newChild->parent->myTransform->globalModelMatrix);
 		}
 		ImGui::EndDragDropTarget();
 	}

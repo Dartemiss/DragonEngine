@@ -113,6 +113,9 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 	App->modelLoader->emptyScene();
 	parent->ComputeAABB();
 
+	//Setting parent as a meshParent
+	parent->isParentOfMeshes = true;
+
 	return;
 }
 
@@ -125,6 +128,32 @@ void ModuleScene::CreateEmpy(GameObject* parent)
 	allGameObjects.push_back(empty);
 
 	return;
+}
+
+void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
+{
+	if(parent == nullptr)
+	{
+		LOG("ERROR: Parent is nullptr, cannot create gameObject.");
+		return;
+	}
+
+	LOG("Creating a GameObject with Baker House Mesh.");
+	std::string defaultName = "BakerHouse" + std::to_string(numberOfBakerHouse + 1);
+	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
+	LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
+	++numberOfBakerHouse;
+
+	allGameObjects.push_back(newGameObject);
+	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+}
+
+void ModuleScene::RemoveGameObject(GameObject * go)
+{
+	if (!allGameObjects.empty())
+	{
+		allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), go), allGameObjects.end());
+	}
 }
 
 void ModuleScene::SelectObjectInHierarchy(GameObject * selected)
@@ -146,7 +175,7 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			allGameObjects.push_back(newGameObject);
 
 
-			LoadModel("../Models/baker_house/BakerHouse.fbx",newGameObject);
+			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
 			
 			//-----------------------------------------------------------------//
 

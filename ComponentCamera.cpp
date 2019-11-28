@@ -112,6 +112,57 @@ void ComponentCamera::LookAt(const float3 target)
 	frustum->up = rot.Transform(frustum->up).Normalized();
 }
 
+int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
+{
+	//Tests if an AABB is within the frusum
+	//returns 0 if out, 1 if in and 2 if intersects
+
+	float3 corners[8];
+	aabb.GetCornerPoints(corners);
+
+	int iTotalIn = 0;
+
+	//test all 8 corners against the 6 planes of the frustum
+	// if all points are behind 1 specific plane, we are out
+	// if we are in with all points, then we are fully in
+	for(int p = 0; p < 6; ++p)
+	{
+		int iInCount = 8;
+		int iPtIn = 1;
+
+		for(int i = 0; i< 8; ++i)
+		{
+			//test this point against the planes
+			if(SideOfPlane(corners[i], frustum->GetPlane(p)) == BEHIND)
+			{
+				iPtIn = 0;
+				--iInCount;
+			}
+		}
+		
+		// were all the points outside of plane p?
+		if (iInCount == 0)
+			return AABB_OUT;
+
+		// check if they were all on the right side of the plane
+		iTotalIn += iPtIn;
+
+	}
+	// so if iTotalIn is 6, then all are inside the view
+	if (iTotalIn == 6)
+		return(AABB_IN);
+
+	return AABB_INTERSECT;
+}
+
+bool ComponentCamera::SideOfPlane(float3 &point, Plane &plane)
+{
+	float value = plane.normal.Dot(point);
+	value += plane.d;
+
+	return (value >= 0.0f) ? true : false;
+}
+
 void ComponentCamera::DrawFrustum()
 {
 

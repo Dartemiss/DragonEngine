@@ -25,6 +25,8 @@ public:
 	void Update();
 	void SetParent(GameObject* newParent);
 	void RemoveChildren(GameObject* child);
+	void DeleteGameObject();
+	void CleanUp();
 
 	//Component Creation
 	Component* CreateComponent(ComponentType type);
@@ -56,18 +58,23 @@ public:
 
 	//Components assigned to gameObject
 	std::vector<Component*> components;
-	void SetName(const std::string &newName);
 	
+	//Name
+	void SetName(const std::string &newName);
+	std::string GetName() const;
+
 	//ID substitute
 	bool isRoot = false;
 	bool isEnabled = true;
 	bool isStatic = false;
+	bool isParentOfMeshes = false;
 
 	//Compute
 	void ComputeAABB();
 	void DrawAABB() const;
 
 	AABB* boundingBox = nullptr;
+	AABB* globalBoundingBox = nullptr;
 
 	void DrawInspector(bool &showInspector);
 

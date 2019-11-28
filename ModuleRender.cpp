@@ -135,6 +135,14 @@ bool ModuleRender::Init()
 
 	model = float4x4::FromTRS(float3(0.0f, 0.0f, 0.0f), float3x3::RotateX(0.0f)* float3x3::RotateY(0.0f), float3(1.0f, 1.0f, 1.0f));
 
+	for (auto comp : App->scene->mainCamera->components)
+	{
+		if (comp->myType == CAMERA)
+		{
+			gameCamera = (ComponentCamera*)comp;
+		}
+	}
+
 
 	return true;
 }
@@ -200,13 +208,6 @@ update_status ModuleRender::Update()
 		return UPDATE_CONTINUE;
 	}
 
-	for (auto comp : App->scene->mainCamera->components)
-	{
-		if (comp->myType == CAMERA)
-		{
-			gameCamera = (ComponentCamera*)comp;
-		}
-	}
 
 	gameCamera->SetAspectRatio((int)wSize.x, (int)wSize.y);
 	CreateFrameBuffer((int)wSizeGame.x, (int)wSizeGame.y, false);
@@ -328,13 +329,34 @@ void ModuleRender::DrawAllGameObjects()
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-		if(gameObject->myMesh != nullptr)
+		if(frustumCullingIsActivated && gameObject->globalBoundingBox != nullptr)
 		{
-			gameObject->myMesh->Draw(progModel);
-			
+			if(gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) > 0)
+			{
+
+				if (gameObject->myMesh != nullptr)
+				{
+					gameObject->myMesh->Draw(progModel);
+
+				}
+
+				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr)
+					gameObject->DrawAABB();
+			}
+
 		}
-		if(gameObject->boundingBox != nullptr)
-			gameObject->DrawAABB();
+		else
+		{
+			if (gameObject->myMesh != nullptr)
+			{
+				gameObject->myMesh->Draw(progModel);
+
+			}
+			if (gameObject->boundingBox != nullptr && gameObject->isParentOfMeshes)
+				gameObject->DrawAABB();
+		}
+
+
 
 	}
 

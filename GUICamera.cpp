@@ -21,6 +21,7 @@ void GUICamera::Draw(const char * title)
 		ImGui::Text("Camera far distance: %.3f", App->camera->frustum->farPlaneDistance);
 
 		ImGui::Checkbox("Show Bounding Box", &App->renderer->showBoundingBox);
+		ImGui::Checkbox("Frusum Culling", &App->renderer->frustumCullingIsActivated);
 
 		ImGui::End();
 
