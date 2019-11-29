@@ -202,7 +202,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 			if (ImGui::MenuItem("Sphere"))
 			{
-				// TODO :CreateGameObjecSphere();
+				App->scene->CreateGameObjecSphere(this);
 			}
 
 			if (ImGui::MenuItem("Baker House"))

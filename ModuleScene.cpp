@@ -6,7 +6,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
-
+#include "include/Math/float4.h"
 
 
 ModuleScene::ModuleScene()
@@ -147,6 +147,42 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 
 	allGameObjects.push_back(newGameObject);
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+}
+
+void ModuleScene::CreateGameObjecSphere(GameObject * parent)
+{
+	if (parent == nullptr)
+	{
+		LOG("ERROR: Parent is nullptr, cannot create gameObject.");
+		return;
+	}
+
+	LOG("Creating a GameObject with Sphere Mesh.");
+	std::string defaultName = "Sphere" + std::to_string(numberOfSphere + 1);
+	bool correct = App->modelLoader->LoadSphere(defaultName.c_str(), math::float3(2.0f, 2.0f, 0.0f), math::Quat::identity, 1.0f, 30, 30, float4(1.0f, 1.0f, 1.0f, 1.0f));
+	if(!correct)
+	{
+		LOG("ERROR: Cannot load the sphere mesh correctly.");
+		return;
+	}
+	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
+	++numberOfSphere;
+
+	if(!App->modelLoader->meshes.size() == 1)
+	{
+		LOG("ERROR: Sphere model cannot have more than one mesh. ");
+		delete newGameObject;
+		return;
+	}
+
+	ComponentMesh* myMeshCreated = (ComponentMesh*)newGameObject->CreateComponent(MESH);
+	myMeshCreated->LoadMesh(App->modelLoader->meshes[0]);
+	newGameObject->ComputeAABB();
+	allGameObjects.push_back(newGameObject);
+
+	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+	//Deleting model loader information
+	App->modelLoader->emptyScene();
 }
 
 void ModuleScene::RemoveGameObject(GameObject * go)

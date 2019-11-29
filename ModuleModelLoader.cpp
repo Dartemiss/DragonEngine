@@ -10,6 +10,8 @@
 #include "Logger.hpp"
 #include "DefaultLogger.hpp"
 #include "myStream.h"
+
+#define PAR_SHAPES_IMPLEMENTATION
 #include "Utils/par_shapes.h"
 
 using namespace Assimp;
@@ -321,6 +323,7 @@ void ModuleModelLoader::computeModelBoundingBox()
 
 }
 
+
 bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,
 	unsigned slices, unsigned stacks, const math::float4& color)
 {
@@ -370,6 +373,8 @@ bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, co
 
 
 		Mesh* sphere = new Mesh(vertices, indices, textures);
+
+		meshes.push_back(sphere);
 
 		return true;
 	}

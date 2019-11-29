@@ -25,6 +25,7 @@ public:
 	//Creators
 	void CreateEmpy(GameObject* parent);
 	void CreateGameObjectBakerHouse(GameObject* parent);
+	void CreateGameObjecSphere(GameObject* parent);
 
 	//Delete
 	void RemoveGameObject(GameObject* go);
@@ -47,7 +48,7 @@ private:
 	//GameObjects Counter
 	unsigned int numberOfGameObjects = 0;
 	unsigned int numberOfBakerHouse = 0;
-
+	unsigned int numberOfSphere = 0;
 
 	
 	
