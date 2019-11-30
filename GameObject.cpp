@@ -197,12 +197,21 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		{
 			if(ImGui::MenuItem("Cube"))
 			{
-				// TODO :CreateGameObjecCube();
+				App->scene->CreateGameObjectShape(this, CUBE);
 			}
 
 			if (ImGui::MenuItem("Sphere"))
 			{
-				App->scene->CreateGameObjecSphere(this);
+				App->scene->CreateGameObjectShape(this, SPHERE);
+			}
+			if (ImGui::MenuItem("Cylinder"))
+			{
+				App->scene->CreateGameObjectShape(this, CYLINDER);
+			}
+
+			if (ImGui::MenuItem("Torus"))
+			{
+				App->scene->CreateGameObjectShape(this, TORUS);
 			}
 
 			if (ImGui::MenuItem("Baker House"))

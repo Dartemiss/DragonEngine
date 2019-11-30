@@ -381,3 +381,204 @@ bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, co
 
 	return false;
 }
+
+bool ModuleModelLoader::LoadCylinder(const char * name, const math::float3 & pos, const math::Quat & rot, float height, float radius, unsigned slices, unsigned stacks, const math::float4 & color)
+{
+	par_shapes_mesh* mesh = par_shapes_create_cylinder(int(slices), int(stacks));
+	par_shapes_rotate(mesh, -float(PAR_PI*0.5), (float*)&math::float3::unitX);
+	par_shapes_translate(mesh, 0.0f, -0.5f, 0.0f);
+
+	par_shapes_mesh* top = par_shapes_create_disk(radius, int(slices), (const float*)&math::float3::zero, (const float*)&math::float3::unitZ);
+	par_shapes_rotate(top, -float(PAR_PI*0.5), (float*)&math::float3::unitX);
+	par_shapes_translate(top, 0.0f, height*0.5f, 0.0f);
+
+	par_shapes_mesh* bottom = par_shapes_create_disk(radius, int(slices), (const float*)&math::float3::zero, (const float*)&math::float3::unitZ);
+	par_shapes_rotate(bottom, float(PAR_PI*0.5), (float*)&math::float3::unitX);
+	par_shapes_translate(bottom, 0.0f, height*-0.5f, 0.0f);
+
+	if(mesh)
+	{
+		par_shapes_scale(mesh, radius, height, radius);
+		par_shapes_merge_and_free(mesh, top);
+		par_shapes_merge_and_free(mesh, bottom);
+
+		//Filling data
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		std::vector<Texture> textures;
+
+
+		for (unsigned int i = 0; i < mesh->npoints; ++i)
+		{
+			Vertex vertex;
+			// process vertex positions, normals and texture coordinates
+			float3 positions(mesh->points[i * 3], mesh->points[i * 3 + 1], mesh->points[i * 3 + 2]);
+			vertex.Position = positions;
+
+			float3 normals(mesh->normals[i * 3], mesh->normals[i * 3 + 1], mesh->normals[i * 3 + 2]);
+			vertex.Normal = normals;
+
+
+			if (mesh->tcoords[0]) // does the mesh contain texture coordinates?
+			{
+				float2 texturesCoords(mesh->tcoords[i * 2], mesh->tcoords[i * 2 + 1]);
+				vertex.TexCoords = texturesCoords;
+			}
+			else
+				vertex.TexCoords = float2(0.0f, 0.0f);
+
+			vertices.push_back(vertex);
+		}
+
+		for (int j = 0; j < mesh->ntriangles; ++j)
+		{
+			indices.push_back(mesh->triangles[j * 3]);
+			indices.push_back(mesh->triangles[j * 3 + 1]);
+			indices.push_back(mesh->triangles[j * 3 + 2]);
+		}
+
+
+		par_shapes_free_mesh(mesh);
+		Mesh* cylinder = new Mesh(vertices, indices, textures);
+		meshes.push_back(cylinder);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool ModuleModelLoader::LoadTorus(const char * name, const math::float3 & pos, const math::Quat & rot, float inner_r, float outer_r, unsigned slices, unsigned stacks, const math::float4 & color)
+{
+	par_shapes_mesh* mesh = par_shapes_create_torus(int(slices), int(stacks), inner_r);
+
+	if(mesh)
+	{
+		par_shapes_scale(mesh, outer_r, outer_r, outer_r);
+		
+		//Filling data
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		std::vector<Texture> textures;
+
+
+		for (unsigned int i = 0; i < mesh->npoints; ++i)
+		{
+			Vertex vertex;
+			// process vertex positions, normals and texture coordinates
+			float3 positions(mesh->points[i * 3], mesh->points[i * 3 + 1], mesh->points[i * 3 + 2]);
+			vertex.Position = positions;
+
+			float3 normals(mesh->normals[i * 3], mesh->normals[i * 3 + 1], mesh->normals[i * 3 + 2]);
+			vertex.Normal = normals;
+
+
+			if (mesh->tcoords[0]) // does the mesh contain texture coordinates?
+			{
+				float2 texturesCoords(mesh->tcoords[i * 2], mesh->tcoords[i * 2 + 1]);
+				vertex.TexCoords = texturesCoords;
+			}
+			else
+				vertex.TexCoords = float2(0.0f, 0.0f);
+
+			vertices.push_back(vertex);
+		}
+
+		for (int j = 0; j < mesh->ntriangles; ++j)
+		{
+			indices.push_back(mesh->triangles[j * 3]);
+			indices.push_back(mesh->triangles[j * 3 + 1]);
+			indices.push_back(mesh->triangles[j * 3 + 2]);
+		}
+
+		par_shapes_free_mesh(mesh);
+		Mesh* torus = new Mesh(vertices, indices, textures);
+		meshes.push_back(torus);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool ModuleModelLoader::LoadCube(const char * name, const math::float3 & pos, const math::Quat & rot, float size, const math::float4 & color)
+{
+	par_shapes_mesh* mesh = par_shapes_create_plane(1, 1);
+	par_shapes_mesh* top = par_shapes_create_plane(1, 1);
+	par_shapes_mesh* bottom = par_shapes_create_plane(1, 1);
+	par_shapes_mesh* back = par_shapes_create_plane(1, 1);
+	par_shapes_mesh* left = par_shapes_create_plane(1, 1);
+	par_shapes_mesh* right = par_shapes_create_plane(1, 1);
+
+	par_shapes_translate(mesh, -0.5f, -0.5f, 0.5f);
+
+	par_shapes_rotate(top, -float(PAR_PI*0.5), (float*)&math::float3::unitX);
+	par_shapes_translate(top, -0.5f, 0.5f, 0.5f);
+
+	par_shapes_rotate(bottom, float(PAR_PI*0.5), (float*)&math::float3::unitX);
+	par_shapes_translate(bottom, -0.5f, -0.5f, -0.5f);
+
+	par_shapes_rotate(back, float(PAR_PI), (float*)&math::float3::unitX);
+	par_shapes_translate(back, -0.5f, 0.5f, -0.5f);
+
+	par_shapes_rotate(left, float(-PAR_PI * 0.5), (float*)&math::float3::unitY);
+	par_shapes_translate(left, -0.5f, -0.5f, -0.5f);
+
+	par_shapes_rotate(right, float(PAR_PI*0.5), (float*)&math::float3::unitY);
+	par_shapes_translate(right, 0.5f, -0.5f, 0.5f);
+
+	par_shapes_merge_and_free(mesh, top);
+	par_shapes_merge_and_free(mesh, bottom);
+	par_shapes_merge_and_free(mesh, back);
+	par_shapes_merge_and_free(mesh, left);
+	par_shapes_merge_and_free(mesh, right);
+
+	if (mesh)
+	{
+		par_shapes_scale(mesh, size, size, size);
+
+		//Filling data
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		std::vector<Texture> textures;
+
+
+		for (unsigned int i = 0; i < mesh->npoints; ++i)
+		{
+			Vertex vertex;
+			// process vertex positions, normals and texture coordinates
+			float3 positions(mesh->points[i * 3], mesh->points[i * 3 + 1], mesh->points[i * 3 + 2]);
+			vertex.Position = positions;
+
+			float3 normals(mesh->normals[i * 3], mesh->normals[i * 3 + 1], mesh->normals[i * 3 + 2]);
+			vertex.Normal = normals;
+
+
+			if (mesh->tcoords[0]) // does the mesh contain texture coordinates?
+			{
+				float2 texturesCoords(mesh->tcoords[i * 2], mesh->tcoords[i * 2 + 1]);
+				vertex.TexCoords = texturesCoords;
+			}
+			else
+				vertex.TexCoords = float2(0.0f, 0.0f);
+
+			vertices.push_back(vertex);
+		}
+
+		for (int j = 0; j < mesh->ntriangles; ++j)
+		{
+			indices.push_back(mesh->triangles[j * 3]);
+			indices.push_back(mesh->triangles[j * 3 + 1]);
+			indices.push_back(mesh->triangles[j * 3 + 2]);
+		}
+
+		par_shapes_free_mesh(mesh);
+		Mesh* cube = new Mesh(vertices, indices, textures);
+		meshes.push_back(cube);
+
+		return true;
+	}
+
+
+	return false;
+}

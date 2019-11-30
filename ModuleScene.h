@@ -5,6 +5,15 @@
 #include "Module.h"
 #include "GameObject.h"
 
+
+enum ShapeType
+{
+	SPHERE = 0,
+	CUBE,
+	CYLINDER,
+	TORUS
+};
+
 class ModuleScene : public Module
 {
 public:
@@ -25,7 +34,7 @@ public:
 	//Creators
 	void CreateEmpy(GameObject* parent);
 	void CreateGameObjectBakerHouse(GameObject* parent);
-	void CreateGameObjecSphere(GameObject* parent);
+	void CreateGameObjectShape(GameObject* parent, ShapeType shape);
 
 	//Delete
 	void RemoveGameObject(GameObject* go);
@@ -49,6 +58,10 @@ private:
 	unsigned int numberOfGameObjects = 0;
 	unsigned int numberOfBakerHouse = 0;
 	unsigned int numberOfSphere = 0;
+	unsigned int numberOfCube = 0;
+	unsigned int numberOfTorus = 0;
+	unsigned int numberOfCylinder = 0;
+
 
 	
 	

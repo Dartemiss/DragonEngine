@@ -149,7 +149,7 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
 }
 
-void ModuleScene::CreateGameObjecSphere(GameObject * parent)
+void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 {
 	if (parent == nullptr)
 	{
@@ -157,16 +157,61 @@ void ModuleScene::CreateGameObjecSphere(GameObject * parent)
 		return;
 	}
 
-	LOG("Creating a GameObject with Sphere Mesh.");
-	std::string defaultName = "Sphere" + std::to_string(numberOfSphere + 1);
-	bool correct = App->modelLoader->LoadSphere(defaultName.c_str(), math::float3(2.0f, 2.0f, 0.0f), math::Quat::identity, 1.0f, 30, 30, float4(1.0f, 1.0f, 1.0f, 1.0f));
-	if(!correct)
+	std::string defaultName;
+	bool correct;
+	switch (shape)
 	{
-		LOG("ERROR: Cannot load the sphere mesh correctly.");
-		return;
+	case SPHERE:
+		LOG("Creating a GameObject with Sphere Mesh.");
+		defaultName = "Sphere" + std::to_string(numberOfSphere + 1);
+		correct = App->modelLoader->LoadSphere(defaultName.c_str(), math::float3(2.0f, 2.0f, 0.0f), math::Quat::identity, 1.0f, 30, 30, float4(0.4f, 0.4f, 0.4f, 0.4f));
+		if (!correct)
+		{
+			LOG("ERROR: Cannot load the sphere mesh correctly.");
+			return;
+		}
+		++numberOfSphere;
+		break;
+	case CUBE:
+		LOG("Creating a GameObject with cube Mesh.");
+		defaultName = "Cube" + std::to_string(numberOfCube + 1);
+		correct = App->modelLoader->LoadCube("cube0", math::float3(2.0f, 2.0f, 0.0f), math::Quat::identity, 2.0f, float4(0.4f, 0.4f, 0.4f, 0.4f));
+		if (!correct)
+		{
+			LOG("ERROR: Cannot load the cube mesh correctly.");
+			return;
+		}
+		++numberOfCube;
+		break;
+	case CYLINDER:
+		LOG("Creating a GameObject with Cylinder Mesh.");
+		defaultName = "Cylinder" + std::to_string(numberOfCylinder + 1);
+		correct = App->modelLoader->LoadCylinder(defaultName.c_str(), math::float3(2.0f, 2.0f, 0.0f), math::Quat::identity, 2.0f, 1.0f, 30, 30, float4(0.4f, 0.4f, 0.4f, 0.4f));
+		if (!correct)
+		{
+			LOG("ERROR: Cannot load the cylinder mesh correctly.");
+			return;
+		}
+		++numberOfCylinder;
+		break;
+	case TORUS:
+		LOG("Creating a GameObject with torus Mesh.");
+		defaultName = "Torus" + std::to_string(numberOfTorus + 1);
+		correct = App->modelLoader->LoadTorus(defaultName.c_str(), math::float3(2.0f, 2.0f, 0.0f), math::Quat::identity, 0.5f, 0.67f, 30, 30, float4(1.0f, 1.0f, 1.0f, 1.0f));
+		if (!correct)
+		{
+			LOG("ERROR: Cannot load the torus mesh correctly.");
+			return;
+		}
+		++numberOfTorus;
+		break;
+	default:
+		break;
 	}
+
+
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
-	++numberOfSphere;
+	
 
 	if(!App->modelLoader->meshes.size() == 1)
 	{
@@ -174,6 +219,8 @@ void ModuleScene::CreateGameObjecSphere(GameObject * parent)
 		delete newGameObject;
 		return;
 	}
+
+
 
 	ComponentMesh* myMeshCreated = (ComponentMesh*)newGameObject->CreateComponent(MESH);
 	myMeshCreated->LoadMesh(App->modelLoader->meshes[0]);
