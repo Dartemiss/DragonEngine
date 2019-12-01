@@ -331,7 +331,7 @@ void ModuleRender::DrawAllGameObjects()
 
 		if(frustumCullingIsActivated && gameObject->globalBoundingBox != nullptr)
 		{
-			if(gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) > 0)
+			if(gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
 
 				if (gameObject->myMesh != nullptr)

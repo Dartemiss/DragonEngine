@@ -116,7 +116,6 @@ int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
 {
 	//Tests if an AABB is within the frusum
 	//returns 0 if out, 1 if in and 2 if intersects
-
 	float3 corners[8];
 	aabb.GetCornerPoints(corners);
 
@@ -133,7 +132,7 @@ int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
 		for(int i = 0; i< 8; ++i)
 		{
 			//test this point against the planes
-			if(SideOfPlane(corners[i], frustum->GetPlane(p)) == BEHIND)
+			if(SideOfPlane(corners[i], frustum->GetPlane(p)) == FRONT)
 			{
 				iPtIn = 0;
 				--iInCount;
@@ -158,7 +157,7 @@ int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
 bool ComponentCamera::SideOfPlane(float3 &point, Plane &plane)
 {
 	float value = plane.normal.Dot(point);
-	value += plane.d;
+	value -= plane.d;
 
 	return (value >= 0.0f) ? true : false;
 }
