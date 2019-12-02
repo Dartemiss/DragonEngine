@@ -32,42 +32,18 @@ bool ModuleProgram::Init()
 	return true;
 }
 
-update_status ModuleProgram::PreUpdate()
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleProgram::Update()
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleProgram::PostUpdate()
-{
-	return UPDATE_CONTINUE;
-}
-
 bool ModuleProgram::CleanUp()
 {
 	glDeleteProgram(defaultProg);
 	glDeleteProgram(gridProg);
 
+	glDeleteProgram(flatLighting);
+	glDeleteProgram(gouraudLighting);
+	glDeleteProgram(phongLighting);
+	glDeleteProgram(blinnLighting);
+	glDeleteProgram(blinnTextures);
+	
 	return true;
-}
-
-void ModuleProgram::setBool(const std::string & name, bool value, unsigned int prog) const
-{
-	glUniform1i(glGetUniformLocation(prog, name.c_str()), (int)value);
-}
-
-void ModuleProgram::setInt(const std::string & name, int value, unsigned int prog) const
-{
-	glUniform1i(glGetUniformLocation(prog, name.c_str()), value);
-}
-
-void ModuleProgram::setFloat(const std::string & name, float value, unsigned int prog) const
-{
-	glUniform1f(glGetUniformLocation(prog, name.c_str()), value);
 }
 
 void ModuleProgram::SetUpUniformsBuffer()
@@ -95,7 +71,7 @@ unsigned int ModuleProgram::createProgramWithShaders(const char * vertexFilename
 	return createProgram(vertexShader, fragmentShader);
 }
 
-unsigned int ModuleProgram::createProgram(const unsigned int vShader, const unsigned int fShader) const
+unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fShader) const
 {
 	unsigned int program = glCreateProgram();
 
@@ -133,11 +109,12 @@ unsigned int ModuleProgram::createProgram(const unsigned int vShader, const unsi
 	return program;
 }
 
-unsigned int ModuleProgram::createShader(const char * filename, unsigned const int mode) const
+unsigned int ModuleProgram::createShader(const char * filename, unsigned int shaderType) const
 {
-	assert(filename != NULL);
+	assert(filename != nullptr);
+
 	char* data = readFile(filename);
-	unsigned int shaderId = glCreateShader(mode);
+	unsigned int shaderId = glCreateShader(shaderType);
 	glShaderSource(shaderId, 1, &data, NULL);
 	glCompileShader(shaderId);
 	delete data;
@@ -158,6 +135,8 @@ unsigned int ModuleProgram::createShader(const char * filename, unsigned const i
 
 char* ModuleProgram::readFile(const char* file_name) const
 {
+	assert(file_name != nullptr);
+
 	char* result = nullptr;
 	FILE* file = nullptr;
 	fopen_s(&file, file_name, "rb");
