@@ -10,8 +10,10 @@ class GameObject;
 
 struct Node
 {
-	//Pointer to first child
-	Node* firstChild = nullptr;
+	//Pointer to childs
+	Node* children[4];
+
+	std::vector<GameObject*> gameObjects;
 
 	int counter = 0;
 	
@@ -23,10 +25,15 @@ public:
 	MyQuadTree();
 	~MyQuadTree();
 
-	void Create(const std::vector<AABB>& aabbs);
+	void Create(AABB limits);
 	void Clear();
 	void Insert(GameObject* go);
 	//void CollectIntersect(std::vector<GameObject*>&, PRIMITIVE);
+
+
+private:
+	int bucket = 0;
+
 };
 
 #endif __MyQuadTree_H__

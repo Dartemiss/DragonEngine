@@ -476,6 +476,9 @@ void GameObject::CheckDragAndDrop(GameObject * go)
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAG");
 		if (payload != nullptr) {
 			GameObject * newChild = *reinterpret_cast<GameObject**>(payload->Data);
+
+			//TODO: BFS for asking if newChild is parent
+
 			newChild->SetParent(go);
 			if(newChild->parent->myTransform != nullptr)
 				newChild->myTransform->SetLocalMatrix(newChild->parent->myTransform->globalModelMatrix);
