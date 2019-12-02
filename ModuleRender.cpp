@@ -337,7 +337,6 @@ void ModuleRender::DrawAllGameObjects()
 				if (gameObject->myMesh != nullptr)
 				{
 					gameObject->myMesh->Draw(progModel);
-
 				}
 
 				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr)
@@ -349,7 +348,31 @@ void ModuleRender::DrawAllGameObjects()
 		{
 			if (gameObject->myMesh != nullptr)
 			{
-				gameObject->myMesh->Draw(progModel);
+				//Temporal for working with lighting shaders
+				unsigned int shader = App->program->flatLighting;
+				glUseProgram(shader);
+				glUniformMatrix4fv(glGetUniformLocation(shader,
+					"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
+				glUniformMatrix4fv(glGetUniformLocation(shader,
+					"view"), 1, GL_TRUE, &App->camera->view[0][0]);
+				glUniformMatrix4fv(glGetUniformLocation(shader,
+					"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
+
+				float3 light = float3(10, 20, 50);
+				glUniform3fv(glGetUniformLocation(shader, "light_pos"), 1, &light[0]);
+
+				glUniform1f(glGetUniformLocation(shader, "ambient"), 0.02);
+				glUniform1f(glGetUniformLocation(shader, "shininess"), 4);
+
+				glUniform1f(glGetUniformLocation(shader, "k_ambient"), 0.01);
+				glUniform1f(glGetUniformLocation(shader, "k_diffuse"), 0.05);
+				glUniform1f(glGetUniformLocation(shader, "k_specular"), 0.02);
+
+				float4 color= float4(10, 0, 0, 1);
+				glUniform4fv(glGetUniformLocation(shader, "object_color"), 1, &color[0]);
+
+				gameObject->myMesh->Draw(shader);
+				//gameObject->myMesh->Draw(progModel);
 
 			}
 			if (gameObject->boundingBox != nullptr && gameObject->isParentOfMeshes)

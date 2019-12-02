@@ -20,6 +20,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	unsigned int createProgramWithShaders(char * vertexShader, char * fragmentShader);
 	unsigned int createVertexShader(char* filename);
 	unsigned int createFragmentShader(char* filename);
 	unsigned int createProgram(const unsigned int vShader, const unsigned int fShader);
@@ -37,6 +38,12 @@ public:
 	unsigned int defaultProg;
 	unsigned int uniformsBuffer;
 
+
+	unsigned int flatLighting;
+	unsigned int gouraudLighting;
+	unsigned int phongLighting;
+	unsigned int blinnLighting;
+	unsigned int blinnTextures;
 };
 
 #endif // __ModuleProgram_H__

@@ -16,16 +16,17 @@ bool ModuleProgram::Init()
 {
 
 	//Grid shader
-	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
-	unsigned int fs2 = App->program->createFragmentShader("../Shaders/Grid.fs");
+	gridProg = createProgramWithShaders("../Shaders/Grid.vs", "../Shaders/Grid.fs");
 
-	gridProg = App->program->createProgram(vs2, fs2);
+	//Lighting shaders
+	flatLighting = createProgramWithShaders("../Shaders/flat.vs", "../Shaders/flat.fs");
+	gouraudLighting = createProgramWithShaders("../Shaders/Gouraud.vs", "../Shaders/Gouraud.fs");
+	phongLighting = createProgramWithShaders("../Shaders/Phong.vs", "../Shaders/Phong.fs");
+	blinnLighting = createProgramWithShaders("../Shaders/Blinn.vs", "../Shaders/Blinn.fs");
+	blinnTextures = createProgramWithShaders("../Shaders/BlinnTextures.vs", "../Shaders/BlinnTextures.fs");
 
 	//Default shader
-	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
-	unsigned int fs = App->program->createFragmentShader("../Shaders/Model.fs");
-
-	defaultProg = App->program->createProgram(vs, fs);
+	defaultProg = createProgramWithShaders("../Shaders/VertexShader.vs", "../Shaders/Model.fs");
 
 	SetUpUniformsBuffer();
 
@@ -53,6 +54,14 @@ bool ModuleProgram::CleanUp()
 	glDeleteProgram(gridProg);
 
 	return true;
+}
+
+unsigned int ModuleProgram::createProgramWithShaders(char * vertexFilename, char * fragmentFilename)
+{
+	unsigned int vertexShader = createVertexShader(vertexFilename);
+	unsigned int fragmentShader = createFragmentShader(fragmentFilename);
+
+	return createProgram(vertexShader, fragmentShader);
 }
 
 unsigned int ModuleProgram::createProgram(const unsigned int vShader, const unsigned int fShader)
