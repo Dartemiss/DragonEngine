@@ -70,7 +70,7 @@ private:
 	/*  Functions   */
 	
 	void processNode(aiNode *node, const aiScene *scene);
-	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+	Mesh* processMesh(aiMesh *mesh, const aiScene *scene);
 	
 	std::string computeDirectory(const std::string &path) const;
 	std::string ComputeName(const std::string &path) const;

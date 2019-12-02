@@ -107,7 +107,7 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(new Mesh(processMesh(mesh, scene)));
+		meshes.push_back((processMesh(mesh, scene)));
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -116,7 +116,7 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 	}
 }
 
-Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
+Mesh* ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 {
 	//Filling data
 	std::vector<Vertex> vertices;
@@ -186,7 +186,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 
 		}
 		
-	return Mesh(vertices, indices, textures);
+	return new Mesh(vertices, indices, textures);
 }
 
 std::string ModuleModelLoader::computeDirectory(const std::string &path) const
