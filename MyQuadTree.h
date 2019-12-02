@@ -4,7 +4,19 @@
 #include "Globals.h"
 #include <vector>
 #include "include/Geometry/AABB.h"
-#include "GameObject.h"
+
+class GameObject;
+
+
+struct Node
+{
+	//Pointer to first child
+	Node* firstChild = nullptr;
+
+	int counter = 0;
+	
+};
+
 class MyQuadTree
 {
 public:
