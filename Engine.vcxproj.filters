@@ -188,6 +188,7 @@
     <ClCompile Include="ComponentCamera.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="MyQuadTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -479,6 +480,7 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="myStream.h" />
+    <ClInclude Include="MyQuadTree.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

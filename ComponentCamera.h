@@ -33,8 +33,8 @@ public:
 	void LookAt(const float3 target);
 
 	//Frutum intersection
-	int AABBWithinFrustum(const AABB &aabb);
-	bool SideOfPlane(float3 &point, Plane &plane);
+	int AABBWithinFrustum(const AABB &aabb) const;
+	bool SideOfPlane(const float3 &point, const Plane &plane) const;
 
 
 

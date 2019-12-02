@@ -13,6 +13,7 @@ ModuleScene::ModuleScene()
 {
 	root = new GameObject("World");
 	root->isRoot = true;
+	root->isStatic = true;
 }
 
 

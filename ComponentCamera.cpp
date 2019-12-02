@@ -112,7 +112,7 @@ void ComponentCamera::LookAt(const float3 target)
 	frustum->up = rot.Transform(frustum->up).Normalized();
 }
 
-int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
+int ComponentCamera::AABBWithinFrustum(const AABB &aabb) const
 {
 	//Tests if an AABB is within the frusum
 	//returns 0 if out, 1 if in and 2 if intersects
@@ -154,7 +154,7 @@ int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
 	return AABB_INTERSECT;
 }
 
-bool ComponentCamera::SideOfPlane(float3 &point, Plane &plane)
+bool ComponentCamera::SideOfPlane(const float3 &point, const Plane &plane) const
 {
 	float value = plane.normal.Dot(point);
 	value -= plane.d;
