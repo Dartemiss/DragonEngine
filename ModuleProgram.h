@@ -20,18 +20,12 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	unsigned int createProgramWithShaders(char * vertexShader, char * fragmentShader);
-	unsigned int createVertexShader(char* filename);
-	unsigned int createFragmentShader(char* filename);
-	unsigned int createProgram(const unsigned int vShader, const unsigned int fShader);
-
 	void setBool(const std::string &name, bool value, unsigned int prog) const;
 	void setInt(const std::string &name, int value, unsigned int prog) const;
 	void setFloat(const std::string &name, float value, unsigned int prog) const;
 
 	void SetUpUniformsBuffer();
 
-	char* readFile(char* filename) const;
 
 	//Programs
 	unsigned int gridProg;
@@ -44,6 +38,13 @@ public:
 	unsigned int phongLighting;
 	unsigned int blinnLighting;
 	unsigned int blinnTextures;
+
+private:
+	unsigned int createProgramWithShaders(const char * vertexShader, const char * fragmentShader) const;
+	unsigned int createShader(const char * filename, const unsigned int mode) const;
+	unsigned int createProgram(const unsigned int vShader, const unsigned int fShader) const;
+
+	char* readFile(const char* filename) const;
 };
 
 #endif // __ModuleProgram_H__
