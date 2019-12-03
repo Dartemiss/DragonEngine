@@ -314,6 +314,7 @@ void ModuleRender::DrawGrid()
 
 void ModuleRender::DrawAllGameObjects()
 {
+
 	unsigned int progModel = App->program->defaultProg;
 
 	glUseProgram(progModel);
@@ -333,6 +334,7 @@ void ModuleRender::DrawAllGameObjects()
 		{
 			if(gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
+				gameObjectsWithinFrustum.push_back(gameObject);
 
 				if (gameObject->myMesh != nullptr)
 				{
@@ -374,17 +376,42 @@ void ModuleRender::DrawGame()
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
 		"view"), 1, GL_TRUE, &gameCamera->view[0][0]);
 
-	for (auto gameObject : App->scene->allGameObjects)
+	if(frustumCullingIsActivated)
 	{
-		glUniformMatrix4fv(glGetUniformLocation(progModel,
-			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
-
-		if (gameObject->myMesh != nullptr)
+	
+		for (auto gameObject : gameObjectsWithinFrustum)
 		{
-			gameObject->myMesh->Draw(progModel);
-		}
+			glUniformMatrix4fv(glGetUniformLocation(progModel,
+				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
+
+			if (gameObject->myMesh != nullptr)
+			{
+				gameObject->myMesh->Draw(progModel);
+			}
+
+		}
+		
+		gameObjectsWithinFrustum.clear();
 	}
+	else
+	{
+	
+		for (auto gameObject : App->scene->allGameObjects)
+		{
+			glUniformMatrix4fv(glGetUniformLocation(progModel,
+				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
+
+
+			if (gameObject->myMesh != nullptr)
+			{
+				gameObject->myMesh->Draw(progModel);
+			}
+
+		}
+	
+	}
+
 
 	glUseProgram(0);
 }

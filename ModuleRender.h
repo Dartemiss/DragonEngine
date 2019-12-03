@@ -87,6 +87,7 @@ private:
 	
 	ComponentCamera* gameCamera = nullptr;
 
+	std::vector<GameObject*> gameObjectsWithinFrustum;
 
 
 };
