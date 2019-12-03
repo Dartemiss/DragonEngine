@@ -3,6 +3,7 @@
 #include "ModuleModelLoader.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "MyQuadTree.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -27,8 +28,9 @@ bool ModuleScene::Init()
 	mainCamera = CreateGameObject("Main Camera", root);
 	mainCamera->CreateComponent(CAMERA);
 
-
 	allGameObjects.push_back(mainCamera);
+
+	quadtree = new MyQuadTree(AABB(float3(-100,0,-100), float3(100,0,100)));
 
 	return true;
 }

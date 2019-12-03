@@ -5,12 +5,14 @@
 #include <vector>
 #include "include/Geometry/AABB.h"
 
+const int TREE_CAPACITY = 4;
+
 class GameObject;
 
-
+/*
 struct Node
 {
-	//Pointer to childs
+	//Pointer to childs	
 	Node* children[4];
 
 	std::vector<GameObject*> gameObjects;
@@ -18,22 +20,38 @@ struct Node
 	int counter = 0;
 	
 };
-
+*/
 class MyQuadTree
 {
 public:
-	MyQuadTree();
+	MyQuadTree(AABB limits);
 	~MyQuadTree();
 
-	void Create(AABB limits);
 	void Clear();
-	void Insert(GameObject* go);
+	bool Insert(GameObject* go);
+	void Subdivide();
+	void ExpandingLimits(AABB* box);
+
 	//void CollectIntersect(std::vector<GameObject*>&, PRIMITIVE);
 
-
-private:
-	int bucket = 0;
-
+	//Limits of the quadtree
+	AABB limits;
+	
+	//Objects on that tree/leaf
+	std::vector<GameObject*> gameObjects;
+	
+	
+	std::vector<MyQuadTree*> nodes;
+	int bucketOLimit = 2;
+	int levelOfDepth = 0;
+	int maxHeight = 0;
+	
+	//Children
+	MyQuadTree* topLeft;
+	MyQuadTree* topRight;
+	MyQuadTree* bottomLeft;
+	MyQuadTree* bottomRight;
+	
 };
 
 #endif __MyQuadTree_H__

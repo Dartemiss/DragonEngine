@@ -5,6 +5,7 @@
 #include "Module.h"
 #include "GameObject.h"
 
+class MyQuatTree;
 
 enum ShapeType
 {
@@ -49,6 +50,9 @@ public:
 	bool showInspector = true;
 	//Game's Main Camera Object
 	GameObject* mainCamera = nullptr;
+
+	//QuadTree
+	MyQuadTree* quadtree = nullptr;
 
 private:
 	//Root
