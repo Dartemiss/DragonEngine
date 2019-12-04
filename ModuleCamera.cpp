@@ -294,3 +294,13 @@ void ModuleCamera::UpdateUniformShaderMatrices()
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float4x4), sizeof(float4x4), &view[0][0]);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
+
+float4x4 ModuleCamera::GetProjMatrix() const
+{
+	return proj;
+}
+
+float4x4 ModuleCamera::GetViewMatrix() const
+{
+	return view;
+}

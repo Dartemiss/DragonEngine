@@ -42,6 +42,11 @@ public:
 	float aspect = 1.0f;
 	Frustum* frustum;
 
+	//Getter Matrix
+	float4x4 GetProjMatrix() const;
+	float4x4 GetViewMatrix() const;
+
+
 	//Matrices
 	float4x4 proj = float4x4::zero;
 	float4x4 view = float4x4::zero;

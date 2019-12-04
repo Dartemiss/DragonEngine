@@ -1,6 +1,6 @@
 #include "MyQuadTree.h"
 #include "GameObject.h"
-
+#include "debugdraw.h"
 
 
 MyQuadTree::MyQuadTree(AABB limits)
@@ -59,5 +59,10 @@ void MyQuadTree::Subdivide()
 	AABB* bottomRight = new AABB(float3(center.x, 0, limits.minPoint.z), float3(limits.maxPoint.x, 0, center.z));
 
 	return;
+}
+
+void MyQuadTree::Draw() const
+{
+	dd::aabb(limits.minPoint,limits.maxPoint,float3(1.0f,0.5f,0.5f));
 }
 

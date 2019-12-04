@@ -119,9 +119,6 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="ModuleCamera.cpp">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleIMGUI.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -189,6 +186,12 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="MyQuadTree.cpp" />
+    <ClCompile Include="ModuleCamera.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleDebugDraw.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -481,6 +484,9 @@
     </ClInclude>
     <ClInclude Include="myStream.h" />
     <ClInclude Include="MyQuadTree.h" />
+    <ClInclude Include="ModuleDebugDraw.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

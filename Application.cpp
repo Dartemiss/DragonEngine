@@ -10,6 +10,7 @@
 #include "ModuleModelLoader.h"
 #include "ModuleTimeManager.h"
 #include "ModuleScene.h"
+#include "ModuleDebugDraw.h"
 #include "Timer.h"
 #include "uSTimer.h"
 
@@ -29,6 +30,7 @@ Application::Application()
 	modules.push_back(program = new ModuleProgram());
 	modules.push_back(camera = new ModuleCamera());
 	modules.push_back(texture = new ModuleTexture());
+	modules.push_back(debugDraw = new ModuleDebugDraw());
 
 }
 

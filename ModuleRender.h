@@ -62,6 +62,9 @@ public:
 	void GenerateTexture(int width, int height);
 	void GenerateTextureGame(int width, int height);
 
+	//Quadtree variables
+	bool showQuadTree = true;
+
 private:
 	void* context;
 
@@ -89,6 +92,9 @@ private:
 
 	std::vector<GameObject*> gameObjectsWithinFrustum;
 
+
+	//Methods
+	void DrawDebug() const;
 
 };
 

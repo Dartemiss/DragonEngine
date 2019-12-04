@@ -7,10 +7,12 @@
 #include "ModuleTimeManager.h"
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
+#include "ModuleDebugDraw.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
 #include "ComponentCamera.h"
+#include "MyQuadTree.h"
 #include "SDL.h"
 #include "glew.h"
 #include "imgui/imgui.h"
@@ -526,13 +528,13 @@ void ModuleRender::GenerateTexture(int width, int height)
 	glViewport(0, 0, width, height);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	App->scene->mainCamera->DrawCamera();
-	DrawGrid();
+	DrawDebug();
+	//DrawGrid();
 	DrawAllGameObjects();
-	
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	App->debugDraw->Draw(App->camera, frameBufferObject, height, width);
 }
 
 void ModuleRender::GenerateTextureGame(int width, int height)
@@ -544,6 +546,16 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 	DrawGame();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ModuleRender::DrawDebug() const
+{
+	if(showQuadTree)
+	{
+		App->scene->quadtree->Draw();
+	}
+
+	return;
 }
 
 

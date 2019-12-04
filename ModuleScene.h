@@ -5,7 +5,7 @@
 #include "Module.h"
 #include "GameObject.h"
 
-class MyQuatTree;
+class MyQuadTree;
 
 enum ShapeType
 {

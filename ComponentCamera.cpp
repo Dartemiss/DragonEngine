@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include <math.h>
 #include "include/Geometry/Plane.h"
+#include "debugdraw.h"
 #include "glew.h"
 
 
@@ -165,7 +166,8 @@ bool ComponentCamera::SideOfPlane(const float3 &point, const Plane &plane) const
 void ComponentCamera::DrawFrustum()
 {
 
-	//Draw Grid
+	//Draw Frustum
+	/*
 	unsigned int progGrid = App->program->gridProg;
 	glUseProgram(progGrid);
 
@@ -256,6 +258,9 @@ void ComponentCamera::DrawFrustum()
 	glEnd();
 
 	glUseProgram(0);
+	*/
+	float4x4 clipMatrix = proj * view;	
+	dd::frustum(clipMatrix.Inverted(), float3(0, 0, 1));
 
 	return;
 }

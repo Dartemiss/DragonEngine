@@ -32,6 +32,8 @@ public:
 	void Subdivide();
 	void ExpandingLimits(AABB* box);
 
+	void Draw() const;
+
 	//void CollectIntersect(std::vector<GameObject*>&, PRIMITIVE);
 
 	//Limits of the quadtree

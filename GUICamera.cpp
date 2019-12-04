@@ -22,7 +22,7 @@ void GUICamera::Draw(const char * title)
 
 		ImGui::Checkbox("Show Bounding Box", &App->renderer->showBoundingBox);
 		ImGui::Checkbox("Frusum Culling", &App->renderer->frustumCullingIsActivated);
-
+		ImGui::Checkbox("Show QuadTree", &App->renderer->showQuadTree);
 		ImGui::End();
 
 	}
