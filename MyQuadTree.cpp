@@ -15,12 +15,40 @@ MyQuadTree::~MyQuadTree()
 {
 }
 
+void MyQuadTree::Clear()
+{
+	if (topLeft != nullptr)
+		topLeft->Clear();
+
+	if (topRight != nullptr)
+		topRight->Clear();
+
+	if (bottomLeft != nullptr)
+		bottomLeft->Clear();
+
+	if (bottomRight != nullptr)
+		bottomRight->Clear();
+
+	delete topLeft;
+	delete topRight;
+	delete bottomLeft;
+	delete bottomRight;
+
+	gameObjects.clear();
+
+	topLeft = nullptr;
+	topRight = nullptr;
+	bottomLeft = nullptr;
+	bottomRight = nullptr;
+
+}
+
 //Recursive
 bool MyQuadTree::Insert(GameObject* go)
 {
-	const AABB* boundingBox = go->globalBoundingBox;
+	AABB* boundingBox = go->globalBoundingBox;
 
-	if (!limits.Contains(*boundingBox))
+	if (!IsWithinQuad(boundingBox))
 	{
 		LOG("Cannot insert elemment, it's outside the QuadTree limits.");
 		return false;
@@ -53,16 +81,67 @@ bool MyQuadTree::Insert(GameObject* go)
 void MyQuadTree::Subdivide()
 {
 	float3 center = limits.CenterPoint();
-	AABB* topLeft = new AABB(float3(limits.minPoint.x, 0, center.z), float3(center.x,0,limits.maxPoint.z));
-	AABB* topRight = new AABB(center, limits.maxPoint);
-	AABB* bottomLeft = new AABB(limits.minPoint, center);
-	AABB* bottomRight = new AABB(float3(center.x, 0, limits.minPoint.z), float3(limits.maxPoint.x, 0, center.z));
+	//Z axis is pointing to negative (top)
+	topLeft = new MyQuadTree(AABB(limits.minPoint, center));
+	topRight = new MyQuadTree(AABB(float3(center.x, 0, limits.minPoint.z), float3(limits.maxPoint.x, 0, center.z)));
+	bottomLeft = new MyQuadTree(AABB(float3(limits.minPoint.x, 0, center.z), float3(center.x,0,limits.maxPoint.z)));
+	bottomRight = new MyQuadTree(AABB(center, limits.maxPoint));
+
+	for(auto go : gameObjects)
+	{
+		topLeft->Insert(go);
+		topRight->Insert(go);
+		bottomLeft->Insert(go);
+		bottomRight->Insert(go);
+	}
+
+	gameObjects.clear();
 
 	return;
+}
+
+bool MyQuadTree::IsWithinQuad(AABB* go) const
+{
+	if(limits.minPoint.x > go->minPoint.x)
+	{
+		LOG("GameObject is on the left outside of quadtree.");
+		return false;
+	}
+	else if(limits.minPoint.z > go->minPoint.z)
+	{
+		LOG("GameObject is on the top outside of quadtree.");
+		return false;
+	}
+	else if(limits.maxPoint.x < go->maxPoint.x)
+	{
+		LOG("GameObject is on the right outside of quadtree.");
+		return false;
+	}
+	else if(limits.maxPoint.z < go->maxPoint.z)
+	{
+		LOG("GameObject is on the bottom outside of quadtree.");
+		return false;
+	}
+	
+	return true;
 }
 
 void MyQuadTree::Draw() const
 {
 	dd::aabb(limits.minPoint,limits.maxPoint,float3(1.0f,0.5f,0.5f));
+
+	//Draw all childs
+	if (topLeft != nullptr)
+		topLeft->Draw();
+
+	if (topRight != nullptr)
+		topRight->Draw();
+
+	if (bottomLeft != nullptr)
+		bottomLeft->Draw();
+
+	if (bottomRight != nullptr)
+		bottomRight->Draw();
+
 }
 

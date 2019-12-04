@@ -30,7 +30,7 @@ bool ModuleScene::Init()
 
 	allGameObjects.push_back(mainCamera);
 
-	quadtree = new MyQuadTree(AABB(float3(-100,0,-100), float3(100,0,100)));
+	quadtree = new MyQuadTree(AABB(float3(-40,0,-40), float3(40,0,40)));
 
 	return true;
 }
@@ -75,6 +75,8 @@ GameObject * ModuleScene::CreateGameObject()
 
 	++numberOfGameObjects;
 
+	selectedByHierarchy = gameObject;
+
 	return gameObject;
 }
 
@@ -86,6 +88,9 @@ GameObject * ModuleScene::CreateGameObject(const char * name, GameObject * paren
 	LOG("Creating new GameObject with name: %s", name);
 
 	++numberOfGameObjects;
+
+	selectedByHierarchy = gameObject;
+
 	return gameObject;
 }
 
@@ -150,6 +155,9 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 
 	allGameObjects.push_back(newGameObject);
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+
+	if(quadTreeInitialized)
+		AddToQuadtree(newGameObject);
 }
 
 void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
@@ -228,6 +236,8 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 	ComponentMesh* myMeshCreated = (ComponentMesh*)newGameObject->CreateComponent(MESH);
 	myMeshCreated->LoadMesh(App->modelLoader->meshes[0]);
 	newGameObject->ComputeAABB();
+	newGameObject->isParentOfMeshes = true;
+
 	allGameObjects.push_back(newGameObject);
 
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
@@ -302,5 +312,36 @@ void ModuleScene::DrawGUI()
 		selectedByHierarchy->DrawInspector(showInspector);
 	}
 
+}
+
+void ModuleScene::AddToQuadtree(GameObject* go) const
+{
+	if(go->globalBoundingBox == nullptr)
+	{
+		LOG("Can not add element to quadtree, AABB is nullptr.");
+		return;
+	}
+	quadtree->Insert(go);
+	return;
+}
+
+void ModuleScene::RemoveFromQuadTree(GameObject* go) const
+{
+}
+
+void ModuleScene::BuildQuadTree()
+{
+	if (quadTreeInitialized)
+		quadtree->Clear();
+
+	for(auto go : allGameObjects)
+	{
+		if(go->globalBoundingBox != nullptr)
+		{
+			quadtree->Insert(go);
+		}
+	}
+
+	quadTreeInitialized = true;
 }
 

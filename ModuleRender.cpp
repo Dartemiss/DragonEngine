@@ -13,6 +13,7 @@
 #include "GameObject.h"
 #include "ComponentCamera.h"
 #include "MyQuadTree.h"
+#include "debugdraw.h"
 #include "SDL.h"
 #include "glew.h"
 #include "imgui/imgui.h"
@@ -344,7 +345,7 @@ void ModuleRender::DrawAllGameObjects()
 
 				}
 
-				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr)
+				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr && showBoundingBox)
 					gameObject->DrawAABB();
 			}
 
@@ -356,7 +357,7 @@ void ModuleRender::DrawAllGameObjects()
 				gameObject->myMesh->Draw(progModel);
 
 			}
-			if (gameObject->boundingBox != nullptr && gameObject->isParentOfMeshes)
+			if (gameObject->boundingBox != nullptr && gameObject->isParentOfMeshes && showBoundingBox)
 				gameObject->DrawAABB();
 		}
 
@@ -553,6 +554,11 @@ void ModuleRender::DrawDebug() const
 	if(showQuadTree)
 	{
 		App->scene->quadtree->Draw();
+	}
+
+	if(showGrid)
+	{
+		dd::xzSquareGrid(-40.0f, 40.0f, 0.0f, 1.0f, math::float3(0.65f, 0.65f, 0.65f));
 	}
 
 	return;

@@ -31,6 +31,7 @@ public:
 	bool Insert(GameObject* go);
 	void Subdivide();
 	void ExpandingLimits(AABB* box);
+	bool IsWithinQuad(AABB* go) const;
 
 	void Draw() const;
 
@@ -42,18 +43,18 @@ public:
 	//Objects on that tree/leaf
 	std::vector<GameObject*> gameObjects;
 	
-	
 	std::vector<MyQuadTree*> nodes;
 	int bucketOLimit = 2;
 	int levelOfDepth = 0;
 	int maxHeight = 0;
 	
 	//Children
-	MyQuadTree* topLeft;
-	MyQuadTree* topRight;
-	MyQuadTree* bottomLeft;
-	MyQuadTree* bottomRight;
+	MyQuadTree* topLeft = nullptr;
+	MyQuadTree* topRight = nullptr;
+	MyQuadTree* bottomLeft = nullptr;
+	MyQuadTree* bottomRight = nullptr;
 	
+
 };
 
 #endif __MyQuadTree_H__

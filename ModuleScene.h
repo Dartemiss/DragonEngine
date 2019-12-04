@@ -44,6 +44,7 @@ public:
 	//Drawing Methods
 	void DrawUIBarMenuGameObject();
 	void DrawGUI();
+
 	//AllGameObjectsCreated
 	std::vector<GameObject*> allGameObjects;
 	bool showHierarchy = true;
@@ -53,6 +54,13 @@ public:
 
 	//QuadTree
 	MyQuadTree* quadtree = nullptr;
+
+	void AddToQuadtree(GameObject* go) const;
+	void RemoveFromQuadTree(GameObject* go) const;
+
+	bool quadTreeInitialized = false;
+
+	void BuildQuadTree();
 
 private:
 	//Root

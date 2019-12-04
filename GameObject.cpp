@@ -11,6 +11,7 @@
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "SDL.h"
+#include "debugdraw.h"
 
 GameObject::GameObject()
 {
@@ -369,66 +370,7 @@ void GameObject::ComputeAABB()
 
 void GameObject::DrawAABB() const
 {
-	//Bounding Box
-	glLineWidth(1.0f);
-	float d = 200.0f;
-	glBegin(GL_LINES);
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-
-	//0->1 
-	glVertex3f(boundingBox->CornerPoint(0).x, boundingBox->CornerPoint(0).y, boundingBox->CornerPoint(0).z);
-	glVertex3f(boundingBox->CornerPoint(1).x, boundingBox->CornerPoint(1).y, boundingBox->CornerPoint(1).z);
-
-	//1->5
-	glVertex3f(boundingBox->CornerPoint(1).x, boundingBox->CornerPoint(1).y, boundingBox->CornerPoint(1).z);
-	glVertex3f(boundingBox->CornerPoint(5).x, boundingBox->CornerPoint(5).y, boundingBox->CornerPoint(5).z);
-
-	//5-4
-	glVertex3f(boundingBox->CornerPoint(5).x, boundingBox->CornerPoint(5).y, boundingBox->CornerPoint(5).z);
-	glVertex3f(boundingBox->CornerPoint(4).x, boundingBox->CornerPoint(4).y, boundingBox->CornerPoint(4).z);
-
-	//4-0
-	glVertex3f(boundingBox->CornerPoint(0).x, boundingBox->CornerPoint(0).y, boundingBox->CornerPoint(0).z);
-	glVertex3f(boundingBox->CornerPoint(4).x, boundingBox->CornerPoint(4).y, boundingBox->CornerPoint(4).z);
-	
-	//----//
-
-	//2->3 
-	glVertex3f(boundingBox->CornerPoint(2).x, boundingBox->CornerPoint(2).y, boundingBox->CornerPoint(2).z);
-	glVertex3f(boundingBox->CornerPoint(3).x, boundingBox->CornerPoint(3).y, boundingBox->CornerPoint(3).z);
-
-	//3->7
-	glVertex3f(boundingBox->CornerPoint(3).x, boundingBox->CornerPoint(3).y, boundingBox->CornerPoint(3).z);
-	glVertex3f(boundingBox->CornerPoint(7).x, boundingBox->CornerPoint(7).y, boundingBox->CornerPoint(7).z);
-
-	//7-6
-	glVertex3f(boundingBox->CornerPoint(7).x, boundingBox->CornerPoint(7).y, boundingBox->CornerPoint(7).z);
-	glVertex3f(boundingBox->CornerPoint(6).x, boundingBox->CornerPoint(6).y, boundingBox->CornerPoint(6).z);
-
-	//6-2
-	glVertex3f(boundingBox->CornerPoint(6).x, boundingBox->CornerPoint(6).y, boundingBox->CornerPoint(6).z);
-	glVertex3f(boundingBox->CornerPoint(2).x, boundingBox->CornerPoint(2).y, boundingBox->CornerPoint(2).z);
-
-	
-	//Y lines
-	//0->2
-	glVertex3f(boundingBox->CornerPoint(0).x, boundingBox->CornerPoint(0).y, boundingBox->CornerPoint(0).z);
-	glVertex3f(boundingBox->CornerPoint(2).x, boundingBox->CornerPoint(2).y, boundingBox->CornerPoint(2).z);
-
-	//1->3
-	glVertex3f(boundingBox->CornerPoint(1).x, boundingBox->CornerPoint(1).y, boundingBox->CornerPoint(1).z);
-	glVertex3f(boundingBox->CornerPoint(3).x, boundingBox->CornerPoint(3).y, boundingBox->CornerPoint(3).z);
-
-	//5->7
-	glVertex3f(boundingBox->CornerPoint(5).x, boundingBox->CornerPoint(5).y, boundingBox->CornerPoint(5).z);
-	glVertex3f(boundingBox->CornerPoint(7).x, boundingBox->CornerPoint(7).y, boundingBox->CornerPoint(7).z);
-
-	//6->4
-	glVertex3f(boundingBox->CornerPoint(6).x, boundingBox->CornerPoint(6).y, boundingBox->CornerPoint(6).z);
-	glVertex3f(boundingBox->CornerPoint(4).x, boundingBox->CornerPoint(4).y, boundingBox->CornerPoint(4).z);
-	
-
-	glEnd();
+	dd::aabb(globalBoundingBox->minPoint, globalBoundingBox->maxPoint, float3(0, 1, 0));
 }
 
 void GameObject::DrawInspector(bool &showInspector)

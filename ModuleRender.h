@@ -44,7 +44,7 @@ public:
 
 	float4x4 model = float4x4::zero;
 
-	bool showBoundingBox = false;
+	bool showBoundingBox = true;
 
 	//Frustum Culling
 	bool frustumCullingIsActivated = false;
@@ -64,6 +64,8 @@ public:
 
 	//Quadtree variables
 	bool showQuadTree = true;
+
+	bool showGrid = true;
 
 private:
 	void* context;

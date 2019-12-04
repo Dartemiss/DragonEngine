@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleRender.h"
+#include "ModuleScene.h"
 
 
 
@@ -20,9 +21,16 @@ void GUICamera::Draw(const char * title)
 		ImGui::Text("Camera near distance: %.3f", App->camera->frustum->nearPlaneDistance);
 		ImGui::Text("Camera far distance: %.3f", App->camera->frustum->farPlaneDistance);
 
+		ImGui::Checkbox("Show Grid", &App->renderer->showGrid);
 		ImGui::Checkbox("Show Bounding Box", &App->renderer->showBoundingBox);
 		ImGui::Checkbox("Frusum Culling", &App->renderer->frustumCullingIsActivated);
 		ImGui::Checkbox("Show QuadTree", &App->renderer->showQuadTree);
+
+		if(ImGui::Button("Build QuadTree"))
+		{
+			App->scene->BuildQuadTree();
+		}
+
 		ImGui::End();
 
 	}
