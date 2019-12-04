@@ -83,6 +83,44 @@
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="ComponentTransform.h" />
+    <ClInclude Include="Dependencies\PCG\pcg_basic.h" />
+    <ClInclude Include="Dependencies\rapidjson\allocators.h" />
+    <ClInclude Include="Dependencies\rapidjson\cursorstreamwrapper.h" />
+    <ClInclude Include="Dependencies\rapidjson\document.h" />
+    <ClInclude Include="Dependencies\rapidjson\encodedstream.h" />
+    <ClInclude Include="Dependencies\rapidjson\encodings.h" />
+    <ClInclude Include="Dependencies\rapidjson\error\en.h" />
+    <ClInclude Include="Dependencies\rapidjson\error\error.h" />
+    <ClInclude Include="Dependencies\rapidjson\filereadstream.h" />
+    <ClInclude Include="Dependencies\rapidjson\filewritestream.h" />
+    <ClInclude Include="Dependencies\rapidjson\fwd.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\clzll.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\itoa.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\meta.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\pow10.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\regex.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\stack.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\strtod.h" />
+    <ClInclude Include="Dependencies\rapidjson\internal\swap.h" />
+    <ClInclude Include="Dependencies\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="Dependencies\rapidjson\memorybuffer.h" />
+    <ClInclude Include="Dependencies\rapidjson\memorystream.h" />
+    <ClInclude Include="Dependencies\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="Dependencies\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="Dependencies\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="Dependencies\rapidjson\pointer.h" />
+    <ClInclude Include="Dependencies\rapidjson\prettywriter.h" />
+    <ClInclude Include="Dependencies\rapidjson\rapidjson.h" />
+    <ClInclude Include="Dependencies\rapidjson\reader.h" />
+    <ClInclude Include="Dependencies\rapidjson\schema.h" />
+    <ClInclude Include="Dependencies\rapidjson\stream.h" />
+    <ClInclude Include="Dependencies\rapidjson\stringbuffer.h" />
+    <ClInclude Include="Dependencies\rapidjson\writer.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
@@ -174,8 +212,10 @@
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="myStream.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="uSTimer.h" />
+    <ClInclude Include="UUIDGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -183,6 +223,7 @@
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="Dependencies\PCG\pcg_basic.c" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUIAbout.cpp" />
     <ClCompile Include="GUICamera.cpp" />
@@ -241,8 +282,10 @@
     <ClCompile Include="ModuleTexture.cpp" />
     <ClCompile Include="ModuleTimeManager.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="uSTimer.cpp" />
+    <ClCompile Include="UUIDGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig" />

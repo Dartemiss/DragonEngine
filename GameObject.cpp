@@ -11,6 +11,7 @@
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "SDL.h"
+#include "UUIDGenerator.h"
 
 GameObject::GameObject()
 {
@@ -20,7 +21,7 @@ GameObject::GameObject(const char * name)
 {
 	this->name = name;
 	CreateComponent(TRANSFORM);
-
+	this->ID = UUIDGen->getUUID();
 }
 
 
