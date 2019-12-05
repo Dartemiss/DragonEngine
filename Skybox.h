@@ -14,6 +14,7 @@ public:
 	unsigned int LoadCubeMap(const std::vector<std::string> &faces);
 	void DrawSkybox() const;
 	std::string directory = "";
+
 	unsigned int cubemapTexture = 0;
 
 	unsigned int skyboxVAO = 0;

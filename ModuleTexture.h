@@ -37,7 +37,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void LoadSkybox(const char* path, const std::string &directory, int index);
+	void LoadSkybox(const char* path, const std::string &directory, int index) const;
 	void LoadTextureForModels(const char* path, const std::string &directory, Texture &texture);
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, const aiTextureType type,
 		const std::string typeName, const std::string &directory);

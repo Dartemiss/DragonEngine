@@ -58,7 +58,7 @@ bool ModuleTexture::CleanUp()
 
 
 
-void ModuleTexture::LoadSkybox(const char * path, const std::string & directory, int index)
+void ModuleTexture::LoadSkybox(const char * path, const std::string & directory, int index)const
 {
 	std::string filepath = directory;
 	filepath.append(path);
@@ -105,16 +105,16 @@ void ModuleTexture::LoadSkybox(const char * path, const std::string & directory,
 			0, GL_RGB, width, heigth, 0, GL_RGB, GL_UNSIGNED_BYTE, data
 		);
 
+		//Delete image
+		LOG("Delete image");
+		ilDeleteImages(1, &image);
+
 	}
 	else
 	{
 		LOG("Cubemap texture failed to load at path: ", filepath.c_str());
 		return;
 	}
-
-	//Delete image
-	LOG("Delete image");
-	ilDeleteImages(1, &image);
 
 	return;
 }
