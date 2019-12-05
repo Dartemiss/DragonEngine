@@ -24,7 +24,7 @@ public:
 	std::vector<Texture> textures;
 	/*  Functions  */
 	void Init();
-	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
+	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
 	~Mesh();
 	void Draw(const unsigned int program) const;
 private:

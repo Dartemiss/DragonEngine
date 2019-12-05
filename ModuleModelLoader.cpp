@@ -116,7 +116,7 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 	}
 }
 
-Mesh* ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
+Mesh* ModuleModelLoader::processMesh(const aiMesh * mesh, const aiScene * scene)
 {
 	//Filling data
 	std::vector<Vertex> vertices;
