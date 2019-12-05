@@ -8,16 +8,30 @@ using namespace rapidjson;
 SceneLoader::SceneLoader()
 {
 	document.SetObject();
+	Value gameObjects;
+	gameObjects.SetArray();
+	document.AddMember("Game Objects", gameObjects, document.GetAllocator());
+	currentObject.SetNull();
 }
 
 SceneLoader::~SceneLoader()
 {
 }
 
+void SceneLoader::ClearScene()
+{
+	document.SetObject();
+	Value gameObjects;
+	gameObjects.SetArray();
+	document.AddMember("Game Objects", gameObjects, document.GetAllocator());
+	currentObject.SetNull();
+	LOG("Cleared scene data.");
+}
+
 void SceneLoader::LoadJSON(const char * json)
 {
 	document.Parse(json);
-	LOG("Loaded scene json.");
+	LOG("Loaded scene from json.");
 }
 
 char * SceneLoader::GetJSON() const
@@ -28,32 +42,99 @@ char * SceneLoader::GetJSON() const
 	Writer<rapidjson::StringBuffer> writer(buffer);
 	document.Accept(writer);
 
-	return strdup(buffer.GetString());
+	return _strdup(buffer.GetString());
 }
 
-void SceneLoader::AddFloat(const char * name, const float f)
+void SceneLoader::StartGameObject()
+{
+	currentObject.SetObject();
+}
+
+void SceneLoader::FinishGameObject()
+{
+	document["Game Objects"].PushBack(currentObject, document.GetAllocator());
+}
+
+void SceneLoader::AddUnsignedInt(const char * name, unsigned int value)
 {
 	assert(name != nullptr);
 
 	Document::AllocatorType& allocator = document.GetAllocator();
 
-	Value floatName(name, allocator);
-	document.AddMember(floatName, f, allocator);
+	if (currentObject.IsNull())
+	{
+		LOG("Can not add float if Game Object is not specified.");
+		return;
+	}
+
+	Value intName(name, allocator);
+	currentObject.AddMember(intName, value, allocator);
 }
 
-float SceneLoader::GetFloat(const char * name, const float defaultF)
+unsigned int SceneLoader::GetUnsignedInt(const char * name, unsigned int defaultVal)
 {
 	assert(name != nullptr);
 
-	Value & currentObject = document;
+	if (currentObject.IsNull())
+		return defaultVal;
 
 	if (!currentObject.HasMember(name))
-		return defaultF;
+		return defaultVal;
+
+	Value & member = currentObject[name];
+	if (!member.IsNumber() || !member.IsUint())
+		return defaultVal;
+
+	return member.GetUint();
+}
+
+void SceneLoader::AddFloat(const char * name, float value)
+{
+	assert(name != nullptr);
+
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	if (currentObject.IsNull())
+	{
+		LOG("Can not add float if Game Object is not specified.");
+		return;
+	}
+
+	Value floatName(name, allocator);
+	currentObject.AddMember(floatName, value, allocator);
+}
+
+float SceneLoader::GetFloat(const char * name, float defaultVal)
+{
+	assert(name != nullptr);
+
+	if (currentObject.IsNull())
+		return defaultVal;
+
+	if (!currentObject.HasMember(name))
+		return defaultVal;
 
 	Value & member = currentObject[name];
 	if (!member.IsNumber() || !member.IsDouble())
-		return defaultF;
+		return defaultVal;
 
-	return member.GetDouble();
-	return defaultF;
+	return (float)member.GetDouble();
+}
+
+void SceneLoader::SetCurrentObject(unsigned int UID)
+{
+	Value & gameObjects = document["Game Objects"];
+
+	for (SizeType i = 0; i < gameObjects.Size(); i++)
+	{
+		Value & currentObject = gameObjects[i];
+		assert(currentObject.HasMember("UID"));
+
+		if (currentObject["UID"].GetUint() == UID)
+		{
+			this->currentObject = currentObject;
+			return;
+		}
+	}
+	LOG("Could not find GameObject with UID %d", UID);
 }
