@@ -63,12 +63,12 @@ void SceneLoader::AddUnsignedInt(const char * name, unsigned int value)
 
 	if (currentObject.IsNull())
 	{
-		LOG("Can not add float if Game Object is not specified.");
+		LOG("Can not add value if Game Object is not specified.");
 		return;
 	}
 
-	Value intName(name, allocator);
-	currentObject.AddMember(intName, value, allocator);
+	Value vName(name, allocator);
+	currentObject.AddMember(vName, value, allocator);
 }
 
 unsigned int SceneLoader::GetUnsignedInt(const char * name, unsigned int defaultVal)
@@ -96,12 +96,12 @@ void SceneLoader::AddFloat(const char * name, float value)
 
 	if (currentObject.IsNull())
 	{
-		LOG("Can not add float if Game Object is not specified.");
+		LOG("Can not add value if Game Object is not specified.");
 		return;
 	}
 
-	Value floatName(name, allocator);
-	currentObject.AddMember(floatName, value, allocator);
+	Value vName(name, allocator);
+	currentObject.AddMember(vName, value, allocator);
 }
 
 float SceneLoader::GetFloat(const char * name, float defaultVal)
@@ -119,6 +119,127 @@ float SceneLoader::GetFloat(const char * name, float defaultVal)
 		return defaultVal;
 
 	return (float)member.GetDouble();
+}
+
+void SceneLoader::AddString(const char * name, const char * value)
+{
+	assert(name != nullptr);
+	assert(value != nullptr);
+
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	if (currentObject.IsNull())
+	{
+		LOG("Can not add value if Game Object is not specified.");
+		return;
+	}
+
+	Value vName(name, allocator);
+	Value vVal(value, allocator);
+	currentObject.AddMember(vName, vVal, allocator);
+}
+
+const char * SceneLoader::GetString(const char * name, const char * defaultVal)
+{
+	assert(name != nullptr);
+	assert(defaultVal != nullptr);
+
+	if (currentObject.IsNull())
+		return defaultVal;
+
+	if (!currentObject.HasMember(name))
+		return defaultVal;
+
+	Value & member = currentObject[name];
+	if (!member.IsString())
+		return defaultVal;
+
+	return member.GetString();
+}
+
+void SceneLoader::AddVec3f(const char * name, const float3 & value)
+{
+	assert(name != nullptr);
+
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	if (currentObject.IsNull())
+	{
+		LOG("Can not add value if Game Object is not specified.");
+		return;
+	}
+
+	Value vName(name, allocator);
+	Value vVal;
+	vVal.SetArray();
+	vVal.PushBack(value.x, allocator);
+	vVal.PushBack(value.y, allocator);
+	vVal.PushBack(value.z, allocator);
+	currentObject.AddMember(vName, vVal, allocator);
+}
+
+float3 SceneLoader::GetVec3f(const char * name, const float3 & defaultVal)
+{
+	assert(name != nullptr);
+
+	if (currentObject.IsNull())
+		return defaultVal;
+
+	if (!currentObject.HasMember(name))
+		return defaultVal;
+
+	Value & vector = currentObject[name];
+	if (!vector.IsArray() || vector.Size() != 3)
+		return defaultVal;
+
+	for (int i = 0; i < vector.Size(); i++)
+		if (!vector[i].IsFloat())
+			return defaultVal;
+
+	return float3(vector[0].GetFloat(), vector[1].GetFloat(), vector[2].GetFloat());
+}
+
+void SceneLoader::AddVec4f(const char * name, const float4 & value)
+{
+	assert(name != nullptr);
+
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	if (currentObject.IsNull())
+	{
+		LOG("Can not add value if Game Object is not specified.");
+		return;
+	}
+
+	Value vName(name, allocator);
+	Value vVal;
+	vVal.SetArray();
+	vVal.PushBack(value.x, allocator);
+	vVal.PushBack(value.y, allocator);
+	vVal.PushBack(value.z, allocator);
+	vVal.PushBack(value.w, allocator);
+	currentObject.AddMember(vName, vVal, allocator);
+}
+
+float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
+{
+	assert(name != nullptr);
+
+	if (currentObject.IsNull())
+		return defaultVal;
+
+	if (!currentObject.HasMember(name))
+		return defaultVal;
+
+	Value & vector = currentObject[name];
+	if (!vector.IsArray() || vector.Size() != 4)
+		return defaultVal;
+
+	for (int i = 0; i < vector.Size(); i++)
+		if (!vector[i].IsFloat())
+			return defaultVal;
+
+	return float4(vector[0].GetFloat(), vector[1].GetFloat(), vector[2].GetFloat(), vector[3].GetFloat());
 }
 
 void SceneLoader::SetCurrentObject(unsigned int UID)
