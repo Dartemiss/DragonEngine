@@ -75,7 +75,7 @@ private:
 	std::string computeDirectory(const std::string &path) const;
 	std::string ComputeName(const std::string &path) const;
 
-	void computeModelBoundingBox();
+
 
 
 
