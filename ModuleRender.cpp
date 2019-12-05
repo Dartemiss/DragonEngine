@@ -11,6 +11,7 @@
 #include "ComponentMesh.h"
 #include "GameObject.h"
 #include "ComponentCamera.h"
+#include "Skybox.h"
 #include "SDL.h"
 #include "glew.h"
 #include "imgui/imgui.h"
@@ -19,6 +20,7 @@
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
+
 
 
 
@@ -142,6 +144,19 @@ bool ModuleRender::Init()
 			gameCamera = (ComponentCamera*)comp;
 		}
 	}
+
+	//Skybox
+	std::vector<std::string> faces
+	{
+		    "right.jpg",
+			"left.jpg",
+			"top.jpg",
+			"bottom.jpg",
+			"front.jpg",
+			"back.jpg"
+	};
+	skybox = new Skybox();
+	cubemapTexture = skybox->LoadCubeMap(faces);
 
 
 	return true;
@@ -312,7 +327,7 @@ void ModuleRender::DrawGrid()
 	glUseProgram(0);
 }
 
-void ModuleRender::DrawAllGameObjects()
+void ModuleRender::DrawAllGameObjects() const
 {
 	unsigned int progModel = App->program->defaultProg;
 
@@ -364,7 +379,7 @@ void ModuleRender::DrawAllGameObjects()
 	glUseProgram(0);
 }
 
-void ModuleRender::DrawGame()
+void ModuleRender::DrawGame() const
 {
 	unsigned int progModel = App->program->defaultProg;
 	glUseProgram(progModel);
@@ -387,6 +402,26 @@ void ModuleRender::DrawGame()
 	}
 
 	glUseProgram(0);
+}
+
+void ModuleRender::DrawSkybox() const
+{
+	glDepthMask(GL_FALSE);
+	unsigned int skyboxProg = App->program->skyboxProg;
+	glUseProgram(skyboxProg);
+	// ... set view and projection matrix
+	//float4x4 view = float4x4(float3x3(App->camera->view));
+	glUniformMatrix4fv(glGetUniformLocation(skyboxProg,
+		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(skyboxProg,
+		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
+
+	glBindVertexArray(skyboxVAO);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glUseProgram(0);
+	glDepthMask(GL_TRUE);
 }
 
 
@@ -499,7 +534,7 @@ void ModuleRender::GenerateTexture(int width, int height)
 	glViewport(0, 0, width, height);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	DrawSkybox();
 	App->scene->mainCamera->DrawCamera();
 	DrawGrid();
 	DrawAllGameObjects();

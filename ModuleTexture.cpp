@@ -56,6 +56,55 @@ bool ModuleTexture::CleanUp()
 	return true;
 }
 
+
+
+unsigned char * ModuleTexture::LoadSkybox(const char * path, const std::string & directory, int width, int heigth)
+{
+	std::string filepath = directory;
+	filepath.append(path);
+
+	ILuint image;
+	ilGenImages(1, &image);
+	ilBindImage(image);
+
+	bool isLoaded1 = ilLoadImage(filepath.c_str());
+
+	if(!isLoaded)
+	{
+		LOG("ERROR: Cannot load image.");
+		return nullptr;
+	}
+	
+	//Make sure image is in RGB or devil will return an empty string
+	bool converted = ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+	if (!converted)
+	{
+		ILenum error = ilGetError();
+		LOG("Error converting image to rgb: %s - %s", std::to_string(error), iluErrorString(error));
+		return nullptr;
+	}
+
+
+	ILinfo ImageInfo;
+	iluGetImageInfo(&ImageInfo);
+	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+	{
+		LOG("Flipping Image Origin");
+		iluFlipImage();
+	}
+
+	ILubyte* data = ilGetData();
+
+	width = ilGetInteger(IL_IMAGE_WIDTH);
+	heigth = ilGetInteger(IL_IMAGE_HEIGHT);
+
+	//Delete image
+	LOG("Delete image");
+	iluDeleteImage(image);
+
+	return data;
+}
+
 void ModuleTexture::LoadTextureForModels(const char * path, const std::string &directory, Texture &texture)
 {
 	std::string filepath = directory;
