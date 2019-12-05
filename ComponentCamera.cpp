@@ -41,7 +41,9 @@ ComponentCamera::~ComponentCamera()
 
 void ComponentCamera::Update()
 {
-	frustum->pos = myGameObject->myTransform->position;
+	float3x3 quatAux = float3x3::zero;
+	float3 scaleAux = float3::zero;
+	myGameObject->myTransform->globalModelMatrix.Decompose(frustum->pos,quatAux, scaleAux);
 	view = frustum->ViewMatrix();
 
 	return;
