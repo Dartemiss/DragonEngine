@@ -92,9 +92,7 @@ private:
 	
 	//Skybox
 	Skybox* skybox = nullptr;
-	unsigned int cubemapTexture = 0;
 
-	unsigned int skyboxVAO = 0;
 
 
 };
