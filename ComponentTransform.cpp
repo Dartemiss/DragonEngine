@@ -43,4 +43,11 @@ void ComponentTransform::SetLocalMatrix(float4x4 &newParentGlobalMatrix)
 	QuatToEuler();
 }
 
+void ComponentTransform::TranslateTo(const float3 & newPos)
+{
+	position = newPos;
+}
+
+
+
 

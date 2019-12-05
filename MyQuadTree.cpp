@@ -102,22 +102,22 @@ void MyQuadTree::Subdivide()
 
 bool MyQuadTree::IsWithinQuad(AABB* go) const
 {
-	if(limits.minPoint.x > go->minPoint.x)
+	if(limits.minPoint.x > go->maxPoint.x)
 	{
 		LOG("GameObject is on the left outside of quadtree.");
 		return false;
 	}
-	else if(limits.minPoint.z > go->minPoint.z)
+	else if(limits.minPoint.z > go->maxPoint.z)
 	{
 		LOG("GameObject is on the top outside of quadtree.");
 		return false;
 	}
-	else if(limits.maxPoint.x < go->maxPoint.x)
+	else if(limits.maxPoint.x < go->minPoint.x)
 	{
 		LOG("GameObject is on the right outside of quadtree.");
 		return false;
 	}
-	else if(limits.maxPoint.z < go->maxPoint.z)
+	else if(limits.maxPoint.z < go->minPoint.z)
 	{
 		LOG("GameObject is on the bottom outside of quadtree.");
 		return false;

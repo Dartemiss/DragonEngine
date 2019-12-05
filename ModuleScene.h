@@ -62,6 +62,9 @@ public:
 
 	void BuildQuadTree();
 
+	void CreateCubesScript();
+
+
 private:
 	//Root
 	GameObject* root = nullptr;

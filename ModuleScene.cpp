@@ -8,6 +8,7 @@
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "include/Math/float4.h"
+#include <random>
 
 
 ModuleScene::ModuleScene()
@@ -158,6 +159,8 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 
 	if(quadTreeInitialized)
 		AddToQuadtree(newGameObject);
+
+	return;
 }
 
 void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
@@ -243,6 +246,8 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
 	//Deleting model loader information
 	App->modelLoader->emptyScene();
+
+	return;
 }
 
 void ModuleScene::RemoveGameObject(GameObject * go)
@@ -343,5 +348,25 @@ void ModuleScene::BuildQuadTree()
 	}
 
 	quadTreeInitialized = true;
+}
+
+void ModuleScene::CreateCubesScript()
+{
+	for(int i = 0; i < 50; ++i)
+	{
+		CreateGameObjectShape(root, CUBE);
+	}
+
+	for(auto go : allGameObjects)
+	{
+		if(go != root && go != mainCamera)
+		{
+			int max = 40;
+			int min = -40;
+			float3 newPos = float3(std::rand() % (max - min + 1) + min, 0, rand() % (max - min + 1) + min);
+			go->myTransform->TranslateTo(newPos);
+		}
+	}
+	
 }
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include "include/Geometry/AABB.h"
 
-const int BUCKET_CAPACITY = 2;
+const int BUCKET_CAPACITY = 1;
 
 class GameObject;
 

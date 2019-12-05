@@ -31,6 +31,11 @@ void GUICamera::Draw(const char * title)
 			App->scene->BuildQuadTree();
 		}
 
+		if(ImGui::Button("Generate Cubes"))
+		{
+			App->scene->CreateCubesScript();
+		}
+
 		ImGui::End();
 
 	}
