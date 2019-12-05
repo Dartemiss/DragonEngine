@@ -101,6 +101,8 @@ bool ModuleRender::Init()
 	//Debugging
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 
+	App->window->glcontext = SDL_GL_CreateContext(App->window->window);
+
 	GLenum err = glewInit();
 	// … check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));

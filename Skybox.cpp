@@ -8,8 +8,8 @@
 
 Skybox::Skybox()
 {
-	directory = "../Textures/Skybox/DarkSkies/";
-	/*
+	directory = "../Textures/Skybox/";
+	
 	std::vector<std::string> faces
 	{
 			"right.jpg",
@@ -19,7 +19,7 @@ Skybox::Skybox()
 			"front.jpg",
 			"back.jpg"
 	};
-	*/
+	/*
 	std::vector<std::string> faces
 	{
 			"darkskies_rt.tga",
@@ -30,10 +30,11 @@ Skybox::Skybox()
 			"darkskies_bk.tga"
 
 	};
-
+	*/
 	//Load default Skybox
 	cubemapTexture = LoadCubeMap(faces);
 
+	
 	float skyboxVertices[] = {
 		// positions          
 		-10.0f,  10.0f, -10.0f,
@@ -78,6 +79,7 @@ Skybox::Skybox()
 		-10.0f, -10.0f,  10.0f,
 		 10.0f, -10.0f,  10.0f
 	};
+	
 
 
 
@@ -126,7 +128,7 @@ void Skybox::DrawSkybox() const
 
 	// ... set view and projection matrix
 	glUniformMatrix4fv(glGetUniformLocation(skyboxProg,
-		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
+		"projection"), 1, GL_TRUE, &App->camera->proj[0][0]);
 
 	float4x4 view = App->camera->view;
 	view.SetRow(3, float4::zero);
