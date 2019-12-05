@@ -30,7 +30,7 @@ bool ModuleScene::Init()
 
 	allGameObjects.push_back(mainCamera);
 
-	quadtree = new MyQuadTree(AABB(float3(-40,0,-40), float3(40,0,40)));
+	quadtree = new MyQuadTree(AABB(float3(-40,0,-40), float3(40,0,40)),1);
 
 	return true;
 }

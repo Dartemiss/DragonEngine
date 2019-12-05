@@ -3,11 +3,11 @@
 #include "debugdraw.h"
 
 
-MyQuadTree::MyQuadTree(AABB limits)
+MyQuadTree::MyQuadTree(AABB limits, int level)
 {
 	this->limits = limits;
 	maxHeight = 5;
-	levelOfDepth = 1;
+	levelOfDepth = level;
 
 }
 
@@ -55,7 +55,7 @@ bool MyQuadTree::Insert(GameObject* go)
 	}
 
 	//If there is space in this quad tree and if doesn't have subdivisions, add the object here
-	if(gameObjects.size() < TREE_CAPACITY && topLeft == nullptr)
+	if(gameObjects.size() < BUCKET_CAPACITY && topLeft == nullptr)
 	{
 		gameObjects.push_back(go);
 		LOG("Game Object added correctly")
@@ -82,10 +82,10 @@ void MyQuadTree::Subdivide()
 {
 	float3 center = limits.CenterPoint();
 	//Z axis is pointing to negative (top)
-	topLeft = new MyQuadTree(AABB(limits.minPoint, center));
-	topRight = new MyQuadTree(AABB(float3(center.x, 0, limits.minPoint.z), float3(limits.maxPoint.x, 0, center.z)));
-	bottomLeft = new MyQuadTree(AABB(float3(limits.minPoint.x, 0, center.z), float3(center.x,0,limits.maxPoint.z)));
-	bottomRight = new MyQuadTree(AABB(center, limits.maxPoint));
+	topLeft = new MyQuadTree(AABB(limits.minPoint, center), levelOfDepth + 1);
+	topRight = new MyQuadTree(AABB(float3(center.x, 0, limits.minPoint.z), float3(limits.maxPoint.x, 0, center.z)), levelOfDepth + 1);
+	bottomLeft = new MyQuadTree(AABB(float3(limits.minPoint.x, 0, center.z), float3(center.x,0,limits.maxPoint.z)), levelOfDepth + 1);
+	bottomRight = new MyQuadTree(AABB(center, limits.maxPoint), levelOfDepth + 1);
 
 	for(auto go : gameObjects)
 	{

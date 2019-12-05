@@ -5,7 +5,7 @@
 #include <vector>
 #include "include/Geometry/AABB.h"
 
-const int TREE_CAPACITY = 4;
+const int BUCKET_CAPACITY = 2;
 
 class GameObject;
 
@@ -24,7 +24,7 @@ struct Node
 class MyQuadTree
 {
 public:
-	MyQuadTree(AABB limits);
+	MyQuadTree(AABB limits, int level);
 	~MyQuadTree();
 
 	void Clear();
@@ -44,7 +44,6 @@ public:
 	std::vector<GameObject*> gameObjects;
 	
 	std::vector<MyQuadTree*> nodes;
-	int bucketOLimit = 2;
 	int levelOfDepth = 0;
 	int maxHeight = 0;
 	
