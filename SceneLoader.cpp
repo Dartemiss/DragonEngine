@@ -2,6 +2,7 @@
 #include "Globals.h"
 
 #include "Dependencies/rapidjson/prettywriter.h"
+#include <fstream>
 
 using namespace rapidjson;
 
@@ -258,4 +259,40 @@ void SceneLoader::SetCurrentObject(unsigned int UID)
 		}
 	}
 	LOG("Could not find GameObject with UID %d", UID);
+}
+
+void SceneLoader::LoadJSONFromFile(const char * filename)
+{
+	char* json = nullptr;
+	FILE* file = nullptr;
+	fopen_s(&file, filename, "rt");
+	if (!file)
+	{
+		LOG("Error loading scene. File %s does not exist.", filename);
+		return;
+	}
+
+	fseek(file, 0, SEEK_END);
+	int size = ftell(file);
+	rewind(file);
+	json = (char*)malloc(size + 1);
+	fread(json, 1, size, file);
+	json[size] = 0;
+	fclose(file);
+
+	LoadJSON(json);
+}
+
+void SceneLoader::SaveJSONToFile(const char * filename)
+{
+	char* json = GetJSON();
+	FILE* file = nullptr;
+	fopen_s(&file, filename, "wt");
+	if (!file)
+	{
+		LOG("Error saving scene. Can not create %s file.", filename);
+		return;
+	}
+	fwrite(json, sizeof(char), strlen(json), file);
+	fclose(file);
 }

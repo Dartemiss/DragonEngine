@@ -15,9 +15,11 @@ public:
 	void LoadJSON(const char * json);
 	char * GetJSON() const;
 
+	//Call each time a Game Object is processed
 	void StartGameObject();
 	void FinishGameObject();
 
+	//Add and Get functions for each type. Requires call to StartGameObject before use.
 	void AddUnsignedInt(const char * name, unsigned int value);
 	unsigned int GetUnsignedInt(const char * name, unsigned int defaultVal);
 	void AddFloat(const char * name, float value);
@@ -30,14 +32,21 @@ public:
 	void AddVec4f(const char * name, const float4 & value);
 	float4 GetVec4f(const char * name, const float4 & defaultVal);
 
+	//Prepare to read Game Object with requested UID.
 	void SetCurrentObject(unsigned int UID);
 
 	//TODO: Save current scene temporal
 	//TODO: Load temporal scene
 
+	//TODO move to private?
+	void LoadJSONFromFile(const char * filename);
+	void SaveJSONToFile(const char * filename);
+
 private:
 	rapidjson::Document document;
 	rapidjson::Value currentObject;
+
+	
 };
 
 #endif __SceneLoader_H__
