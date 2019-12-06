@@ -553,7 +553,10 @@ void ModuleRender::DrawDebug() const
 {
 	if(showQuadTree)
 	{
-		App->scene->quadtree->Draw();
+		//Recursive
+		//App->scene->quadtree->Draw();
+		//Iterative
+		App->scene->quadtreeIterative->DrawIterative();
 	}
 
 	if(showGrid)

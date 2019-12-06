@@ -54,6 +54,7 @@ public:
 
 	//QuadTree
 	MyQuadTree* quadtree = nullptr;
+	MyQuadTree* quadtreeIterative = nullptr;
 
 	void AddToQuadtree(GameObject* go) const;
 	void RemoveFromQuadTree(GameObject* go) const;

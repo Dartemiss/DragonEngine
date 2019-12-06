@@ -32,6 +32,7 @@ bool ModuleScene::Init()
 	allGameObjects.push_back(mainCamera);
 
 	quadtree = new MyQuadTree(AABB(float3(-40,0,-40), float3(40,0,40)),1);
+	quadtreeIterative = new MyQuadTree(new AABB(float3(-40, 0, -40), float3(40, 0, 40)));
 
 	return true;
 }
@@ -336,6 +337,8 @@ void ModuleScene::RemoveFromQuadTree(GameObject* go) const
 
 void ModuleScene::BuildQuadTree()
 {
+	//Recursive
+	/*
 	if (quadTreeInitialized)
 		quadtree->Clear();
 
@@ -348,11 +351,26 @@ void ModuleScene::BuildQuadTree()
 	}
 
 	quadTreeInitialized = true;
+	*/
+
+	//Iterative
+	if (quadTreeInitialized)
+		quadtreeIterative->ClearIterative();
+
+	for (auto go : allGameObjects)
+	{
+		if (go->globalBoundingBox != nullptr)
+		{
+			quadtreeIterative->InsertIterative(go);
+		}
+	}
+
+	quadTreeInitialized = true;
 }
 
 void ModuleScene::CreateCubesScript()
 {
-	for(int i = 0; i < 50; ++i)
+	for(int i = 0; i < 5; ++i)
 	{
 		CreateGameObjectShape(root, CUBE);
 	}
