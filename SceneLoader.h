@@ -35,18 +35,15 @@ public:
 	//Prepare to read Game Object with requested UID.
 	void SetCurrentObject(unsigned int UID);
 
-	//TODO: Save current scene temporal
-	//TODO: Load temporal scene
-
-	//TODO move to private?
-	void LoadJSONFromFile(const char * filename);
-	void SaveJSONToFile(const char * filename);
+	void SaveSceneForPlay();
+	void LoadSceneForStop();
 
 private:
 	rapidjson::Document document;
 	rapidjson::Value currentObject;
 
-	
+	void SaveJSONToFile(const char * filename);
+	void LoadJSONFromFile(const char * filename);
 };
 
 #endif __SceneLoader_H__

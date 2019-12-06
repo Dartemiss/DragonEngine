@@ -8,10 +8,14 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "include/Math/float4.h"
 
+#include "SceneLoader.h"
+
+using namespace std;
 
 ModuleScene::ModuleScene()
 {
 	root = new GameObject("World");
+	root->UID = 1;
 	root->isRoot = true;
 }
 
@@ -299,5 +303,13 @@ void ModuleScene::DrawGUI()
 		selectedByHierarchy->DrawInspector(showInspector);
 	}
 
+}
+
+void ModuleScene::SaveScene(SceneLoader & loader)
+{
+	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
+		(*it)->OnSave(loader);
+
+	loader.SaveSceneForPlay();
 }
 

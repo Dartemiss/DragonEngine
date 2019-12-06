@@ -2,7 +2,6 @@
 #include "Globals.h"
 
 #include "Dependencies/PCG/pcg_basic.h"
-#include <ctime>
 
 UUIDGenerator::UUIDGenerator()
 {
@@ -16,6 +15,8 @@ UUIDGenerator::~UUIDGenerator()
 unsigned int UUIDGenerator::getUUID()
 {
 	unsigned int UUID = pcg32_random();
+	while (UUID == 0)
+		UUID = pcg32_random();
 	LOG("Generated UUID: %d.", UUID);
 	return UUID;
 }

@@ -193,7 +193,7 @@ float3 SceneLoader::GetVec3f(const char * name, const float3 & defaultVal)
 	if (!vector.IsArray() || vector.Size() != 3)
 		return defaultVal;
 
-	for (int i = 0; i < vector.Size(); i++)
+	for (int i = 0; i < vector.Size(); ++i)
 		if (!vector[i].IsFloat())
 			return defaultVal;
 
@@ -236,7 +236,7 @@ float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
 	if (!vector.IsArray() || vector.Size() != 4)
 		return defaultVal;
 
-	for (int i = 0; i < vector.Size(); i++)
+	for (int i = 0; i < vector.Size(); ++i)
 		if (!vector[i].IsFloat())
 			return defaultVal;
 
@@ -247,7 +247,7 @@ void SceneLoader::SetCurrentObject(unsigned int UID)
 {
 	Value & gameObjects = document["Game Objects"];
 
-	for (SizeType i = 0; i < gameObjects.Size(); i++)
+	for (SizeType i = 0; i < gameObjects.Size(); ++i)
 	{
 		Value & currentObject = gameObjects[i];
 		assert(currentObject.HasMember("UID"));
@@ -259,6 +259,32 @@ void SceneLoader::SetCurrentObject(unsigned int UID)
 		}
 	}
 	LOG("Could not find GameObject with UID %d", UID);
+}
+
+void SceneLoader::SaveSceneForPlay()
+{
+	SaveJSONToFile("scene_temporal.json");
+}
+
+void SceneLoader::LoadSceneForStop()
+{
+	//TODO load gameobjects and components
+
+	LoadJSONFromFile("scene_temporal.json");
+}
+
+void SceneLoader::SaveJSONToFile(const char * filename)
+{
+	char* json = GetJSON();
+	FILE* file = nullptr;
+	fopen_s(&file, filename, "wt");
+	if (!file)
+	{
+		LOG("Error saving scene. Can not create %s file.", filename);
+		return;
+	}
+	fwrite(json, sizeof(char), strlen(json), file);
+	fclose(file);
 }
 
 void SceneLoader::LoadJSONFromFile(const char * filename)
@@ -281,18 +307,4 @@ void SceneLoader::LoadJSONFromFile(const char * filename)
 	fclose(file);
 
 	LoadJSON(json);
-}
-
-void SceneLoader::SaveJSONToFile(const char * filename)
-{
-	char* json = GetJSON();
-	FILE* file = nullptr;
-	fopen_s(&file, filename, "wt");
-	if (!file)
-	{
-		LOG("Error saving scene. Can not create %s file.", filename);
-		return;
-	}
-	fwrite(json, sizeof(char), strlen(json), file);
-	fclose(file);
 }

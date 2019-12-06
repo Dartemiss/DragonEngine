@@ -12,6 +12,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "SDL.h"
 #include "UUIDGenerator.h"
+#include "SceneLoader.h"
 
 GameObject::GameObject()
 {
@@ -21,7 +22,7 @@ GameObject::GameObject(const char * name)
 {
 	this->name = name;
 	CreateComponent(TRANSFORM);
-	this->ID = UUIDGen->getUUID();
+	this->UID = UUIDGen->getUUID();
 }
 
 
@@ -464,6 +465,45 @@ void GameObject::DrawInspector(bool &showInspector)
 	ImGui::End();
 	//Change EulerRotation to Quat
 	myTransform->EulerToQuat();
+}
+
+void GameObject::OnSave(SceneLoader & loader)
+{
+	loader.StartGameObject();
+	loader.AddUnsignedInt("UID", UID);
+	if (parent != nullptr)
+		loader.AddUnsignedInt("parentUID", parent->UID);
+	else
+		loader.AddUnsignedInt("parentUID", 0); 
+	loader.AddString("Name", name.c_str());
+
+	loader.AddVec3f("Translation", myTransform->position);
+	loader.AddVec3f("Scale", myTransform->scale);
+	Quat rotation = myTransform->rotation;
+	loader.AddVec4f("Rotation", float4(rotation.x, rotation.y, rotation.z, rotation.w));
+
+	//TODO save components other than Transform
+
+	loader.FinishGameObject();
+}
+
+void GameObject::OnLoad(SceneLoader & loader)
+{
+	UID = loader.GetUnsignedInt("UID", 0);
+	assert(UID != 0);
+
+	name = loader.GetString("Name", "GameObject");
+
+	CreateComponent(TRANSFORM);
+	myTransform->position = loader.GetVec3f("Translation", float3(0, 0, 0));
+	myTransform->scale = loader.GetVec3f("Scale", float3(1, 1, 1));
+	float4 rotation = loader.GetVec4f("Rotation", float4(0, 0, 0, 1));
+	myTransform->rotation = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
+
+	//TODO load components other than Transform
+
+	unsigned int parentUID = loader.GetUnsignedInt("parentUID", 0);
+	//TODO link parents and child Game Objects
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)
