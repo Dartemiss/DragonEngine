@@ -87,7 +87,7 @@ void ModuleTexture::LoadSkybox(const char * path, const std::string & directory,
 
 	ILinfo ImageInfo;
 	iluGetImageInfo(&ImageInfo);
-	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+	if (!ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
 	{
 		LOG("Flipping Image Origin");
 		iluFlipImage();

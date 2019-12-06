@@ -47,6 +47,7 @@ public:
 	float4x4 model = float4x4::zero;
 
 	bool showBoundingBox = false;
+	bool showSkybox = false;
 
 	//Frustum Culling
 	bool frustumCullingIsActivated = false;
@@ -58,7 +59,6 @@ public:
 	void DrawGrid();
 	void DrawAllGameObjects() const;
 	void DrawGame()const;
-	void DrawSkybox() const;
 	
 	//If scene create buffer for scene else create buffer for game window
 	void CreateFrameBuffer(int width, int height, bool scene = true);
@@ -92,7 +92,7 @@ private:
 	
 	//Skybox
 	Skybox* skybox = nullptr;
-
+	
 
 
 };

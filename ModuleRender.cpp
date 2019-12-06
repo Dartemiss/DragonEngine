@@ -515,7 +515,7 @@ void ModuleRender::GenerateTexture(int width, int height)
 	DrawGrid();
 	DrawAllGameObjects();
 	
-	if(skybox != nullptr)
+	if(skybox != nullptr && showSkybox)
 		skybox->DrawSkybox();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
