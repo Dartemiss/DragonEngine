@@ -20,6 +20,8 @@ void GUICamera::Draw(const char * title)
 		ImGui::Text("Camera Position: (%.3f,%.3f,%.3f)", App->camera->frustum->pos.x, App->camera->frustum->pos.y, App->camera->frustum->pos.z);
 		ImGui::Text("Camera near distance: %.3f", App->camera->frustum->nearPlaneDistance);
 		ImGui::Text("Camera far distance: %.3f", App->camera->frustum->farPlaneDistance);
+		ImGui::Text("Time for building recursive quadtree: %f", App->scene->timeRecursive);
+		ImGui::Text("Time for building iterative quadtree: %f", App->scene->timeIterative);
 
 		ImGui::Checkbox("Show Grid", &App->renderer->showGrid);
 		ImGui::Checkbox("Show Bounding Box", &App->renderer->showBoundingBox);

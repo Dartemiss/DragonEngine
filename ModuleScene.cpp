@@ -1,6 +1,7 @@
 #include "ModuleScene.h"
 #include "Application.h"
 #include "ModuleModelLoader.h"
+#include "Timer.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "MyQuadTree.h"
@@ -338,7 +339,7 @@ void ModuleScene::RemoveFromQuadTree(GameObject* go) const
 void ModuleScene::BuildQuadTree()
 {
 	//Recursive
-	/*
+	recursive.StartTimer();
 	if (quadTreeInitialized)
 		quadtree->Clear();
 
@@ -351,7 +352,9 @@ void ModuleScene::BuildQuadTree()
 	}
 
 	quadTreeInitialized = true;
-	*/
+	timeRecursive = recursive.StopTimer();
+
+	iterative.StartTimer();
 
 	//Iterative
 	if (quadTreeInitialized)
@@ -366,6 +369,8 @@ void ModuleScene::BuildQuadTree()
 	}
 
 	quadTreeInitialized = true;
+
+	timeIterative = iterative.StopTimer();
 }
 
 void ModuleScene::CreateCubesScript()

@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "Module.h"
 #include "GameObject.h"
+#include "Timer.h"
 
 class MyQuadTree;
 
@@ -64,6 +65,14 @@ public:
 	void BuildQuadTree();
 
 	void CreateCubesScript();
+
+
+	//Timers
+	Timer iterative = Timer();
+	Timer recursive = Timer();
+
+	float timeRecursive = 0.0f;
+	float timeIterative = 0.0f;
 
 
 private:
