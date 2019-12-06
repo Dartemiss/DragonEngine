@@ -370,7 +370,7 @@ void ModuleScene::BuildQuadTree()
 
 void ModuleScene::CreateCubesScript()
 {
-	for(int i = 0; i < 5; ++i)
+	for(int i = 0; i < 50; ++i)
 	{
 		CreateGameObjectShape(root, CUBE);
 	}

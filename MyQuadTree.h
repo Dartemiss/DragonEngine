@@ -49,6 +49,8 @@ public:
 	bool IsWithinQuadrant(const AABB* quad, const AABB* go) const;
 	void SubdivideIterative(Node* node, GameObject* go);
 	void DrawIterative() const;
+	bool GameObjectIsRepeated(const std::vector<GameObject*> &gameObjects, GameObject* go);
+
 	//void CollectIntersect(std::vector<GameObject*>&, PRIMITIVE);
 
 	//Limits of the quadtree

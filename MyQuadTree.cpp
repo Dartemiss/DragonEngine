@@ -200,11 +200,12 @@ bool MyQuadTree::InsertIterative(GameObject * go)
 
 		if(node->isLeaf && IsWithinQuadrant(node->quadrant, boundingBox))
 		{
+			
 			if(node->gameObjects.size() < BUCKET_CAPACITY)
 			{
 				node->gameObjects.push_back(go);
 			}
-			else
+			else if (!GameObjectIsRepeated(node->gameObjects, go))
 			{
 				SubdivideIterative(node, go);
 				break;
@@ -298,21 +299,20 @@ void MyQuadTree::SubdivideIterative(Node* node, GameObject* go)
 	node->children[3]->quadrant = new AABB(center, node->quadrant->maxPoint);
 	node->children[3]->level = node->level + 1;
 
+	nodes.push_back(node->children[0]);
+	nodes.push_back(node->children[1]);
+	nodes.push_back(node->children[2]);
+	nodes.push_back(node->children[3]);
 	
 	for(auto gameObject: node->gameObjects)
 	{
-		InsertAfterSubdividing(node->children, gameObject);
+		InsertIterative(gameObject);
 	}
 
 	node->gameObjects.clear();
 
 	//Try to insert again
-	InsertAfterSubdividing(node->children,go);
-
-	nodes.push_back(node->children[0]);
-	nodes.push_back(node->children[1]);
-	nodes.push_back(node->children[2]);
-	nodes.push_back(node->children[3]);
+	InsertIterative(go);
 
 	return;
 }
@@ -325,5 +325,16 @@ void MyQuadTree::DrawIterative() const
 	}
 
 	return;
+}
+
+bool MyQuadTree::GameObjectIsRepeated(const std::vector<GameObject*>& gameObjects, GameObject * go)
+{
+	for(auto game : gameObjects)
+	{
+		if (game == go)
+			return true;
+	}
+
+	return false;
 }
 
