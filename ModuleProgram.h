@@ -33,9 +33,10 @@ public:
 	char* readFile(char* filename) const;
 
 	//Programs
-	unsigned int gridProg;
-	unsigned int defaultProg;
-	unsigned int uniformsBuffer;
+	unsigned int gridProg = 0;
+	unsigned int defaultProg = 0;
+	unsigned int skyboxProg = 0;
+	unsigned int uniformsBuffer = 0;
 
 };
 

@@ -12,6 +12,8 @@ struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Rect;
 
+class Skybox;
+
 class ModuleRender : public Module
 {
 public:
@@ -45,6 +47,7 @@ public:
 	float4x4 model = float4x4::zero;
 
 	bool showBoundingBox = false;
+	bool showSkybox = false;
 
 	//Frustum Culling
 	bool frustumCullingIsActivated = false;
@@ -54,8 +57,8 @@ public:
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
 	void DrawGrid();
-	void DrawAllGameObjects();
-	void DrawGame();
+	void DrawAllGameObjects() const;
+	void DrawGame()const;
 	
 	//If scene create buffer for scene else create buffer for game window
 	void CreateFrameBuffer(int width, int height, bool scene = true);
@@ -86,7 +89,10 @@ private:
 	unsigned int gameTexture = 0;
 	
 	ComponentCamera* gameCamera = nullptr;
-
+	
+	//Skybox
+	Skybox* skybox = nullptr;
+	
 
 
 };
