@@ -307,6 +307,8 @@ void ModuleScene::DrawGUI()
 
 void ModuleScene::SaveScene(SceneLoader & loader)
 {
+	root->OnSave(loader);
+
 	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
 		(*it)->OnSave(loader);
 
