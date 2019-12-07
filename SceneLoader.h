@@ -15,8 +15,9 @@ public:
 	void LoadJSON(const char * json);
 	char * GetJSON() const;
 
-	//Call each time a Game Object is processed
+	//Call each time a Game Object is processed in this order
 	void StartGameObject();
+	void CreateComponentArray();
 	void FinishGameObject();
 
 	//Add and Get functions for each type. Requires call to StartGameObject before use.
@@ -33,7 +34,7 @@ public:
 	float4 GetVec4f(const char * name, const float4 & defaultVal);
 
 	//Prepare to read Game Object with requested UID.
-	void SetCurrentObject(unsigned int UID);
+	bool SetCurrentObject(unsigned int parentUID);
 
 	void SaveSceneForPlay();
 	void LoadSceneForStop();

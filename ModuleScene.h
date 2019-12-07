@@ -53,6 +53,7 @@ public:
 	GameObject* mainCamera = nullptr;
 
 	void SaveScene(SceneLoader & loader);
+	void LoadScene(SceneLoader & loader);
 
 private:
 	//Root

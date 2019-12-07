@@ -9,6 +9,7 @@
 #include "include/Math/float4.h"
 
 #include "SceneLoader.h"
+#include <queue>
 
 using namespace std;
 
@@ -307,11 +308,56 @@ void ModuleScene::DrawGUI()
 
 void ModuleScene::SaveScene(SceneLoader & loader)
 {
-	root->OnSave(loader);
+	loader.ClearScene();
 
+	root->OnSave(loader);
 	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
 		(*it)->OnSave(loader);
 
 	loader.SaveSceneForPlay();
+}
+
+void ModuleScene::LoadScene(SceneLoader & loader)
+{
+	loader.ClearScene();
+	loader.LoadSceneForStop();
+
+	//Check root node exists and clear scene if it does
+	if (!loader.SetCurrentObject(0))
+	{
+		LOG("Root node does not exist! Cant load Scene.");
+		return;
+	}
+	CleanUp();
+
+	//Create root
+	root = new GameObject();
+	root->OnLoad(loader);
+
+	//Start queue for loading the rest of the scene
+	queue<GameObject*> parents;
+	parents.push(root);
+	GameObject * parent;
+	GameObject * currentGameObject;
+
+	while (parents.size() > 0)
+	{
+		//Search for gameobject with same parent uid
+		parent = parents.front();
+		if (!loader.SetCurrentObject(parent->UID))
+		{
+			//If no gameobject is found, go to next parent
+			parents.pop();
+			continue;
+		}
+		
+		//Create gameobject and link parent
+		currentGameObject = new GameObject();
+		currentGameObject->OnLoad(loader);
+		currentGameObject->SetParent(parent);
+
+		//Add gameobject to queue
+		parents.push(currentGameObject);
+	}
 }
 

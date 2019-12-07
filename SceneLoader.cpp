@@ -51,6 +51,13 @@ void SceneLoader::StartGameObject()
 	currentObject.SetObject();
 }
 
+void SceneLoader::CreateComponentArray()
+{
+	Value components;
+	components.SetArray();
+	currentObject.AddMember("Components", components, document.GetAllocator());
+}
+
 void SceneLoader::FinishGameObject()
 {
 	document["Game Objects"].PushBack(currentObject, document.GetAllocator());
@@ -243,22 +250,24 @@ float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
 	return float4(vector[0].GetFloat(), vector[1].GetFloat(), vector[2].GetFloat(), vector[3].GetFloat());
 }
 
-void SceneLoader::SetCurrentObject(unsigned int UID)
+bool SceneLoader::SetCurrentObject(unsigned int parentUID)
 {
 	Value & gameObjects = document["Game Objects"];
+	assert(gameObjects.IsArray());
 
 	for (SizeType i = 0; i < gameObjects.Size(); ++i)
 	{
 		Value & currentObject = gameObjects[i];
-		assert(currentObject.HasMember("UID"));
+		assert(currentObject.HasMember("parentUID"));
 
-		if (currentObject["UID"].GetUint() == UID)
+		if (currentObject["parentUID"].GetUint() == parentUID)
 		{
 			this->currentObject = currentObject;
-			return;
+			gameObjects.Erase(gameObjects.Begin() + i);
+			return true;
 		}
 	}
-	LOG("Could not find GameObject with UID %d", UID);
+	return false;
 }
 
 void SceneLoader::SaveSceneForPlay()
@@ -268,8 +277,6 @@ void SceneLoader::SaveSceneForPlay()
 
 void SceneLoader::LoadSceneForStop()
 {
-	//TODO load gameobjects and components
-
 	LoadJSONFromFile("scene_temporal.json");
 }
 
