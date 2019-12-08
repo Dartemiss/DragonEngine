@@ -71,7 +71,7 @@ bool MyQuadTree::Insert(GameObject* go)
 
 	if (!IsWithinQuad(boundingBox))
 	{
-		LOG("Cannot insert elemment, it's outside the QuadTree limits.");
+		//LOG("Cannot insert elemment, it's outside the QuadTree limits.");
 		return false;
 	}
 
@@ -79,13 +79,18 @@ bool MyQuadTree::Insert(GameObject* go)
 	if(gameObjects.size() < BUCKET_CAPACITY && topLeft == nullptr)
 	{
 		gameObjects.push_back(go);
-		LOG("Game Object added correctly")
 		return true;
 	}
 
 	//Otherwise, subdivide and then add the point to the corresponding node
 	if (topLeft == nullptr)
 		Subdivide();
+
+	if (levelOfDepth >= 5)
+	{
+		gameObjects.push_back(go);
+		return true;
+	}
 
 	//We have to add the points / data contained into this quad array to the new quads if we want that only
 	//the last node holds the data 
@@ -101,6 +106,7 @@ bool MyQuadTree::Insert(GameObject* go)
 
 void MyQuadTree::Subdivide()
 {
+
 	float3 center = limits.CenterPoint();
 	//Z axis is pointing to negative (top)
 	topLeft = new MyQuadTree(AABB(limits.minPoint, center), levelOfDepth + 1);
@@ -127,22 +133,22 @@ bool MyQuadTree::IsWithinQuad(const AABB* go) const
 
 	if(limits.minPoint.x > go->maxPoint.x)
 	{
-		LOG("GameObject is on the left outside of quadtree.");
+		//LOG("GameObject is on the left outside of quadtree.");
 		return false;
 	}
 	else if(limits.minPoint.z > go->maxPoint.z)
 	{
-		LOG("GameObject is on the top outside of quadtree.");
+		//LOG("GameObject is on the top outside of quadtree.");
 		return false;
 	}
 	else if(limits.maxPoint.x < go->minPoint.x)
 	{
-		LOG("GameObject is on the right outside of quadtree.");
+		//LOG("GameObject is on the right outside of quadtree.");
 		return false;
 	}
 	else if(limits.maxPoint.z < go->minPoint.z)
 	{
-		LOG("GameObject is on the bottom outside of quadtree.");
+		//LOG("GameObject is on the bottom outside of quadtree.");
 		return false;
 	}
 	
@@ -189,13 +195,13 @@ void MyQuadTree::ClearIterative()
 	return;
 }
 
-bool MyQuadTree::InsertIterative(GameObject * go)
+bool MyQuadTree::InsertIterative(const std::vector<Node*> &posibleNodes, GameObject * go)
 {
 	assert(go != nullptr);
 
 	AABB* boundingBox = go->globalBoundingBox;
 	
-	for(auto node : nodes)
+	for(auto node : posibleNodes)
 	{
 
 		if(node->isLeaf && IsWithinQuadrant(node->quadrant, boundingBox))
@@ -217,53 +223,27 @@ bool MyQuadTree::InsertIterative(GameObject * go)
 	return true;
 }
 
-bool MyQuadTree::InsertAfterSubdividing(Node* newNodes[], GameObject * go)
-{
-	assert(go != nullptr);
-
-	AABB* boundingBox = go->globalBoundingBox;
-
-	for (int i = 0; i< 4; ++i)
-	{
-		if (newNodes[i]->isLeaf && IsWithinQuadrant(newNodes[i]->quadrant, boundingBox))
-		{
-			if (newNodes[i]->gameObjects.size() < BUCKET_CAPACITY)
-			{
-				newNodes[i]->gameObjects.push_back(go);
-			}
-			else
-			{
-				SubdivideIterative(newNodes[i], go);
-				break;
-			}
-
-			++newNodes;
-		}
-	}
-
-	return true;
-}
 
 bool MyQuadTree::IsWithinQuadrant(const AABB* quad, const AABB* go) const
 {
 	if (quad->minPoint.x > go->maxPoint.x)
 	{
-		LOG("GameObject is on the left outside of quadtree.");
+		//LOG("GameObject is on the left outside of quadtree.");
 		return false;
 	}
 	else if (quad->minPoint.z > go->maxPoint.z)
 	{
-		LOG("GameObject is on the top outside of quadtree.");
+		//LOG("GameObject is on the top outside of quadtree.");
 		return false;
 	}
 	else if (quad->maxPoint.x < go->minPoint.x)
 	{
-		LOG("GameObject is on the right outside of quadtree.");
+		//LOG("GameObject is on the right outside of quadtree.");
 		return false;
 	}
 	else if (quad->maxPoint.z < go->minPoint.z)
 	{
-		LOG("GameObject is on the bottom outside of quadtree.");
+		//LOG("GameObject is on the bottom outside of quadtree.");
 		return false;
 	}
 
@@ -303,16 +283,23 @@ void MyQuadTree::SubdivideIterative(Node* node, GameObject* go)
 	nodes.push_back(node->children[1]);
 	nodes.push_back(node->children[2]);
 	nodes.push_back(node->children[3]);
+
+	std::vector<Node*> posibleNodes;
+
+	for(int i = 0; i < 4; ++i)
+	{
+		posibleNodes.push_back(node->children[i]);
+	}
 	
 	for(auto gameObject: node->gameObjects)
 	{
-		InsertIterative(gameObject);
+		InsertIterative(posibleNodes,gameObject);
 	}
 
 	node->gameObjects.clear();
 
 	//Try to insert again
-	InsertIterative(go);
+	InsertIterative(posibleNodes,go);
 
 	return;
 }

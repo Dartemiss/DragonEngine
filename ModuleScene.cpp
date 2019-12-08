@@ -364,7 +364,7 @@ void ModuleScene::BuildQuadTree()
 	{
 		if (go->globalBoundingBox != nullptr)
 		{
-			quadtreeIterative->InsertIterative(go);
+			quadtreeIterative->InsertIterative(quadtreeIterative->nodes,go);
 		}
 	}
 
