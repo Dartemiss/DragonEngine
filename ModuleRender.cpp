@@ -333,8 +333,12 @@ void ModuleRender::DrawAllGameObjects()
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-		if(frustumCullingIsActivated && gameObject->globalBoundingBox != nullptr)
+		if(App->scene->quadtreeIsComputed && frustumCullingIsActivated && gameObject->globalBoundingBox != nullptr)
 		{
+			std::set<GameObject*> staticGO;
+
+			App->scene->quadtreeIterative->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
+
 			if(gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
 				gameObjectsWithinFrustum.push_back(gameObject);

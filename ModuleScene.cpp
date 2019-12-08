@@ -371,6 +371,8 @@ void ModuleScene::BuildQuadTree()
 	quadTreeInitialized = true;
 
 	timeIterative = iterative.StopTimer();
+
+	quadtreeIsComputed = true;	
 }
 
 void ModuleScene::CreateCubesScript()
@@ -386,7 +388,7 @@ void ModuleScene::CreateCubesScript()
 		{
 			int max = 40;
 			int min = -40;
-			float3 newPos = float3(std::rand() % (max - min + 1) + min, 0, rand() % (max - min + 1) + min);
+			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
 			go->myTransform->TranslateTo(newPos);
 		}
 	}

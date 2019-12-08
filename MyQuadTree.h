@@ -3,12 +3,12 @@
 
 #include "Globals.h"
 #include <vector>
+#include <set>
 #include "include/Geometry/AABB.h"
 
-const int BUCKET_CAPACITY = 1;
+const int BUCKET_CAPACITY = 2;
 
 class GameObject;
-
 
 struct Node
 {
@@ -24,6 +24,7 @@ struct Node
 	int level = 0;
 	
 };
+
 
 class MyQuadTree
 {
@@ -49,6 +50,7 @@ public:
 	void SubdivideIterative(Node* node, GameObject* go);
 	void DrawIterative() const;
 	bool GameObjectIsRepeated(const std::vector<GameObject*> &gameObjects, GameObject* go);
+	void GetIntersection(std::set<GameObject*> &intersectionGO, AABB* bbox);
 
 	//void CollectIntersect(std::vector<GameObject*>&, PRIMITIVE);
 

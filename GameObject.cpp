@@ -401,7 +401,21 @@ void GameObject::DrawInspector(bool &showInspector)
 		ImGui::Text("Scale");
 		ImGui::DragFloat3("Scale", (float *)&myTransform->scale, 0.01f, 0.01f, 1000.0f);
 
+		ImGui::Separator();
+
+		ImGui::Text("AABB");
+		if(globalBoundingBox == nullptr)
+		{
+			ImGui::Text("Is nullptr.");
+		}
+		else
+		{
+			ImGui::DragFloat3("Min Point", (float *)&globalBoundingBox->minPoint, 0.01f, 0.01f, 1000.0f);
+			ImGui::DragFloat3("Max Point", (float *)&globalBoundingBox->maxPoint, 0.01f, 0.01f, 1000.0f);
+		}
+		
 	}
+
 	ImGui::End();
 	//Change EulerRotation to Quat
 	myTransform->EulerToQuat();

@@ -74,6 +74,8 @@ public:
 	float timeRecursive = 0.0f;
 	float timeIterative = 0.0f;
 
+	bool quadtreeIsComputed = false;
+
 
 private:
 	//Root

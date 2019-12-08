@@ -1,6 +1,7 @@
 #include "MyQuadTree.h"
 #include "GameObject.h"
 #include "debugdraw.h"
+#include <stack>
 #include <assert.h>
 
 //Recursive Constructor
@@ -323,5 +324,75 @@ bool MyQuadTree::GameObjectIsRepeated(const std::vector<GameObject*>& gameObject
 	}
 
 	return false;
+}
+
+void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bbox)
+{
+	Node* current = nullptr;
+	Node* previous = nullptr;
+	std::stack<int> indexes;
+	std::stack<Node*> stackOfNodes;
+	current = nodes[0];
+	while(true)
+	{
+		if(bbox->Intersects(*current->quadrant))
+		{
+			if(current->isLeaf)
+			{
+				for(auto go: current->gameObjects)
+				{
+					intersectionGO.insert(go);
+				}
+				
+
+				int index = indexes.top() + 1;
+				indexes.pop();
+				indexes.push(index);
+
+				current = previous->children[index];
+
+				if(index == 3)
+				{
+					indexes.pop();
+					stackOfNodes.pop();
+					if (!stackOfNodes.empty())
+						previous = stackOfNodes.top();
+				}
+			}
+			else
+			{
+				indexes.push(0);
+				previous = current;
+				stackOfNodes.push(previous);
+				current = previous->children[0];
+			}
+
+			
+
+		}
+		else
+		{
+			int index = indexes.top() + 1;
+			indexes.pop();
+			indexes.push(index);
+			current = previous->children[index];
+
+			if (index == 3)
+			{
+				indexes.pop();
+				stackOfNodes.pop();
+				if(!stackOfNodes.empty())
+					previous = stackOfNodes.top();
+			}
+
+		}
+	
+
+		if (indexes.size() == 0 || stackOfNodes.size() == 0)
+			return;
+
+	}
+
+	return;
 }
 
