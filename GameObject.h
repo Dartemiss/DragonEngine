@@ -78,6 +78,9 @@ public:
 
 	void DrawInspector(bool &showInspector);
 
+	//Shape type
+	enum ShapeType shape;
+
 private:
 	std::string name;
 

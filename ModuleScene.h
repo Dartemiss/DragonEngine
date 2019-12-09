@@ -12,10 +12,12 @@ class AABBTree;
 
 enum ShapeType
 {
-	SPHERE = 0,
+	OTHER = 0,
+	SPHERE,
 	CUBE,
 	CYLINDER,
 	TORUS
+	
 };
 
 class ModuleScene : public Module

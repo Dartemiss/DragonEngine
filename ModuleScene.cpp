@@ -1,4 +1,5 @@
 #include "ModuleScene.h"
+#include "ModuleTimeManager.h"
 #include "Application.h"
 #include "ModuleModelLoader.h"
 #include "Timer.h"
@@ -235,6 +236,7 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
 	
+	newGameObject->shape = shape;
 
 	if(!App->modelLoader->meshes.size() == 1)
 	{
@@ -400,9 +402,18 @@ void ModuleScene::BuildAABBTree()
 
 void ModuleScene::CreateCubesScript()
 {
-	for(int i = 0; i < 5; ++i)
+	for(int i = 0; i < 2; ++i)
 	{
 		CreateGameObjectShape(root, CUBE);
+	}
+	for (int i = 0; i < 2; ++i)
+	{
+		CreateGameObjectShape(root, SPHERE);
+	}
+
+	for (int i = 0; i < 2; ++i)
+	{
+		CreateGameObjectShape(root, TORUS);
 	}
 
 	for(auto go : allGameObjects)
@@ -420,6 +431,27 @@ void ModuleScene::CreateCubesScript()
 
 void ModuleScene::MoveObjects() const
 {
+	float dist = sin(App->timemanager->GetRealGameTime());
+
+	for(auto go : allGameObjects)
+	{
+		if(go->globalBoundingBox != nullptr)
+		{
+			if(go->shape == CUBE)
+			{
+				go->myTransform->position.x += dist;
+			}
+			if (go->shape == SPHERE)
+			{
+				go->myTransform->position.y += dist;
+			}
+			if (go->shape == TORUS)
+			{
+				go->myTransform->position.z += dist;
+			}
+
+		}
+	}
 
 }
 
