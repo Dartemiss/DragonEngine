@@ -192,6 +192,7 @@
     <ClCompile Include="ModuleDebugDraw.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="AABBTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -487,6 +488,7 @@
     <ClInclude Include="ModuleDebugDraw.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="AABBTree.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">

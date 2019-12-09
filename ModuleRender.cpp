@@ -13,6 +13,7 @@
 #include "GameObject.h"
 #include "ComponentCamera.h"
 #include "MyQuadTree.h"
+#include "AABBTree.h"
 #include "debugdraw.h"
 #include "SDL.h"
 #include "glew.h"
@@ -539,9 +540,9 @@ void ModuleRender::GenerateTexture(int width, int height)
 	glViewport(0, 0, width, height);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	App->scene->mainCamera->DrawCamera();
+	if(showFrustum)
+		App->scene->mainCamera->DrawCamera();
 	DrawDebug();
-	//DrawGrid();
 	DrawAllGameObjects();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -572,6 +573,11 @@ void ModuleRender::DrawDebug() const
 	if(showGrid)
 	{
 		dd::xzSquareGrid(-40.0f, 40.0f, 0.0f, 1.0f, math::float3(0.65f, 0.65f, 0.65f));
+	}
+
+	if(showAABBTree)
+	{
+		App->scene->aabbTree->Draw();
 	}
 
 	return;

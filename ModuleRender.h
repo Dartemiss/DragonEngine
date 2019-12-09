@@ -63,9 +63,10 @@ public:
 	void GenerateTextureGame(int width, int height);
 
 	//Quadtree variables
-	bool showQuadTree = true;
-
-	bool showGrid = true;
+	bool showQuadTree = false;
+	bool showAABBTree = true;
+	bool showFrustum = true;
+	bool showGrid = false;
 
 private:
 	void* context;

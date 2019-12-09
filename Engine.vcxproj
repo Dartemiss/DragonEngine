@@ -77,6 +77,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AABBTree.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentCamera.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="uSTimer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABBTree.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ComponentCamera.cpp" />
     <ClCompile Include="ComponentMaterial.cpp" />

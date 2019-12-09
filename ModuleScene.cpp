@@ -5,6 +5,7 @@
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "MyQuadTree.h"
+#include "AABBTree.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -34,6 +35,7 @@ bool ModuleScene::Init()
 
 	quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
 	quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
+	aabbTree = new AABBTree(10);
 
 	return true;
 }
@@ -49,6 +51,11 @@ update_status ModuleScene::Update()
 	{
 		gameObject->UpdateTransform();
 		gameObject->Update();
+
+		if(aabbTreeIsComputed && gameObject->globalBoundingBox != nullptr)
+		{
+			aabbTree->UpdateObject(gameObject);
+		}
 	}
 
 	DrawGUI();
@@ -375,9 +382,25 @@ void ModuleScene::BuildQuadTree()
 	quadtreeIsComputed = true;	
 }
 
+void ModuleScene::BuildAABBTree()
+{
+	aabbTreeTimer.StartTimer();
+	for(auto go : allGameObjects)
+	{
+		if(go->globalBoundingBox != nullptr)
+		{
+			aabbTree->Insert(go);
+		}
+	}
+
+	aabbTreeIsComputed = true;
+
+	timeAABBTree = aabbTreeTimer.StopTimer();
+}
+
 void ModuleScene::CreateCubesScript()
 {
-	for(int i = 0; i < 100; ++i)
+	for(int i = 0; i < 5; ++i)
 	{
 		CreateGameObjectShape(root, CUBE);
 	}
@@ -386,8 +409,8 @@ void ModuleScene::CreateCubesScript()
 	{
 		if(go != root && go != mainCamera)
 		{
-			int max = 100;
-			int min = -100;
+			int max = 10;
+			int min = -10;
 			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
 			go->myTransform->TranslateTo(newPos);
 		}

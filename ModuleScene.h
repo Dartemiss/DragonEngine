@@ -8,6 +8,7 @@
 #include <set>
 
 class MyQuadTree;
+class AABBTree;
 
 enum ShapeType
 {
@@ -57,25 +58,31 @@ public:
 	//QuadTree
 	MyQuadTree* quadtree = nullptr;
 	MyQuadTree* quadtreeIterative = nullptr;
+	AABBTree* aabbTree = nullptr;
 
 	void AddToQuadtree(GameObject* go) const;
 	void RemoveFromQuadTree(GameObject* go) const;
 
 	bool quadTreeInitialized = false;
 
+	//Static objects
 	void BuildQuadTree();
-
+	//Dynamic objects
+	void BuildAABBTree();
 	void CreateCubesScript();
 
 
 	//Timers
 	Timer iterative = Timer();
 	Timer recursive = Timer();
+	Timer aabbTreeTimer = Timer();
 
 	float timeRecursive = 0.0f;
 	float timeIterative = 0.0f;
+	float timeAABBTree = 0.0f;
 
 	bool quadtreeIsComputed = false;
+	bool aabbTreeIsComputed = false;
 
 
 private:
