@@ -72,9 +72,10 @@ public:
 	//Dynamic objects
 	void BuildAABBTree();
 	void CreateCubesScript();
+	void CreateShapesScript();
 
 	//Move Objects
-	void MoveObjects() const;
+	void MoveObjects(GameObject* go) const;
 
 	//Timers
 	Timer iterative = Timer();
@@ -87,6 +88,8 @@ public:
 
 	bool quadtreeIsComputed = false;
 	bool aabbTreeIsComputed = false;
+
+	bool moveObjectsArround = false;
 
 	bool moveItems = false;
 

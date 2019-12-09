@@ -31,7 +31,6 @@ ComponentCamera::ComponentCamera()
 	proj = frustum->ProjectionMatrix();
 	view = frustum->ViewMatrix();
 
-	oldPosition = float3{5.0f,2.0f,1000.0f};
 }
 
 

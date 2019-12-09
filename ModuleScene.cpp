@@ -57,6 +57,9 @@ update_status ModuleScene::Update()
 		{
 			aabbTree->UpdateObject(gameObject);
 		}
+
+		if (moveObjectsArround)
+			MoveObjects(gameObject);
 	}
 
 	DrawGUI();
@@ -400,7 +403,7 @@ void ModuleScene::BuildAABBTree()
 	timeAABBTree = aabbTreeTimer.StopTimer();
 }
 
-void ModuleScene::CreateCubesScript()
+void ModuleScene::CreateShapesScript()
 {
 	for(int i = 0; i < 2; ++i)
 	{
@@ -426,32 +429,56 @@ void ModuleScene::CreateCubesScript()
 			go->myTransform->TranslateTo(newPos);
 		}
 	}
+
+	return;
 	
 }
 
-void ModuleScene::MoveObjects() const
+void ModuleScene::CreateCubesScript()
 {
-	float dist = sin(App->timemanager->GetRealGameTime());
-
-	for(auto go : allGameObjects)
+	for (int i = 0; i < 200; ++i)
 	{
-		if(go->globalBoundingBox != nullptr)
-		{
-			if(go->shape == CUBE)
-			{
-				go->myTransform->position.x += dist;
-			}
-			if (go->shape == SPHERE)
-			{
-				go->myTransform->position.y += dist;
-			}
-			if (go->shape == TORUS)
-			{
-				go->myTransform->position.z += dist;
-			}
+		CreateGameObjectShape(root, CUBE);
+	}
 
+	for (auto go : allGameObjects)
+	{
+		if (go != root && go != mainCamera)
+		{
+			int max = 100;
+			int min = -100;
+			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
+			go->myTransform->TranslateTo(newPos);
 		}
 	}
+
+	return;
+}
+
+void ModuleScene::MoveObjects(GameObject* go) const
+{
+	float dist = 3.0f * sin(App->timemanager->GetRealGameTime());
+
+	
+	
+	if(go->globalBoundingBox != nullptr)
+	{
+		if(go->shape == CUBE)
+		{
+			go->myTransform->position.x += dist;
+		}
+		if (go->shape == SPHERE)
+		{
+			go->myTransform->position.y += dist;
+		}
+		if (go->shape == TORUS)
+		{
+			go->myTransform->position.z += dist;
+		}
+
+	}
+	
+	return;
 
 }
 
