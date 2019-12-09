@@ -42,16 +42,13 @@ public:
 	//Prepare to read next Component
 	bool SelectNextComponent();
 
-	void SaveSceneForPlay();
-	void LoadSceneForStop();
+	void SaveJSONToFile(const char * filename);
+	void LoadJSONFromFile(const char * filename);
 
 private:
 	rapidjson::Document document;
 	rapidjson::Value currentObject;
 	rapidjson::Value currentComponent;
-
-	void SaveJSONToFile(const char * filename);
-	void LoadJSONFromFile(const char * filename);
 
 	void AddMemberToObjectOrComponent(rapidjson::Value & name, rapidjson::Value & val);
 };

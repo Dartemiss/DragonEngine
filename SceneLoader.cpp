@@ -136,7 +136,7 @@ float SceneLoader::GetFloat(const char * name, float defaultVal)
 		if (!currentComponent.HasMember(name))
 			return defaultVal;
 
-		Value & member = currentObject[name];
+		Value & member = currentComponent[name];
 		if (!member.IsNumber() || !member.IsDouble())
 			return defaultVal;
 
@@ -178,7 +178,7 @@ const char * SceneLoader::GetString(const char * name, const char * defaultVal)
 		if (!currentComponent.HasMember(name))
 			return defaultVal;
 
-		Value & member = currentObject[name];
+		Value & member = currentComponent[name];
 		if (!member.IsString())
 			return defaultVal;
 
@@ -222,7 +222,7 @@ float3 SceneLoader::GetVec3f(const char * name, const float3 & defaultVal)
 		if (!currentComponent.HasMember(name))
 			return defaultVal;
 
-		Value & vector = currentObject[name];
+		Value & vector = currentComponent[name];
 		if (!vector.IsArray() || vector.Size() != 3)
 			return defaultVal;
 
@@ -275,7 +275,7 @@ float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
 		if (!currentComponent.HasMember(name))
 			return defaultVal;
 
-		Value & vector = currentObject[name];
+		Value & vector = currentComponent[name];
 		if (!vector.IsArray() || vector.Size() != 4)
 			return defaultVal;
 
@@ -330,17 +330,8 @@ bool SceneLoader::SelectNextComponent()
 		return false;
 
 	currentComponent = components[0];
+	components.Erase(components.Begin());
 	return true;
-}
-
-void SceneLoader::SaveSceneForPlay()
-{
-	SaveJSONToFile("scene_temporal.json");
-}
-
-void SceneLoader::LoadSceneForStop()
-{
-	LoadJSONFromFile("scene_temporal.json");
 }
 
 void SceneLoader::SaveJSONToFile(const char * filename)

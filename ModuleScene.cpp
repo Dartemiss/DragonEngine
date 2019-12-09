@@ -312,13 +312,13 @@ void ModuleScene::SaveScene(SceneLoader & loader)
 	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
 		(*it)->OnSave(loader);
 
-	loader.SaveSceneForPlay();
+	loader.SaveJSONToFile("temp_save.json");
 }
 
 void ModuleScene::LoadScene(SceneLoader & loader)
 {
 	loader.ClearScene();
-	loader.LoadSceneForStop();
+	loader.LoadJSONFromFile("temp_save.json");
 
 	//Check root node exists
 	if (!loader.SetCurrentObject(0))
