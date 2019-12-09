@@ -56,6 +56,69 @@ bool ModuleTexture::CleanUp()
 	return true;
 }
 
+
+
+void ModuleTexture::LoadSkybox(const char * path, const std::string & directory, int index)const
+{
+	std::string filepath = directory;
+	filepath.append(path);
+
+	ILuint image;
+	ilGenImages(1, &image);
+	ilBindImage(image);
+
+	bool isLoaded1 = ilLoadImage(filepath.c_str());
+
+	if(!isLoaded)
+	{
+		LOG("ERROR: Cannot load image.");
+		return;
+	}
+	
+	//Make sure image is in RGB or devil will return an empty string
+	bool converted = ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+	if (!converted)
+	{
+		ILenum error = ilGetError();
+		LOG("Error converting image to rgb: %s - %s", std::to_string(error), iluErrorString(error));
+		return;
+	}
+
+
+	ILinfo ImageInfo;
+	iluGetImageInfo(&ImageInfo);
+	if (!ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+	{
+		LOG("Flipping Image Origin");
+		iluFlipImage();
+	}
+
+	ILubyte* data = ilGetData();
+
+	int width = ilGetInteger(IL_IMAGE_WIDTH);
+	int heigth = ilGetInteger(IL_IMAGE_HEIGHT);
+
+
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + index,
+			0, GL_RGB, width, heigth, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+		);
+
+		//Delete image
+		LOG("Delete image");
+		ilDeleteImages(1, &image);
+
+	}
+	else
+	{
+		LOG("Cubemap texture failed to load at path: ", filepath.c_str());
+		return;
+	}
+
+	return;
+}
+
 void ModuleTexture::LoadTextureForModels(const char * path, const std::string &directory, Texture &texture)
 {
 	std::string filepath = directory;

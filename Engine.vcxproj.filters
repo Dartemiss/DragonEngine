@@ -197,6 +197,7 @@
     <ClCompile Include="UUIDGenerator.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -608,6 +609,7 @@
     <ClInclude Include="UUIDGenerator.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="MathGeoLib">
@@ -671,6 +673,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\Model.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.fs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

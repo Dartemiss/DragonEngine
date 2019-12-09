@@ -23,6 +23,8 @@ void GUICamera::Draw(const char * title)
 		ImGui::Checkbox("Show Bounding Box", &App->renderer->showBoundingBox);
 		ImGui::Checkbox("Frusum Culling", &App->renderer->frustumCullingIsActivated);
 
+
+		ImGui::Checkbox("Show Skybox", &App->renderer->showSkybox);
 		ImGui::End();
 
 	}

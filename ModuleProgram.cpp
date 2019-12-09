@@ -21,6 +21,12 @@ bool ModuleProgram::Init()
 
 	gridProg = App->program->createProgram(vs2, fs2);
 
+	//Skybox shader
+	unsigned int vs3 = App->program->createVertexShader("../Shaders/Skybox.vs");
+	unsigned int fs3 = App->program->createFragmentShader("../Shaders/Skybox.fs");
+
+	skyboxProg = createProgram(vs3, fs3);
+
 	//Default shader
 	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
 	unsigned int fs = App->program->createFragmentShader("../Shaders/Model.fs");
