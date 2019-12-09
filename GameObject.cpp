@@ -133,7 +133,6 @@ Component * GameObject::CreateComponent(ComponentType type)
 
 	components.push_back(component);
 
-
 	return component;
 }
 
@@ -479,27 +478,17 @@ void GameObject::OnSave(SceneLoader & loader)
 		loader.AddUnsignedInt("parentUID", 0); 
 	loader.AddString("Name", name.c_str());
 
-	//Save Transform
-	myTransform->OnSave(loader);
-
-	//TODO change transform to load and save in component
-
+	//Save all components
 	loader.CreateComponentArray();
-	//TODO save components other than Transform
-	if (myMesh != nullptr)
-	{
-		loader.StartComponent();
-		myMesh->OnSave(loader);
-		loader.FinishComponent();
-	}
-	if (myMaterial != nullptr)
-	{
-		loader.StartComponent();
-		myMaterial->OnSave(loader);
-		loader.FinishComponent();
-	}
 	for (vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
+		//Special save for Transform
+		if ((*it)->myType == TRANSFORM)
+		{
+			(*it)->OnSave(loader);
+			continue;
+		}
+		
 		loader.StartComponent();
 		(*it)->OnSave(loader);
 		loader.FinishComponent();
@@ -515,11 +504,19 @@ void GameObject::OnLoad(SceneLoader & loader)
 
 	name = loader.GetString("Name", "GameObject");
 
-	//Load Transform
+	//Special load for Transform
 	CreateComponent(TRANSFORM);
 	myTransform->OnLoad(loader);
 
-	//TODO load components other than Transform
+	Component* component;
+	while (loader.SelectNextComponent())
+	{
+		ComponentType type = (ComponentType)loader.GetUnsignedInt("Type", 0);
+		assert(type != 0);
+		
+		component = CreateComponent(type);
+		component->OnLoad(loader);
+	}
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)

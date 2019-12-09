@@ -13,6 +13,7 @@ SceneLoader::SceneLoader()
 	gameObjects.SetArray();
 	document.AddMember("Game Objects", gameObjects, document.GetAllocator());
 	currentObject.SetNull();
+	currentComponent.SetNull();
 }
 
 SceneLoader::~SceneLoader()
@@ -26,6 +27,7 @@ void SceneLoader::ClearScene()
 	gameObjects.SetArray();
 	document.AddMember("Game Objects", gameObjects, document.GetAllocator());
 	currentObject.SetNull();
+	currentComponent.SetNull();
 	LOG("Cleared scene data.");
 }
 
@@ -61,6 +63,7 @@ void SceneLoader::CreateComponentArray()
 void SceneLoader::FinishGameObject()
 {
 	document["Game Objects"].PushBack(currentObject, document.GetAllocator());
+	currentObject.SetNull();
 }
 
 void SceneLoader::StartComponent()
@@ -71,22 +74,16 @@ void SceneLoader::StartComponent()
 void SceneLoader::FinishComponent()
 {
 	currentObject["Components"].PushBack(currentComponent, document.GetAllocator());
+	currentComponent.SetNull();
 }
 
 void SceneLoader::AddUnsignedInt(const char * name, unsigned int value)
 {
 	assert(name != nullptr);
 
-	Document::AllocatorType& allocator = document.GetAllocator();
-
-	if (currentObject.IsNull())
-	{
-		LOG("Can not add value if Game Object is not specified.");
-		return;
-	}
-
-	Value vName(name, allocator);
-	currentObject.AddMember(vName, value, allocator);
+	Value vName(name, document.GetAllocator());
+	Value vVal(value);
+	AddMemberToObjectOrComponent(vName, vVal);
 }
 
 unsigned int SceneLoader::GetUnsignedInt(const char * name, unsigned int defaultVal)
@@ -95,6 +92,18 @@ unsigned int SceneLoader::GetUnsignedInt(const char * name, unsigned int default
 
 	if (currentObject.IsNull())
 		return defaultVal;
+
+	if (!currentComponent.IsNull())
+	{
+		if (!currentComponent.HasMember(name))
+			return defaultVal;
+
+		Value & member = currentComponent[name];
+		if (!member.IsNumber() || !member.IsUint())
+			return defaultVal;
+
+		return member.GetUint();
+	}
 
 	if (!currentObject.HasMember(name))
 		return defaultVal;
@@ -110,16 +119,9 @@ void SceneLoader::AddFloat(const char * name, float value)
 {
 	assert(name != nullptr);
 
-	Document::AllocatorType& allocator = document.GetAllocator();
-
-	if (currentObject.IsNull())
-	{
-		LOG("Can not add value if Game Object is not specified.");
-		return;
-	}
-
-	Value vName(name, allocator);
-	currentObject.AddMember(vName, value, allocator);
+	Value vName(name, document.GetAllocator());
+	Value vVal(value);
+	AddMemberToObjectOrComponent(vName, vVal);
 }
 
 float SceneLoader::GetFloat(const char * name, float defaultVal)
@@ -128,6 +130,18 @@ float SceneLoader::GetFloat(const char * name, float defaultVal)
 
 	if (currentObject.IsNull())
 		return defaultVal;
+
+	if (!currentComponent.IsNull())
+	{
+		if (!currentComponent.HasMember(name))
+			return defaultVal;
+
+		Value & member = currentObject[name];
+		if (!member.IsNumber() || !member.IsDouble())
+			return defaultVal;
+
+		return (float)member.GetDouble();
+	}
 
 	if (!currentObject.HasMember(name))
 		return defaultVal;
@@ -146,15 +160,9 @@ void SceneLoader::AddString(const char * name, const char * value)
 
 	Document::AllocatorType& allocator = document.GetAllocator();
 
-	if (currentObject.IsNull())
-	{
-		LOG("Can not add value if Game Object is not specified.");
-		return;
-	}
-
 	Value vName(name, allocator);
 	Value vVal(value, allocator);
-	currentObject.AddMember(vName, vVal, allocator);
+	AddMemberToObjectOrComponent(vName, vVal);
 }
 
 const char * SceneLoader::GetString(const char * name, const char * defaultVal)
@@ -164,6 +172,18 @@ const char * SceneLoader::GetString(const char * name, const char * defaultVal)
 
 	if (currentObject.IsNull())
 		return defaultVal;
+
+	if (!currentComponent.IsNull())
+	{
+		if (!currentComponent.HasMember(name))
+			return defaultVal;
+
+		Value & member = currentObject[name];
+		if (!member.IsString())
+			return defaultVal;
+
+		return member.GetString();
+	}
 
 	if (!currentObject.HasMember(name))
 		return defaultVal;
@@ -181,19 +201,13 @@ void SceneLoader::AddVec3f(const char * name, const float3 & value)
 
 	Document::AllocatorType& allocator = document.GetAllocator();
 
-	if (currentObject.IsNull())
-	{
-		LOG("Can not add value if Game Object is not specified.");
-		return;
-	}
-
 	Value vName(name, allocator);
 	Value vVal;
 	vVal.SetArray();
 	vVal.PushBack(value.x, allocator);
 	vVal.PushBack(value.y, allocator);
 	vVal.PushBack(value.z, allocator);
-	currentObject.AddMember(vName, vVal, allocator);
+	AddMemberToObjectOrComponent(vName, vVal);
 }
 
 float3 SceneLoader::GetVec3f(const char * name, const float3 & defaultVal)
@@ -202,6 +216,22 @@ float3 SceneLoader::GetVec3f(const char * name, const float3 & defaultVal)
 
 	if (currentObject.IsNull())
 		return defaultVal;
+
+	if (!currentComponent.IsNull())
+	{
+		if (!currentComponent.HasMember(name))
+			return defaultVal;
+
+		Value & vector = currentObject[name];
+		if (!vector.IsArray() || vector.Size() != 3)
+			return defaultVal;
+
+		for (int i = 0; i < vector.Size(); ++i)
+			if (!vector[i].IsFloat())
+				return defaultVal;
+
+		return float3(vector[0].GetFloat(), vector[1].GetFloat(), vector[2].GetFloat());
+	}
 
 	if (!currentObject.HasMember(name))
 		return defaultVal;
@@ -223,12 +253,6 @@ void SceneLoader::AddVec4f(const char * name, const float4 & value)
 
 	Document::AllocatorType& allocator = document.GetAllocator();
 
-	if (currentObject.IsNull())
-	{
-		LOG("Can not add value if Game Object is not specified.");
-		return;
-	}
-
 	Value vName(name, allocator);
 	Value vVal;
 	vVal.SetArray();
@@ -236,7 +260,7 @@ void SceneLoader::AddVec4f(const char * name, const float4 & value)
 	vVal.PushBack(value.y, allocator);
 	vVal.PushBack(value.z, allocator);
 	vVal.PushBack(value.w, allocator);
-	currentObject.AddMember(vName, vVal, allocator);
+	AddMemberToObjectOrComponent(vName, vVal);
 }
 
 float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
@@ -245,6 +269,22 @@ float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
 
 	if (currentObject.IsNull())
 		return defaultVal;
+
+	if (!currentComponent.IsNull())
+	{
+		if (!currentComponent.HasMember(name))
+			return defaultVal;
+
+		Value & vector = currentObject[name];
+		if (!vector.IsArray() || vector.Size() != 4)
+			return defaultVal;
+
+		for (int i = 0; i < vector.Size(); ++i)
+			if (!vector[i].IsFloat())
+				return defaultVal;
+
+		return float4(vector[0].GetFloat(), vector[1].GetFloat(), vector[2].GetFloat(), vector[3].GetFloat());
+	}
 
 	if (!currentObject.HasMember(name))
 		return defaultVal;
@@ -274,10 +314,23 @@ bool SceneLoader::SetCurrentObject(unsigned int parentUID)
 		{
 			this->currentObject = currentObject;
 			gameObjects.Erase(gameObjects.Begin() + i);
+			currentComponent.SetNull();
 			return true;
 		}
 	}
 	return false;
+}
+
+bool SceneLoader::SelectNextComponent()
+{
+	Value & components = currentObject["Components"];
+	assert(components.IsArray());
+
+	if (components.Size() == 0)
+		return false;
+
+	currentComponent = components[0];
+	return true;
 }
 
 void SceneLoader::SaveSceneForPlay()
@@ -315,6 +368,7 @@ void SceneLoader::LoadJSONFromFile(const char * filename)
 		return;
 	}
 
+
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
 	rewind(file);
@@ -324,4 +378,18 @@ void SceneLoader::LoadJSONFromFile(const char * filename)
 	fclose(file);
 
 	LoadJSON(json);
+}
+
+void SceneLoader::AddMemberToObjectOrComponent(Value & name, Value & val)
+{
+	Document::AllocatorType& allocator = document.GetAllocator();
+
+	if (!currentComponent.IsNull())
+		currentComponent.AddMember(name, val, allocator);
+
+	else if (!currentObject.IsNull())
+		currentObject.AddMember(name, val, allocator);
+
+	else
+		LOG("Can not add value if Game Object is not specified.");
 }

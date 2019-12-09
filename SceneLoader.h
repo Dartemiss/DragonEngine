@@ -39,6 +39,8 @@ public:
 
 	//Prepare to read Game Object with requested UID.
 	bool SetCurrentObject(unsigned int parentUID);
+	//Prepare to read next Component
+	bool SelectNextComponent();
 
 	void SaveSceneForPlay();
 	void LoadSceneForStop();
@@ -50,6 +52,8 @@ private:
 
 	void SaveJSONToFile(const char * filename);
 	void LoadJSONFromFile(const char * filename);
+
+	void AddMemberToObjectOrComponent(rapidjson::Value & name, rapidjson::Value & val);
 };
 
 #endif __SceneLoader_H__
