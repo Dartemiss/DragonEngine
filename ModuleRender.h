@@ -92,6 +92,7 @@ private:
 	
 	//Skybox
 	Skybox* skybox = nullptr;
+
 	
 
 
