@@ -333,8 +333,10 @@ void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bb
 	std::stack<int> indexes;
 	std::stack<Node*> stackOfNodes;
 	current = nodes[0];
+	int times = 0;
 	while(true)
 	{
+		++times;
 		if(bbox->Intersects(*current->quadrant))
 		{
 			if(current->isLeaf)
@@ -389,7 +391,11 @@ void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bb
 	
 
 		if (indexes.size() == 0 || stackOfNodes.size() == 0)
+		{
+			LOG("Times checked: %d", times);
 			return;
+		}
+			
 
 	}
 

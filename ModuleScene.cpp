@@ -32,8 +32,8 @@ bool ModuleScene::Init()
 
 	allGameObjects.push_back(mainCamera);
 
-	quadtree = new MyQuadTree(AABB(float3(-40,0,-40), float3(40,0,40)),1);
-	quadtreeIterative = new MyQuadTree(new AABB(float3(-40, 0, -40), float3(40, 0, 40)));
+	quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
+	quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
 
 	return true;
 }
@@ -377,7 +377,7 @@ void ModuleScene::BuildQuadTree()
 
 void ModuleScene::CreateCubesScript()
 {
-	for(int i = 0; i < 50; ++i)
+	for(int i = 0; i < 100; ++i)
 	{
 		CreateGameObjectShape(root, CUBE);
 	}
@@ -386,8 +386,8 @@ void ModuleScene::CreateCubesScript()
 	{
 		if(go != root && go != mainCamera)
 		{
-			int max = 40;
-			int min = -40;
+			int max = 100;
+			int min = -100;
 			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
 			go->myTransform->TranslateTo(newPos);
 		}
