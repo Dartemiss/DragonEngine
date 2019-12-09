@@ -13,8 +13,11 @@ public:
 
 	void Update();
 
-	std::vector<Texture*> textures;
+	//Saving and loading
+	void OnSave(SceneLoader & loader);
+	void OnLoad(SceneLoader & loader);
 
+	std::vector<Texture*> textures;
 };
 
 #endif __ComponentMaterial_H__

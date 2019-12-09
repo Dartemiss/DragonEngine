@@ -5,6 +5,7 @@
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
 #include "GameObject.h"
+#include "SceneLoader.h"
 #include <math.h>
 #include "include/Geometry/Plane.h"
 #include "glew.h"
@@ -160,6 +161,17 @@ bool ComponentCamera::SideOfPlane(float3 &point, Plane &plane)
 	value -= plane.d;
 
 	return (value >= 0.0f) ? true : false;
+}
+
+void ComponentCamera::OnSave(SceneLoader & loader)
+{
+	loader.AddUnsignedInt("Type", myType);
+	//TODO implement save
+}
+
+void ComponentCamera::OnLoad(SceneLoader & loader)
+{
+	//TODO implement load
 }
 
 void ComponentCamera::DrawFrustum()

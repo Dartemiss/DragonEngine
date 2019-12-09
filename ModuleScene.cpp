@@ -57,10 +57,8 @@ update_status ModuleScene::Update()
 
 bool ModuleScene::CleanUp()
 {
-	for(auto GO : allGameObjects)
-	{
-		delete GO;
-	}
+	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
+		delete *it;
 
 	delete root;
 
@@ -322,13 +320,16 @@ void ModuleScene::LoadScene(SceneLoader & loader)
 	loader.ClearScene();
 	loader.LoadSceneForStop();
 
-	//Check root node exists and clear scene if it does
+	//Check root node exists
 	if (!loader.SetCurrentObject(0))
 	{
 		LOG("Root node does not exist! Cant load Scene.");
 		return;
 	}
+
+	//Remove previous data
 	CleanUp();
+	allGameObjects.clear();
 
 	//Create root
 	root = new GameObject();
@@ -355,6 +356,8 @@ void ModuleScene::LoadScene(SceneLoader & loader)
 		currentGameObject = new GameObject();
 		currentGameObject->OnLoad(loader);
 		currentGameObject->SetParent(parent);
+
+		allGameObjects.push_back(currentGameObject);
 
 		//Add gameobject to queue
 		parents.push(currentGameObject);

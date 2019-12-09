@@ -14,6 +14,8 @@
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
 
+using namespace std;
+
 GameObject::GameObject()
 {
 }
@@ -478,14 +480,30 @@ void GameObject::OnSave(SceneLoader & loader)
 	loader.AddString("Name", name.c_str());
 
 	//Save Transform
-	loader.AddVec3f("Translation", myTransform->position);
-	loader.AddVec3f("Scale", myTransform->scale);
-	Quat rotation = myTransform->rotation;
-	loader.AddVec4f("Rotation", float4(rotation.x, rotation.y, rotation.z, rotation.w));
+	myTransform->OnSave(loader);
+
+	//TODO change transform to load and save in component
 
 	loader.CreateComponentArray();
 	//TODO save components other than Transform
-
+	if (myMesh != nullptr)
+	{
+		loader.StartComponent();
+		myMesh->OnSave(loader);
+		loader.FinishComponent();
+	}
+	if (myMaterial != nullptr)
+	{
+		loader.StartComponent();
+		myMaterial->OnSave(loader);
+		loader.FinishComponent();
+	}
+	for (vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		loader.StartComponent();
+		(*it)->OnSave(loader);
+		loader.FinishComponent();
+	}
 
 	loader.FinishGameObject();
 }
@@ -499,10 +517,7 @@ void GameObject::OnLoad(SceneLoader & loader)
 
 	//Load Transform
 	CreateComponent(TRANSFORM);
-	myTransform->position = loader.GetVec3f("Translation", float3(0, 0, 0));
-	myTransform->scale = loader.GetVec3f("Scale", float3(1, 1, 1));
-	float4 rotation = loader.GetVec4f("Rotation", float4(0, 0, 0, 1));
-	myTransform->rotation = Quat(rotation.x, rotation.y, rotation.z, rotation.w);
+	myTransform->OnLoad(loader);
 
 	//TODO load components other than Transform
 }

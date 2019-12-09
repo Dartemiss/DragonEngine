@@ -36,7 +36,9 @@ public:
 	int AABBWithinFrustum(const AABB &aabb);
 	bool SideOfPlane(float3 &point, Plane &plane);
 
-
+	//Saving and loading
+	void OnSave(SceneLoader & loader);
+	void OnLoad(SceneLoader & loader);
 
 	//Drawing
 	void DrawFrustum();

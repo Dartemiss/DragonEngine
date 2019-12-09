@@ -20,6 +20,10 @@ public:
 	void CreateComponentArray();
 	void FinishGameObject();
 
+	//Call each time a component is added to a Game Object
+	void StartComponent();
+	void FinishComponent();
+
 	//Add and Get functions for each type. Requires call to StartGameObject before use.
 	void AddUnsignedInt(const char * name, unsigned int value);
 	unsigned int GetUnsignedInt(const char * name, unsigned int defaultVal);
@@ -42,6 +46,7 @@ public:
 private:
 	rapidjson::Document document;
 	rapidjson::Value currentObject;
+	rapidjson::Value currentComponent;
 
 	void SaveJSONToFile(const char * filename);
 	void LoadJSONFromFile(const char * filename);

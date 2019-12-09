@@ -63,6 +63,16 @@ void SceneLoader::FinishGameObject()
 	document["Game Objects"].PushBack(currentObject, document.GetAllocator());
 }
 
+void SceneLoader::StartComponent()
+{
+	currentComponent.SetObject();
+}
+
+void SceneLoader::FinishComponent()
+{
+	currentObject["Components"].PushBack(currentComponent, document.GetAllocator());
+}
+
 void SceneLoader::AddUnsignedInt(const char * name, unsigned int value)
 {
 	assert(name != nullptr);
