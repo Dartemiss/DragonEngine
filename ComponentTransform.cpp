@@ -1,6 +1,7 @@
 #include "ComponentTransform.h"
 #include "include/Math/MathFunc.h"
 #include "GameObject.h"
+#include "SceneLoader.h"
 
 ComponentTransform::ComponentTransform(GameObject* gameObject)
 {
@@ -41,6 +42,24 @@ void ComponentTransform::SetLocalMatrix(float4x4 &newParentGlobalMatrix)
 	localModelMatrix = newParentGlobalMatrix.Inverted() *  globalModelMatrix;
 	localModelMatrix.Decompose(position, rotation, scale);
 	QuatToEuler();
+}
+
+void ComponentTransform::OnSave(SceneLoader & loader)
+{
+	loader.AddVec3f("Translation", position);
+	loader.AddVec3f("Scale", scale);
+	loader.AddVec4f("Rotation", float4(rotation.x, rotation.y, rotation.z, rotation.w));
+}
+
+void ComponentTransform::OnLoad(SceneLoader & loader)
+{
+	position = loader.GetVec3f("Translation", float3(0, 0, 0));
+	scale = loader.GetVec3f("Scale", float3(1, 1, 1));
+	float4 rotationVec = loader.GetVec4f("Rotation", float4(0, 0, 0, 1));
+	rotation = Quat(rotationVec.x, rotationVec.y, rotationVec.z, rotationVec.w);
+
+	QuatToEuler();
+	UpdateMatrices();
 }
 
 

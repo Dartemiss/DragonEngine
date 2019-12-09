@@ -5,7 +5,6 @@
 #include "Module.h"
 #include "GameObject.h"
 
-
 enum ShapeType
 {
 	SPHERE = 0,
@@ -49,6 +48,9 @@ public:
 	bool showInspector = true;
 	//Game's Main Camera Object
 	GameObject* mainCamera = nullptr;
+
+	void SaveScene();
+	void LoadScene();
 
 private:
 	//Root
