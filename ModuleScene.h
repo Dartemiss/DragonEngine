@@ -5,6 +5,7 @@
 #include "Module.h"
 #include "GameObject.h"
 #include "Timer.h"
+#include <set>
 
 class MyQuadTree;
 
@@ -47,7 +48,7 @@ public:
 	void DrawGUI();
 
 	//AllGameObjectsCreated
-	std::vector<GameObject*> allGameObjects;
+	std::set<GameObject*> allGameObjects;
 	bool showHierarchy = true;
 	bool showInspector = true;
 	//Game's Main Camera Object

@@ -30,7 +30,7 @@ bool ModuleScene::Init()
 	mainCamera = CreateGameObject("Main Camera", root);
 	mainCamera->CreateComponent(CAMERA);
 
-	allGameObjects.push_back(mainCamera);
+	allGameObjects.insert(mainCamera);
 
 	quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
 	quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
@@ -116,7 +116,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 		
 		myMeshCreated->LoadMesh(mesh);
 		newMeshObject->ComputeAABB();
-		allGameObjects.push_back(newMeshObject);
+		allGameObjects.insert(newMeshObject);
 
 		++numObject;
 	}
@@ -137,7 +137,7 @@ void ModuleScene::CreateEmpy(GameObject* parent)
 	GameObject* empty = CreateGameObject(defaultName.c_str(), parent);
 	
 
-	allGameObjects.push_back(empty);
+	allGameObjects.insert(empty);
 
 	return;
 }
@@ -156,7 +156,7 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
 	++numberOfBakerHouse;
 
-	allGameObjects.push_back(newGameObject);
+	allGameObjects.insert(newGameObject);
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
 
 	if(quadTreeInitialized)
@@ -243,7 +243,7 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 	newGameObject->ComputeAABB();
 	newGameObject->isParentOfMeshes = true;
 
-	allGameObjects.push_back(newGameObject);
+	allGameObjects.insert(newGameObject);
 
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
 	//Deleting model loader information
@@ -256,7 +256,7 @@ void ModuleScene::RemoveGameObject(GameObject * go)
 {
 	if (!allGameObjects.empty())
 	{
-		allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), go), allGameObjects.end());
+		allGameObjects.erase(go);
 	}
 }
 
@@ -276,7 +276,7 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			newGameObject->myTransform->position += float3(numberOfGameObjects * 4.0f, 0.0f, 0.0f);
 			newGameObject->myTransform->UpdateMatrices();
 
-			allGameObjects.push_back(newGameObject);
+			allGameObjects.insert(newGameObject);
 
 
 			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
@@ -292,7 +292,7 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObjectChild);
 			
 
-			allGameObjects.push_back(newGameObjectChild);
+			allGameObjects.insert(newGameObjectChild);
 
 		}
 
