@@ -71,6 +71,8 @@ public:
 	void BuildAABBTree();
 	void CreateCubesScript();
 
+	//Move Objects
+	void MoveObjects() const;
 
 	//Timers
 	Timer iterative = Timer();
@@ -83,6 +85,8 @@ public:
 
 	bool quadtreeIsComputed = false;
 	bool aabbTreeIsComputed = false;
+
+	bool moveItems = false;
 
 
 private:

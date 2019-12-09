@@ -278,12 +278,12 @@ void AABBTree::Draw() const
 	if (rootNodeIndex == AABB_NULL_NODE)
 		return;
 
-	std::stack<NodeAABB> S;
-	S.push(nodes[rootNodeIndex]);
-	while (!S.empty())
+	std::stack<NodeAABB> nodeStack;
+	nodeStack.push(nodes[rootNodeIndex]);
+	while (!nodeStack.empty())
 	{
-		NodeAABB node = S.top();
-		S.pop();
+		NodeAABB node = nodeStack.top();
+		nodeStack.pop();
 
 		if (node.parentNodeIndex != AABB_NULL_NODE)
 		{
@@ -291,14 +291,14 @@ void AABBTree::Draw() const
 			dd::line(node.aabb.CenterPoint(), parent.aabb.CenterPoint(), float3(1.0f, 0.0f, 0.0f));
 		}
 		if (node.leftNodeIndex != AABB_NULL_NODE)
-			S.push(nodes[node.leftNodeIndex]);
+			nodeStack.push(nodes[node.leftNodeIndex]);
 		if (node.rightNodeIndex != AABB_NULL_NODE)
-			S.push(nodes[node.rightNodeIndex]);
+			nodeStack.push(nodes[node.rightNodeIndex]);
 
 		dd::aabb(node.aabb.minPoint, node.aabb.maxPoint, float3(1.0f, 0.0f, 0.0f));
 
 	}
-
+	
 	return;
 }
 
@@ -318,7 +318,7 @@ void AABBTree::UpdateLeaf(unsigned leafNodeIndex, const AABB & newAaab)
 
 AABB AABBTree::MergeAABB(const AABB &first, const AABB &second) const
 {
-	return AABB(float3(Min(first.minPoint, second.minPoint)), float3(Max(first.minPoint, second.minPoint)));
+	return AABB(float3(Min(first.minPoint, second.minPoint)), float3(Max(first.maxPoint, second.maxPoint)));
 }
 
 

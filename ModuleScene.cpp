@@ -418,3 +418,8 @@ void ModuleScene::CreateCubesScript()
 	
 }
 
+void ModuleScene::MoveObjects() const
+{
+
+}
+
