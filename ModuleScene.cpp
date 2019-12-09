@@ -36,7 +36,7 @@ bool ModuleScene::Init()
 
 	quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
 	quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
-	aabbTree = new AABBTree(10);
+	aabbTree = new AABBTree(20);
 
 	return true;
 }
