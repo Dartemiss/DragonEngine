@@ -5,9 +5,6 @@
 #include "Module.h"
 #include "GameObject.h"
 
-class SceneLoader;
-
-
 enum ShapeType
 {
 	SPHERE = 0,
@@ -52,8 +49,8 @@ public:
 	//Game's Main Camera Object
 	GameObject* mainCamera = nullptr;
 
-	void SaveScene(SceneLoader & loader);
-	void LoadScene(SceneLoader & loader);
+	void SaveScene();
+	void LoadScene();
 
 private:
 	//Root

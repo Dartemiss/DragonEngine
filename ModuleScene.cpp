@@ -304,24 +304,27 @@ void ModuleScene::DrawGUI()
 
 }
 
-void ModuleScene::SaveScene(SceneLoader & loader)
+void ModuleScene::SaveScene()
 {
-	loader.ClearScene();
+	SceneLoader * loader = new SceneLoader();
 
-	root->OnSave(loader);
+	root->OnSave(*loader);
 	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
-		(*it)->OnSave(loader);
+		(*it)->OnSave(*loader);
 
-	loader.SaveJSONToFile("temp_save.json");
+	loader->SaveJSONToFile("temp_save.json");
+
+	delete loader;
 }
 
-void ModuleScene::LoadScene(SceneLoader & loader)
+void ModuleScene::LoadScene()
 {
-	loader.ClearScene();
-	loader.LoadJSONFromFile("temp_save.json");
+	SceneLoader * loader = new SceneLoader();
+
+	loader->LoadJSONFromFile("temp_save.json");
 
 	//Check root node exists
-	if (!loader.SetCurrentObject(0))
+	if (!loader->SetCurrentObject(0))
 	{
 		LOG("Root node does not exist! Cant load Scene.");
 		return;
@@ -333,7 +336,7 @@ void ModuleScene::LoadScene(SceneLoader & loader)
 
 	//Create root
 	root = new GameObject();
-	root->OnLoad(loader);
+	root->OnLoad(*loader);
 
 	//Start queue for loading the rest of the scene
 	queue<GameObject*> parents;
@@ -345,7 +348,7 @@ void ModuleScene::LoadScene(SceneLoader & loader)
 	{
 		//Search for gameobject with same parent uid
 		parent = parents.front();
-		if (!loader.SetCurrentObject(parent->UID))
+		if (!loader->SetCurrentObject(parent->UID))
 		{
 			//If no gameobject is found, go to next parent
 			parents.pop();
@@ -354,7 +357,7 @@ void ModuleScene::LoadScene(SceneLoader & loader)
 		
 		//Create gameobject and link parent
 		currentGameObject = new GameObject();
-		currentGameObject->OnLoad(loader);
+		currentGameObject->OnLoad(*loader);
 		currentGameObject->SetParent(parent);
 
 		allGameObjects.push_back(currentGameObject);
