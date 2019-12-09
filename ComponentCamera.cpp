@@ -166,12 +166,32 @@ bool ComponentCamera::SideOfPlane(float3 &point, Plane &plane)
 void ComponentCamera::OnSave(SceneLoader & loader)
 {
 	loader.AddUnsignedInt("Type", myType);
-	//TODO implement save
+
+	loader.AddUnsignedInt("Frustum Type", frustum->type);
+	loader.AddVec3f("Position", frustum->pos);
+	loader.AddVec3f("Front", frustum->front);
+	loader.AddVec3f("Up", frustum->up);
+	loader.AddFloat("Near Plane", frustum->nearPlaneDistance);
+	loader.AddFloat("Far Plane", frustum->farPlaneDistance);
+	loader.AddFloat("Vertical FOV", frustum->verticalFov);
+	loader.AddFloat("Horizontal FOV", frustum->horizontalFov);
 }
 
 void ComponentCamera::OnLoad(SceneLoader & loader)
 {
-	//TODO implement load
+	frustum = new Frustum();
+
+	frustum->type = (FrustumType)loader.GetUnsignedInt("Frustum Type", FrustumType::PerspectiveFrustum);
+	frustum->pos = loader.GetVec3f("Position", float3::zero);
+	frustum->front = loader.GetVec3f("Front", -float3::unitZ);
+	frustum->up = loader.GetVec3f("Up", float3::unitY);
+	frustum->nearPlaneDistance = loader.GetFloat("Near Plane", 0.1f);
+	frustum->farPlaneDistance = loader.GetFloat("Far Plane", 50.0f);
+	frustum->verticalFov = loader.GetFloat("Vertical FOV", (float)M_PI / 4.0f);
+	frustum->horizontalFov = loader.GetFloat("Horizontal FOV", 2.0f * atanf(tanf(frustum->verticalFov * 0.5f)));
+
+	proj = frustum->ProjectionMatrix();
+	view = frustum->ViewMatrix();
 }
 
 void ComponentCamera::DrawFrustum()

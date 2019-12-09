@@ -479,15 +479,14 @@ void GameObject::OnSave(SceneLoader & loader)
 	loader.AddString("Name", name.c_str());
 
 	//Save all components
+	myTransform->OnSave(loader);
+
 	loader.CreateComponentArray();
 	for (vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
 		//Special save for Transform
 		if ((*it)->myType == TRANSFORM)
-		{
-			(*it)->OnSave(loader);
 			continue;
-		}
 		
 		loader.StartComponent();
 		(*it)->OnSave(loader);

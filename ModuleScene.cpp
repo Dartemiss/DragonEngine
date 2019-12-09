@@ -360,6 +360,9 @@ void ModuleScene::LoadScene()
 		currentGameObject->OnLoad(*loader);
 		currentGameObject->SetParent(parent);
 
+		if (currentGameObject->GetName() == "Main Camera")
+			mainCamera = currentGameObject;
+
 		allGameObjects.push_back(currentGameObject);
 
 		//Add gameobject to queue
