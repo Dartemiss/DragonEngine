@@ -562,10 +562,8 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 
 void ModuleRender::DrawDebug() const
 {
-	if(showQuadTree)
+	if(showQuadTree && App->scene->quadtreeIsComputed)
 	{
-		//Recursive
-		//App->scene->quadtree->Draw();
 		//Iterative
 		App->scene->quadtreeIterative->DrawIterative();
 	}

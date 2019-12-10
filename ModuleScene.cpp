@@ -69,13 +69,19 @@ update_status ModuleScene::Update()
 
 bool ModuleScene::CleanUp()
 {
+	if (quadtreeIsComputed)
+	{
+		quadtree->Clear();
+		quadtreeIterative->ClearIterative();
+		delete quadtree;
+		delete quadtreeIterative;
+	}
+
 	for(auto GO : allGameObjects)
 	{
 		delete GO;
 	}
 
-	delete quadtree;
-	delete quadtreeIterative;
 	delete aabbTree;
 	delete root;
 
@@ -355,6 +361,8 @@ void ModuleScene::BuildQuadTree()
 {
 	AABB* sceneBox = ComputeSceneAABB();
 
+	quadtreeIsComputed = false;
+
 	//Recursive
 	if (quadTreeInitialized)
 	{
@@ -362,7 +370,7 @@ void ModuleScene::BuildQuadTree()
 		delete quadtree;
 	}
 	
-	quadtree = new MyQuadTree(sceneBox);
+	quadtree = new MyQuadTree(*sceneBox,1);
 
 	recursive.StartTimer();
 	for(auto go : allGameObjects)
@@ -373,7 +381,6 @@ void ModuleScene::BuildQuadTree()
 		}
 	}
 
-	quadTreeInitialized = true;
 	timeRecursive = recursive.StopTimer();
 
 	
@@ -453,18 +460,27 @@ void ModuleScene::CreateShapesScript()
 AABB * ModuleScene::ComputeSceneAABB() const
 {
 	auto someElementIterator = allGameObjects.begin();
+	while((*someElementIterator)->globalBoundingBox == nullptr)
+	{
+		++someElementIterator;
+	}
 	float3 minPoint = (*someElementIterator)->globalBoundingBox->minPoint;
 	float3 maxPoint = (*someElementIterator)->globalBoundingBox->maxPoint;
 	
 	for(auto it = ++someElementIterator; it != allGameObjects.end(); ++it)
 	{
-		minPoint = Min(minPoint, (*it)->globalBoundingBox->minPoint);
-		maxPoint = Max(maxPoint, (*it)->globalBoundingBox->maxPoint);
-	
+		if((*it)->globalBoundingBox != nullptr)
+		{
+			minPoint = Min(minPoint, (*it)->globalBoundingBox->minPoint);
+			maxPoint = Max(maxPoint, (*it)->globalBoundingBox->maxPoint);
+		}
+
 	}
 
+	minPoint.y = 0;
+	maxPoint.y = 0;
 
-	return new AABB(minPoint, maxPoint);
+	return new AABB(minPoint - float3(5,0,5), maxPoint + float3(5, 0, 5));
 }
 
 void ModuleScene::CreateCubesScript()

@@ -25,8 +25,6 @@ MyQuadTree::MyQuadTree(AABB* limits)
 
 MyQuadTree::~MyQuadTree()
 {
-	Clear();
-	ClearIterative();
 	if(nodes.size() == 1)
 	{
 		delete nodes[0]->quadrant;
