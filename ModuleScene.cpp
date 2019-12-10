@@ -34,8 +34,8 @@ bool ModuleScene::Init()
 
 	allGameObjects.insert(mainCamera);
 
-	quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
-	quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
+	//quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
+	//quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
 	aabbTree = new AABBTree(20);
 
 	return true;
@@ -74,6 +74,9 @@ bool ModuleScene::CleanUp()
 		delete GO;
 	}
 
+	delete quadtree;
+	delete quadtreeIterative;
+	delete aabbTree;
 	delete root;
 
 	return true;
@@ -350,11 +353,18 @@ void ModuleScene::RemoveFromQuadTree(GameObject* go) const
 
 void ModuleScene::BuildQuadTree()
 {
-	//Recursive
-	recursive.StartTimer();
-	if (quadTreeInitialized)
-		quadtree->Clear();
+	AABB* sceneBox = ComputeSceneAABB();
 
+	//Recursive
+	if (quadTreeInitialized)
+	{
+		quadtree->Clear();
+		delete quadtree;
+	}
+	
+	quadtree = new MyQuadTree(sceneBox);
+
+	recursive.StartTimer();
 	for(auto go : allGameObjects)
 	{
 		if(go->globalBoundingBox != nullptr)
@@ -366,12 +376,18 @@ void ModuleScene::BuildQuadTree()
 	quadTreeInitialized = true;
 	timeRecursive = recursive.StopTimer();
 
-	iterative.StartTimer();
+	
 
 	//Iterative
 	if (quadTreeInitialized)
+	{
 		quadtreeIterative->ClearIterative();
+		delete quadtreeIterative;
+	}
+		
+	quadtreeIterative = new MyQuadTree(sceneBox);
 
+	iterative.StartTimer();
 	for (auto go : allGameObjects)
 	{
 		if (go->globalBoundingBox != nullptr)
@@ -432,6 +448,23 @@ void ModuleScene::CreateShapesScript()
 
 	return;
 	
+}
+
+AABB * ModuleScene::ComputeSceneAABB() const
+{
+	auto someElementIterator = allGameObjects.begin();
+	float3 minPoint = (*someElementIterator)->globalBoundingBox->minPoint;
+	float3 maxPoint = (*someElementIterator)->globalBoundingBox->maxPoint;
+	
+	for(auto it = ++someElementIterator; it != allGameObjects.end(); ++it)
+	{
+		minPoint = Min(minPoint, (*it)->globalBoundingBox->minPoint);
+		maxPoint = Max(maxPoint, (*it)->globalBoundingBox->maxPoint);
+	
+	}
+
+
+	return new AABB(minPoint, maxPoint);
 }
 
 void ModuleScene::CreateCubesScript()

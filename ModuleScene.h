@@ -74,6 +74,8 @@ public:
 	void CreateCubesScript();
 	void CreateShapesScript();
 
+	AABB* ComputeSceneAABB() const;
+
 	//Move Objects
 	void MoveObjects(GameObject* go) const;
 
