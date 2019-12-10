@@ -3,6 +3,8 @@
 #include <stack>
 #include "debugdraw.h"
 
+//TODO: For knowing if an object is really moving have an aabb a litle more bigger than the mesh and only remove it if necessary
+
 AABBTree::AABBTree(unsigned initialSize)
 {
 	nodeCapacity = initialSize;
@@ -18,6 +20,7 @@ AABBTree::AABBTree(unsigned initialSize)
 
 AABBTree::~AABBTree()
 {
+
 }
 
 unsigned AABBTree::AllocateNode()
@@ -53,6 +56,8 @@ void AABBTree::DeallocateNode(unsigned nodeIndex)
 	deallocateNode.nextNodeIndex = nextFreeNodeIndex;
 	nextFreeNodeIndex = nodeIndex;
 	allocatedNodeCount--;
+
+	return;
 }
 
 void AABBTree::Insert(GameObject * go)
@@ -68,6 +73,7 @@ void AABBTree::Insert(GameObject * go)
 	InsertLeaf(nodeIndex);
 	objectNodeIndexMap[go] = nodeIndex;
 
+	return;
 }
 
 void AABBTree::InsertLeaf(unsigned leafNodeIndex)
@@ -182,6 +188,7 @@ void AABBTree::InsertLeaf(unsigned leafNodeIndex)
 	treeNodeIndex = leafNode.parentNodeIndex;
 	FixUpwardsTree(treeNodeIndex);
 
+	return;
 }
 
 void AABBTree::FixUpwardsTree(unsigned treeNodeIndex)
@@ -201,6 +208,8 @@ void AABBTree::FixUpwardsTree(unsigned treeNodeIndex)
 		treeNodeIndex = treeNode.parentNodeIndex;
 	}
 
+	return;
+
 }
 
 void AABBTree::Remove(GameObject* go)
@@ -209,6 +218,8 @@ void AABBTree::Remove(GameObject* go)
 	RemoveLeaf(nodeIndex);
 	DeallocateNode(nodeIndex);
 	objectNodeIndexMap.erase(go);
+
+	return;
 }
 
 void AABBTree::RemoveLeaf(unsigned leafNodeIndex)
@@ -255,25 +266,20 @@ void AABBTree::RemoveLeaf(unsigned leafNodeIndex)
 	}
 
 	leafNode.parentNodeIndex = AABB_NULL_NODE;
+
+	return;
 }
 
 void AABBTree::UpdateObject(GameObject * go)
 {
 	unsigned nodeIndex = objectNodeIndexMap[go];
 	UpdateLeaf(nodeIndex, *go->globalBoundingBox);
+
+	return;
 }
 
 void AABBTree::Draw() const
 {
-	/*
-	for (auto node : nodes)
-	{
-		if(!node.isLeaf())
-		{
-			dd::aabb(node.aabb.minPoint, node.aabb.maxPoint, float3(1.0f, 0.0f, 0.0f));
-		}
-	}
-	*/
 
 	if (rootNodeIndex == AABB_NULL_NODE)
 		return;
@@ -307,13 +313,13 @@ void AABBTree::UpdateLeaf(unsigned leafNodeIndex, const AABB & newAaab)
 	NodeAABB& node = nodes[leafNodeIndex];
 
 	// if the node contains the new aabb then we just leave things
-	// TODO: when we add velocity this check should kick in as often an update will lie within the velocity fattened initial aabb
-	// to support this we might need to differentiate between velocity fattened aabb and actual aabb
 	if (node.aabb.Contains(newAaab)) return;
 
 	RemoveLeaf(leafNodeIndex);
 	node.aabb = newAaab;
 	InsertLeaf(leafNodeIndex);
+	
+	return;
 }
 
 AABB AABBTree::MergeAABB(const AABB &first, const AABB &second) const
