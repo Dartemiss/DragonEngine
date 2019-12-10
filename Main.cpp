@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "Globals.h"
+#include "UUIDGenerator.h"
 
 #include "SDL/include/SDL.h"
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
@@ -17,6 +18,7 @@ enum main_states
 };
 
 Application* App = NULL;
+UUIDGenerator* UUIDGen = NULL;
 
 int main(int argc, char ** argv)
 {
@@ -30,6 +32,7 @@ int main(int argc, char ** argv)
 		case MAIN_CREATION:
 
 			LOG("Application Creation --------------");
+			UUIDGen = new UUIDGenerator();
 			App = new Application();
 			state = MAIN_START;
 			break;
@@ -83,5 +86,6 @@ int main(int argc, char ** argv)
 	}
 
 	delete App;
+	delete UUIDGen;
 	return main_return;
 }

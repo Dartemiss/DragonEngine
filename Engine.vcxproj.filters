@@ -188,6 +188,15 @@
     <ClCompile Include="ComponentCamera.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="SceneLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\PCG\pcg_basic.c">
+      <Filter>PCG</Filter>
+    </ClCompile>
+    <ClCompile Include="UUIDGenerator.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -480,6 +489,126 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="myStream.h" />
+    <ClInclude Include="SceneLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\allocators.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\cursorstreamwrapper.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\document.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\encodedstream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\encodings.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\filereadstream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\filewritestream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\fwd.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\istreamwrapper.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\memorybuffer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\memorystream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\ostreamwrapper.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\pointer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\prettywriter.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\rapidjson.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\reader.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\schema.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\stream.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\stringbuffer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\writer.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\error\en.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\error\error.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\biginteger.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\clzll.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\diyfp.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\dtoa.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\ieee754.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\itoa.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\meta.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\pow10.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\regex.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\stack.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\strfunc.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\strtod.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\internal\swap.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\msinttypes\inttypes.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\rapidjson\msinttypes\stdint.h">
+      <Filter>rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\PCG\pcg_basic.h">
+      <Filter>PCG</Filter>
+    </ClInclude>
+    <ClInclude Include="UUIDGenerator.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Skybox.h" />
   </ItemGroup>
   <ItemGroup>
@@ -503,6 +632,12 @@
     </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{36aa6b89-f439-4ead-96cd-17830c272b79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rapidjson">
+      <UniqueIdentifier>{43191d1a-113e-4578-a519-a44aab6d2f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCG">
+      <UniqueIdentifier>{b65b00e4-2712-433a-b18a-26d80c4c484e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
