@@ -12,7 +12,7 @@
 #include "ModuleScene.h"
 #include "Timer.h"
 #include "uSTimer.h"
-
+#include "Dependencies/brofiler/Brofiler.h"
 
 using namespace std;
 
@@ -58,6 +58,8 @@ bool Application::Init()
 
 update_status Application::Update()
 {
+	//Begining of the frame
+	BROFILER_FRAME("Mainframe");
 	update_status ret = UPDATE_CONTINUE;
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)

@@ -20,7 +20,7 @@
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
-
+#include "Dependencies/brofiler/Brofiler.h"
 
 
 
@@ -171,6 +171,9 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
+	//Use this line to compute information about this function
+	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
+	
 
 	//Draw Scene and Game Windows
 	bool isEnabled = true;
@@ -248,6 +251,9 @@ update_status ModuleRender::PostUpdate()
 	App->timemanager->InitDeltaTimes();
 
 	
+	
+	
+
 	return UPDATE_CONTINUE;
 }
 
@@ -531,6 +537,11 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+
+
+
+
 
 
 
