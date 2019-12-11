@@ -178,71 +178,38 @@ update_status ModuleRender::Update()
 	//Use this line to compute information about this function
 	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
 	
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::SetNextWindowPos(
+		ImVec2(352,19)
+		
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(1207,754)
+		
+	);
 
 	//Draw Scene and Game Windows
-	bool isEnabled = true;
-	//First Scene window is created
-	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-	ImVec2 wSize = ImGui::GetWindowSize();
-	App->camera->SetAspectRatio((int) wSize.x, (int) wSize.y);
-
-	CreateFrameBuffer((int) wSize.x, (int) wSize.y);
-	GenerateTexture((int)wSize.x, (int)wSize.y);
-
-
-	widthScene = (int) wSize.x;
-	heightScene = (int) wSize.y;
-
-	ImGui::GetWindowDrawList()->AddImage(
-		(void *)sceneTexture,
-		ImVec2(ImGui::GetCursorScreenPos()),
-		ImVec2(
-			ImGui::GetCursorScreenPos().x + wSize.x,
-			ImGui::GetCursorScreenPos().y + wSize.y
-		),
-		ImVec2(0, 1),
-		ImVec2(1, 0)
-	);
-
-
-	ImGui::End();
-	
-	bool gameIsEnabled = true;
-	ImGui::SetNextWindowSize(ImVec2(600, 600));
-	//Game Window
-	ImGui::Begin("Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-	ImVec2 wSizeGame = ImGui::GetWindowSize();
-	
-	if(App->scene->mainCamera == nullptr)
+	if (ImGui::Begin("MainView", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar))
 	{
-		ImGui::End();
-		LOG("Main camera is nullptr.");
-		return UPDATE_CONTINUE;
+		ImGui::BeginTabBar("");
+
+		if (ImGui::BeginTabItem("Scene"))
+		{
+			DrawSceneBuffer();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Game"))
+		{
+			DrawGameBuffer();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
 	}
-
-
-	gameCamera->SetAspectRatio((int)wSize.x, (int)wSize.y);
-	CreateFrameBuffer((int)wSizeGame.x, (int)wSizeGame.y, false);
-	GenerateTextureGame((int)wSizeGame.x, (int)wSizeGame.y);
-
-	widthGame = (int)wSizeGame.x;
-	heightGame = (int)wSizeGame.y;
-
-	ImGui::GetWindowDrawList()->AddImage(
-		(void *)gameTexture,
-		ImVec2(ImGui::GetCursorScreenPos()),
-		ImVec2(
-			ImGui::GetCursorScreenPos().x + wSizeGame.x,
-			ImGui::GetCursorScreenPos().y + wSizeGame.y
-		),
-		ImVec2(0, 1),
-		ImVec2(1, 0)
-	);
-
 	ImGui::End();
-	
+
+	ImGui::PopStyleVar();
 
 	return UPDATE_CONTINUE;
 }
@@ -605,6 +572,96 @@ void ModuleRender::DrawDebug() const
 	{
 		App->scene->aabbTree->Draw();
 	}
+
+	return;
+}
+
+void ModuleRender::DrawSceneBuffer()
+{
+	bool isEnabled = true;
+	//First Scene window is created
+	ImGui::SetNextWindowPos(
+		ImVec2(353, 48),
+		ImGuiCond_Once
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(1203, 722),
+		ImGuiCond_Once
+	);
+	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	App->camera->SceneNotActive = ImGui::IsWindowFocused();
+
+	ImVec2 wSize = ImGui::GetWindowSize();
+	App->camera->SetAspectRatio((int)wSize.x, (int)wSize.y);
+
+	CreateFrameBuffer((int)wSize.x, (int)wSize.y);
+	GenerateTexture((int)wSize.x, (int)wSize.y);
+
+
+	widthScene = (int)wSize.x;
+	heightScene = (int)wSize.y;
+
+	ImGui::GetWindowDrawList()->AddImage(
+		(void *)sceneTexture,
+		ImVec2(ImGui::GetCursorScreenPos()),
+		ImVec2(
+			ImGui::GetCursorScreenPos().x + wSize.x,
+			ImGui::GetCursorScreenPos().y + wSize.y
+		),
+		ImVec2(0, 1),
+		ImVec2(1, 0)
+	);
+
+
+	ImGui::End();
+
+	return;
+}
+
+void ModuleRender::DrawGameBuffer()
+{
+	bool gameIsEnabled = true;
+
+	ImGui::SetNextWindowPos(
+		ImVec2(353, 48),
+		ImGuiCond_Once
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(1203, 722),
+		ImGuiCond_Once
+	);
+	//Game Window
+	ImGui::Begin("Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+	ImVec2 wSizeGame = ImGui::GetWindowSize();
+
+	if (App->scene->mainCamera == nullptr)
+	{
+		ImGui::End();
+		LOG("Main camera is nullptr.");
+		return;
+	}
+
+
+	gameCamera->SetAspectRatio((int)wSizeGame.x, (int)wSizeGame.y);
+	CreateFrameBuffer((int)wSizeGame.x, (int)wSizeGame.y, false);
+	GenerateTextureGame((int)wSizeGame.x, (int)wSizeGame.y);
+
+	widthGame = (int)wSizeGame.x;
+	heightGame = (int)wSizeGame.y;
+
+	ImGui::GetWindowDrawList()->AddImage(
+		(void *)gameTexture,
+		ImVec2(ImGui::GetCursorScreenPos()),
+		ImVec2(
+			ImGui::GetCursorScreenPos().x + wSizeGame.x,
+			ImGui::GetCursorScreenPos().y + wSizeGame.y
+		),
+		ImVec2(0, 1),
+		ImVec2(1, 0)
+	);
+
+	ImGui::End();
 
 	return;
 }

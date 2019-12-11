@@ -56,6 +56,8 @@ public:
 	float zoomSpeed = 0.5f;
 	float motionOffset = 2.5f;
 
+	bool SceneNotActive = true;
+
 };
 
 #endif __ModuleCamera_H_

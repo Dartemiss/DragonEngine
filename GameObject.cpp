@@ -220,7 +220,6 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 			if (ImGui::MenuItem("Baker House"))
 			{
-				// TODO :CreateGameObjectBakerHouse();
 				App->scene->CreateGameObjectBakerHouse(this);
 			}
 
@@ -378,6 +377,13 @@ void GameObject::DrawAABB() const
 
 void GameObject::DrawInspector(bool &showInspector)
 {
+	ImGui::SetNextWindowPos(
+		ImVec2(1556, 18)
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(357, 997)
+	);
+
 	ImGui::Begin("Inspector", &showInspector);
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();

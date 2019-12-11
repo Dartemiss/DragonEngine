@@ -105,7 +105,8 @@ private:
 
 	//Methods
 	void DrawDebug() const;
-
+	void DrawSceneBuffer();
+	void DrawGameBuffer();
 	
 
 };

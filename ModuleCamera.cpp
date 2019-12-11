@@ -6,6 +6,7 @@
 #include "ModuleInput.h"
 #include "ModuleProgram.h"
 #include "ModuleModelLoader.h"
+#include "Dependencies/imgui/imgui.h"
 #include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include "SDL.h"
@@ -56,6 +57,9 @@ update_status ModuleCamera::PreUpdate()
 
 update_status ModuleCamera::Update()
 {
+	if (!SceneNotActive)
+		return UPDATE_CONTINUE;
+
 	float3 mov = float3::zero;
 
 	if(App->input->GetKey(SDL_SCANCODE_Q))

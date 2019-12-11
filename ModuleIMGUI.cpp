@@ -49,7 +49,7 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	guiWindow.Draw("Window Configuration");
 	console.Draw("Console");
@@ -57,6 +57,9 @@ update_status ModuleIMGUI::Update()
 	guiCamera.Draw("Camera Settings");
 	timeManager.Draw("Timers");
 	inspector.Draw("Properties");
+
+	ImGui::BeginTabBar("MainViewTabs");
+	ImGui::EndTabBar();
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 

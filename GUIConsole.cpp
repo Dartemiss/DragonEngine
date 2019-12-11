@@ -5,6 +5,7 @@ GUIConsole::GUIConsole()
 {
 	width = 1120;
 	height = 270;
+	isEnabled = true;
 }
 
 void GUIConsole::Clear()
@@ -21,7 +22,13 @@ void GUIConsole::Draw(const char * title)
 {
 	if (isEnabled) 
 	{
-		ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(
+			ImVec2(1, 770)
+			
+		);
+		ImGui::SetNextWindowSize(
+			ImVec2(878,244)
+		);
 		ImGui::Begin(title, &isEnabled);
 
 		if(firstTime)
@@ -34,6 +41,7 @@ void GUIConsole::Draw(const char * title)
 		}
 
 		ImVec2 size = ImGui::GetWindowSize();
+		
 		if(size.x != width && size.y != height)
 		{
 			width = size.x;
