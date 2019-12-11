@@ -3,8 +3,8 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "include/Geometry/Frustum.h"
-#include "include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 
 class Application;
 

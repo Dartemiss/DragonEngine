@@ -7,7 +7,7 @@
 #include "GameObject.h"
 #include "SceneLoader.h"
 #include <math.h>
-#include "include/Geometry/Plane.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
 #include "debugdraw.h"
 #include "glew.h"
 

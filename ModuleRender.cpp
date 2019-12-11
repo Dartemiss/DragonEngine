@@ -21,9 +21,9 @@
 #include "Dependencies/imgui/imgui.h"
 #include "Dependencies/imgui/imgui_impl_sdl.h"
 #include "Dependencies/imgui/imgui_impl_opengl3.h"
-#include "include/Geometry/Frustum.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
 #include <math.h>
-#include "include/Math/float4.h"
+#include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include "Dependencies/brofiler/Brofiler.h"
 
 

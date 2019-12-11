@@ -6,8 +6,8 @@
 #include "ModuleInput.h"
 #include "ModuleProgram.h"
 #include "ModuleModelLoader.h"
-#include "include/Geometry/Frustum.h"
-#include "include/Math/float4.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include "SDL.h"
 #include "glew.h"
 #include <math.h>

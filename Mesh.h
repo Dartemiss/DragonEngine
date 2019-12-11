@@ -3,10 +3,10 @@
 
 #include "Globals.h"
 #include "Module.h"
-#include "include/Math/float3.h"
+#include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include <string>
 #include <vector>
-#include "include/Math/float2.h"
+#include "Dependencies/MathGeoLib/include/Math/float2.h"
 #include "ModuleTexture.h"
 
 

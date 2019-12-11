@@ -1,5 +1,5 @@
 #include "ComponentTransform.h"
-#include "include/Math/MathFunc.h"
+#include "Dependencies/MathGeoLib/include/Math/MathFunc.h"
 #include "GameObject.h"
 #include "SceneLoader.h"
 

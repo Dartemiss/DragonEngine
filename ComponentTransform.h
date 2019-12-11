@@ -3,9 +3,9 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "include/Math/float3.h"
-#include "include/Math/Quat.h"
-#include "include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Math/float3.h"
+#include "Dependencies/MathGeoLib/include/Math/Quat.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 
 class ComponentTransform : public Component
 {
