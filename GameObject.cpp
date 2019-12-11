@@ -484,9 +484,19 @@ void GameObject::CheckDragAndDrop(GameObject * go)
 	if (ImGui::BeginDragDropTarget()) {
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAG");
 		if (payload != nullptr) {
-			GameObject * newChild = *reinterpret_cast<GameObject**>(payload->Data);
+			GameObject* newChild = *reinterpret_cast<GameObject**>(payload->Data);
 
-			//TODO: BFS for asking if newChild is parent
+			GameObject* parent = go;
+			//While parent is not root
+			while(parent->UID != 1)
+			{
+				if(parent->UID == newChild->UID)
+				{
+					LOG("It is not allowed to assign one of your children as a parent.");
+					return;
+				}
+				parent = parent->parent;
+			}
 
 			newChild->SetParent(go);
 			if(newChild->parent->myTransform != nullptr)
