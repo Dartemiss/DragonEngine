@@ -7,6 +7,8 @@
 #include "include/Math/float3x3.h"
 #include "ComponentCamera.h"
 #include "glew.h"
+#include <vector>
+#include <set>
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -57,8 +59,8 @@ public:
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
 	void DrawGrid();
-	void DrawAllGameObjects() const;
-	void DrawGame()const;
+	void DrawAllGameObjects();
+	void DrawGame();
 	
 	//If scene create buffer for scene else create buffer for game window
 	void CreateFrameBuffer(int width, int height, bool scene = true);
@@ -96,13 +98,15 @@ private:
 	
 	ComponentCamera* gameCamera = nullptr;
 	
+	std::vector<GameObject*> gameObjectsWithinFrustum;
+
 	//Skybox
 	Skybox* skybox = nullptr;
 
-	std::vector<GameObject*> gameObjectsWithinFrustum;
-
 	//Methods
 	void DrawDebug() const;
+
+	
 
 };
 

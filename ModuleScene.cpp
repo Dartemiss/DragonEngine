@@ -7,9 +7,9 @@
 #include "ComponentMesh.h"
 #include "MyQuadTree.h"
 #include "AABBTree.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "Dependencies/imgui/imgui.h"
+#include "Dependencies/imgui/imgui_impl_sdl.h"
+#include "Dependencies/imgui/imgui_impl_opengl3.h"
 #include "include/Math/float4.h"
 #include <random>
 
@@ -544,7 +544,7 @@ void ModuleScene::SaveScene()
 	SceneLoader * loader = new SceneLoader();
 
 	root->OnSave(*loader);
-	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
+	for (set<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
 		(*it)->OnSave(*loader);
 
 	loader->SaveJSONToFile("temp_save.json");
@@ -598,7 +598,7 @@ void ModuleScene::LoadScene()
 		if (currentGameObject->GetName() == "Main Camera")
 			mainCamera = currentGameObject;
 
-		allGameObjects.push_back(currentGameObject);
+		allGameObjects.insert(currentGameObject);
 
 		//Add gameobject to queue
 		parents.push(currentGameObject);

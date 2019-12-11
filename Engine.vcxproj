@@ -47,13 +47,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./SDL/include;./Dependencies/glew-2.1.0/include/GL;./Dependencies/MathGeoLib/include;./Dependencies/DevIL Windows SDK/include/IL;./Dependencies/assimp/include/assimp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./SDL/include;./Dependencies/glew-2.1.0/include/GL;./Dependencies/MathGeoLib/include;./Dependencies/DevIL Windows SDK/include/IL;./Dependencies/assimp/include/assimp;./Dependencies/brofiler;./Dependencies/PCG</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>./Dependencies/glew-2.1.0/lib/Release/Win32;./Dependencies/DevIL Windows SDK/lib/x86/Release;./Dependencies/assimp/lib/x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>./Dependencies/glew-2.1.0/lib/Release/Win32;./Dependencies/DevIL Windows SDK/lib/x86/Release;./Dependencies/assimp/lib/x86;./Dependencies/brofiler</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;ProfilerCore32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,6 +84,17 @@
     <ClInclude Include="ComponentMaterial.h" />
     <ClInclude Include="ComponentMesh.h" />
     <ClInclude Include="ComponentTransform.h" />
+    <ClInclude Include="debugdraw.h" />
+    <ClInclude Include="Dependencies\brofiler\Brofiler.h" />
+    <ClInclude Include="Dependencies\imgui\imconfig.h" />
+    <ClInclude Include="Dependencies\imgui\imgui.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_impl_sdl.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
+    <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\PCG\pcg_basic.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
@@ -93,14 +104,6 @@
     <ClInclude Include="GUIInspector.h" />
     <ClInclude Include="GUITime.h" />
     <ClInclude Include="GUIWindow.h" />
-    <ClInclude Include="imgui\imconfig.h" />
-    <ClInclude Include="imgui\imgui.h" />
-    <ClInclude Include="imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="imgui\imgui_impl_sdl.h" />
-    <ClInclude Include="imgui\imgui_internal.h" />
-    <ClInclude Include="imgui\imstb_rectpack.h" />
-    <ClInclude Include="imgui\imstb_textedit.h" />
-    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="include\Algorithm\Random\LCG.h" />
     <ClInclude Include="include\Geometry\AABB.h" />
     <ClInclude Include="include\Geometry\AABB2D.h" />
@@ -177,8 +180,11 @@
     <ClInclude Include="MyQuadTree.h" />
     <ClInclude Include="myStream.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="uSTimer.h" />
+    <ClInclude Include="UUIDGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABBTree.cpp" />
@@ -187,6 +193,13 @@
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Dependencies\PCG\pcg_basic.c" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUIAbout.cpp" />
     <ClCompile Include="GUICamera.cpp" />
@@ -194,12 +207,6 @@
     <ClCompile Include="GUIInspector.cpp" />
     <ClCompile Include="GUITime.cpp" />
     <ClCompile Include="GUIWindow.cpp" />
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="imgui\imgui_impl_sdl.cpp" />
-    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="include\Algorithm\Random\LCG.cpp" />
     <ClCompile Include="include\Geometry\AABB.cpp" />
     <ClCompile Include="include\Geometry\Capsule.cpp" />
@@ -247,8 +254,11 @@
     <ClCompile Include="ModuleTimeManager.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="MyQuadTree.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="uSTimer.cpp" />
+    <ClCompile Include="UUIDGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig" />
@@ -262,10 +272,9 @@
     <None Include="Shaders\Grid.fs" />
     <None Include="Shaders\Grid.vs" />
     <None Include="Shaders\Model.fs" />
+    <None Include="Shaders\Skybox.fs" />
+    <None Include="Shaders\Skybox.vs" />
     <None Include="Shaders\VertexShader.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="imgui\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

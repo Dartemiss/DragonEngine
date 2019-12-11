@@ -18,9 +18,9 @@
 #include "Skybox.h"
 #include "SDL.h"
 #include "glew.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "Dependencies/imgui/imgui.h"
+#include "Dependencies/imgui/imgui_impl_sdl.h"
+#include "Dependencies/imgui/imgui_impl_opengl3.h"
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
@@ -332,7 +332,7 @@ void ModuleRender::DrawGrid()
 	glUseProgram(0);
 }
 
-void ModuleRender::DrawAllGameObjects() const
+void ModuleRender::DrawAllGameObjects()
 {
 
 	unsigned int progModel = App->program->defaultProg;
@@ -396,7 +396,7 @@ void ModuleRender::DrawAllGameObjects() const
 	glUseProgram(0);
 }
 
-void ModuleRender::DrawGame() const
+void ModuleRender::DrawGame()
 {
 	unsigned int progModel = App->program->defaultProg;
 	glUseProgram(progModel);
