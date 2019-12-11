@@ -29,6 +29,7 @@ public:
 		name = componentName;
 	}
 
+
 	virtual void Enable()
 	{
 		return;

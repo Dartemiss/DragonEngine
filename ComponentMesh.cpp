@@ -3,9 +3,17 @@
 #include "Application.h"
 #include "SceneLoader.h"
 
-ComponentMesh::ComponentMesh()
+ComponentMesh::ComponentMesh(GameObject* go)
 {
+	myGameObject = go;
 	myType = MESH;
+}
+
+ComponentMesh::ComponentMesh(GameObject * go, ComponentMesh * comp)
+{
+	myGameObject = go;
+	myType = MESH;
+	mesh = comp->mesh;
 }
 
 

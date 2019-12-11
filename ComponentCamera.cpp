@@ -12,8 +12,9 @@
 #include "glew.h"
 
 
-ComponentCamera::ComponentCamera()
+ComponentCamera::ComponentCamera(GameObject* go)
 {
+	myGameObject = go;
 	myType = CAMERA;
 
 	frustum = new Frustum();
@@ -28,6 +29,18 @@ ComponentCamera::ComponentCamera()
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 
 	frustum->Translate(float3(0.0f, 0.0f, 0.0f));
+
+	proj = frustum->ProjectionMatrix();
+	view = frustum->ViewMatrix();
+
+}
+
+ComponentCamera::ComponentCamera(GameObject * go, ComponentCamera * comp)
+{
+	myGameObject = go;
+	myType = CAMERA;
+
+	frustum = new Frustum(*comp->frustum);
 
 	proj = frustum->ProjectionMatrix();
 	view = frustum->ViewMatrix();

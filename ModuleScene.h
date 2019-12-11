@@ -35,6 +35,8 @@ public:
 	//Methods
 	GameObject* CreateGameObject();
 	GameObject* CreateGameObject(const char* name, GameObject* parent);
+	GameObject* CreateGameObject(GameObject* go);
+
 	void LoadModel(const char* path, GameObject* parent);
 
 	//Creators
@@ -97,6 +99,10 @@ public:
 
 	void SaveScene();
 	void LoadScene();
+
+	GameObject* clipboard = nullptr;
+	void PasteGameObject(GameObject* go);
+
 
 
 private:

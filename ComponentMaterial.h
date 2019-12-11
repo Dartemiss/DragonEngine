@@ -8,7 +8,8 @@
 class ComponentMaterial : public Component
 {
 public:
-	ComponentMaterial();
+	ComponentMaterial(GameObject* go);
+	ComponentMaterial(GameObject* go, ComponentMaterial* comp);
 	~ComponentMaterial();
 
 	void Update();

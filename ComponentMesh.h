@@ -9,7 +9,8 @@
 class ComponentMesh : public Component
 {
 public:
-	ComponentMesh();
+	ComponentMesh(GameObject* go);
+	ComponentMesh(GameObject* go, ComponentMesh* comp);
 	~ComponentMesh();
 
 	void Update();

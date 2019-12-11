@@ -11,6 +11,7 @@ class ComponentTransform : public Component
 {
 public:
 	ComponentTransform(GameObject* gameObject);
+	ComponentTransform(GameObject* gameObject, ComponentTransform* comp);
 	~ComponentTransform();
 
 	void EulerToQuat();

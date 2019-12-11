@@ -122,6 +122,13 @@ GameObject * ModuleScene::CreateGameObject(const char * name, GameObject * paren
 	return gameObject;
 }
 
+GameObject * ModuleScene::CreateGameObject(GameObject * go)
+{
+	GameObject* gameObject = new GameObject(*go);
+
+	return nullptr;
+}
+
 void ModuleScene::LoadModel(const char * path, GameObject* parent)
 {
 	LOG("Trying to load model in path : %s", path);
@@ -603,5 +610,22 @@ void ModuleScene::LoadScene()
 		//Add gameobject to queue
 		parents.push(currentGameObject);
 	}
+}
+
+void ModuleScene::PasteGameObject(GameObject * go)
+{
+	assert(go != nullptr);
+	if(clipboard == nullptr)
+	{
+		LOG("You have nothing copied on the clipboard.");
+		return;
+	}
+	GameObject* pastedGO = new GameObject(*clipboard, go);
+	go->children.push_back(pastedGO);
+	++clipboard->numberOfCopies;
+
+	allGameObjects.insert(pastedGO);
+
+	return;
 }
 

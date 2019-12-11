@@ -17,7 +17,8 @@ const bool BEHIND = false;
 class ComponentCamera : public Component
 {
 public:
-	ComponentCamera();
+	ComponentCamera(GameObject* go);
+	ComponentCamera(GameObject* go, ComponentCamera* comp);
 	~ComponentCamera();
 
 	void Update();

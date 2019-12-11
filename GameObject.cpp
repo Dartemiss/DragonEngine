@@ -28,6 +28,68 @@ GameObject::GameObject(const char * name)
 	this->UID = UUIDGen->getUUID();
 }
 
+GameObject::GameObject(const GameObject &go, GameObject* parent)
+{
+	this->name = go.name + std::to_string(go.numberOfCopies);
+
+	shape = go.shape;
+	boundingBox = new AABB(*go.boundingBox);
+	globalBoundingBox = new AABB(*go.globalBoundingBox);
+
+	for(auto comp : go.components)
+	{
+		Component* aux;
+		switch (comp->myType)
+		{
+			case TRANSFORM:
+				 aux = new ComponentTransform(parent, (ComponentTransform*)comp);
+				break;
+			case MESH:
+				aux = new ComponentMesh(parent, (ComponentMesh*)comp);
+				break;
+			case MATERIAL:
+				aux = new ComponentMaterial(parent, (ComponentMaterial*)comp);
+				break;
+			case CAMERA:
+				aux = new ComponentCamera(parent, (ComponentCamera*)comp);
+				break;
+			default:
+				break;
+		}
+
+		components.push_back(aux);
+	}
+
+	for(auto myComp : components)
+	{
+		if (myComp->myType == TRANSFORM)
+			myTransform = (ComponentTransform*)myComp;
+
+		if (myComp->myType == MESH)
+			myMesh = (ComponentMesh*)myComp;
+
+		if (myComp->myType == MATERIAL)
+			myMaterial = (ComponentMaterial*)myComp;
+
+	}
+
+	//Get a copy of all childs
+	for(auto child : go.children)
+	{
+		GameObject* newChild = new GameObject(*child,this);
+		children.push_back(newChild);
+	}
+
+	this->parent = parent;
+	//UID substitute
+	
+	isStatic = go.isStatic;
+	isParentOfMeshes = go.isParentOfMeshes;
+
+	this->UID = UUIDGen->getUUID();
+
+}
+
 
 GameObject::~GameObject()
 {
@@ -113,16 +175,16 @@ Component * GameObject::CreateComponent(ComponentType type)
 			myTransform = (ComponentTransform*)component;
 			break;
 		case MESH:
-			component = new ComponentMesh();
+			component = new ComponentMesh(this);
 			myMesh = (ComponentMesh*)component;
 			break;
 		case MATERIAL:
-			component = new ComponentMaterial();
+			component = new ComponentMaterial(this);
 			myMaterial = (ComponentMaterial*)component;
 			break;
 
 		case CAMERA:
-			component = new ComponentCamera();
+			component = new ComponentCamera(this);
 			break;
 		default:
 			LOG("ERROR: INVALID TYPE OF COMPONENT");
@@ -166,10 +228,12 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		if (ImGui::Selectable("Copy"))
 		{
 			//TODO: Copy gameobjects
+			App->scene->clipboard = this;
 		}
 		if (ImGui::Selectable("Paste"))
 		{
 			//TODO: Paste gameobjects
+			App->scene->PasteGameObject(this);
 		}
 		
 		ImGui::Separator();

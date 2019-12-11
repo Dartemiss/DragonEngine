@@ -20,6 +20,7 @@ class GameObject
 public:
 	GameObject();
 	GameObject(const char* name);
+	GameObject(const GameObject &go, GameObject* parent);
 	~GameObject();
 
 	//Core
@@ -83,6 +84,8 @@ public:
 
 	void OnSave(SceneLoader & loader);
 	void OnLoad(SceneLoader & loader);
+
+	int numberOfCopies = 0;
 
 private:
 	std::string name;
