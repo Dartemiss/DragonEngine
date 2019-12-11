@@ -12,6 +12,10 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "SDL.h"
 #include "debugdraw.h"
+#include "UUIDGenerator.h"
+#include "SceneLoader.h"
+
+using namespace std;
 
 GameObject::GameObject()
 {
@@ -21,7 +25,7 @@ GameObject::GameObject(const char * name)
 {
 	this->name = name;
 	CreateComponent(TRANSFORM);
-
+	this->UID = UUIDGen->getUUID();
 }
 
 
@@ -129,7 +133,6 @@ Component * GameObject::CreateComponent(ComponentType type)
 	component->myGameObject = this;
 
 	components.push_back(component);
-
 
 	return component;
 }
@@ -419,6 +422,56 @@ void GameObject::DrawInspector(bool &showInspector)
 	ImGui::End();
 	//Change EulerRotation to Quat
 	myTransform->EulerToQuat();
+}
+
+void GameObject::OnSave(SceneLoader & loader)
+{
+	loader.StartGameObject();
+	loader.AddUnsignedInt("UID", UID);
+	if (parent != nullptr)
+		loader.AddUnsignedInt("parentUID", parent->UID);
+	else
+		loader.AddUnsignedInt("parentUID", 0); 
+	loader.AddString("Name", name.c_str());
+
+	//Save all components
+	myTransform->OnSave(loader);
+
+	loader.CreateComponentArray();
+	for (vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		//Special save for Transform
+		if ((*it)->myType == TRANSFORM)
+			continue;
+		
+		loader.StartComponent();
+		(*it)->OnSave(loader);
+		loader.FinishComponent();
+	}
+
+	loader.FinishGameObject();
+}
+
+void GameObject::OnLoad(SceneLoader & loader)
+{
+	UID = loader.GetUnsignedInt("UID", 0);
+	assert(UID != 0);
+
+	name = loader.GetString("Name", "GameObject");
+
+	//Special load for Transform
+	CreateComponent(TRANSFORM);
+	myTransform->OnLoad(loader);
+
+	Component* component;
+	while (loader.SelectNextComponent())
+	{
+		ComponentType type = (ComponentType)loader.GetUnsignedInt("Type", 0);
+		assert(type != 0);
+		
+		component = CreateComponent(type);
+		component->OnLoad(loader);
+	}
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)

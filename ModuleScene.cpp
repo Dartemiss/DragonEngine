@@ -13,10 +13,15 @@
 #include "include/Math/float4.h"
 #include <random>
 
+#include "SceneLoader.h"
+#include <queue>
+
+using namespace std;
 
 ModuleScene::ModuleScene()
 {
 	root = new GameObject("World");
+	root->UID = 1;
 	root->isRoot = true;
 	root->isStatic = true;
 }
@@ -279,11 +284,15 @@ void ModuleScene::RemoveGameObject(GameObject * go)
 	{
 		allGameObjects.erase(go);
 	}
+
+	return;
 }
 
 void ModuleScene::SelectObjectInHierarchy(GameObject * selected)
 {
 	selectedByHierarchy = selected;
+
+	return;
 }
 
 void ModuleScene::DrawUIBarMenuGameObject()
@@ -528,6 +537,71 @@ void ModuleScene::MoveObjects(GameObject* go) const
 	}
 	
 	return;
+}
 
+void ModuleScene::SaveScene()
+{
+	SceneLoader * loader = new SceneLoader();
+
+	root->OnSave(*loader);
+	for (vector<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
+		(*it)->OnSave(*loader);
+
+	loader->SaveJSONToFile("temp_save.json");
+
+	delete loader;
+}
+
+void ModuleScene::LoadScene()
+{
+	SceneLoader * loader = new SceneLoader();
+
+	loader->LoadJSONFromFile("temp_save.json");
+
+	//Check root node exists
+	if (!loader->SetCurrentObject(0))
+	{
+		LOG("Root node does not exist! Cant load Scene.");
+		return;
+	}
+
+	//Remove previous data
+	CleanUp();
+	allGameObjects.clear();
+
+	//Create root
+	root = new GameObject();
+	root->OnLoad(*loader);
+
+	//Start queue for loading the rest of the scene
+	queue<GameObject*> parents;
+	parents.push(root);
+	GameObject * parent;
+	GameObject * currentGameObject;
+
+	while (parents.size() > 0)
+	{
+		//Search for gameobject with same parent uid
+		parent = parents.front();
+		if (!loader->SetCurrentObject(parent->UID))
+		{
+			//If no gameobject is found, go to next parent
+			parents.pop();
+			continue;
+		}
+		
+		//Create gameobject and link parent
+		currentGameObject = new GameObject();
+		currentGameObject->OnLoad(*loader);
+		currentGameObject->SetParent(parent);
+
+		if (currentGameObject->GetName() == "Main Camera")
+			mainCamera = currentGameObject;
+
+		allGameObjects.push_back(currentGameObject);
+
+		//Add gameobject to queue
+		parents.push(currentGameObject);
+	}
 }
 

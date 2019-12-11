@@ -131,6 +131,21 @@ update_status ModuleIMGUI::Update()
 
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Scene"))
+		{
+			if (ImGui::MenuItem("Save Scene"))
+			{
+				App->scene->SaveScene();
+			}
+
+			if (ImGui::MenuItem("Load Scene"))
+			{
+				App->scene->LoadScene();
+			}
+
+			ImGui::EndMenu();
+		}
 	}
 	ImGui::EndMainMenuBar();
 

@@ -41,7 +41,7 @@ bool ModuleCamera::Init()
 	proj = frustum->ProjectionMatrix();
 	view = frustum->ViewMatrix();
 
-	UpdateUniformShaderMatrices();
+	//UpdateUniformShaderMatrices();
 
 	
 	return true;

@@ -15,6 +15,7 @@
 #include "MyQuadTree.h"
 #include "AABBTree.h"
 #include "debugdraw.h"
+#include "Skybox.h"
 #include "SDL.h"
 #include "glew.h"
 #include "imgui/imgui.h"
@@ -23,6 +24,7 @@
 #include "include/Geometry/Frustum.h"
 #include <math.h>
 #include "include/Math/float4.h"
+#include "Dependencies/brofiler/Brofiler.h"
 
 
 
@@ -103,6 +105,8 @@ bool ModuleRender::Init()
 	//Debugging
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 
+	App->window->glcontext = SDL_GL_CreateContext(App->window->window);
+
 	GLenum err = glewInit();
 	// … check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
@@ -147,6 +151,9 @@ bool ModuleRender::Init()
 		}
 	}
 
+	//Skybox
+
+	skybox = new Skybox();
 
 	return true;
 }
@@ -168,6 +175,9 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
+	//Use this line to compute information about this function
+	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
+	
 
 	//Draw Scene and Game Windows
 	bool isEnabled = true;
@@ -245,12 +255,18 @@ update_status ModuleRender::PostUpdate()
 	App->timemanager->InitDeltaTimes();
 
 	
+	
+	
+
 	return UPDATE_CONTINUE;
 }
 
 // Called before quitting
 bool ModuleRender::CleanUp()
 {
+	delete skybox;
+	delete gameCamera;
+
 	LOG("Destroying renderer");
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -316,7 +332,7 @@ void ModuleRender::DrawGrid()
 	glUseProgram(0);
 }
 
-void ModuleRender::DrawAllGameObjects()
+void ModuleRender::DrawAllGameObjects() const
 {
 
 	unsigned int progModel = App->program->defaultProg;
@@ -380,7 +396,7 @@ void ModuleRender::DrawAllGameObjects()
 	glUseProgram(0);
 }
 
-void ModuleRender::DrawGame()
+void ModuleRender::DrawGame() const
 {
 	unsigned int progModel = App->program->defaultProg;
 	glUseProgram(progModel);
@@ -429,6 +445,8 @@ void ModuleRender::DrawGame()
 
 	glUseProgram(0);
 }
+
+
 
 
 
@@ -540,12 +558,22 @@ void ModuleRender::GenerateTexture(int width, int height)
 	glViewport(0, 0, width, height);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//Draw all scene
 	if(showFrustum)
 		App->scene->mainCamera->DrawCamera();
+
 	DrawDebug();
 	DrawAllGameObjects();
+
+	
+	if(skybox != nullptr && showSkybox)
+		skybox->DrawSkybox();
+
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	//Why outside of framebuffer?
 	App->debugDraw->Draw(App->camera, frameBufferObject, height, width);
 }
 
@@ -580,6 +608,11 @@ void ModuleRender::DrawDebug() const
 
 	return;
 }
+
+
+
+
+
 
 
 

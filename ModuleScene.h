@@ -7,9 +7,12 @@
 #include "Timer.h"
 #include <set>
 
+<<<<<<< HEAD
 class MyQuadTree;
 class AABBTree;
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum ShapeType
 {
 	OTHER = 0,
@@ -94,6 +97,9 @@ public:
 	bool moveObjectsArround = false;
 
 	bool moveItems = false;
+
+	void SaveScene();
+	void LoadScene();
 
 
 private:

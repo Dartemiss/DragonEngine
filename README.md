@@ -6,7 +6,7 @@
 
 - Project developed for [UPC programming AAA videogames master's degree](https://www.talent.upc.edu/ing/estudis/formacio/curs/201200/master-degree-advanced-programming-aaa-videogames/).
 
-- Author: [Enrique Alexandre González Sequeira](https://dartemiss.github.io)
+- Author: [Enrique Alexandre González Sequeira](https://dartemiss.github.io) and [Jordi Romagosa Mellado](https://github.com/JordiRomagosa)
 
 - Repository: https://github.com/Dartemiss/DragonEngine
 

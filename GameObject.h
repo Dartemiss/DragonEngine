@@ -13,6 +13,7 @@ class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
 class ComponentCamera;
+class SceneLoader;
 
 class GameObject
 {
@@ -41,9 +42,8 @@ public:
 	void UpdateTransform();
 
 	//Variables
-	//ID are unique
-	//TODO: ID system
-	unsigned int ID;
+	//UID are unique
+	unsigned int UID;
 
 	//All GameObjects have a transform
 	ComponentTransform* myTransform = nullptr;
@@ -63,7 +63,7 @@ public:
 	void SetName(const std::string &newName);
 	std::string GetName() const;
 
-	//ID substitute
+	//UID substitute
 	bool isRoot = false;
 	bool isEnabled = true;
 	bool isStatic = false;
@@ -80,6 +80,9 @@ public:
 
 	//Shape type
 	enum ShapeType shape;
+
+	void OnSave(SceneLoader & loader);
+	void OnLoad(SceneLoader & loader);
 
 private:
 	std::string name;

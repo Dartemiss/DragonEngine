@@ -20,6 +20,10 @@ public:
 	void SetLocalMatrix(float4x4 &newParentGlobalMatrix);
 	void TranslateTo(const float3 &newPos);
 
+	//Saving and loading
+	void OnSave(SceneLoader & loader);
+	void OnLoad(SceneLoader & loader);
+
 	//Variables
 	//Local Transform
 	float3 position = float3(0.0f, 0.0f, 0.0f);
@@ -29,7 +33,6 @@ public:
 
 	float4x4 localModelMatrix = float4x4::identity;
 	float4x4 globalModelMatrix = float4x4::identity;
-
 
 };
 

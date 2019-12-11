@@ -25,12 +25,12 @@ void GUICamera::Draw(const char * title)
 
 		ImGui::Checkbox("Show Grid", &App->renderer->showGrid);
 		ImGui::Checkbox("Show Bounding Box", &App->renderer->showBoundingBox);
+		ImGui::Checkbox("Show Skybox", &App->renderer->showSkybox);
 		ImGui::Checkbox("Show QuadTree", &App->renderer->showQuadTree); 
 		ImGui::Checkbox("Show AABBTree", &App->renderer->showAABBTree);
 		ImGui::Checkbox("Show Frustum", &App->renderer->showFrustum);
 		ImGui::Checkbox("Frusum Culling", &App->renderer->frustumCullingIsActivated);
 		ImGui::Checkbox("Move Objects", &App->scene->moveObjectsArround);
-
 
 		if(ImGui::Button("Build QuadTree"))
 		{
@@ -51,7 +51,6 @@ void GUICamera::Draw(const char * title)
 			App->scene->CreateShapesScript();
 		}
 
-		
 		ImGui::End();
 
 	}
