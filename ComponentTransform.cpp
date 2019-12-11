@@ -1,5 +1,5 @@
 #include "ComponentTransform.h"
-#include "include/Math/MathFunc.h"
+#include "Dependencies/MathGeoLib/include/Math/MathFunc.h"
 #include "GameObject.h"
 #include "SceneLoader.h"
 
@@ -42,6 +42,11 @@ void ComponentTransform::SetLocalMatrix(float4x4 &newParentGlobalMatrix)
 	localModelMatrix = newParentGlobalMatrix.Inverted() *  globalModelMatrix;
 	localModelMatrix.Decompose(position, rotation, scale);
 	QuatToEuler();
+}
+
+void ComponentTransform::TranslateTo(const float3 & newPos)
+{
+	position = newPos;
 }
 
 void ComponentTransform::OnSave(SceneLoader & loader)

@@ -3,8 +3,8 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "include/Geometry/Frustum.h"
-#include "include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 
 class Application;
 
@@ -41,6 +41,11 @@ public:
 	//Variables
 	float aspect = 1.0f;
 	Frustum* frustum;
+
+	//Getter Matrix
+	float4x4 GetProjMatrix() const;
+	float4x4 GetViewMatrix() const;
+
 
 	//Matrices
 	float4x4 proj = float4x4::zero;

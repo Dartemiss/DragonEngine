@@ -3,10 +3,10 @@
 
 #include "Globals.h"
 #include "Module.h"
-#include "include/Math/float3.h"
+#include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include <string>
 #include <vector>
-#include "include/Math/float2.h"
+#include "Dependencies/MathGeoLib/include/Math/float2.h"
 #include "ModuleTexture.h"
 
 
@@ -24,7 +24,7 @@ public:
 	std::vector<Texture> textures;
 	/*  Functions  */
 	void Init();
-	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
+	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
 	~Mesh();
 	void Draw(const unsigned int program) const;
 private:

@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "include/Geometry/AABB.h"
+#include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
 #include <string>
 #include <vector>
 
@@ -77,6 +77,9 @@ public:
 	AABB* globalBoundingBox = nullptr;
 
 	void DrawInspector(bool &showInspector);
+
+	//Shape type
+	enum ShapeType shape;
 
 	void OnSave(SceneLoader & loader);
 	void OnLoad(SceneLoader & loader);

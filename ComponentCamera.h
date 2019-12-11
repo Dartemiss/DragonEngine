@@ -3,8 +3,8 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "include/Geometry/Frustum.h"
-#include "include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 
 
 const int AABB_OUT = 0;
@@ -33,8 +33,8 @@ public:
 	void LookAt(const float3 target);
 
 	//Frutum intersection
-	int AABBWithinFrustum(const AABB &aabb);
-	bool SideOfPlane(float3 &point, Plane &plane);
+	int AABBWithinFrustum(const AABB &aabb) const;
+	bool SideOfPlane(const float3 &point, const Plane &plane) const;
 
 	//Saving and loading
 	void OnSave(SceneLoader & loader);

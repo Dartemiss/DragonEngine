@@ -5,7 +5,7 @@
 #include "glew.h"
 #include "SDL.h"
 #include "glew.h"
-#include "include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 #include "assert.h"
 #include <string>
 #include <streambuf>

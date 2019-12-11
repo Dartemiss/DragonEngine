@@ -6,8 +6,8 @@
 #include "ModuleInput.h"
 #include "ModuleProgram.h"
 #include "ModuleModelLoader.h"
-#include "include/Geometry/Frustum.h"
-#include "include/Math/float4.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include "SDL.h"
 #include "glew.h"
 #include <math.h>
@@ -293,4 +293,14 @@ void ModuleCamera::UpdateUniformShaderMatrices()
 	glBindBuffer(GL_UNIFORM_BUFFER, App->program->uniformsBuffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float4x4), sizeof(float4x4), &view[0][0]);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+float4x4 ModuleCamera::GetProjMatrix() const
+{
+	return proj;
+}
+
+float4x4 ModuleCamera::GetViewMatrix() const
+{
+	return view;
 }

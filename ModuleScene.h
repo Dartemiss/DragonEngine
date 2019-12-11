@@ -4,13 +4,20 @@
 #include "Globals.h"
 #include "Module.h"
 #include "GameObject.h"
+#include "Timer.h"
+#include <set>
+
+class MyQuadTree;
+class AABBTree;
 
 enum ShapeType
 {
-	SPHERE = 0,
+	OTHER = 0,
+	SPHERE,
 	CUBE,
 	CYLINDER,
 	TORUS
+	
 };
 
 class ModuleScene : public Module
@@ -42,15 +49,55 @@ public:
 	//Drawing Methods
 	void DrawUIBarMenuGameObject();
 	void DrawGUI();
+
 	//AllGameObjectsCreated
-	std::vector<GameObject*> allGameObjects;
+	std::set<GameObject*> allGameObjects;
 	bool showHierarchy = true;
 	bool showInspector = true;
 	//Game's Main Camera Object
 	GameObject* mainCamera = nullptr;
 
+	//QuadTree
+	MyQuadTree* quadtree = nullptr;
+	MyQuadTree* quadtreeIterative = nullptr;
+	AABBTree* aabbTree = nullptr;
+
+	void AddToQuadtree(GameObject* go) const;
+	void RemoveFromQuadTree(GameObject* go) const;
+
+	bool quadTreeInitialized = false;
+
+	//Static objects
+	void BuildQuadTree();
+	//Dynamic objects
+	void BuildAABBTree();
+	void CreateCubesScript();
+	void CreateShapesScript();
+
+	AABB* ComputeSceneAABB() const;
+
+	//Move Objects
+	void MoveObjects(GameObject* go) const;
+
+	//Timers
+	Timer iterative = Timer();
+	Timer recursive = Timer();
+	Timer aabbTreeTimer = Timer();
+
+	float timeRecursive = 0.0f;
+	float timeIterative = 0.0f;
+	float timeAABBTree = 0.0f;
+
+	bool quadtreeIsComputed = false;
+	bool aabbTreeIsComputed = false;
+
+	bool moveObjectsArround = false;
+
+	bool moveItems = false;
+
 	void SaveScene();
 	void LoadScene();
+
 
 private:
 	//Root

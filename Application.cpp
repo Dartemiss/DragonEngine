@@ -10,6 +10,7 @@
 #include "ModuleModelLoader.h"
 #include "ModuleTimeManager.h"
 #include "ModuleScene.h"
+#include "ModuleDebugDraw.h"
 #include "Timer.h"
 #include "uSTimer.h"
 #include "Dependencies/brofiler/Brofiler.h"
@@ -24,11 +25,13 @@ Application::Application()
 	modules.push_back(imgui = new ModuleIMGUI());
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(modelLoader = new ModuleModelLoader());
-	modules.push_back(texture = new ModuleTexture());
 	modules.push_back(scene = new ModuleScene());
-	modules.push_back(camera = new ModuleCamera());
+	modules.push_back(texture = new ModuleTexture());
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(program = new ModuleProgram());
+	modules.push_back(camera = new ModuleCamera());
+	modules.push_back(debugDraw = new ModuleDebugDraw());
+
 
 }
 
