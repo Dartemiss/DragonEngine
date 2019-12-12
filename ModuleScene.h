@@ -102,7 +102,7 @@ public:
 
 	GameObject* clipboard = nullptr;
 	void PasteGameObject(GameObject* go);
-
+	void DuplicateGameObject(GameObject* go);
 	void InsertChilds(GameObject* go);
 
 

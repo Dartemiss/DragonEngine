@@ -623,7 +623,6 @@ void ModuleScene::PasteGameObject(GameObject * go)
 	}
 	GameObject* pastedGO = new GameObject(*clipboard, go);
 	go->children.push_back(pastedGO);
-	pastedGO->SetParent(go);
 	++clipboard->numberOfCopies;
 
 	allGameObjects.insert(pastedGO);
@@ -634,9 +633,32 @@ void ModuleScene::PasteGameObject(GameObject * go)
 	return;
 }
 
+void ModuleScene::DuplicateGameObject(GameObject * go)
+{
+	assert(go != nullptr);
+
+	if(go->UID == 1)
+	{
+		LOG("ERROR: You cannot duplicate the root. STOP!");
+		return;
+	}
+
+	GameObject* duplicatedGO = new GameObject(*go, go->parent);
+	go->parent->children.push_back(duplicatedGO);
+	++clipboard->numberOfCopies;
+
+	allGameObjects.insert(duplicatedGO);
+	//Add all childs to the scene
+
+	InsertChilds(duplicatedGO);
+
+	return;
+}
+
 
 void ModuleScene::InsertChilds(GameObject * go)
 {
+	assert(go != nullptr);
 
 	for(auto ch : go->children)
 	{

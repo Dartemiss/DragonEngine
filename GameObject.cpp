@@ -227,12 +227,13 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		
 		if (ImGui::Selectable("Copy"))
 		{
-			//TODO: Copy gameobjects
-			App->scene->clipboard = this;
+			if (this->UID != 1)
+				App->scene->clipboard = this;
+			else
+				LOG("Root cannot be copied. STOP!");
 		}
 		if (ImGui::Selectable("Paste"))
 		{
-			//TODO: Paste gameobjects
 			App->scene->PasteGameObject(this);
 		}
 		
@@ -244,7 +245,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		}
 		if (ImGui::Selectable("Duplicate"))
 		{
-			//TODO: Duplicate gameobjects
+			App->scene->DuplicateGameObject(this);
 		}
 
 		if (ImGui::Selectable("Delete"))
