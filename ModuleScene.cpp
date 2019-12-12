@@ -11,6 +11,9 @@
 #include "Dependencies/imgui/imgui_impl_sdl.h"
 #include "Dependencies/imgui/imgui_impl_opengl3.h"
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
 #include <random>
 
 #include "SceneLoader.h"
@@ -668,5 +671,28 @@ void ModuleScene::InsertChilds(GameObject * go)
 
 
 	return;
+}
+
+LineSegment * ModuleScene::CreateRayCast(float3 origin, float3 direction, float maxDistance)
+{
+	//TODO: Ask Ric if creating a frustum each time you cast a raycast is efficient
+
+	Frustum auxFrustum = Frustum();
+	auxFrustum.pos = origin - float3(0.1f,0.1f,0.1f);
+	auxFrustum.type = FrustumType::PerspectiveFrustum;
+	auxFrustum.nearPlaneDistance = 0.1f;
+	auxFrustum.farPlaneDistance = maxDistance;
+	auxFrustum.front = direction;
+	auxFrustum.up = (direction.Cross(float3(0,1,0))).Cross(direction);
+	auxFrustum.verticalFov = (float)M_PI / 4.0f;
+	auxFrustum.horizontalFov = 2.0f * atanf(tanf(auxFrustum.verticalFov * 0.5f) *1.0f);
+
+	Plane nearPlane = auxFrustum.NearPlane();
+	nearPlane.ClosestPoint(origin);
+
+	float normalized_x = 0.0f;
+	float normalized_y = 0.0f;
+
+	return new LineSegment(auxFrustum.UnProjectLineSegment(normalized_x, normalized_y));
 }
 

@@ -107,6 +107,10 @@ public:
 
 	GameObject* selectedByHierarchy = nullptr;
 
+	//Mouse Picking
+	LineSegment* CreateRayCast(float3 origin, float3 direction, float maxDistance);
+
+
 private:
 	//Root
 	GameObject* root = nullptr;
