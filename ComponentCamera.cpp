@@ -62,6 +62,13 @@ void ComponentCamera::Update()
 	return;
 }
 
+bool ComponentCamera::CleanUp()
+{
+	delete frustum;
+
+	return false;
+}
+
 void ComponentCamera::SetFOV()
 {
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);

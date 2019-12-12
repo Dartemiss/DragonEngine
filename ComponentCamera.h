@@ -22,6 +22,7 @@ public:
 	~ComponentCamera();
 
 	void Update();
+	bool CleanUp();
 
 	//Methods
 	void SetFOV();

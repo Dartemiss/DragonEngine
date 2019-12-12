@@ -13,6 +13,7 @@ public:
 	~ComponentMaterial();
 
 	void Update();
+	bool CleanUp();
 
 	//Saving and loading
 	void OnSave(SceneLoader & loader);

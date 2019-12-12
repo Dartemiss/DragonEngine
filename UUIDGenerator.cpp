@@ -17,6 +17,6 @@ unsigned int UUIDGenerator::getUUID()
 	unsigned int UUID = pcg32_random();
 	while (UUID == 0)
 		UUID = pcg32_random();
-	LOG("Generated UUID: %d.", UUID);
+	LOG("Generated UUID: %u.", UUID);
 	return UUID;
 }

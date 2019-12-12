@@ -105,12 +105,11 @@ public:
 	void DuplicateGameObject(GameObject* go);
 	void InsertChilds(GameObject* go);
 
-
+	GameObject* selectedByHierarchy = nullptr;
 
 private:
 	//Root
 	GameObject* root = nullptr;
-	GameObject* selectedByHierarchy = nullptr;
 	//GameObjects Counter
 	unsigned int numberOfGameObjects = 0;
 	unsigned int numberOfBakerHouse = 0;

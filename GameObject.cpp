@@ -93,7 +93,7 @@ GameObject::GameObject(const GameObject &go, GameObject* parent)
 
 GameObject::~GameObject()
 {
-	delete boundingBox;
+
 }
 
 void GameObject::Update()
@@ -148,13 +148,24 @@ void GameObject::DeleteGameObject()
 {
 	parent->RemoveChildren(this);
 	App->scene->RemoveGameObject(this);
+	for(auto ch : children)
+	{
+		ch->DeleteGameObject();
+	}
+
+	if (App->scene->selectedByHierarchy == this)
+		App->scene->selectedByHierarchy = nullptr;
+
 	CleanUp();
+
+	
 }
 
 void GameObject::CleanUp()
 {
 	for(auto comp : components)
 	{
+		comp->CleanUp();
 		delete comp;
 	}
 	
@@ -251,7 +262,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		if (ImGui::Selectable("Delete"))
 		{
 			//TODO: Delete gameobjects
-			//DeleteGameObject();
+			DeleteGameObject();
 		}
 
 		ImGui::Separator();

@@ -26,6 +26,12 @@ void ComponentMaterial::Update()
 	return;
 }
 
+bool ComponentMaterial::CleanUp()
+{
+
+	return false;
+}
+
 void ComponentMaterial::OnSave(SceneLoader & loader)
 {
 	loader.AddUnsignedInt("Type", myType);
