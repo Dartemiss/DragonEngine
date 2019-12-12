@@ -4,7 +4,7 @@
 #include "glew.h"
 #include <string>
 
-Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures)
 {
 	this->vertices = vertices;
 	this->indices = indices;

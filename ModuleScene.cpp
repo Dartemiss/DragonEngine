@@ -1,18 +1,29 @@
 #include "ModuleScene.h"
+#include "ModuleTimeManager.h"
 #include "Application.h"
 #include "ModuleModelLoader.h"
+#include "Timer.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "include/Math/float4.h"
+#include "MyQuadTree.h"
+#include "AABBTree.h"
+#include "Dependencies/imgui/imgui.h"
+#include "Dependencies/imgui/imgui_impl_sdl.h"
+#include "Dependencies/imgui/imgui_impl_opengl3.h"
+#include "Dependencies/MathGeoLib/include/Math/float4.h"
+#include <random>
 
+#include "SceneLoader.h"
+#include <queue>
+
+using namespace std;
 
 ModuleScene::ModuleScene()
 {
 	root = new GameObject("World");
+	root->UID = 1;
 	root->isRoot = true;
+	root->isStatic = true;
 }
 
 
@@ -26,8 +37,11 @@ bool ModuleScene::Init()
 	mainCamera = CreateGameObject("Main Camera", root);
 	mainCamera->CreateComponent(CAMERA);
 
+	allGameObjects.insert(mainCamera);
 
-	allGameObjects.push_back(mainCamera);
+	//quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
+	//quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
+	aabbTree = new AABBTree(20);
 
 	return true;
 }
@@ -43,6 +57,14 @@ update_status ModuleScene::Update()
 	{
 		gameObject->UpdateTransform();
 		gameObject->Update();
+
+		if(aabbTreeIsComputed && gameObject->globalBoundingBox != nullptr)
+		{
+			aabbTree->UpdateObject(gameObject);
+		}
+
+		if (moveObjectsArround)
+			MoveObjects(gameObject);
 	}
 
 	DrawGUI();
@@ -52,11 +74,20 @@ update_status ModuleScene::Update()
 
 bool ModuleScene::CleanUp()
 {
+	if (quadtreeIsComputed)
+	{
+		quadtree->Clear();
+		quadtreeIterative->ClearIterative();
+		delete quadtree;
+		delete quadtreeIterative;
+	}
+
 	for(auto GO : allGameObjects)
 	{
 		delete GO;
 	}
 
+	delete aabbTree;
 	delete root;
 
 	return true;
@@ -72,6 +103,8 @@ GameObject * ModuleScene::CreateGameObject()
 
 	++numberOfGameObjects;
 
+	selectedByHierarchy = gameObject;
+
 	return gameObject;
 }
 
@@ -83,7 +116,17 @@ GameObject * ModuleScene::CreateGameObject(const char * name, GameObject * paren
 	LOG("Creating new GameObject with name: %s", name);
 
 	++numberOfGameObjects;
+
+	selectedByHierarchy = gameObject;
+
 	return gameObject;
+}
+
+GameObject * ModuleScene::CreateGameObject(GameObject * go)
+{
+	GameObject* gameObject = new GameObject(*go);
+
+	return nullptr;
 }
 
 void ModuleScene::LoadModel(const char * path, GameObject* parent)
@@ -105,7 +148,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 		
 		myMeshCreated->LoadMesh(mesh);
 		newMeshObject->ComputeAABB();
-		allGameObjects.push_back(newMeshObject);
+		allGameObjects.insert(newMeshObject);
 
 		++numObject;
 	}
@@ -126,7 +169,7 @@ void ModuleScene::CreateEmpy(GameObject* parent)
 	GameObject* empty = CreateGameObject(defaultName.c_str(), parent);
 	
 
-	allGameObjects.push_back(empty);
+	allGameObjects.insert(empty);
 
 	return;
 }
@@ -145,8 +188,13 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
 	++numberOfBakerHouse;
 
-	allGameObjects.push_back(newGameObject);
+	allGameObjects.insert(newGameObject);
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+
+	if(quadTreeInitialized)
+		AddToQuadtree(newGameObject);
+
+	return;
 }
 
 void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
@@ -212,6 +260,7 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
 	
+	newGameObject->shape = shape;
 
 	if(!App->modelLoader->meshes.size() == 1)
 	{
@@ -225,24 +274,33 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 	ComponentMesh* myMeshCreated = (ComponentMesh*)newGameObject->CreateComponent(MESH);
 	myMeshCreated->LoadMesh(App->modelLoader->meshes[0]);
 	newGameObject->ComputeAABB();
-	allGameObjects.push_back(newGameObject);
+	newGameObject->isParentOfMeshes = true;
+
+	allGameObjects.insert(newGameObject);
+
 
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
 	//Deleting model loader information
 	App->modelLoader->emptyScene();
+
+	return;
 }
 
 void ModuleScene::RemoveGameObject(GameObject * go)
 {
 	if (!allGameObjects.empty())
 	{
-		allGameObjects.erase(std::remove(allGameObjects.begin(), allGameObjects.end(), go), allGameObjects.end());
+		allGameObjects.erase(go);
 	}
+
+	return;
 }
 
 void ModuleScene::SelectObjectInHierarchy(GameObject * selected)
 {
 	selectedByHierarchy = selected;
+
+	return;
 }
 
 void ModuleScene::DrawUIBarMenuGameObject()
@@ -256,7 +314,7 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			newGameObject->myTransform->position += float3(numberOfGameObjects * 4.0f, 0.0f, 0.0f);
 			newGameObject->myTransform->UpdateMatrices();
 
-			allGameObjects.push_back(newGameObject);
+			allGameObjects.insert(newGameObject);
 
 
 			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
@@ -272,7 +330,7 @@ void ModuleScene::DrawUIBarMenuGameObject()
 			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObjectChild);
 			
 
-			allGameObjects.push_back(newGameObjectChild);
+			allGameObjects.insert(newGameObjectChild);
 
 		}
 
@@ -299,5 +357,316 @@ void ModuleScene::DrawGUI()
 		selectedByHierarchy->DrawInspector(showInspector);
 	}
 
+}
+
+void ModuleScene::AddToQuadtree(GameObject* go) const
+{
+	if(go->globalBoundingBox == nullptr)
+	{
+		LOG("Can not add element to quadtree, AABB is nullptr.");
+		return;
+	}
+	quadtree->Insert(go);
+	return;
+}
+
+void ModuleScene::RemoveFromQuadTree(GameObject* go) const
+{
+}
+
+void ModuleScene::BuildQuadTree()
+{
+	AABB* sceneBox = ComputeSceneAABB();
+
+	quadtreeIsComputed = false;
+
+	//Recursive
+	if (quadTreeInitialized)
+	{
+		quadtree->Clear();
+		delete quadtree;
+	}
+	
+	quadtree = new MyQuadTree(*sceneBox,1);
+
+	recursive.StartTimer();
+	for(auto go : allGameObjects)
+	{
+		if(go->globalBoundingBox != nullptr)
+		{
+			quadtree->Insert(go);
+		}
+	}
+
+	timeRecursive = recursive.StopTimer();
+
+	
+
+	//Iterative
+	if (quadTreeInitialized)
+	{
+		quadtreeIterative->ClearIterative();
+		delete quadtreeIterative;
+	}
+		
+	quadtreeIterative = new MyQuadTree(sceneBox);
+
+	iterative.StartTimer();
+	for (auto go : allGameObjects)
+	{
+		if (go->globalBoundingBox != nullptr)
+		{
+			quadtreeIterative->InsertIterative(quadtreeIterative->nodes,go);
+		}
+	}
+
+	quadTreeInitialized = true;
+
+	timeIterative = iterative.StopTimer();
+
+	quadtreeIsComputed = true;	
+}
+
+void ModuleScene::BuildAABBTree()
+{
+	aabbTreeTimer.StartTimer();
+	for(auto go : allGameObjects)
+	{
+		if(go->globalBoundingBox != nullptr)
+		{
+			aabbTree->Insert(go);
+		}
+	}
+
+	aabbTreeIsComputed = true;
+
+	timeAABBTree = aabbTreeTimer.StopTimer();
+}
+
+void ModuleScene::CreateShapesScript()
+{
+	for(int i = 0; i < 2; ++i)
+	{
+		CreateGameObjectShape(root, CUBE);
+	}
+	for (int i = 0; i < 2; ++i)
+	{
+		CreateGameObjectShape(root, SPHERE);
+	}
+
+	for (int i = 0; i < 2; ++i)
+	{
+		CreateGameObjectShape(root, TORUS);
+	}
+
+	for(auto go : allGameObjects)
+	{
+		if(go != root && go != mainCamera)
+		{
+			int max = 10;
+			int min = -10;
+			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
+			go->myTransform->TranslateTo(newPos);
+		}
+	}
+
+	return;
+	
+}
+
+AABB * ModuleScene::ComputeSceneAABB() const
+{
+	auto someElementIterator = allGameObjects.begin();
+	while((*someElementIterator)->globalBoundingBox == nullptr)
+	{
+		++someElementIterator;
+	}
+	float3 minPoint = (*someElementIterator)->globalBoundingBox->minPoint;
+	float3 maxPoint = (*someElementIterator)->globalBoundingBox->maxPoint;
+	
+	for(auto it = ++someElementIterator; it != allGameObjects.end(); ++it)
+	{
+		if((*it)->globalBoundingBox != nullptr)
+		{
+			minPoint = Min(minPoint, (*it)->globalBoundingBox->minPoint);
+			maxPoint = Max(maxPoint, (*it)->globalBoundingBox->maxPoint);
+		}
+
+	}
+
+	minPoint.y = 0;
+	maxPoint.y = 0;
+
+	return new AABB(minPoint - float3(5,0,5), maxPoint + float3(5, 0, 5));
+}
+
+void ModuleScene::CreateCubesScript()
+{
+	for (int i = 0; i < 200; ++i)
+	{
+		CreateGameObjectShape(root, CUBE);
+	}
+
+	for (auto go : allGameObjects)
+	{
+		if (go != root && go != mainCamera)
+		{
+			int max = 100;
+			int min = -100;
+			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
+			go->myTransform->TranslateTo(newPos);
+		}
+	}
+
+	return;
+}
+
+void ModuleScene::MoveObjects(GameObject* go) const
+{
+	float dist = 3.0f * sin(App->timemanager->GetRealGameTime());
+
+	
+	
+	if(go->globalBoundingBox != nullptr)
+	{
+		if(go->shape == CUBE)
+		{
+			go->myTransform->position.x += dist;
+		}
+		if (go->shape == SPHERE)
+		{
+			go->myTransform->position.y += dist;
+		}
+		if (go->shape == TORUS)
+		{
+			go->myTransform->position.z += dist;
+		}
+
+	}
+	
+	return;
+}
+
+void ModuleScene::SaveScene()
+{
+	SceneLoader * loader = new SceneLoader();
+
+	root->OnSave(*loader);
+	for (set<GameObject*>::iterator it = allGameObjects.begin(); it != allGameObjects.end(); ++it)
+		(*it)->OnSave(*loader);
+
+	loader->SaveJSONToFile("temp_save.json");
+
+	delete loader;
+}
+
+void ModuleScene::LoadScene()
+{
+	SceneLoader * loader = new SceneLoader();
+
+	loader->LoadJSONFromFile("temp_save.json");
+
+	//Check root node exists
+	if (!loader->SetCurrentObject(0))
+	{
+		LOG("Root node does not exist! Cant load Scene.");
+		return;
+	}
+
+	//Remove previous data
+	CleanUp();
+	allGameObjects.clear();
+
+	//Create root
+	root = new GameObject();
+	root->OnLoad(*loader);
+
+	//Start queue for loading the rest of the scene
+	queue<GameObject*> parents;
+	parents.push(root);
+	GameObject * parent;
+	GameObject * currentGameObject;
+
+	while (parents.size() > 0)
+	{
+		//Search for gameobject with same parent uid
+		parent = parents.front();
+		if (!loader->SetCurrentObject(parent->UID))
+		{
+			//If no gameobject is found, go to next parent
+			parents.pop();
+			continue;
+		}
+		
+		//Create gameobject and link parent
+		currentGameObject = new GameObject();
+		currentGameObject->OnLoad(*loader);
+		currentGameObject->SetParent(parent);
+
+		if (currentGameObject->GetName() == "Main Camera")
+			mainCamera = currentGameObject;
+
+		allGameObjects.insert(currentGameObject);
+
+		//Add gameobject to queue
+		parents.push(currentGameObject);
+	}
+}
+
+void ModuleScene::PasteGameObject(GameObject * go)
+{
+	assert(go != nullptr);
+	if(clipboard == nullptr)
+	{
+		LOG("You have nothing copied on the clipboard.");
+		return;
+	}
+	GameObject* pastedGO = new GameObject(*clipboard, go);
+	go->children.push_back(pastedGO);
+	++clipboard->numberOfCopies;
+
+	allGameObjects.insert(pastedGO);
+	//Add all childs to the scene
+
+	InsertChilds(pastedGO);
+
+	return;
+}
+
+void ModuleScene::DuplicateGameObject(GameObject * go)
+{
+	assert(go != nullptr);
+
+	if(go->UID == 1)
+	{
+		LOG("ERROR: You cannot duplicate the root. STOP!");
+		return;
+	}
+
+	GameObject* duplicatedGO = new GameObject(*go, go->parent);
+	go->parent->children.push_back(duplicatedGO);
+	++clipboard->numberOfCopies;
+
+	allGameObjects.insert(duplicatedGO);
+	//Add all childs to the scene
+
+	InsertChilds(duplicatedGO);
+
+	return;
+}
+
+
+void ModuleScene::InsertChilds(GameObject * go)
+{
+	assert(go != nullptr);
+
+	for(auto ch : go->children)
+	{
+		allGameObjects.insert(ch);
+		InsertChilds(ch);
+	}
+
+
+	return;
 }
 

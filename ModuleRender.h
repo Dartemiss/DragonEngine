@@ -3,14 +3,18 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "include/Math/float4x4.h"
-#include "include/Math/float3x3.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Math/float3x3.h"
 #include "ComponentCamera.h"
 #include "glew.h"
+#include <vector>
+#include <set>
 
 struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Rect;
+
+class Skybox;
 
 class ModuleRender : public Module
 {
@@ -44,7 +48,8 @@ public:
 
 	float4x4 model = float4x4::zero;
 
-	bool showBoundingBox = false;
+	bool showBoundingBox = true;
+	bool showSkybox = false;
 
 	//Frustum Culling
 	bool frustumCullingIsActivated = false;
@@ -61,6 +66,12 @@ public:
 	void CreateFrameBuffer(int width, int height, bool scene = true);
 	void GenerateTexture(int width, int height);
 	void GenerateTextureGame(int width, int height);
+
+	//Quadtree variables
+	bool showQuadTree = false;
+	bool showAABBTree = true;
+	bool showFrustum = true;
+	bool showGrid = false;
 
 private:
 	void* context;
@@ -86,8 +97,17 @@ private:
 	unsigned int gameTexture = 0;
 	
 	ComponentCamera* gameCamera = nullptr;
+	
+	std::vector<GameObject*> gameObjectsWithinFrustum;
 
+	//Skybox
+	Skybox* skybox = nullptr;
 
+	//Methods
+	void DrawDebug() const;
+	void DrawSceneBuffer();
+	void DrawGameBuffer();
+	
 
 };
 

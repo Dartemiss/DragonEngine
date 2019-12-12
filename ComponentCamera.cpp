@@ -5,13 +5,16 @@
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
 #include "GameObject.h"
+#include "SceneLoader.h"
 #include <math.h>
-#include "include/Geometry/Plane.h"
+#include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
+#include "debugdraw.h"
 #include "glew.h"
 
 
-ComponentCamera::ComponentCamera()
+ComponentCamera::ComponentCamera(GameObject* go)
 {
+	myGameObject = go;
 	myType = CAMERA;
 
 	frustum = new Frustum();
@@ -30,7 +33,18 @@ ComponentCamera::ComponentCamera()
 	proj = frustum->ProjectionMatrix();
 	view = frustum->ViewMatrix();
 
-	oldPosition = float3{5.0f,2.0f,1000.0f};
+}
+
+ComponentCamera::ComponentCamera(GameObject * go, ComponentCamera * comp)
+{
+	myGameObject = go;
+	myType = CAMERA;
+
+	frustum = new Frustum(*comp->frustum);
+
+	proj = frustum->ProjectionMatrix();
+	view = frustum->ViewMatrix();
+
 }
 
 
@@ -40,10 +54,19 @@ ComponentCamera::~ComponentCamera()
 
 void ComponentCamera::Update()
 {
-	frustum->pos = myGameObject->myTransform->position;
+	float3x3 quatAux = float3x3::zero;
+	float3 scaleAux = float3::zero;
+	myGameObject->myTransform->globalModelMatrix.Decompose(frustum->pos,quatAux, scaleAux);
 	view = frustum->ViewMatrix();
 
 	return;
+}
+
+bool ComponentCamera::CleanUp()
+{
+	delete frustum;
+
+	return false;
 }
 
 void ComponentCamera::SetFOV()
@@ -112,11 +135,10 @@ void ComponentCamera::LookAt(const float3 target)
 	frustum->up = rot.Transform(frustum->up).Normalized();
 }
 
-int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
+int ComponentCamera::AABBWithinFrustum(const AABB &aabb) const
 {
 	//Tests if an AABB is within the frusum
 	//returns 0 if out, 1 if in and 2 if intersects
-
 	float3 corners[8];
 	aabb.GetCornerPoints(corners);
 
@@ -133,7 +155,7 @@ int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
 		for(int i = 0; i< 8; ++i)
 		{
 			//test this point against the planes
-			if(SideOfPlane(corners[i], frustum->GetPlane(p)) == BEHIND)
+			if(SideOfPlane(corners[i], frustum->GetPlane(p)) == FRONT)
 			{
 				iPtIn = 0;
 				--iInCount;
@@ -155,108 +177,51 @@ int ComponentCamera::AABBWithinFrustum(const AABB &aabb)
 	return AABB_INTERSECT;
 }
 
-bool ComponentCamera::SideOfPlane(float3 &point, Plane &plane)
+bool ComponentCamera::SideOfPlane(const float3 &point, const Plane &plane) const
 {
 	float value = plane.normal.Dot(point);
-	value += plane.d;
+	value -= plane.d;
 
 	return (value >= 0.0f) ? true : false;
 }
 
+void ComponentCamera::OnSave(SceneLoader & loader)
+{
+	loader.AddUnsignedInt("Type", myType);
+
+	loader.AddUnsignedInt("Frustum Type", frustum->type);
+	loader.AddVec3f("Position", frustum->pos);
+	loader.AddVec3f("Front", frustum->front);
+	loader.AddVec3f("Up", frustum->up);
+	loader.AddFloat("Near Plane", frustum->nearPlaneDistance);
+	loader.AddFloat("Far Plane", frustum->farPlaneDistance);
+	loader.AddFloat("Vertical FOV", frustum->verticalFov);
+	loader.AddFloat("Horizontal FOV", frustum->horizontalFov);
+}
+
+void ComponentCamera::OnLoad(SceneLoader & loader)
+{
+	frustum = new Frustum();
+
+	frustum->type = (FrustumType)loader.GetUnsignedInt("Frustum Type", FrustumType::PerspectiveFrustum);
+	frustum->pos = loader.GetVec3f("Position", float3::zero);
+	frustum->front = loader.GetVec3f("Front", -float3::unitZ);
+	frustum->up = loader.GetVec3f("Up", float3::unitY);
+	frustum->nearPlaneDistance = loader.GetFloat("Near Plane", 0.1f);
+	frustum->farPlaneDistance = loader.GetFloat("Far Plane", 50.0f);
+	frustum->verticalFov = loader.GetFloat("Vertical FOV", (float)M_PI / 4.0f);
+	frustum->horizontalFov = loader.GetFloat("Horizontal FOV", 2.0f * atanf(tanf(frustum->verticalFov * 0.5f)));
+
+	proj = frustum->ProjectionMatrix();
+	view = frustum->ViewMatrix();
+}
+
 void ComponentCamera::DrawFrustum()
 {
-
-	//Draw Grid
-	unsigned int progGrid = App->program->gridProg;
-	glUseProgram(progGrid);
-
-	float4x4 model = float4x4::identity.LookAt(-float3::unitZ, frustum->front, frustum->up, float3::unitY);
-
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"model"), 1, GL_TRUE, &model[0][0]);
-
-	//Temporary as std140 doesnt work
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
-
-
-	if(oldPosition.x != frustum->pos.x || oldPosition.y != frustum->pos.y || oldPosition.z != frustum->pos.z)
-	{
-		oldPosition = frustum->pos;
-		//First we will get the width and height of the near plane
-		Hnear = 2 * tan(frustum->verticalFov / 2) * frustum->nearPlaneDistance;
-		Wnear = Hnear * aspect;
-
-		//Then we do the same for the far plane
-		Hfar = 2 * tan(frustum->verticalFov / 2) * frustum->farPlaneDistance;
-		Wfar = Hfar * aspect;
-
-		//Now we get the center of the planes
-		centerNear = frustum->pos + frustum->front * frustum->nearPlaneDistance;
-		centerFar = frustum->pos + frustum->front * frustum->farPlaneDistance;
-
-		//And now we get our points
-		NearTopLeft = centerNear + (frustum->up * (Hnear / 2)) - (frustum->WorldRight() * (Wnear / 2));
-		NearTopRight = centerNear + (frustum->up * (Hnear / 2)) + (frustum->WorldRight() * (Wnear / 2));
-		NearBottomLeft = centerNear - (frustum->up * (Hnear / 2)) - (frustum->WorldRight() * (Wnear / 2));
-		NearBottomRight = centerNear - (frustum->up * (Hnear / 2)) + (frustum->WorldRight() * (Wnear / 2));
-
-		FarTopLeft = centerFar + (frustum->up * (Hfar / 2)) - (frustum->WorldRight() * (Wfar / 2));
-		FarTopRight = centerFar + (frustum->up * (Hfar / 2)) + (frustum->WorldRight() * (Wfar / 2));
-		FarBottomLeft = centerFar - (frustum->up * (Hfar / 2)) - (frustum->WorldRight() * (Wfar / 2));
-		FarBottomRight = centerFar - (frustum->up * (Hfar / 2)) + (frustum->WorldRight() * (Wfar / 2));
-	}
-
-
-	//Draw Lines
-	glLineWidth(2.0f);
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	glBegin(GL_LINES);
-	//Near Plane
-	glVertex3f(NearTopLeft.x, NearTopLeft.y, NearTopLeft.z);
-	glVertex3f(NearTopRight.x, NearTopRight.y, NearTopRight.z);
-
-	glVertex3f(NearTopRight.x, NearTopRight.y, NearTopRight.z);
-	glVertex3f(NearBottomRight.x, NearBottomRight.y, NearBottomRight.z);
-
-	glVertex3f(NearBottomRight.x, NearBottomRight.y, NearBottomRight.z);
-	glVertex3f(NearBottomLeft.x, NearBottomLeft.y, NearBottomLeft.z);
-
-	glVertex3f(NearBottomLeft.x, NearBottomLeft.y, NearBottomLeft.z);
-	glVertex3f(NearTopLeft.x, NearTopLeft.y, NearTopLeft.z);
-
-	//Far Plane
-	glVertex3f(FarTopLeft.x, FarTopLeft.y, FarTopLeft.z);
-	glVertex3f(FarTopRight.x, FarTopRight.y, FarTopRight.z);
-
-	glVertex3f(FarTopRight.x, FarTopRight.y, FarTopRight.z);
-	glVertex3f(FarBottomRight.x, FarBottomRight.y, FarBottomRight.z);
-
-	glVertex3f(FarBottomRight.x, FarBottomRight.y, FarBottomRight.z);
-	glVertex3f(FarBottomLeft.x, FarBottomLeft.y, FarBottomLeft.z);
-
-	glVertex3f(FarBottomLeft.x, FarBottomLeft.y, FarBottomLeft.z);
-	glVertex3f(FarTopLeft.x, FarTopLeft.y, FarTopLeft.z);
-
-	//Perpendicular planes
-	glVertex3f(NearTopLeft.x, NearTopLeft.y, NearTopLeft.z);
-	glVertex3f(FarTopLeft.x, FarTopLeft.y, FarTopLeft.z);
-
-	glVertex3f(NearTopRight.x, NearTopRight.y, NearTopRight.z);
-	glVertex3f(FarTopRight.x, FarTopRight.y, FarTopRight.z);
-
-	glVertex3f(NearBottomLeft.x, NearBottomLeft.y, NearBottomLeft.z);
-	glVertex3f(FarBottomLeft.x, FarBottomLeft.y, FarBottomLeft.z);
-
-	glVertex3f(NearBottomRight.x, NearBottomRight.y, NearBottomRight.z);
-	glVertex3f(FarBottomRight.x, FarBottomRight.y, FarBottomRight.z);
-
-
-	glEnd();
-
-	glUseProgram(0);
+	//Draw frustum
+	//TODO: Find an optimization for not having to multiply matrix every frame
+	float4x4 clipMatrix = proj * view;	
+	dd::frustum(clipMatrix.Inverted(), float3(0, 0, 1));
 
 	return;
 }

@@ -8,13 +8,18 @@
 class ComponentMaterial : public Component
 {
 public:
-	ComponentMaterial();
+	ComponentMaterial(GameObject* go);
+	ComponentMaterial(GameObject* go, ComponentMaterial* comp);
 	~ComponentMaterial();
 
 	void Update();
+	bool CleanUp();
+
+	//Saving and loading
+	void OnSave(SceneLoader & loader);
+	void OnLoad(SceneLoader & loader);
 
 	std::vector<Texture*> textures;
-
 };
 
 #endif __ComponentMaterial_H__

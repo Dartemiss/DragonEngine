@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "include/Geometry/AABB.h"
+#include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
 #include <string>
 #include <vector>
 
@@ -13,12 +13,14 @@ class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
 class ComponentCamera;
+class SceneLoader;
 
 class GameObject
 {
 public:
 	GameObject();
 	GameObject(const char* name);
+	GameObject(const GameObject &go, GameObject* parent);
 	~GameObject();
 
 	//Core
@@ -41,9 +43,8 @@ public:
 	void UpdateTransform();
 
 	//Variables
-	//ID are unique
-	//TODO: ID system
-	unsigned int ID;
+	//UID are unique
+	unsigned int UID;
 
 	//All GameObjects have a transform
 	ComponentTransform* myTransform = nullptr;
@@ -63,7 +64,7 @@ public:
 	void SetName(const std::string &newName);
 	std::string GetName() const;
 
-	//ID substitute
+	//UID substitute
 	bool isRoot = false;
 	bool isEnabled = true;
 	bool isStatic = false;
@@ -77,6 +78,14 @@ public:
 	AABB* globalBoundingBox = nullptr;
 
 	void DrawInspector(bool &showInspector);
+
+	//Shape type
+	enum ShapeType shape;
+
+	void OnSave(SceneLoader & loader);
+	void OnLoad(SceneLoader & loader);
+
+	int numberOfCopies = 0;
 
 private:
 	std::string name;

@@ -3,14 +3,15 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "include/Math/float3.h"
-#include "include/Math/Quat.h"
-#include "include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Math/float3.h"
+#include "Dependencies/MathGeoLib/include/Math/Quat.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 
 class ComponentTransform : public Component
 {
 public:
 	ComponentTransform(GameObject* gameObject);
+	ComponentTransform(GameObject* gameObject, ComponentTransform* comp);
 	~ComponentTransform();
 
 	void EulerToQuat();
@@ -18,6 +19,11 @@ public:
 	void UpdateMatrices();
 	void SetGlobalMatrix(float4x4 &parentGlobal);
 	void SetLocalMatrix(float4x4 &newParentGlobalMatrix);
+	void TranslateTo(const float3 &newPos);
+
+	//Saving and loading
+	void OnSave(SceneLoader & loader);
+	void OnLoad(SceneLoader & loader);
 
 	//Variables
 	//Local Transform
@@ -28,7 +34,6 @@ public:
 
 	float4x4 localModelMatrix = float4x4::identity;
 	float4x4 globalModelMatrix = float4x4::identity;
-
 
 };
 

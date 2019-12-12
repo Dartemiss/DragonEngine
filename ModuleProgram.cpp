@@ -5,7 +5,7 @@
 #include "glew.h"
 #include "SDL.h"
 #include "glew.h"
-#include "include/Math/float4x4.h"
+#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 #include "assert.h"
 #include <string>
 #include <streambuf>
@@ -23,6 +23,12 @@ bool ModuleProgram::Init()
 	phongLighting = createProgramWithShaders("../Shaders/Phong.vs", "../Shaders/Phong.fs");
 	blinnLighting = createProgramWithShaders("../Shaders/Blinn.vs", "../Shaders/Blinn.fs");
 	blinnTextures = createProgramWithShaders("../Shaders/BlinnTextures.vs", "../Shaders/BlinnTextures.fs");
+
+	//Skybox shader
+	unsigned int vs3 = App->program->createVertexShader("../Shaders/Skybox.vs");
+	unsigned int fs3 = App->program->createFragmentShader("../Shaders/Skybox.fs");
+
+	skyboxProg = createProgram(vs3, fs3);
 
 	//Default shader
 	defaultProg = createProgramWithShaders("../Shaders/VertexShader.vs", "../Shaders/Model.fs");

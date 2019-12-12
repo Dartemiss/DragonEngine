@@ -13,6 +13,7 @@ enum ComponentType
 };
 
 class GameObject;
+class SceneLoader;
 
 
 class Component
@@ -27,6 +28,7 @@ public:
 	{
 		name = componentName;
 	}
+
 
 	virtual void Enable()
 	{
@@ -49,7 +51,9 @@ public:
 		return true;
 	}
 
-	
+	virtual void OnSave(SceneLoader & loader) {}
+
+	virtual void OnLoad(SceneLoader & loader) {}
 
 	//GameObject Parent: 
 	//IMPORTANT, THIS POINTER MUST BE SYNC WITH PARENTS CHILDREN, BE CAREFUL

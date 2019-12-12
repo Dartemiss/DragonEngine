@@ -1,7 +1,7 @@
 #include "ModuleIMGUI.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "Dependencies/imgui/imgui.h"
+#include "Dependencies/imgui/imgui_impl_sdl.h"
+#include "Dependencies/imgui/imgui_impl_opengl3.h"
 #include "glew.h"
 #include "Application.h"
 #include "ModuleWindow.h"
@@ -49,7 +49,7 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	guiWindow.Draw("Window Configuration");
 	console.Draw("Console");
@@ -57,6 +57,9 @@ update_status ModuleIMGUI::Update()
 	guiCamera.Draw("Camera Settings");
 	timeManager.Draw("Timers");
 	inspector.Draw("Properties");
+
+	ImGui::BeginTabBar("MainViewTabs");
+	ImGui::EndTabBar();
 
 	//Menu
 	if (ImGui::BeginMainMenuBar()) 
@@ -127,6 +130,21 @@ update_status ModuleIMGUI::Update()
 			if (ImGui::MenuItem("Show Inspector"))
 			{
 				App->scene->showInspector = true;
+			}
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Scene"))
+		{
+			if (ImGui::MenuItem("Save Scene"))
+			{
+				App->scene->SaveScene();
+			}
+
+			if (ImGui::MenuItem("Load Scene"))
+			{
+				App->scene->LoadScene();
 			}
 
 			ImGui::EndMenu();

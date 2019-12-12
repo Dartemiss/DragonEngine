@@ -107,7 +107,7 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(new Mesh(processMesh(mesh, scene)));
+		meshes.push_back((processMesh(mesh, scene)));
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -116,7 +116,7 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 	}
 }
 
-Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
+Mesh* ModuleModelLoader::processMesh(const aiMesh * mesh, const aiScene * scene)
 {
 	//Filling data
 	std::vector<Vertex> vertices;
@@ -186,7 +186,7 @@ Mesh ModuleModelLoader::processMesh(aiMesh * mesh, const aiScene * scene)
 
 		}
 		
-	return Mesh(vertices, indices, textures);
+	return new Mesh(vertices, indices, textures);
 }
 
 std::string ModuleModelLoader::computeDirectory(const std::string &path) const
@@ -249,79 +249,7 @@ void ModuleModelLoader::emptyScene()
 	numberOfTextures = 0;
 }
 
-void ModuleModelLoader::computeModelBoundingBox()
-{
 
-	//Min values
-	float minX = 10000000.0f;
-	float minY = 10000000.0f;
-	float minZ = 10000000.0f;
-
-	//Max values
-	float maxX = -1000000.0f;
-	float maxY = -1000000.0f;
-	float maxZ = -1000000.0f;
-
-	for(auto mesh: meshes)
-	{
-		for(auto vertex : mesh->vertices)
-		{
-			//Min vertex
-			if (vertex.Position.x < minX)
-				minX = vertex.Position.x;
-
-			if (vertex.Position.y < minY)
-				minY = vertex.Position.y;
-
-			if (vertex.Position.z < minZ)
-				minZ = vertex.Position.z;
-
-			//Max vertex
-			if (vertex.Position.x > maxX)
-				maxX = vertex.Position.x;
-
-			if (vertex.Position.y > maxY)
-				maxY = vertex.Position.y;
-
-			if (vertex.Position.z > maxZ)
-				maxZ = vertex.Position.z;
-		}
-	}
-	//Representation of a Cube, have exactly 8 vertex
-	//Order of representation:
-	//0-> (-x,-y,-z), 1-> (x,-y,-z), 2-> (x,-y,z), 3-> (-x,-y,z)
-	//4-> (-x,y,-z), 5-> (x,y,-z), 6-> (x,y,z), 7-> (-x,y,z)
-
-	modelBox.push_back(float3(minX, minY, minZ));
-	modelBox.push_back(float3(maxX, minY, minZ));
-	modelBox.push_back(float3(maxX,minY,maxZ));
-	modelBox.push_back(float3(minX, minY, maxZ));
-	modelBox.push_back(float3(minX, maxY, minZ));
-	modelBox.push_back(float3(maxX, maxY, minZ));
-	modelBox.push_back(float3(maxX, maxY, maxZ));
-	modelBox.push_back(float3(minX, maxY, maxZ));
-
-
-	correctCameraPositionForModel = float3((maxX + minX)/2, (maxY + minY)/2, -2 *(maxZ - minZ));
-	LOG("Compute the camera position depending of model size: (%.3f,%.3f,%.3f)", correctCameraPositionForModel.x, correctCameraPositionForModel.y, correctCameraPositionForModel.z);
-
-	modelCenter = float3((maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2);
-	LOG("Computing models center: (%.3f,%.3f,%.3f) ", modelCenter.x, modelCenter.y, modelCenter.z);
-
-	//App->camera->TranslateCameraToPoint(correctCameraPositionForModel);
-
-	float dist = 3 * (maxX - minX);
-	if(App->camera->frustum->farPlaneDistance < dist)
-	{
-		App->camera->frustum->farPlaneDistance = dist;
-	}
-	else
-	{
-		App->camera->frustum->farPlaneDistance = 100.0f;
-	}
-		
-
-}
 
 
 bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,

@@ -3,9 +3,9 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "glew.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "Dependencies/imgui/imgui.h"
+#include "Dependencies/imgui/imgui_impl_sdl.h"
+#include "Dependencies/imgui/imgui_impl_opengl3.h"
 
 ModuleWindow::ModuleWindow()
 {
@@ -44,7 +44,7 @@ bool ModuleWindow::Init()
 		}
 
 		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
-		glcontext = SDL_GL_CreateContext(window);
+		
 		if(window == NULL)
 		{
 			LOG("Window could not be created! SDL_Error: %s\n", SDL_GetError());

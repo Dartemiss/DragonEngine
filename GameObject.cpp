@@ -7,10 +7,15 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "Dependencies/imgui/imgui.h"
+#include "Dependencies/imgui/imgui_impl_sdl.h"
+#include "Dependencies/imgui/imgui_impl_opengl3.h"
 #include "SDL.h"
+#include "debugdraw.h"
+#include "UUIDGenerator.h"
+#include "SceneLoader.h"
+
+using namespace std;
 
 GameObject::GameObject()
 {
@@ -20,13 +25,75 @@ GameObject::GameObject(const char * name)
 {
 	this->name = name;
 	CreateComponent(TRANSFORM);
+	this->UID = UUIDGen->getUUID();
+}
+
+GameObject::GameObject(const GameObject &go, GameObject* parent)
+{
+	this->name = go.name + std::to_string(go.numberOfCopies);
+
+	shape = go.shape;
+	boundingBox = new AABB(*go.boundingBox);
+	globalBoundingBox = new AABB(*go.globalBoundingBox);
+
+	for(auto comp : go.components)
+	{
+		Component* aux;
+		switch (comp->myType)
+		{
+			case TRANSFORM:
+				 aux = new ComponentTransform(this, (ComponentTransform*)comp);
+				break;
+			case MESH:
+				aux = new ComponentMesh(this, (ComponentMesh*)comp);
+				break;
+			case MATERIAL:
+				aux = new ComponentMaterial(this, (ComponentMaterial*)comp);
+				break;
+			case CAMERA:
+				aux = new ComponentCamera(this, (ComponentCamera*)comp);
+				break;
+			default:
+				break;
+		}
+
+		components.push_back(aux);
+	}
+
+	for(auto myComp : components)
+	{
+		if (myComp->myType == TRANSFORM)
+			myTransform = (ComponentTransform*)myComp;
+
+		if (myComp->myType == MESH)
+			myMesh = (ComponentMesh*)myComp;
+
+		if (myComp->myType == MATERIAL)
+			myMaterial = (ComponentMaterial*)myComp;
+
+	}
+
+	//Get a copy of all childs
+	for(auto child : go.children)
+	{
+		GameObject* newChild = new GameObject(*child, this);
+		children.push_back(newChild);
+	}
+
+	this->parent = parent;
+	//UID substitute
+	
+	isStatic = go.isStatic;
+	isParentOfMeshes = go.isParentOfMeshes;
+
+	this->UID = UUIDGen->getUUID();
 
 }
 
 
 GameObject::~GameObject()
 {
-	delete boundingBox;
+
 }
 
 void GameObject::Update()
@@ -81,13 +148,24 @@ void GameObject::DeleteGameObject()
 {
 	parent->RemoveChildren(this);
 	App->scene->RemoveGameObject(this);
+	for(auto ch : children)
+	{
+		ch->DeleteGameObject();
+	}
+
+	if (App->scene->selectedByHierarchy == this)
+		App->scene->selectedByHierarchy = nullptr;
+
 	CleanUp();
+
+	
 }
 
 void GameObject::CleanUp()
 {
 	for(auto comp : components)
 	{
+		comp->CleanUp();
 		delete comp;
 	}
 	
@@ -108,16 +186,16 @@ Component * GameObject::CreateComponent(ComponentType type)
 			myTransform = (ComponentTransform*)component;
 			break;
 		case MESH:
-			component = new ComponentMesh();
+			component = new ComponentMesh(this);
 			myMesh = (ComponentMesh*)component;
 			break;
 		case MATERIAL:
-			component = new ComponentMaterial();
+			component = new ComponentMaterial(this);
 			myMaterial = (ComponentMaterial*)component;
 			break;
 
 		case CAMERA:
-			component = new ComponentCamera();
+			component = new ComponentCamera(this);
 			break;
 		default:
 			LOG("ERROR: INVALID TYPE OF COMPONENT");
@@ -128,7 +206,6 @@ Component * GameObject::CreateComponent(ComponentType type)
 	component->myGameObject = this;
 
 	components.push_back(component);
-
 
 	return component;
 }
@@ -161,11 +238,14 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		
 		if (ImGui::Selectable("Copy"))
 		{
-			//TODO: Copy gameobjects
+			if (this->UID != 1)
+				App->scene->clipboard = this;
+			else
+				LOG("Root cannot be copied. STOP!");
 		}
 		if (ImGui::Selectable("Paste"))
 		{
-			//TODO: Paste gameobjects
+			App->scene->PasteGameObject(this);
 		}
 		
 		ImGui::Separator();
@@ -176,13 +256,13 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		}
 		if (ImGui::Selectable("Duplicate"))
 		{
-			//TODO: Duplicate gameobjects
+			App->scene->DuplicateGameObject(this);
 		}
 
 		if (ImGui::Selectable("Delete"))
 		{
 			//TODO: Delete gameobjects
-			//DeleteGameObject();
+			DeleteGameObject();
 		}
 
 		ImGui::Separator();
@@ -216,7 +296,6 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 			if (ImGui::MenuItem("Baker House"))
 			{
-				// TODO :CreateGameObjectBakerHouse();
 				App->scene->CreateGameObjectBakerHouse(this);
 			}
 
@@ -369,70 +448,18 @@ void GameObject::ComputeAABB()
 
 void GameObject::DrawAABB() const
 {
-	//Bounding Box
-	glLineWidth(1.0f);
-	float d = 200.0f;
-	glBegin(GL_LINES);
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-
-	//0->1 
-	glVertex3f(boundingBox->CornerPoint(0).x, boundingBox->CornerPoint(0).y, boundingBox->CornerPoint(0).z);
-	glVertex3f(boundingBox->CornerPoint(1).x, boundingBox->CornerPoint(1).y, boundingBox->CornerPoint(1).z);
-
-	//1->5
-	glVertex3f(boundingBox->CornerPoint(1).x, boundingBox->CornerPoint(1).y, boundingBox->CornerPoint(1).z);
-	glVertex3f(boundingBox->CornerPoint(5).x, boundingBox->CornerPoint(5).y, boundingBox->CornerPoint(5).z);
-
-	//5-4
-	glVertex3f(boundingBox->CornerPoint(5).x, boundingBox->CornerPoint(5).y, boundingBox->CornerPoint(5).z);
-	glVertex3f(boundingBox->CornerPoint(4).x, boundingBox->CornerPoint(4).y, boundingBox->CornerPoint(4).z);
-
-	//4-0
-	glVertex3f(boundingBox->CornerPoint(0).x, boundingBox->CornerPoint(0).y, boundingBox->CornerPoint(0).z);
-	glVertex3f(boundingBox->CornerPoint(4).x, boundingBox->CornerPoint(4).y, boundingBox->CornerPoint(4).z);
-	
-	//----//
-
-	//2->3 
-	glVertex3f(boundingBox->CornerPoint(2).x, boundingBox->CornerPoint(2).y, boundingBox->CornerPoint(2).z);
-	glVertex3f(boundingBox->CornerPoint(3).x, boundingBox->CornerPoint(3).y, boundingBox->CornerPoint(3).z);
-
-	//3->7
-	glVertex3f(boundingBox->CornerPoint(3).x, boundingBox->CornerPoint(3).y, boundingBox->CornerPoint(3).z);
-	glVertex3f(boundingBox->CornerPoint(7).x, boundingBox->CornerPoint(7).y, boundingBox->CornerPoint(7).z);
-
-	//7-6
-	glVertex3f(boundingBox->CornerPoint(7).x, boundingBox->CornerPoint(7).y, boundingBox->CornerPoint(7).z);
-	glVertex3f(boundingBox->CornerPoint(6).x, boundingBox->CornerPoint(6).y, boundingBox->CornerPoint(6).z);
-
-	//6-2
-	glVertex3f(boundingBox->CornerPoint(6).x, boundingBox->CornerPoint(6).y, boundingBox->CornerPoint(6).z);
-	glVertex3f(boundingBox->CornerPoint(2).x, boundingBox->CornerPoint(2).y, boundingBox->CornerPoint(2).z);
-
-	
-	//Y lines
-	//0->2
-	glVertex3f(boundingBox->CornerPoint(0).x, boundingBox->CornerPoint(0).y, boundingBox->CornerPoint(0).z);
-	glVertex3f(boundingBox->CornerPoint(2).x, boundingBox->CornerPoint(2).y, boundingBox->CornerPoint(2).z);
-
-	//1->3
-	glVertex3f(boundingBox->CornerPoint(1).x, boundingBox->CornerPoint(1).y, boundingBox->CornerPoint(1).z);
-	glVertex3f(boundingBox->CornerPoint(3).x, boundingBox->CornerPoint(3).y, boundingBox->CornerPoint(3).z);
-
-	//5->7
-	glVertex3f(boundingBox->CornerPoint(5).x, boundingBox->CornerPoint(5).y, boundingBox->CornerPoint(5).z);
-	glVertex3f(boundingBox->CornerPoint(7).x, boundingBox->CornerPoint(7).y, boundingBox->CornerPoint(7).z);
-
-	//6->4
-	glVertex3f(boundingBox->CornerPoint(6).x, boundingBox->CornerPoint(6).y, boundingBox->CornerPoint(6).z);
-	glVertex3f(boundingBox->CornerPoint(4).x, boundingBox->CornerPoint(4).y, boundingBox->CornerPoint(4).z);
-	
-
-	glEnd();
+	dd::aabb(globalBoundingBox->minPoint, globalBoundingBox->maxPoint, float3(0, 1, 0));
 }
 
 void GameObject::DrawInspector(bool &showInspector)
 {
+	ImGui::SetNextWindowPos(
+		ImVec2(1556, 18)
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(357, 997)
+	);
+
 	ImGui::Begin("Inspector", &showInspector);
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
@@ -459,10 +486,74 @@ void GameObject::DrawInspector(bool &showInspector)
 		ImGui::Text("Scale");
 		ImGui::DragFloat3("Scale", (float *)&myTransform->scale, 0.01f, 0.01f, 1000.0f);
 
+		ImGui::Separator();
+
+		ImGui::Text("AABB");
+		if(globalBoundingBox == nullptr)
+		{
+			ImGui::Text("Is nullptr.");
+		}
+		else
+		{
+			ImGui::DragFloat3("Min Point", (float *)&globalBoundingBox->minPoint, 0.01f, 0.01f, 1000.0f);
+			ImGui::DragFloat3("Max Point", (float *)&globalBoundingBox->maxPoint, 0.01f, 0.01f, 1000.0f);
+		}
+		
 	}
+
 	ImGui::End();
 	//Change EulerRotation to Quat
 	myTransform->EulerToQuat();
+}
+
+void GameObject::OnSave(SceneLoader & loader)
+{
+	loader.StartGameObject();
+	loader.AddUnsignedInt("UID", UID);
+	if (parent != nullptr)
+		loader.AddUnsignedInt("parentUID", parent->UID);
+	else
+		loader.AddUnsignedInt("parentUID", 0); 
+	loader.AddString("Name", name.c_str());
+
+	//Save all components
+	myTransform->OnSave(loader);
+
+	loader.CreateComponentArray();
+	for (vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	{
+		//Special save for Transform
+		if ((*it)->myType == TRANSFORM)
+			continue;
+		
+		loader.StartComponent();
+		(*it)->OnSave(loader);
+		loader.FinishComponent();
+	}
+
+	loader.FinishGameObject();
+}
+
+void GameObject::OnLoad(SceneLoader & loader)
+{
+	UID = loader.GetUnsignedInt("UID", 0);
+	assert(UID != 0);
+
+	name = loader.GetString("Name", "GameObject");
+
+	//Special load for Transform
+	CreateComponent(TRANSFORM);
+	myTransform->OnLoad(loader);
+
+	Component* component;
+	while (loader.SelectNextComponent())
+	{
+		ComponentType type = (ComponentType)loader.GetUnsignedInt("Type", 0);
+		assert(type != 0);
+		
+		component = CreateComponent(type);
+		component->OnLoad(loader);
+	}
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)
@@ -475,7 +566,20 @@ void GameObject::CheckDragAndDrop(GameObject * go)
 	if (ImGui::BeginDragDropTarget()) {
 		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DRAG");
 		if (payload != nullptr) {
-			GameObject * newChild = *reinterpret_cast<GameObject**>(payload->Data);
+			GameObject* newChild = *reinterpret_cast<GameObject**>(payload->Data);
+
+			GameObject* parent = go;
+			//While parent is not root
+			while(parent->UID != 1)
+			{
+				if(parent->UID == newChild->UID)
+				{
+					LOG("It is not allowed to assign one of your children as a parent.");
+					return;
+				}
+				parent = parent->parent;
+			}
+
 			newChild->SetParent(go);
 			if(newChild->parent->myTransform != nullptr)
 				newChild->myTransform->SetLocalMatrix(newChild->parent->myTransform->globalModelMatrix);
