@@ -42,16 +42,16 @@ GameObject::GameObject(const GameObject &go, GameObject* parent)
 		switch (comp->myType)
 		{
 			case TRANSFORM:
-				 aux = new ComponentTransform(parent, (ComponentTransform*)comp);
+				 aux = new ComponentTransform(this, (ComponentTransform*)comp);
 				break;
 			case MESH:
-				aux = new ComponentMesh(parent, (ComponentMesh*)comp);
+				aux = new ComponentMesh(this, (ComponentMesh*)comp);
 				break;
 			case MATERIAL:
-				aux = new ComponentMaterial(parent, (ComponentMaterial*)comp);
+				aux = new ComponentMaterial(this, (ComponentMaterial*)comp);
 				break;
 			case CAMERA:
-				aux = new ComponentCamera(parent, (ComponentCamera*)comp);
+				aux = new ComponentCamera(this, (ComponentCamera*)comp);
 				break;
 			default:
 				break;
@@ -76,7 +76,7 @@ GameObject::GameObject(const GameObject &go, GameObject* parent)
 	//Get a copy of all childs
 	for(auto child : go.children)
 	{
-		GameObject* newChild = new GameObject(*child,this);
+		GameObject* newChild = new GameObject(*child, this);
 		children.push_back(newChild);
 	}
 

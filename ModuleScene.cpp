@@ -278,6 +278,7 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 
 	allGameObjects.insert(newGameObject);
 
+
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
 	//Deleting model loader information
 	App->modelLoader->emptyScene();
@@ -622,9 +623,27 @@ void ModuleScene::PasteGameObject(GameObject * go)
 	}
 	GameObject* pastedGO = new GameObject(*clipboard, go);
 	go->children.push_back(pastedGO);
+	pastedGO->SetParent(go);
 	++clipboard->numberOfCopies;
 
 	allGameObjects.insert(pastedGO);
+	//Add all childs to the scene
+
+	InsertChilds(pastedGO);
+
+	return;
+}
+
+
+void ModuleScene::InsertChilds(GameObject * go)
+{
+
+	for(auto ch : go->children)
+	{
+		allGameObjects.insert(ch);
+		InsertChilds(ch);
+	}
+
 
 	return;
 }

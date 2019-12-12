@@ -103,6 +103,8 @@ public:
 	GameObject* clipboard = nullptr;
 	void PasteGameObject(GameObject* go);
 
+	void InsertChilds(GameObject* go);
+
 
 
 private:
