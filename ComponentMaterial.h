@@ -1,9 +1,13 @@
 #ifndef __ComponentMaterial_H__
 #define __ComponentMaterial_H__
 
-#include "Globals.h"
 #include "Component.h"
-#include "ModuleTexture.h"
+#include "Dependencies/MathGeoLib/include/Math/float3.h"
+#include "Dependencies/MathGeoLib/include/Math/float4.h"
+#include <vector>
+#include <string>
+
+struct Texture;
 
 class ComponentMaterial : public Component
 {
@@ -15,11 +19,25 @@ public:
 	void Update();
 	bool CleanUp();
 
+	void SetUpUberShader(const unsigned int program);
+
 	//Saving and loading
 	void OnSave(SceneLoader & loader);
 	void OnLoad(SceneLoader & loader);
 
-	std::vector<Texture*> textures;
+	float kDiffuse;
+	float kSpecular;
+	float KAmbient;
+	float shininess;
+
+	float4 diffuseColor;
+	float3 specularColor;
+	float3 emissiveColor;
+
+	Texture * diffuseMap = nullptr;
+	Texture * specularMap = nullptr;
+	Texture * occlusionMap = nullptr;
+	Texture * emissiveMap = nullptr;
 };
 
 #endif __ComponentMaterial_H__

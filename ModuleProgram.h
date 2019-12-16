@@ -25,11 +25,12 @@ public:
 	unsigned int skyboxProg = 0;
 	unsigned int uniformsBuffer = 0;
 
-	unsigned int flatLighting;
-	unsigned int gouraudLighting;
-	unsigned int phongLighting;
-	unsigned int blinnLighting;
-	unsigned int blinnTextures;
+	unsigned int flatLighting = 0;
+	unsigned int gouraudLighting = 0;
+	unsigned int phongLighting = 0;
+	unsigned int blinnLighting = 0;
+
+	unsigned int uber = 0;
 
 private:
 	unsigned int createProgramWithShaders(const char * vertexShader, const char * fragmentShader) const;

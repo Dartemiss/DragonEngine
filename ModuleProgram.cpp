@@ -22,13 +22,11 @@ bool ModuleProgram::Init()
 	gouraudLighting = createProgramWithShaders("../Shaders/Gouraud.vs", "../Shaders/Gouraud.fs");
 	phongLighting = createProgramWithShaders("../Shaders/Phong.vs", "../Shaders/Phong.fs");
 	blinnLighting = createProgramWithShaders("../Shaders/Blinn.vs", "../Shaders/Blinn.fs");
-	blinnTextures = createProgramWithShaders("../Shaders/BlinnTextures.vs", "../Shaders/BlinnTextures.fs");
+
+	uber = createProgramWithShaders("../Shaders/UberShader.vs", "../Shaders/UberShader.fs");
 
 	//Skybox shader
-	unsigned int vs3 = App->program->createVertexShader("../Shaders/Skybox.vs");
-	unsigned int fs3 = App->program->createFragmentShader("../Shaders/Skybox.fs");
-
-	skyboxProg = createProgram(vs3, fs3);
+	skyboxProg = createProgramWithShaders("../Shaders/Skybox.vs", "../Shaders/Skybox.fs");
 
 	//Default shader
 	defaultProg = createProgramWithShaders("../Shaders/VertexShader.vs", "../Shaders/Model.fs");
@@ -47,7 +45,6 @@ bool ModuleProgram::CleanUp()
 	glDeleteProgram(gouraudLighting);
 	glDeleteProgram(phongLighting);
 	glDeleteProgram(blinnLighting);
-	glDeleteProgram(blinnTextures);
 	
 	return true;
 }
@@ -96,21 +93,21 @@ unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fSh
 	LOG("Linking program");
 	glLinkProgram(program);
 
-	LOG("Deleting Vertex Shader");
-	glDeleteShader(vShader);
-
-	LOG("Deleting Fragment Shader");
-	glDeleteShader(fShader);
-
-	//Now we can delete shaders
 	int  success;
 	char infoLog[512];
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		LOG("ERROR::PROGRAM::CREATION_FAILED\n");
+		LOG("\nERROR::PROGRAM::CREATION_FAILED");
 		LOG("ERROR: %s\n", infoLog);
 	}
+
+	//Now we can delete shaders
+	LOG("Deleting Vertex Shader");
+	glDeleteShader(vShader);
+
+	LOG("Deleting Fragment Shader");
+	glDeleteShader(fShader);
 
 	return program;
 }
@@ -133,7 +130,7 @@ unsigned int ModuleProgram::createShader(const char * filename, unsigned int sha
 		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
 		std::vector<GLchar> shaderError((logLength > 1) ? logLength : 1);
 		glGetShaderInfoLog(shaderId, logLength, NULL, &shaderError[0]);
-		LOG("ERROR: Shader coudn't be compiled : %s\n", &shaderError[0]);
+		LOG("ERROR: Shader with path %s coudn't be compiled : %s\n", filename, &shaderError[0]);
 	}
 
 	return shaderId;
