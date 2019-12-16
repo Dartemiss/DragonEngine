@@ -1,12 +1,14 @@
+#include "Application.h"
 #include "ModuleScene.h"
 #include "ModuleTimeManager.h"
-#include "Application.h"
+#include "ModuleCamera.h"
 #include "ModuleModelLoader.h"
-#include "Timer.h"
+#include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "MyQuadTree.h"
 #include "AABBTree.h"
+#include "Timer.h"
 #include "Dependencies/imgui/imgui.h"
 #include "Dependencies/imgui/imgui_impl_sdl.h"
 #include "Dependencies/imgui/imgui_impl_opengl3.h"
@@ -15,7 +17,6 @@
 #include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
 #include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
 #include <random>
-
 #include "SceneLoader.h"
 #include <queue>
 
@@ -56,6 +57,18 @@ update_status ModuleScene::PreUpdate()
 
 update_status ModuleScene::Update()
 {
+	//Mouse Picking
+	if(App->camera->SceneNotActive)
+	{
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+		{
+			CreateRayCast(App->input->GetMousePosition());
+		
+		}
+	
+	}
+
+
 	for(auto gameObject : allGameObjects)
 	{
 		gameObject->UpdateTransform();
@@ -477,6 +490,27 @@ void ModuleScene::CreateShapesScript()
 	
 }
 
+void ModuleScene::CreateHousesScript()
+{
+	for (int i = 0; i < 1000; ++i)
+	{
+		CreateGameObjectBakerHouse(root);
+	}
+
+	for (auto go : allGameObjects)
+	{
+		if (go != root && go != mainCamera && go->isParentOfMeshes)
+		{
+			int max = 100;
+			int min = -100;
+			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
+			go->myTransform->TranslateTo(newPos);
+		}
+	}
+
+	return;
+}
+
 AABB * ModuleScene::ComputeSceneAABB() const
 {
 	auto someElementIterator = allGameObjects.begin();
@@ -648,7 +682,7 @@ void ModuleScene::DuplicateGameObject(GameObject * go)
 
 	GameObject* duplicatedGO = new GameObject(*go, go->parent);
 	go->parent->children.push_back(duplicatedGO);
-	++clipboard->numberOfCopies;
+	++go->numberOfCopies;
 
 	allGameObjects.insert(duplicatedGO);
 	//Add all childs to the scene
@@ -673,10 +707,8 @@ void ModuleScene::InsertChilds(GameObject * go)
 	return;
 }
 
-LineSegment * ModuleScene::CreateRayCast(float3 origin, float3 direction, float maxDistance)
+LineSegment* ModuleScene::CreateRayCast(float3 origin, float3 direction, float maxDistance)
 {
-	//TODO: Ask Ric if creating a frustum each time you cast a raycast is efficient
-
 	Frustum auxFrustum = Frustum();
 	auxFrustum.pos = origin - float3(0.1f,0.1f,0.1f);
 	auxFrustum.type = FrustumType::PerspectiveFrustum;
@@ -695,4 +727,18 @@ LineSegment * ModuleScene::CreateRayCast(float3 origin, float3 direction, float 
 
 	return new LineSegment(auxFrustum.UnProjectLineSegment(normalized_x, normalized_y));
 }
+
+LineSegment* ModuleScene::CreateRayCast(fPoint mousePoint)
+{
+	return new LineSegment(App->camera->frustum->UnProjectLineSegment(mousePoint.x, mousePoint.y)); 
+}
+
+void ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)
+{
+
+
+	return;
+}
+
+
 

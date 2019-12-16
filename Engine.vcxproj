@@ -91,6 +91,7 @@
     <ClInclude Include="Dependencies\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Dependencies\imgui\imgui_impl_sdl.h" />
     <ClInclude Include="Dependencies\imgui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\imgui\imgui_stdlib.h" />
     <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Dependencies\imgui\imgui_draw.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Dependencies\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib\include\Algorithm\Random\LCG.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\AABB.cpp" />

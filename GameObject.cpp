@@ -10,6 +10,7 @@
 #include "Dependencies/imgui/imgui.h"
 #include "Dependencies/imgui/imgui_impl_sdl.h"
 #include "Dependencies/imgui/imgui_impl_opengl3.h"
+#include "Dependencies/imgui/imgui_stdlib.h"
 #include "SDL.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
@@ -464,15 +465,11 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	char* go_name = new char[64];
-	strcpy(go_name, name.c_str());
-	if(ImGui::InputText("##Name", go_name, 64))
-	{
-		name = std::string(go_name);
-	}
+	ImGui::InputText("##Name", &name);
+
 	ImGui::SameLine();
 
-	delete[] go_name;
+	
 
 	ImGui::Checkbox("Static", &isStatic);
 

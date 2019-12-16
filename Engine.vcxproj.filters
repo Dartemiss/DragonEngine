@@ -199,6 +199,9 @@
     <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\LineSegment.cpp">
       <Filter>Libraries\MathGeoLib</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\imgui\imgui_stdlib.cpp">
+      <Filter>Libraries\Imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -499,6 +502,9 @@
     </ClInclude>
     <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Line.h">
       <Filter>Libraries\MathGeoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\imgui\imgui_stdlib.h">
+      <Filter>Libraries\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

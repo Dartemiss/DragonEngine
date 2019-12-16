@@ -50,6 +50,10 @@ void GUICamera::Draw(const char * title)
 		{
 			App->scene->CreateShapesScript();
 		}
+		if (ImGui::Button("Generate Houses"))
+		{
+			App->scene->CreateHousesScript();
+		}
 
 		ImGui::End();
 

@@ -390,7 +390,7 @@ void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bb
 
 		if (indexes.size() == 0 || stackOfNodes.size() == 0)
 		{
-			LOG("Times checked: %d", times);
+			//LOG("Times checked: %d", times);
 			return;
 		}
 			

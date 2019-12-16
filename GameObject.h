@@ -88,7 +88,7 @@ public:
 	int numberOfCopies = 0;
 
 private:
-	std::string name;
+	std::string name = "";
 
 	void CheckDragAndDrop(GameObject* go);
 
