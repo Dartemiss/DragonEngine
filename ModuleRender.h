@@ -58,7 +58,6 @@ public:
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
-	void DrawGrid();
 	void DrawAllGameObjects();
 	void DrawGame();
 	

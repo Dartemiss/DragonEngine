@@ -451,6 +451,12 @@ void GameObject::DrawAABB() const
 	dd::aabb(globalBoundingBox->minPoint, globalBoundingBox->maxPoint, float3(0, 1, 0));
 }
 
+void GameObject::Draw(const unsigned int program)
+{
+	myMaterial->SetDrawTextures(program);
+	myMesh->Draw(program);
+}
+
 void GameObject::DrawInspector(bool &showInspector)
 {
 	ImGui::SetNextWindowPos(

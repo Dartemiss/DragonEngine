@@ -77,6 +77,7 @@ public:
 	AABB* boundingBox = nullptr;
 	AABB* globalBoundingBox = nullptr;
 
+	void Draw(const unsigned int program);
 	void DrawInspector(bool &showInspector);
 
 	//Shape type

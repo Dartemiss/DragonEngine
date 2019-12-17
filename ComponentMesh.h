@@ -1,10 +1,8 @@
 #ifndef __ComponentMesh_H__
 #define __ComponentMesh_H__
 
-#include "Globals.h"
 #include "Component.h"
 #include "Mesh.h"
-#include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
 
 class ComponentMesh : public Component
 {
@@ -12,8 +10,6 @@ public:
 	ComponentMesh(GameObject* go);
 	ComponentMesh(GameObject* go, ComponentMesh* comp);
 	~ComponentMesh();
-
-	void Update();
 
 	void LoadMesh(Mesh* mesh);
 	void Draw(const unsigned int program) const;

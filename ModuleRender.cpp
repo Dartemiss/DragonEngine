@@ -245,64 +245,11 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::DrawGrid()
-{
-	//Draw Grid
-	unsigned int progGrid = App->program->gridProg;
-	glUseProgram(progGrid);
-
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"model"), 1, GL_TRUE, &model[0][0]);
-
-	//Temporary as std140 doesnt work
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
-	
-	/*
-	glLineWidth(1.0f);
-	float d = 200.0f;
-	glBegin(GL_LINES);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	for (float i = -d; i <= d; i += 1.0f)
-	{
-		glVertex3f(i, 0.0f, -d);
-		glVertex3f(i, 0.0f, d);
-		glVertex3f(-d, 0.0f, i);
-		glVertex3f(d, 0.0f, i);
-	}
-	glEnd();
-	*/
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-	// red X
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
-	glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
-	// green Y
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
-	// blue Z
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
-	glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
-	glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
-	glEnd();
-	glLineWidth(1.0f);
-
-	glUseProgram(0);
-}
-
 void ModuleRender::DrawAllGameObjects()
 {
 
-	unsigned int progModel = App->program->defaultProg;
+	//unsigned int progModel = App->program->defaultProg;
+	unsigned int progModel = App->program->uber;
 
 	glUseProgram(progModel);
 
@@ -335,7 +282,7 @@ void ModuleRender::DrawAllGameObjects()
 
 				if (gameObject->myMesh != nullptr)
 				{
-					gameObject->myMesh->Draw(progModel);
+					gameObject->Draw(progModel);
 				}
 
 				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr && showBoundingBox)
@@ -347,30 +294,7 @@ void ModuleRender::DrawAllGameObjects()
 		{
 			if (gameObject->myMesh != nullptr)
 			{
-				//Temporal for working with lighting shaders
-				unsigned int shader = App->program->flatLighting;
-				glUseProgram(shader);
-				glUniformMatrix4fv(glGetUniformLocation(shader,
-					"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
-				glUniformMatrix4fv(glGetUniformLocation(shader,
-					"view"), 1, GL_TRUE, &App->camera->view[0][0]);
-				glUniformMatrix4fv(glGetUniformLocation(shader,
-					"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
-
-				float3 light = float3(10, 20, 50);
-				glUniform3fv(glGetUniformLocation(shader, "light_pos"), 1, &light[0]);
-
-				glUniform1f(glGetUniformLocation(shader, "ambient"), 0.02);
-				glUniform1f(glGetUniformLocation(shader, "shininess"), 4);
-
-				glUniform1f(glGetUniformLocation(shader, "k_ambient"), 0.01);
-				glUniform1f(glGetUniformLocation(shader, "k_diffuse"), 0.05);
-				glUniform1f(glGetUniformLocation(shader, "k_specular"), 0.02);
-
-				float4 color= float4(10, 0, 0, 1);
-				glUniform4fv(glGetUniformLocation(shader, "object_color"), 1, &color[0]);
-
-				gameObject->myMesh->Draw(shader);
+				gameObject->Draw(progModel);
 				//gameObject->myMesh->Draw(progModel);
 
 			}
@@ -388,7 +312,7 @@ void ModuleRender::DrawAllGameObjects()
 
 void ModuleRender::DrawGame()
 {
-	unsigned int progModel = App->program->defaultProg;
+	unsigned int progModel = App->program->uber;
 	glUseProgram(progModel);
 
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
@@ -407,7 +331,8 @@ void ModuleRender::DrawGame()
 
 			if (gameObject->myMesh != nullptr)
 			{
-				gameObject->myMesh->Draw(progModel);
+				gameObject->Draw(progModel);
+				//gameObject->myMesh->Draw(progModel);
 			}
 
 		}
@@ -425,7 +350,8 @@ void ModuleRender::DrawGame()
 
 			if (gameObject->myMesh != nullptr)
 			{
-				gameObject->myMesh->Draw(progModel);
+				gameObject->Draw(progModel);
+				//gameObject->myMesh->Draw(progModel);
 			}
 
 		}

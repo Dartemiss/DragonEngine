@@ -5,6 +5,7 @@
 #include "Timer.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
+#include "ComponentMaterial.h"
 #include "MyQuadTree.h"
 #include "AABBTree.h"
 #include "Dependencies/imgui/imgui.h"
@@ -145,8 +146,11 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 		std::string newName = name + std::to_string(numObject);
 		GameObject* newMeshObject = CreateGameObject(newName.c_str(), parent);
 		ComponentMesh* myMeshCreated = (ComponentMesh*)newMeshObject->CreateComponent(MESH);
+		ComponentMaterial* myMaterialCreated = (ComponentMaterial*)newMeshObject->CreateComponent(MATERIAL);
 		
+
 		myMeshCreated->LoadMesh(mesh);
+		myMaterialCreated->SetTextures(myMeshCreated->mesh->textures);
 		newMeshObject->ComputeAABB();
 		allGameObjects.insert(newMeshObject);
 
@@ -273,6 +277,8 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 
 	ComponentMesh* myMeshCreated = (ComponentMesh*)newGameObject->CreateComponent(MESH);
 	myMeshCreated->LoadMesh(App->modelLoader->meshes[0]);
+	ComponentMaterial* myMaterialCreated = (ComponentMaterial*)newGameObject->CreateComponent(MATERIAL);
+	myMaterialCreated->SetTextures(myMeshCreated->mesh->textures);
 	newGameObject->ComputeAABB();
 	newGameObject->isParentOfMeshes = true;
 

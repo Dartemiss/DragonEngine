@@ -1,14 +1,12 @@
 #ifndef __Mesh_H__
 #define __Mesh_H__
 
-#include "Globals.h"
-#include "Module.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
+#include "Dependencies/MathGeoLib/include/Math/float2.h"
 #include <string>
 #include <vector>
-#include "Dependencies/MathGeoLib/include/Math/float2.h"
-#include "ModuleTexture.h"
 
+struct Texture;
 
 struct Vertex {
 	float3 Position;
@@ -21,15 +19,19 @@ public:
 	/*  Mesh Data  */
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
+
+	//TODO remove textures from mesh
 	std::vector<Texture> textures;
+
 	/*  Functions  */
-	void Init();
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
 	~Mesh();
 	void Draw(const unsigned int program) const;
+
 private:
 	/*  Render data  */
 	unsigned int VAO, VBO, EBO;
+
 	/*  Functions    */
 	void setupMesh();
 };

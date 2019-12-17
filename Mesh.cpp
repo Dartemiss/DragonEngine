@@ -1,8 +1,6 @@
 #include "Mesh.h"
-#include "Application.h"
-#include "ModuleProgram.h"
+#include "ModuleTexture.h"
 #include "glew.h"
-#include <string>
 
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures)
 {
@@ -13,21 +11,14 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>&
 	setupMesh();
 }
 
-
 Mesh::~Mesh()
 {
 	vertices.clear();
 	indices.clear();
-	textures.clear();
 
 	glDeleteBuffers(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &EBO);
-
-}
-
-void Mesh::Init()
-{
 }
 
 void Mesh::setupMesh()
@@ -57,25 +48,9 @@ void Mesh::setupMesh()
 
 	glBindVertexArray(0);
 }
+
 void Mesh::Draw(const unsigned int program) const
 {
-	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
-	for (unsigned int i = 0; i < textures.size(); i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-		// retrieve texture number (the N in diffuse_textureN)
-		std::string number;
-		std::string name = textures[i].type;
-		if (name == "texture_diffuse")
-			number = std::to_string(diffuseNr++);
-		else if (name == "texture_specular")
-			number = std::to_string(specularNr++);
-
-		//glUniform1i(glGetUniformLocation(program, ("material." + name + number).c_str()), i);
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
-	}
-	// draw mesh
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

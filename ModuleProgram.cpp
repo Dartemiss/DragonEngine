@@ -14,9 +14,6 @@
 
 bool ModuleProgram::Init()
 {
-	//Grid shader
-	gridProg = createProgramWithShaders("../Shaders/Grid.vs", "../Shaders/Grid.fs");
-
 	//Lighting shaders
 	flatLighting = createProgramWithShaders("../Shaders/flat.vs", "../Shaders/flat.fs");
 	gouraudLighting = createProgramWithShaders("../Shaders/Gouraud.vs", "../Shaders/Gouraud.fs");
@@ -39,7 +36,6 @@ bool ModuleProgram::Init()
 bool ModuleProgram::CleanUp()
 {
 	glDeleteProgram(defaultProg);
-	glDeleteProgram(gridProg);
 
 	glDeleteProgram(flatLighting);
 	glDeleteProgram(gouraudLighting);
@@ -51,9 +47,6 @@ bool ModuleProgram::CleanUp()
 
 void ModuleProgram::SetUpUniformsBuffer()
 {
-	unsigned int uniformBlockIndexGrid = glGetUniformBlockIndex(gridProg, "Matrices");
-	glUniformBlockBinding(gridProg, uniformBlockIndexGrid, 0);
-
 	unsigned int uniformBlockIndexDefault = glGetUniformBlockIndex(defaultProg, "Matrices");
 	glUniformBlockBinding(defaultProg, uniformBlockIndexDefault, 0);
 
@@ -68,7 +61,9 @@ void ModuleProgram::SetUpUniformsBuffer()
 
 unsigned int ModuleProgram::createProgramWithShaders(const char * vertexFilename, const char * fragmentFilename) const
 {
+	LOG("Compiling Vertex Shader from %s", vertexFilename);
 	unsigned int vertexShader = createShader(vertexFilename, GL_VERTEX_SHADER);
+	LOG("Compiling Fragment Shader from %s", fragmentFilename);
 	unsigned int fragmentShader = createShader(fragmentFilename, GL_FRAGMENT_SHADER);
 
 	return createProgram(vertexShader, fragmentShader);
@@ -106,7 +101,7 @@ unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fSh
 	LOG("Deleting Vertex Shader");
 	glDeleteShader(vShader);
 
-	LOG("Deleting Fragment Shader");
+	LOG("Deleting Fragment Shader\n");
 	glDeleteShader(fShader);
 
 	return program;

@@ -5,7 +5,6 @@
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include <vector>
-#include <string>
 
 struct Texture;
 
@@ -19,7 +18,8 @@ public:
 	void Update();
 	bool CleanUp();
 
-	void SetUpUberShader(const unsigned int program);
+	void SetTextures(std::vector<Texture> & textures);
+	void SetDrawTextures(const unsigned int program);
 
 	//Saving and loading
 	void OnSave(SceneLoader & loader);
