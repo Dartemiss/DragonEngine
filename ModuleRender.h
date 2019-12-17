@@ -73,6 +73,10 @@ public:
 	bool showFrustum = true;
 	bool showGrid = false;
 
+	//Windows size
+	int heightScene, widthScene;
+	int heightGame, widthGame;
+
 private:
 	void* context;
 
@@ -89,9 +93,6 @@ private:
 	//Framebuffer windows variables
 	unsigned int frameBufferObjectGame = 0; // FBO
 	unsigned int renderBufferObjectGame = 0; // RBO
-
-	int heightScene, widthScene;
-	int heightGame, widthGame;
 
 	unsigned int sceneTexture = 0;
 	unsigned int gameTexture = 0;

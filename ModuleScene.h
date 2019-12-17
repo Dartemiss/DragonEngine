@@ -113,7 +113,7 @@ public:
 	LineSegment* CreateRayCast(float3 origin, float3 direction, float maxDistance);
 	GameObject* IntersectRayCast(float3 origin, const LineSegment &ray);
 	LineSegment* CreateRayCast(fPoint mousePoint);
-
+	LineSegment* currentRay = nullptr;
 
 private:
 	//Root

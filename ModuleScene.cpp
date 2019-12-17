@@ -3,6 +3,7 @@
 #include "ModuleTimeManager.h"
 #include "ModuleCamera.h"
 #include "ModuleModelLoader.h"
+#include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ComponentTransform.h"
@@ -17,6 +18,7 @@
 #include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
 #include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
 #include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
+#include "debugdraw.h"
 #include <random>
 #include "SceneLoader.h"
 #include <queue>
@@ -65,17 +67,15 @@ update_status ModuleScene::Update()
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
 			fPoint point = App->input->GetMousePosition();
-			point.x = mapValues(point.x, 0, App->window->width, -1, 1);
-			point.y = mapValues(point.y, 0, App->window->height, -1, 1);
+			point.x = mapValues(point.x, 0, App->renderer->widthScene, -1, 1);
+			point.y = mapValues(point.y, 0, App->renderer->heightScene, -1, 1);
 			LineSegment ray = *CreateRayCast(point);
 			GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
 			if(selectedGO != nullptr)
 			{
 				selectedByHierarchy = selectedGO;
 			}
-
-			
-		
+			currentRay = &ray;
 		}
 	
 	}
@@ -96,6 +96,8 @@ update_status ModuleScene::Update()
 	}
 
 	DrawGUI();
+	if(currentRay != nullptr)
+		dd::line(currentRay->a, currentRay->b, float3(1, 0, 0));
 	
 	return UPDATE_CONTINUE;
 }
