@@ -11,6 +11,7 @@
 #include "Dependencies/imgui/imgui_impl_sdl.h"
 #include "Dependencies/imgui/imgui_impl_opengl3.h"
 #include "Dependencies/imgui/imgui_stdlib.h"
+#include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
 #include "SDL.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
@@ -551,6 +552,19 @@ void GameObject::OnLoad(SceneLoader & loader)
 		component = CreateComponent(type);
 		component->OnLoad(loader);
 	}
+}
+
+float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & ray)
+{
+	if (myMesh == nullptr)
+		return -1.0f;
+
+	//Transform ray coordinates into local space
+	LineSegment localRay = LineSegment(ray);
+	localRay.Transform(myTransform->globalModelMatrix.Inverted());
+	
+
+	return myMesh->IsIntersectedByRay(origin,localRay);
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)

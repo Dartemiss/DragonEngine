@@ -3,6 +3,7 @@
 #include "ModuleTimeManager.h"
 #include "ModuleCamera.h"
 #include "ModuleModelLoader.h"
+#include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
@@ -19,6 +20,7 @@
 #include <random>
 #include "SceneLoader.h"
 #include <queue>
+#include <map>
 
 using namespace std;
 
@@ -62,7 +64,17 @@ update_status ModuleScene::Update()
 	{
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
-			CreateRayCast(App->input->GetMousePosition());
+			fPoint point = App->input->GetMousePosition();
+			point.x = mapValues(point.x, 0, App->window->width, -1, 1);
+			point.y = mapValues(point.y, 0, App->window->height, -1, 1);
+			LineSegment ray = *CreateRayCast(point);
+			GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
+			if(selectedGO != nullptr)
+			{
+				selectedByHierarchy = selectedGO;
+			}
+
+			
 		
 		}
 	
@@ -733,11 +745,52 @@ LineSegment* ModuleScene::CreateRayCast(fPoint mousePoint)
 	return new LineSegment(App->camera->frustum->UnProjectLineSegment(mousePoint.x, mousePoint.y)); 
 }
 
-void ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)
+GameObject* ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)
 {
+	//First get aabb intersection ordered by distance, then compare with aabb that are closer to the closest triangle hit
+	std::map<float, GameObject*> hits;
 
+	for(auto go : allGameObjects)
+	{
+		if(go->globalBoundingBox != nullptr)
+		{
+			bool hit = ray.Intersects(*go->globalBoundingBox);
+			if(hit)
+			{
+				float dist = origin.Distance(*go->globalBoundingBox);
+				hits[dist] = go;
+			}
 
-	return;
+		}
+	
+	}
+	
+	if (hits.size() == 0)
+		return nullptr;
+
+	float minDistTriangle = hits.rbegin()->first + 1.0f;
+	GameObject* hitGO = nullptr;
+	bool isHit = false;
+	
+	//Until first hit with triangle check all gameObjects by order
+	for(const auto& it : hits)
+	{
+		if(it.first < minDistTriangle)
+		{
+			//If hitDist is -1.0f then ray doesn't intersect any triangle
+			float hitDist = it.second->IsIntersectedByRay(origin, ray);
+			if (hitDist != -1.0f)
+			{
+				isHit = true;
+				minDistTriangle = hitDist;
+				hitGO = it.second;
+			}
+			
+		}
+
+	}
+
+	return hitGO;
 }
 
 

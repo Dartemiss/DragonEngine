@@ -506,6 +506,7 @@
     <ClInclude Include="Dependencies\imgui\imgui_stdlib.h">
       <Filter>Libraries\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Globals.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

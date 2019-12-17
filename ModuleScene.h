@@ -111,7 +111,7 @@ public:
 
 	//Mouse Picking
 	LineSegment* CreateRayCast(float3 origin, float3 direction, float maxDistance);
-	void IntersectRayCast(float3 origin, const LineSegment &ray);
+	GameObject* IntersectRayCast(float3 origin, const LineSegment &ray);
 	LineSegment* CreateRayCast(fPoint mousePoint);
 
 

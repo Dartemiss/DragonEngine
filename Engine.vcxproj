@@ -157,6 +157,7 @@
     <ClInclude Include="Dependencies\MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="Dependencies\PCG\pcg_basic.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIAbout.h" />
     <ClInclude Include="GUICamera.h" />
