@@ -29,6 +29,36 @@ public:
 	GUITime timeManager;
 	GUIInspector inspector;
 
+	//Values Scene
+	float scenePosRatioWidth = 0.183f;
+	float scenePosRatioHeight = 0.047f;
+
+	float sceneSizeRatioWidth = 0.626f;
+	float sceneSizeRatioHeight = 0.709f;
+
+	//Values Inspector
+	float inspectorPosRatioWidth = 0.810;
+	float inspectorPosRatioHeight = 0.017f;
+
+	float inspectorSizeRatioWidth = 0.186f;
+	float inspectorSizeRatioHeight = 0.98f;
+
+	//Values Console
+	float consolePosRatioHeight = 0.757f;
+
+	float consoleSizeRatioWidth = 0.457f;
+	float consoleSizeRatioHeight = 0.239f;
+
+	//Values Timers
+	float timerPosRatioWidth = 0.459f;
+	float timerPosRatioHeight = 0.757f;
+
+	float timerSizeRatioWidth = 0.350f;
+	float timerSizeRatioHeight = 0.239f;
+
+
+
+
 private:
 	bool show_demo_window = false;
 	bool scrollDownConsole = false;

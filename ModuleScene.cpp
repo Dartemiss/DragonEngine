@@ -67,6 +67,7 @@ update_status ModuleScene::Update()
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
 			fPoint point = App->input->GetMousePosition();
+			//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
 			point.x = mapValues(point.x, 0, App->renderer->widthScene, -1, 1);
 			point.y = mapValues(point.y, 0, App->renderer->heightScene, -1, 1);
 			LineSegment ray = *CreateRayCast(point);

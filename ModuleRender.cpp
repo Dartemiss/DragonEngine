@@ -5,6 +5,7 @@
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
 #include "ModuleTimeManager.h"
+#include "ModuleIMGUI.h"
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
 #include "ModuleDebugDraw.h"
@@ -581,11 +582,11 @@ void ModuleRender::DrawSceneBuffer()
 	bool isEnabled = true;
 	//First Scene window is created
 	ImGui::SetNextWindowPos(
-		ImVec2(353, 48),
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight),
 		ImGuiCond_Once
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1203, 722),
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight),
 		ImGuiCond_Once
 	);
 	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -623,11 +624,11 @@ void ModuleRender::DrawGameBuffer()
 	bool gameIsEnabled = true;
 
 	ImGui::SetNextWindowPos(
-		ImVec2(353, 48),
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight),
 		ImGuiCond_Once
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1203, 722),
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight),
 		ImGuiCond_Once
 	);
 	//Game Window

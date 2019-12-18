@@ -1,5 +1,7 @@
 #include "GUIConsole.h"
-
+#include "Application.h"
+#include "ModuleWindow.h"
+#include "ModuleIMGUI.h"
 
 GUIConsole::GUIConsole()
 {
@@ -23,11 +25,11 @@ void GUIConsole::Draw(const char * title)
 	if (isEnabled) 
 	{
 		ImGui::SetNextWindowPos(
-			ImVec2(1, 770)
+			ImVec2(1, App->window->height * App->imgui->consolePosRatioHeight)
 			
 		);
 		ImGui::SetNextWindowSize(
-			ImVec2(878,244)
+			ImVec2(App->window->width * App->imgui->consoleSizeRatioWidth, App->window->height * App->imgui->consoleSizeRatioHeight)
 		);
 		ImGui::Begin(title, &isEnabled);
 

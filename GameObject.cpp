@@ -3,6 +3,8 @@
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
 #include "ModuleInput.h"
+#include "ModuleIMGUI.h"
+#include "ModuleWindow.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
@@ -456,10 +458,10 @@ void GameObject::DrawAABB() const
 void GameObject::DrawInspector(bool &showInspector)
 {
 	ImGui::SetNextWindowPos(
-		ImVec2(1556, 18)
+		ImVec2(App->window->width * App->imgui->inspectorPosRatioWidth, App->window->height * App->imgui->inspectorPosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(357, 997)
+		ImVec2(App->window->width * App->imgui->inspectorSizeRatioWidth, App->window->height * App->imgui->inspectorSizeRatioHeight)
 	);
 
 	ImGui::Begin("Inspector", &showInspector);

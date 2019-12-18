@@ -1,5 +1,7 @@
 #include "GUITime.h"
 #include "Application.h"
+#include "ModuleWindow.h"
+#include "ModuleIMGUI.h"
 #include "ModuleTimeManager.h"
 
 GUITime::GUITime()
@@ -12,10 +14,10 @@ void GUITime::Draw(const char * title)
 	if (isEnabled)
 	{
 		ImGui::SetNextWindowPos(
-			ImVec2(882, 770)
+			ImVec2(App->window->width * App->imgui->timerPosRatioWidth, App->window->height * App->imgui->timerPosRatioHeight)
 		);
 		ImGui::SetNextWindowSize(
-			ImVec2(673, 244)
+			ImVec2(App->window->width * App->imgui->timerSizeRatioWidth, App->window->height * App->imgui->timerSizeRatioHeight)
 		);
 
 		ImGui::Begin(title, &isEnabled);
