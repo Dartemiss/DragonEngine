@@ -56,6 +56,15 @@ public:
 	float timerSizeRatioWidth = 0.350f;
 	float timerSizeRatioHeight = 0.239f;
 
+	//Values Tabs
+	float tabsPosRatioWidth = 0.183f;
+	float tabsPosRatioHeight = 0.018f;
+
+	float tabsSizeRatioWidth = 0.628f;
+	float tabsSizeRatioHeight = 0.741f;
+
+
+
 
 
 

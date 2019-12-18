@@ -181,11 +181,11 @@ update_status ModuleRender::Update()
 	
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
 	ImGui::SetNextWindowPos(
-		ImVec2(352,19)
+		ImVec2(App->window->width * App->imgui->tabsPosRatioWidth,App->window->height * App->imgui->tabsPosRatioHeight)
 		
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1207,754)
+		ImVec2(App->window->width * App->imgui->tabsSizeRatioWidth, App->window->height * App->imgui->tabsSizeRatioHeight)
 		
 	);
 
