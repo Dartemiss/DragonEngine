@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include <vector>
 #include <set>
-#include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/Geometry/AABB.h"
 
 const int BUCKET_CAPACITY = 2;
 

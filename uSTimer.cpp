@@ -1,5 +1,5 @@
 #include "uSTimer.h"
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 const static float frequency = (float)SDL_GetPerformanceFrequency();
 

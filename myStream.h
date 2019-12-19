@@ -1,5 +1,5 @@
 #include "Globals.h"
-#include "LogStream.hpp"
+#include "Assimp/LogStream.hpp"
 #include <string>
 
 using namespace Assimp;

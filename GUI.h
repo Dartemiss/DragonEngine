@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Globals.h"
-#include "glew.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
-#include "SDL.h"
+#include "GL/glew.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
+#include "SDL/SDL.h"
 #include "assert.h"
 
 class ModuleGUI;

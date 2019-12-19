@@ -7,7 +7,7 @@
 #include "ModuleTimeManager.h"
 #include "ModuleInput.h"
 #include "Application.h"
-#include "ilu.h"
+#include "DevIL/ilu.h"
 
 
 void GUIWindow::Draw(const char * title)

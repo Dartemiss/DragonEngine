@@ -1,7 +1,7 @@
 #include "Mesh.h"
 #include "Application.h"
 #include "ModuleProgram.h"
-#include "glew.h"
+#include "GL/glew.h"
 #include <string>
 
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures)

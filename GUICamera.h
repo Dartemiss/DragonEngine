@@ -2,7 +2,7 @@
 #define __GUICamera_H__
 #include "Globals.h"
 #include "GUI.h"
-#include "Dependencies/imgui/imgui.h"
+#include "Imgui/imgui.h"
 
 
 class Application;
