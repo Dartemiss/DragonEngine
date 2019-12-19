@@ -157,6 +157,10 @@ bool ModuleRender::Init()
 	skybox = new Skybox();
 
 
+	//Scene w, h
+	widthScene = App->window->width * App->imgui->sceneSizeRatioWidth;
+	heightScene = App->window->height * App->imgui->sceneSizeRatioHeight;
+
 	return true;
 }
 
