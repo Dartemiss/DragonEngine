@@ -187,7 +187,8 @@ void GUIWindow::Draw(const char * title)
 		}
 		if (ImGui::CollapsingHeader("Texture Data"))
 		{
-			for (auto texInfo : App->texture->textures_loaded)
+			//TODO: redo texture data
+			/*for (auto texInfo : App->texture->textures_loaded)
 			{
 				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Path: "); ImGui::SameLine();
 				ImGui::Text("%s", texInfo.path.c_str());
@@ -221,7 +222,7 @@ void GUIWindow::Draw(const char * title)
 				}
 
 				ImGui::Separator();
-			}
+			}*/
 		}
 
 

@@ -2,8 +2,8 @@
 #define __ComponentMaterial_H__
 
 #include "Component.h"
-#include "Dependencies/MathGeoLib/include/Math/float3.h"
-#include "Dependencies/MathGeoLib/include/Math/float4.h"
+#include "MathGeoLib/Math/float3.h"
+#include "MathGeoLib/Math/float4.h"
 #include <vector>
 
 struct Texture;

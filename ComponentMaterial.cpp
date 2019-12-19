@@ -1,7 +1,7 @@
 #include "ComponentMaterial.h"
 #include "SceneLoader.h"
 #include "ModuleTexture.h"
-#include "glew.h"
+#include "GL/glew.h"
 
 
 ComponentMaterial::ComponentMaterial(GameObject* go)

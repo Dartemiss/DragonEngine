@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "ModuleModelLoader.h"
-#include"ModuleTexture.h"
+#include "ModuleTexture.h"
 #include "ModuleCamera.h"
 #include "Timer.h"
 #include <Assimp/postprocess.h>
@@ -41,20 +41,26 @@ update_status ModuleModelLoader::PostUpdate()
 
 bool ModuleModelLoader::CleanUp()
 {
-	emptyScene();
-	
+	models.clear();
+
 	return true;
 }
 
-void ModuleModelLoader::Draw(const unsigned int program) const
-{
-	for (unsigned int i = 0; i < meshes.size(); i++)
-		meshes[i]->Draw(program);
-}
 
-
-void ModuleModelLoader::loadModel(const string &path)
+void ModuleModelLoader::LoadModel(const string &path, Model &model)
 {
+	model.Directory = ComputeDirectory(path);
+	if (model.Directory == "")
+		return;
+	model.Name = ComputeName(path);
+	
+	//Check if model is already loaded
+	for (unsigned int i = 0; i < models.size(); i++)
+	{
+		if (model.Directory == models[i]->Directory && model.Name == models[i]->Name)
+			return;
+	}
+
 	LOG("Importing model \n");
 	const unsigned int severity = Logger::Debugging | Logger::Info | Logger::Err | Logger::Warn;
 	DefaultLogger::create("", Logger::NORMAL);
@@ -66,63 +72,50 @@ void ModuleModelLoader::loadModel(const string &path)
 		LOG("ERROR ASSIMP: %s \n", aiGetErrorString());
 		return;
 	}
+	
+	for (int i = 0; i < scene->mNumMeshes; i++)
+	{
+	}
 
-	directory = computeDirectory(path);
-	nameOfModel = ComputeName(path);
-
-	if (directory == "")
-		return;
 	LOG("For each mesh located on the current node, processing meshes.")
-	processNode(scene->mRootNode, scene);
+	ProcessNode(scene->mRootNode, scene, model);
 
 	DefaultLogger::kill();
 
 	return;
-
 }
 
 const int ModuleModelLoader::GetNumberOfMeshes() const
 {
-	return meshes.size();
+	//TODO change or delete
+	return 0;
 }
 
-const int ModuleModelLoader::GetNumberOfTriangles(const bool triangles) const
-{
-	int counter = 0;
-
-	for (auto mesh : meshes)
-	{
-		counter += mesh->indices.size();
-	}
-	return triangles ? counter / 3 : counter;
-}
-
-void ModuleModelLoader::GetMeshes(vector<Mesh*> &meshes)
-{
-	meshes = this->meshes;
-}
-
-void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
+void ModuleModelLoader::ProcessNode(aiNode * node, const aiScene * scene, Model & model)
 {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back((processMesh(mesh, scene)));
+		Mesh* myMesh = ProcessMesh(mesh, scene);
+		vector<Texture> textures = ProcessTextures(mesh, scene, model.Directory);
+		for (unsigned int i = 0; i < textures.size(); i++)
+		{
+			model.Meshes.emplace(myMesh, &textures[i]);
+		}
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		processNode(node->mChildren[i], scene);
+		ProcessNode(node->mChildren[i], scene, model);
 	}
 }
 
-Mesh* ModuleModelLoader::processMesh(const aiMesh * mesh, const aiScene * scene)
+Mesh* ModuleModelLoader::ProcessMesh(const aiMesh *mesh, const aiScene *scene)
 {
 	//Filling data
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
-	vector<Texture> textures;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -160,37 +153,47 @@ Mesh* ModuleModelLoader::processMesh(const aiMesh * mesh, const aiScene * scene)
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
 			indices.push_back(face.mIndices[j]);
 	}
-		// process material
-		
-		if (mesh->mMaterialIndex >= 0)
-		{
-			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-			// 1. diffuse maps
-			vector<Texture> diffuseMaps = App->texture->loadMaterialTextures(material,
-				aiTextureType_DIFFUSE, "texture_diffuse", directory);
-			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			// 2. specular maps
-			vector<Texture> specularMaps = App->texture->loadMaterialTextures(material,
-				aiTextureType_SPECULAR, "texture_specular", directory);
-			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-			// 3. normal maps
-			vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
-				aiTextureType_NORMALS, "texture_normal",directory);
-			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-			// 4. height maps
-			vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
-				aiTextureType_AMBIENT, "texture_height",directory);
-			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-
-			//Count number of textures
-			numberOfTextures += textures.size();
-
-		}
-		
-	return new Mesh(vertices, indices, textures);
+	
+	return new Mesh(vertices, indices);
 }
 
-string ModuleModelLoader::computeDirectory(const string &path) const
+vector<Texture> & ModuleModelLoader::ProcessTextures(const aiMesh *mesh, const aiScene *scene, const string &directory)
+{
+	vector<Texture> textures;
+
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+		// 1. diffuse maps
+		vector<Texture> diffuseMaps = App->texture->loadMaterialTextures(material,
+			aiTextureType_DIFFUSE, "texture_diffuse", directory);
+		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		// 2. specular maps
+		vector<Texture> specularMaps = App->texture->loadMaterialTextures(material,
+			aiTextureType_SPECULAR, "texture_specular", directory);
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		// 3. ambient maps
+		vector<Texture> ambientMaps = App->texture->loadMaterialTextures(material,
+			aiTextureType_AMBIENT, "texture_occlusive", directory);
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		// 4. emissive maps
+		vector<Texture> emissiveMaps = App->texture->loadMaterialTextures(material,
+			aiTextureType_EMISSIVE, "texture_emissive", directory);
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		// 5. normal maps
+		vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
+			aiTextureType_NORMALS, "texture_normal", directory);
+		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+		// 6. height maps
+		vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
+			aiTextureType_HEIGHT, "texture_height", directory);
+		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+	}
+
+	return textures;
+}
+
+string ModuleModelLoader::ComputeDirectory(const string &path) const
 {
 	size_t simpleRightSlash = path.find_last_of('/');
 	if (string::npos != simpleRightSlash)
@@ -198,18 +201,24 @@ string ModuleModelLoader::computeDirectory(const string &path) const
 		LOG("Directory with simpleRightSlashes.")
 		return path.substr(0, path.find_last_of('/') + 1);
 	}
-	size_t doubleRightSlash = path.find_last_of('//');
+	size_t simpleLeftSlash = path.find_last_of('\\');
+	if (string::npos != simpleLeftSlash)
+	{
+		LOG("Directory with simpleLeftSlashes.")
+			return path.substr(0, path.find_last_of('\\') + 1);
+	}
+	size_t doubleRightSlash = path.find_last_of("//");
 	if (string::npos != doubleRightSlash)
 	{
 		LOG("Directory with doubleRightSlashes.")
-		return path.substr(0, path.find_last_of('//') + 1);
+		return path.substr(0, path.find_last_of("//") + 1);
 	}
 
-	size_t doubleLeftSlash = path.find_last_of('\\');
+	size_t doubleLeftSlash = path.find_last_of("\\\\");
 	if (string::npos != doubleLeftSlash)
 	{
 		LOG("Directory with doubleLeftSlashes.")
-		return path.substr(0, path.find_last_of('\\') + 1);
+		return path.substr(0, path.find_last_of("\\\\") + 1);
 	}
 
 	LOG("ERROR: Invalid path.");
@@ -218,40 +227,34 @@ string ModuleModelLoader::computeDirectory(const string &path) const
 
 string ModuleModelLoader::ComputeName(const string & path) const
 {
-
 	size_t simpleRightSlash = path.find_last_of('/');
 	if (string::npos != simpleRightSlash)
 	{
 		LOG("Directory with simpleRightSlashes.")
 		return path.substr(path.find_last_of('/') + 1, path.size()-1);
 	}
-	size_t doubleRightSlash = path.find_last_of('//');
+	size_t simpleLeftSlash = path.find_last_of('\\');
+	if (string::npos != simpleLeftSlash)
+	{
+		LOG("Directory with simpleLeftSlashes.")
+			return path.substr(path.find_last_of('\\') + 1, path.size() - 1);
+	}
+	size_t doubleRightSlash = path.find_last_of("//");
 	if (string::npos != doubleRightSlash)
 	{
 		LOG("Directory with doubleRightSlashes.")
-		return path.substr(path.find_last_of('//') + 1, path.size()-1);
+		return path.substr(path.find_last_of("//") + 1, path.size()-1);
 	}
 
-	size_t doubleLeftSlash = path.find_last_of('\\');
+	size_t doubleLeftSlash = path.find_last_of("\\\\");
 	if (string::npos != doubleLeftSlash)
 	{
 		LOG("Directory with doubleLeftSlashes.")
-		return path.substr(path.find_last_of('\\') + 1,path.size() -1);
+		return path.substr(path.find_last_of("\\\\") + 1,path.size() -1);
 	}
 
 	return path;
 }
-
-void ModuleModelLoader::emptyScene()
-{
-	meshes.clear();
-	modelBox.clear();
-
-	numberOfTextures = 0;
-}
-
-
-
 
 bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,
 	unsigned slices, unsigned stacks, const math::float4& color)
@@ -301,9 +304,8 @@ bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, co
 		par_shapes_free_mesh(mesh);
 
 
-		Mesh* sphere = new Mesh(vertices, indices, textures);
-
-		meshes.push_back(sphere);
+		//Mesh* sphere = new Mesh(vertices, indices, textures);
+		//meshes.push_back(sphere);
 
 		return true;
 	}
@@ -368,8 +370,8 @@ bool ModuleModelLoader::LoadCylinder(const char * name, const math::float3 & pos
 
 
 		par_shapes_free_mesh(mesh);
-		Mesh* cylinder = new Mesh(vertices, indices, textures);
-		meshes.push_back(cylinder);
+		//Mesh* cylinder = new Mesh(vertices, indices, textures);
+		//meshes.push_back(cylinder);
 
 		return true;
 	}
@@ -421,8 +423,8 @@ bool ModuleModelLoader::LoadTorus(const char * name, const math::float3 & pos, c
 		}
 
 		par_shapes_free_mesh(mesh);
-		Mesh* torus = new Mesh(vertices, indices, textures);
-		meshes.push_back(torus);
+		//Mesh* torus = new Mesh(vertices, indices, textures);
+		//meshes.push_back(torus);
 
 		return true;
 	}
@@ -502,8 +504,8 @@ bool ModuleModelLoader::LoadCube(const char * name, const math::float3 & pos, co
 		}
 
 		par_shapes_free_mesh(mesh);
-		Mesh* cube = new Mesh(vertices, indices, textures);
-		meshes.push_back(cube);
+		//Mesh* cube = new Mesh(vertices, indices, textures);
+		//meshes.push_back(cube);
 
 		return true;
 	}

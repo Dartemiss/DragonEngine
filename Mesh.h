@@ -3,16 +3,14 @@
 
 #include "MathGeoLib/Math/float3.h"
 #include "MathGeoLib/Math/float2.h"
-#include <string>
 #include <vector>
-
-struct Texture;
 
 struct Vertex {
 	float3 Position;
 	float3 Normal;
 	float2 TexCoords;
 };
+
 class Mesh
 {
 public:
@@ -20,11 +18,8 @@ public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	//TODO remove textures from mesh
-	std::vector<Texture> textures;
-
 	/*  Functions  */
-	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
+	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 	~Mesh();
 	void Draw(const unsigned int program) const;
 

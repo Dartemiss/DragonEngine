@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "Module.h"
 #include <vector>
+#include <map>
 #include <string>
 #include "Mesh.h"
 #include <Assimp/postprocess.h>
@@ -15,9 +16,15 @@
 #include <DevIL/ilut.h>
 #include <Assimp/material.h>
 
+struct Texture;
 
-
-
+struct Model
+{
+	std::multimap<Mesh*, Texture*> Meshes;
+	std::string Name = "";
+	std::string Directory = "";
+	//TODO: add count of similar models to track delete and remove data?
+};
 
 class ModuleModelLoader : public Module
 {
@@ -31,12 +38,9 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void Draw(const unsigned int program) const;
-	void loadModel(const std::string &path);
+	void LoadModel(const std::string &path, Model& model);
 
 	const int GetNumberOfMeshes() const;
-	const int GetNumberOfTriangles(const bool triangles) const;
-	void GetMeshes(std::vector<Mesh*> &meshes);
 	bool LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,
 		unsigned slices, unsigned stacks, const math::float4& color);
 
@@ -49,36 +53,22 @@ public:
 	bool LoadCube(const char* name, const math::float3& pos, const math::Quat& rot, float size, const math::float4& color);
 	
 
-	//Variables
-	//Representation of a Cube, have exactly 8 vertex
-	//Order of representation:
-	//0-> (-x,-y,-z), 1-> (x,-y,-z), 2-> (x,-y,z), 3-> (-x,-y,z)
-	//4-> (-x,y,-z), 5-> (x,y,-z), 6-> (x,y,z), 7-> (-x,y,z)
-	std::vector<float3> modelBox;
-	bool isModelLoaded = false;
 	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
 	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
-	int numberOfTextures = 0;
-	void emptyScene();
 
-	std::vector<Mesh*> meshes;
-	std::string nameOfModel;
+	std::vector<Model*> models;
 
 private:
 
-	
-	std::string directory;
 	/*  Functions   */
 	
-	void processNode(aiNode* node, const aiScene *scene);
-	Mesh* processMesh(const aiMesh* mesh, const aiScene *scene);
-	
-	std::string computeDirectory(const std::string &path) const;
+	void ProcessNode(aiNode* node, const aiScene *scene, Model &model);
+	Mesh* ProcessMesh(const aiMesh* mesh, const aiScene *scene);
+	std::vector<Texture> & ProcessTextures(const aiMesh *mesh, const aiScene *scene, const std::string &directory);
+
+	std::string ComputeDirectory(const std::string &path) const;
 	std::string ComputeName(const std::string &path) const;
 
-
-
-
-
 };
+
 #endif __ModuleModelLoader_h__
