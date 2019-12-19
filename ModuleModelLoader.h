@@ -33,6 +33,7 @@ public:
 
 	void Draw(const unsigned int program) const;
 	void loadModel(const std::string &path);
+
 	const int GetNumberOfMeshes() const;
 	const int GetNumberOfTriangles(const bool triangles) const;
 	void GetMeshes(std::vector<Mesh*> &meshes);

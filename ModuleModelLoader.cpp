@@ -15,6 +15,7 @@
 #include "Utils/par_shapes.h"
 
 using namespace Assimp;
+using namespace std;
 
 
 bool ModuleModelLoader::Init()
@@ -52,7 +53,7 @@ void ModuleModelLoader::Draw(const unsigned int program) const
 }
 
 
-void ModuleModelLoader::loadModel(const std::string &path)
+void ModuleModelLoader::loadModel(const string &path)
 {
 	LOG("Importing model \n");
 	const unsigned int severity = Logger::Debugging | Logger::Info | Logger::Err | Logger::Warn;
@@ -96,7 +97,7 @@ const int ModuleModelLoader::GetNumberOfTriangles(const bool triangles) const
 	return triangles ? counter / 3 : counter;
 }
 
-void ModuleModelLoader::GetMeshes(std::vector<Mesh*> &meshes)
+void ModuleModelLoader::GetMeshes(vector<Mesh*> &meshes)
 {
 	meshes = this->meshes;
 }
@@ -119,9 +120,9 @@ void ModuleModelLoader::processNode(aiNode * node, const aiScene * scene)
 Mesh* ModuleModelLoader::processMesh(const aiMesh * mesh, const aiScene * scene)
 {
 	//Filling data
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	vector<Vertex> vertices;
+	vector<unsigned int> indices;
+	vector<Texture> textures;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -165,19 +166,19 @@ Mesh* ModuleModelLoader::processMesh(const aiMesh * mesh, const aiScene * scene)
 		{
 			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 			// 1. diffuse maps
-			std::vector<Texture> diffuseMaps = App->texture->loadMaterialTextures(material,
+			vector<Texture> diffuseMaps = App->texture->loadMaterialTextures(material,
 				aiTextureType_DIFFUSE, "texture_diffuse", directory);
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 			// 2. specular maps
-			std::vector<Texture> specularMaps = App->texture->loadMaterialTextures(material,
+			vector<Texture> specularMaps = App->texture->loadMaterialTextures(material,
 				aiTextureType_SPECULAR, "texture_specular", directory);
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 			// 3. normal maps
-			std::vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
+			vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
 				aiTextureType_NORMALS, "texture_normal",directory);
 			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 			// 4. height maps
-			std::vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
+			vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
 				aiTextureType_AMBIENT, "texture_height",directory);
 			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
@@ -189,23 +190,23 @@ Mesh* ModuleModelLoader::processMesh(const aiMesh * mesh, const aiScene * scene)
 	return new Mesh(vertices, indices, textures);
 }
 
-std::string ModuleModelLoader::computeDirectory(const std::string &path) const
+string ModuleModelLoader::computeDirectory(const string &path) const
 {
 	size_t simpleRightSlash = path.find_last_of('/');
-	if (std::string::npos != simpleRightSlash)
+	if (string::npos != simpleRightSlash)
 	{
 		LOG("Directory with simpleRightSlashes.")
 		return path.substr(0, path.find_last_of('/') + 1);
 	}
 	size_t doubleRightSlash = path.find_last_of('//');
-	if (std::string::npos != doubleRightSlash)
+	if (string::npos != doubleRightSlash)
 	{
 		LOG("Directory with doubleRightSlashes.")
 		return path.substr(0, path.find_last_of('//') + 1);
 	}
 
 	size_t doubleLeftSlash = path.find_last_of('\\');
-	if (std::string::npos != doubleLeftSlash)
+	if (string::npos != doubleLeftSlash)
 	{
 		LOG("Directory with doubleLeftSlashes.")
 		return path.substr(0, path.find_last_of('\\') + 1);
@@ -215,24 +216,24 @@ std::string ModuleModelLoader::computeDirectory(const std::string &path) const
 	return "";
 }
 
-std::string ModuleModelLoader::ComputeName(const std::string & path) const
+string ModuleModelLoader::ComputeName(const string & path) const
 {
 
 	size_t simpleRightSlash = path.find_last_of('/');
-	if (std::string::npos != simpleRightSlash)
+	if (string::npos != simpleRightSlash)
 	{
 		LOG("Directory with simpleRightSlashes.")
 		return path.substr(path.find_last_of('/') + 1, path.size()-1);
 	}
 	size_t doubleRightSlash = path.find_last_of('//');
-	if (std::string::npos != doubleRightSlash)
+	if (string::npos != doubleRightSlash)
 	{
 		LOG("Directory with doubleRightSlashes.")
 		return path.substr(path.find_last_of('//') + 1, path.size()-1);
 	}
 
 	size_t doubleLeftSlash = path.find_last_of('\\');
-	if (std::string::npos != doubleLeftSlash)
+	if (string::npos != doubleLeftSlash)
 	{
 		LOG("Directory with doubleLeftSlashes.")
 		return path.substr(path.find_last_of('\\') + 1,path.size() -1);
@@ -262,9 +263,9 @@ bool ModuleModelLoader::LoadSphere(const char* name, const math::float3& pos, co
 		par_shapes_scale(mesh, size, size, size);
 
 		//Filling data
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
+		vector<Vertex> vertices;
+		vector<unsigned int> indices;
+		vector<Texture> textures;
 
 
 		for (unsigned int i = 0; i < mesh->npoints; ++i)
@@ -331,9 +332,9 @@ bool ModuleModelLoader::LoadCylinder(const char * name, const math::float3 & pos
 		par_shapes_merge_and_free(mesh, bottom);
 
 		//Filling data
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
+		vector<Vertex> vertices;
+		vector<unsigned int> indices;
+		vector<Texture> textures;
 
 
 		for (unsigned int i = 0; i < mesh->npoints; ++i)
@@ -385,9 +386,9 @@ bool ModuleModelLoader::LoadTorus(const char * name, const math::float3 & pos, c
 		par_shapes_scale(mesh, outer_r, outer_r, outer_r);
 		
 		//Filling data
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
+		vector<Vertex> vertices;
+		vector<unsigned int> indices;
+		vector<Texture> textures;
 
 
 		for (unsigned int i = 0; i < mesh->npoints; ++i)
@@ -466,9 +467,9 @@ bool ModuleModelLoader::LoadCube(const char * name, const math::float3 & pos, co
 		par_shapes_scale(mesh, size, size, size);
 
 		//Filling data
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
+		vector<Vertex> vertices;
+		vector<unsigned int> indices;
+		vector<Texture> textures;
 
 
 		for (unsigned int i = 0; i < mesh->npoints; ++i)
