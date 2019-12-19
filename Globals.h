@@ -28,8 +28,8 @@ static float mapValues(float value,
 
 
 // Configuration -----------
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1017
+#define SCREEN_WIDTH 1680
+#define SCREEN_HEIGHT 1050
 #define FULLSCREEN false
 #define RESIZABLE true
 #define VSYNC true
