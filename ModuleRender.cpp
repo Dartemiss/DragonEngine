@@ -582,12 +582,10 @@ void ModuleRender::DrawSceneBuffer()
 	bool isEnabled = true;
 	//First Scene window is created
 	ImGui::SetNextWindowPos(
-		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight)
 	);
 	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	App->camera->SceneNotActive = ImGui::IsWindowFocused();

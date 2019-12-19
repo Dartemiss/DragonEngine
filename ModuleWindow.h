@@ -13,8 +13,9 @@ public:
 
 	bool fullscreen = FULLSCREEN;
 	bool resizable = RESIZABLE;
-	int width = SCREEN_WIDTH;
-	int height = SCREEN_HEIGHT;
+
+	int width = 0;
+	int height = 0;
 	void Resize(unsigned int newWidth, unsigned int newHeight);
 	ModuleWindow();
 
