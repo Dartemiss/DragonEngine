@@ -13,7 +13,7 @@
 #include "ModuleDebugDraw.h"
 #include "Timer.h"
 #include "uSTimer.h"
-#include "Dependencies/brofiler/Brofiler.h"
+#include "Brofiler/Brofiler.h"
 
 using namespace std;
 

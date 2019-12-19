@@ -1,7 +1,7 @@
 #include "SceneLoader.h"
 #include "Globals.h"
 
-#include "Dependencies/rapidjson/prettywriter.h"
+#include "Rapidjson/prettywriter.h"
 #include <fstream>
 
 using namespace rapidjson;

@@ -5,7 +5,7 @@
 #include "Globals.h"
 #include "Point.h"
 
-#include "SDL_scancode.h"
+#include "SDL/SDL_scancode.h"
 
 typedef unsigned __int8 Uint8;
 

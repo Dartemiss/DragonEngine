@@ -4,11 +4,11 @@
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "SDL/include/SDL.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
-#include "glew.h"
+#include "SDL/SDL.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
+#include "GL/glew.h"
 #include <assert.h>
 
 #define MAX_KEYS 300

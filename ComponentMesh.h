@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include "Component.h"
 #include "Mesh.h"
-#include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/Geometry/AABB.h"
 
 class ComponentMesh : public Component
 {

@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 #include "GUI.h"
-#include "Dependencies/imgui/imgui.h"
+#include "Imgui/imgui.h"
 
 class GUIAbout : public GUI
 {

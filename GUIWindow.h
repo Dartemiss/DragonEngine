@@ -5,8 +5,8 @@
 #include "GUI.h"
 #include "ModuleTexture.h"
 #include "Timer.h"
-#include "Dependencies/imgui/imgui.h"
-#include "ilu.h"
+#include "Imgui/imgui.h"
+#include "DevIL/ilu.h"
 #include <vector>
 
 class Application;
