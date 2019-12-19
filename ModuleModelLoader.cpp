@@ -3,12 +3,12 @@
 #include"ModuleTexture.h"
 #include "ModuleCamera.h"
 #include "Timer.h"
-#include <postprocess.h>
-#include <material.h>
-#include <mesh.h>
-#include <cimport.h>
-#include "Logger.hpp"
-#include "DefaultLogger.hpp"
+#include <Assimp/postprocess.h>
+#include <Assimp/material.h>
+#include <Assimp/mesh.h>
+#include <Assimp/cimport.h>
+#include "Assimp/Logger.hpp"
+#include "Assimp/DefaultLogger.hpp"
 #include "myStream.h"
 
 #define PAR_SHAPES_IMPLEMENTATION

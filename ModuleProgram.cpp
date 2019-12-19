@@ -1,11 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleProgram.h"
-#include "SDL.h"
-#include "glew.h"
-#include "SDL.h"
-#include "glew.h"
-#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
+#include "SDL/SDL.h"
+#include "GL/glew.h"
+#include "MathGeoLib/Math/float4x4.h"
 #include "assert.h"
 #include <string>
 #include <streambuf>

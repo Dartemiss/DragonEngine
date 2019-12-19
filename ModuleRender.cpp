@@ -16,15 +16,15 @@
 #include "AABBTree.h"
 #include "debugdraw.h"
 #include "Skybox.h"
-#include "SDL.h"
-#include "glew.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
-#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
+#include "SDL/SDL.h"
+#include "GL/glew.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
+#include "MathGeoLib/Geometry/Frustum.h"
 #include <math.h>
-#include "Dependencies/MathGeoLib/include/Math/float4.h"
-#include "Dependencies/brofiler/Brofiler.h"
+#include "MathGeoLib/Math/float4.h"
+#include "Brofiler/Brofiler.h"
 
 
 

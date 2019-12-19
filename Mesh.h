@@ -1,8 +1,8 @@
 #ifndef __Mesh_H__
 #define __Mesh_H__
 
-#include "Dependencies/MathGeoLib/include/Math/float3.h"
-#include "Dependencies/MathGeoLib/include/Math/float2.h"
+#include "MathGeoLib/Math/float3.h"
+#include "MathGeoLib/Math/float2.h"
 #include <string>
 #include <vector>
 

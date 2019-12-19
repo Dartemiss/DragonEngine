@@ -6,14 +6,14 @@
 #include <vector>
 #include <string>
 #include "Mesh.h"
-#include <postprocess.h>
-#include <Importer.hpp>
-#include <scene.h>
-#include "glew.h"
-#include <il.h>
-#include <ilu.h>
-#include <ilut.h>
-#include <material.h>
+#include <Assimp/postprocess.h>
+#include <Assimp/Importer.hpp>
+#include <Assimp/scene.h>
+#include "GL/glew.h"
+#include <DevIL/il.h>
+#include <DevIL/ilu.h>
+#include <DevIL/ilut.h>
+#include <Assimp/material.h>
 
 
 

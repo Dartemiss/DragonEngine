@@ -3,8 +3,8 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
-#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
+#include "MathGeoLib/Geometry/Frustum.h"
+#include "MathGeoLib/Math/float4x4.h"
 
 
 const int AABB_OUT = 0;

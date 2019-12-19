@@ -7,9 +7,9 @@
 #include "GameObject.h"
 #include "SceneLoader.h"
 #include <math.h>
-#include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
+#include "MathGeoLib/Geometry/Plane.h"
 #include "debugdraw.h"
-#include "glew.h"
+#include "GL/glew.h"
 
 
 ComponentCamera::ComponentCamera(GameObject* go)

@@ -6,11 +6,11 @@
 #include "ModuleInput.h"
 #include "ModuleProgram.h"
 #include "ModuleModelLoader.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
-#include "Dependencies/MathGeoLib/include/Math/float4.h"
-#include "SDL.h"
-#include "glew.h"
+#include "Imgui/imgui.h"
+#include "MathGeoLib/Geometry/Frustum.h"
+#include "MathGeoLib/Math/float4.h"
+#include "SDL/SDL.h"
+#include "GL/glew.h"
 #include <math.h>
 
 

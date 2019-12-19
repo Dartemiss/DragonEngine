@@ -1,8 +1,11 @@
 #include "Mesh.h"
-#include "ModuleTexture.h"
-#include "glew.h"
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures)
+#include "ModuleTexture.h"
+#include "GL/glew.h"
+
+using namespace std;
+
+Mesh::Mesh(const vector<Vertex>& vertices, const vector<unsigned int>& indices, const vector<Texture>& textures)
 {
 	this->vertices = vertices;
 	this->indices = indices;

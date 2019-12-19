@@ -3,10 +3,10 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "Dependencies/MathGeoLib/include/Math/float4x4.h"
-#include "Dependencies/MathGeoLib/include/Math/float3x3.h"
+#include "MathGeoLib/Math/float4x4.h"
+#include "MathGeoLib/Math/float3x3.h"
 #include "ComponentCamera.h"
-#include "glew.h"
+#include "GL/glew.h"
 #include <vector>
 #include <set>
 

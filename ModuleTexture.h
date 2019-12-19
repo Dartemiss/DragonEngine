@@ -5,10 +5,10 @@
 #include "Module.h"
 #include <vector>
 #include <string>
-#include "ilu.h"
-#include <postprocess.h>
-#include <material.h>
-#include <Mesh.h>
+#include "DevIL/ilu.h"
+#include <Assimp/postprocess.h>
+#include <Assimp/material.h>
+#include <Assimp/mesh.h>
 
 class Application;
 

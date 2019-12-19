@@ -2,7 +2,7 @@
 #include "GUIInspector.h"
 #include "ModuleRender.h"
 #include "ModuleModelLoader.h"
-#include "Dependencies/MathGeoLib/include/Math/float3.h"
+#include "MathGeoLib/Math/float3.h"
 
 void GUIInspector::Draw(const char * title)
 {

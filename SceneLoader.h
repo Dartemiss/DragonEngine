@@ -1,9 +1,9 @@
 #ifndef __SceneLoader_H__
 #define __SceneLoader_H__
 
-#include "Dependencies/rapidjson/document.h"
-#include "Dependencies/MathGeoLib/include/Math/float3.h"
-#include "Dependencies/MathGeoLib/include/Math/float4.h"
+#include "Rapidjson/document.h"
+#include "MathGeoLib/Math/float3.h"
+#include "MathGeoLib/Math/float4.h"
 
 class SceneLoader
 {

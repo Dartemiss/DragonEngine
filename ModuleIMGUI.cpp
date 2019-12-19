@@ -1,14 +1,14 @@
 #include "ModuleIMGUI.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
-#include "glew.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
+#include "GL/glew.h"
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleTexture.h"
 #include "ModuleScene.h"
 #include <stdio.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 
 #define DOCUMENTATION "https://github.com/ocornut/imgui/wiki"
