@@ -156,6 +156,7 @@ bool ModuleRender::Init()
 
 	skybox = new Skybox();
 
+
 	return true;
 }
 
@@ -377,15 +378,25 @@ void ModuleRender::DrawGame()
 	if(frustumCullingIsActivated)
 	{
 	
-		for (auto gameObject : gameObjectsWithinFrustum)
+		std::set<GameObject*> staticGO;
+
+		if (App->scene->quadtreeIsComputed)
 		{
-			glUniformMatrix4fv(glGetUniformLocation(progModel,
-				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
+			App->scene->quadtreeIterative->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
+		}
 
-
-			if (gameObject->myMesh != nullptr)
+		for (auto gameObject : staticGO)
+		{
+			if (gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
-				gameObject->myMesh->Draw(progModel);
+				glUniformMatrix4fv(glGetUniformLocation(progModel,
+					"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
+
+
+				if (gameObject->myMesh != nullptr)
+				{
+					gameObject->myMesh->Draw(progModel);
+				}
 			}
 
 		}

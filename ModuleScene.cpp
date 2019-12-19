@@ -5,6 +5,7 @@
 #include "ModuleModelLoader.h"
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
+#include "ModuleIMGUI.h"
 #include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
@@ -68,8 +69,8 @@ update_status ModuleScene::Update()
 		{
 			fPoint point = App->input->GetMousePosition();
 			//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
-			point.x = mapValues(point.x, 0, App->renderer->widthScene, -1, 1);
-			point.y = mapValues(point.y, 0, App->renderer->heightScene, -1, 1);
+			point.x = mapValues(point.x, 0, App->window->width, -1, 1);
+			point.y = mapValues(point.y, 0, App->window->height, -1, 1);
 			LineSegment ray = *CreateRayCast(point);
 			GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
 			if(selectedGO != nullptr)
@@ -376,8 +377,15 @@ void ModuleScene::DrawGUI()
 	
 	if(showHierarchy)
 	{
+		ImGui::SetNextWindowPos(
+			ImVec2(0, 18)
+
+		);
+		ImGui::SetNextWindowSize(
+			ImVec2(App->window->width * App->imgui->hierarchySizeRatioWidth, App->window->height * App->imgui->hierarchySizeRatioHeight)
+		);
+
 		ImGui::Begin("Hierarchy", &showHierarchy, flags);
-		ImGui::SetWindowSize("Hierarchy",ImVec2(350, 750));
 		root->DrawHierarchy(selectedByHierarchy);
 		ImGui::End();
 	}
