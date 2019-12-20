@@ -47,7 +47,7 @@ float ComponentMesh::IsIntersectedByRay(const float3 &origin ,const LineSegment 
 {
 	float minDist = -1.0f;
 
-	for(int i = 0; i < mesh->indices.size();i += 3)
+	for(unsigned int i = 0; i < mesh->indices.size();i += 3)
 	{
 
 		Triangle tri = Triangle(mesh->vertices[mesh->indices[i]].Position, mesh->vertices[mesh->indices[i+1]].Position, mesh->vertices[mesh->indices[i+2]].Position);

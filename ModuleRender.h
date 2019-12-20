@@ -79,6 +79,8 @@ public:
 
 	bool firstTimeCreatingBuffer = true;
 
+	void Pick() const;
+
 
 private:
 	void* context;

@@ -36,7 +36,7 @@ void GUIConsole::Draw(const char * title)
 		if(firstTime)
 		{
 			firstTime = false;
-			ImGui::SetWindowSize(ImVec2(width, height));
+			ImGui::SetWindowSize(ImVec2(static_cast<float>(width), static_cast<float>(height)));
 			ImGui::SetWindowPos(ImVec2(100,700));
 			ImGui::End();
 			return;
@@ -46,9 +46,9 @@ void GUIConsole::Draw(const char * title)
 		
 		if(size.x != width && size.y != height)
 		{
-			width = size.x;
-			height = size.y;
-			ImGui::SetWindowSize(ImVec2(width, height));
+			width = static_cast<int>(size.x);
+			height = static_cast<int>(size.y);
+			ImGui::SetWindowSize(ImVec2(static_cast<float>(width), static_cast<float>(height)));
 		}
 
 		ImGui::TextUnformatted(bufferConsole.Buf.begin());

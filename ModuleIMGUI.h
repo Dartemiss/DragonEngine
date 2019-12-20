@@ -37,7 +37,7 @@ public:
 	float sceneSizeRatioHeight = 0.709f;
 
 	//Values Inspector
-	float inspectorPosRatioWidth = 0.810;
+	float inspectorPosRatioWidth = 0.810f;
 	float inspectorPosRatioHeight = 0.017f;
 
 	float inspectorSizeRatioWidth = 0.186f;

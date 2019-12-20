@@ -9,6 +9,7 @@
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
@@ -23,9 +24,9 @@
 #include "Dependencies/imgui/imgui_impl_sdl.h"
 #include "Dependencies/imgui/imgui_impl_opengl3.h"
 #include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
-#include <math.h>
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include "Dependencies/brofiler/Brofiler.h"
+#include <math.h>
 
 
 
@@ -158,8 +159,8 @@ bool ModuleRender::Init()
 
 
 	//Scene w, h
-	widthScene = App->window->width * App->imgui->sceneSizeRatioWidth;
-	heightScene = App->window->height * App->imgui->sceneSizeRatioHeight;
+	widthScene = static_cast<int>(App->window->width * App->imgui->sceneSizeRatioWidth);
+	heightScene = static_cast<int>(App->window->height * App->imgui->sceneSizeRatioHeight);
 
 	return true;
 }
@@ -251,59 +252,6 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::DrawGrid()
-{
-	//Draw Grid
-	unsigned int progGrid = App->program->gridProg;
-	glUseProgram(progGrid);
-
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"model"), 1, GL_TRUE, &model[0][0]);
-
-	//Temporary as std140 doesnt work
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
-	
-	/*
-	glLineWidth(1.0f);
-	float d = 200.0f;
-	glBegin(GL_LINES);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	for (float i = -d; i <= d; i += 1.0f)
-	{
-		glVertex3f(i, 0.0f, -d);
-		glVertex3f(i, 0.0f, d);
-		glVertex3f(-d, 0.0f, i);
-		glVertex3f(d, 0.0f, i);
-	}
-	glEnd();
-	*/
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-	// red X
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
-	glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
-	// green Y
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
-	// blue Z
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
-	glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
-	glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
-	glEnd();
-	glLineWidth(1.0f);
-
-	glUseProgram(0);
-}
 
 void ModuleRender::DrawAllGameObjects()
 {
@@ -574,6 +522,19 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ModuleRender::Pick() const
+{
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+	{
+		ImVec2 pos = ImGui::GetWindowPos();
+		ImVec2 size = ImGui::GetWindowSize();
+		App->scene->PickObject(size, pos);
+
+	}
+
+	return;
+}
+
 void ModuleRender::DrawDebug() const
 {
 	if(showQuadTree && App->scene->quadtreeIsComputed)
@@ -610,6 +571,9 @@ void ModuleRender::DrawSceneBuffer()
 
 	ImVec2 wSize = ImGui::GetWindowSize();
 	App->camera->SetAspectRatio((int)wSize.x, (int)wSize.y);
+
+	//Call MousePicking routine
+	Pick();
 
 	CreateFrameBuffer((int)wSize.x, (int)wSize.y);
 	GenerateTexture((int)wSize.x, (int)wSize.y);

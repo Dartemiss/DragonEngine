@@ -62,27 +62,6 @@ update_status ModuleScene::PreUpdate()
 
 update_status ModuleScene::Update()
 {
-	//Mouse Picking
-	if(App->camera->SceneNotActive)
-	{
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
-		{
-			fPoint point = App->input->GetMousePosition();
-			//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
-			point.x = mapValues(point.x, 0, App->window->width, -1, 1);
-			point.y = mapValues(point.y, 0, App->window->height, -1, 1);
-			LineSegment ray = *CreateRayCast(point);
-			GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
-			if(selectedGO != nullptr)
-			{
-				selectedByHierarchy = selectedGO;
-			}
-			currentRay = &ray;
-		}
-	
-	}
-
-
 	for(auto gameObject : allGameObjects)
 	{
 		gameObject->UpdateTransform();
@@ -98,9 +77,10 @@ update_status ModuleScene::Update()
 	}
 
 	DrawGUI();
-	if(currentRay != nullptr)
-		dd::line(currentRay->a, currentRay->b, float3(1, 0, 0));
 	
+	if(currentRay != nullptr)
+		dd::arrow(currentRay->a, currentRay->b, float3(1, 0, 0), 1);
+
 	return UPDATE_CONTINUE;
 }
 
@@ -751,9 +731,28 @@ LineSegment* ModuleScene::CreateRayCast(float3 origin, float3 direction, float m
 	return new LineSegment(auxFrustum.UnProjectLineSegment(normalized_x, normalized_y));
 }
 
-LineSegment* ModuleScene::CreateRayCast(fPoint mousePoint)
+LineSegment* ModuleScene::CreateRayCast(float normalizedX, float normalizedY) const	
 {
-	return new LineSegment(App->camera->frustum->UnProjectLineSegment(mousePoint.x, mousePoint.y)); 
+	return new LineSegment(App->camera->frustum->UnProjectLineSegment(normalizedX, normalizedY));
+}
+
+void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
+{
+	float2 mouse((float*)& App->input->GetMousePosition());
+	float normalizedX, normalizedY;
+	//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
+	normalizedX = mapValues(mouse.x, posWindow.x, posWindow.x + sizeWindow.x, -1, 1);
+	normalizedY = mapValues(mouse.y, posWindow.y, posWindow.y + sizeWindow.y, 1, -1);
+	LineSegment ray = *CreateRayCast(normalizedX, normalizedY);
+	GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
+	if (selectedGO != nullptr)
+	{
+		selectedByHierarchy = selectedGO;
+	}
+
+	currentRay = CreateRayCast(normalizedX, normalizedY);
+
+	return;
 }
 
 GameObject* ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)
