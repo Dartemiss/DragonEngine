@@ -14,7 +14,7 @@
 #include "Imgui/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
 #include "imgui/imgui_stdlib.h"
-#include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
@@ -468,7 +468,7 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	ImGui::InputText("##Name", &name);
+	//ImGui::InputText("##Name", &name);
 
 	ImGui::SameLine();
 

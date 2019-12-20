@@ -16,9 +16,9 @@
 #include "Imgui/imgui_impl_opengl3.h"
 #include "MathGeoLib/Math/float4.h"
 #include "Timer.h"
-#include "MathGeoLib/include/Geometry/Frustum.h"
-#include "MathGeoLib/include/Geometry/LineSegment.h"
-#include "MathGeoLib/include/Geometry/Plane.h"
+#include "MathGeoLib/Geometry/Frustum.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
+#include "MathGeoLib/Geometry/Plane.h"
 #include "debugdraw.h"
 
 #include <random>
