@@ -27,6 +27,7 @@
 #include <math.h>
 #include "MathGeoLib/Math/float4.h"
 #include "Brofiler/Brofiler.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 
 
@@ -253,6 +254,28 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
+
+void ModuleRender::DrawGuizmo() const
+{
+	ImVec2 pos = ImGui::GetWindowPos();
+	ImGuizmo::SetRect(pos.x, pos.y, widthScene, heightScene);
+	ImGuizmo::SetDrawlist();
+
+	//Chose which guizmo we will use
+	if(App->scene->selectedByHierarchy != nullptr)
+	{
+		//Use guizmos only if object is static
+		ImGuizmo::Enable(true);
+		float4x4 model = App->scene->selectedByHierarchy->myTransform->globalModelMatrix;
+		float4x4 view = App->camera->view;
+		float4x4 proj = App->camera->proj;
+
+		ImGuizmo::SetOrthographic(false);
+
+		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)0, (ImGuizmo::MODE)1, (float*)&model, NULL, NULL);
+	}
+
+}
 
 void ModuleRender::DrawAllGameObjects()
 {
