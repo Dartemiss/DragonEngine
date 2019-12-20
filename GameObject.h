@@ -87,9 +87,10 @@ public:
 
 	int numberOfCopies = 0;
 
-private:
-	std::string name;
+	float IsIntersectedByRay(const float3 &origin, const LineSegment & ray);
+	std::string name = "";
 
+private:
 	void CheckDragAndDrop(GameObject* go);
 
 

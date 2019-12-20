@@ -5,6 +5,8 @@
 #include "Module.h"
 #include "GameObject.h"
 #include "Timer.h"
+#include "Point.h"
+#include "Dependencies/imgui/imgui.h"
 #include <set>
 
 class MyQuadTree;
@@ -75,6 +77,7 @@ public:
 	void BuildAABBTree();
 	void CreateCubesScript();
 	void CreateShapesScript();
+	void CreateHousesScript();
 
 	AABB* ComputeSceneAABB() const;
 
@@ -106,6 +109,15 @@ public:
 	void InsertChilds(GameObject* go);
 
 	GameObject* selectedByHierarchy = nullptr;
+
+	//Mouse Picking
+	LineSegment* CreateRayCast(float3 origin, float3 direction, float maxDistance);
+	GameObject* IntersectRayCast(float3 origin, const LineSegment &ray);
+	LineSegment* CreateRayCast(float normalizedX, float normalizedY) const;
+	LineSegment* currentRay = nullptr;
+
+	void PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow);
+
 
 private:
 	//Root

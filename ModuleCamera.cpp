@@ -13,6 +13,8 @@
 #include "GL/glew.h"
 #include <math.h>
 
+//TODO: Fix aspect ratio in main camera
+
 
 ModuleCamera::ModuleCamera()
 {
@@ -34,7 +36,7 @@ bool ModuleCamera::Init()
 	frustum->nearPlaneDistance = 0.1f;
 	frustum->farPlaneDistance = 300.0f;
 	frustum->verticalFov = (float)M_PI / 4.0f;
-	aspect = (float)App->window->width / App->window->height;
+	aspect = (float)App->renderer->widthScene / App->renderer->heightScene;
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 
 	frustum->Translate(float3(1.0f, 1.0f, 1.0f));
@@ -183,7 +185,7 @@ void ModuleCamera::SetAspectRatio()
 	proj = frustum->ProjectionMatrix();
 }
 
-void ModuleCamera::SetAspectRatio(int newHeight, int newWidth)
+void ModuleCamera::SetAspectRatio(int newWidth, int newHeight)
 {
 	aspect = ((float)newWidth / newHeight);
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);

@@ -193,6 +193,7 @@
     <ClInclude Include="Dependencies\Include\Rapidjson\stringbuffer.h" />
     <ClInclude Include="Dependencies\Include\Rapidjson\writer.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIAbout.h" />
     <ClInclude Include="GUICamera.h" />

@@ -1,8 +1,12 @@
+#include "Application.h"
 #include "ModuleScene.h"
 #include "ModuleTimeManager.h"
-#include "Application.h"
+#include "ModuleCamera.h"
 #include "ModuleModelLoader.h"
-#include "Timer.h"
+#include "ModuleRender.h"
+#include "ModuleWindow.h"
+#include "ModuleIMGUI.h"
+#include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "MyQuadTree.h"
@@ -11,10 +15,16 @@
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
 #include "MathGeoLib/Math/float4.h"
-#include <random>
+#include "Timer.h"
+#include "MathGeoLib/include/Geometry/Frustum.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/include/Geometry/Plane.h"
+#include "debugdraw.h"
 
+#include <random>
 #include "SceneLoader.h"
 #include <queue>
+#include <map>
 
 using namespace std;
 
@@ -68,7 +78,7 @@ update_status ModuleScene::Update()
 	}
 
 	DrawGUI();
-	
+
 	return UPDATE_CONTINUE;
 }
 
@@ -345,8 +355,15 @@ void ModuleScene::DrawGUI()
 	
 	if(showHierarchy)
 	{
+		ImGui::SetNextWindowPos(
+			ImVec2(0, 18)
+
+		);
+		ImGui::SetNextWindowSize(
+			ImVec2(App->window->width * App->imgui->hierarchySizeRatioWidth, App->window->height * App->imgui->hierarchySizeRatioHeight)
+		);
+
 		ImGui::Begin("Hierarchy", &showHierarchy, flags);
-		ImGui::SetWindowSize("Hierarchy",ImVec2(350, 750));
 		root->DrawHierarchy(selectedByHierarchy);
 		ImGui::End();
 	}
@@ -472,6 +489,27 @@ void ModuleScene::CreateShapesScript()
 
 	return;
 	
+}
+
+void ModuleScene::CreateHousesScript()
+{
+	for (int i = 0; i < 1000; ++i)
+	{
+		CreateGameObjectBakerHouse(root);
+	}
+
+	for (auto go : allGameObjects)
+	{
+		if (go != root && go != mainCamera && go->isParentOfMeshes)
+		{
+			int max = 100;
+			int min = -100;
+			float3 newPos = float3((float)(std::rand() % (max - min + 1) + min), 0.0f, (float)(rand() % (max - min + 1) + min));
+			go->myTransform->TranslateTo(newPos);
+		}
+	}
+
+	return;
 }
 
 AABB * ModuleScene::ComputeSceneAABB() const
@@ -645,7 +683,7 @@ void ModuleScene::DuplicateGameObject(GameObject * go)
 
 	GameObject* duplicatedGO = new GameObject(*go, go->parent);
 	go->parent->children.push_back(duplicatedGO);
-	++clipboard->numberOfCopies;
+	++go->numberOfCopies;
 
 	allGameObjects.insert(duplicatedGO);
 	//Add all childs to the scene
@@ -669,4 +707,101 @@ void ModuleScene::InsertChilds(GameObject * go)
 
 	return;
 }
+
+LineSegment* ModuleScene::CreateRayCast(float3 origin, float3 direction, float maxDistance)
+{
+	Frustum auxFrustum = Frustum();
+	auxFrustum.pos = origin - float3(0.1f,0.1f,0.1f);
+	auxFrustum.type = FrustumType::PerspectiveFrustum;
+	auxFrustum.nearPlaneDistance = 0.1f;
+	auxFrustum.farPlaneDistance = maxDistance;
+	auxFrustum.front = direction;
+	auxFrustum.up = (direction.Cross(float3(0,1,0))).Cross(direction);
+	auxFrustum.verticalFov = (float)M_PI / 4.0f;
+	auxFrustum.horizontalFov = 2.0f * atanf(tanf(auxFrustum.verticalFov * 0.5f) *1.0f);
+
+	Plane nearPlane = auxFrustum.NearPlane();
+	nearPlane.ClosestPoint(origin);
+
+	float normalized_x = 0.0f;
+	float normalized_y = 0.0f;
+
+	return new LineSegment(auxFrustum.UnProjectLineSegment(normalized_x, normalized_y));
+}
+
+LineSegment* ModuleScene::CreateRayCast(float normalizedX, float normalizedY) const	
+{
+	return new LineSegment(App->camera->frustum->UnProjectLineSegment(normalizedX, normalizedY));
+}
+
+void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
+{
+	//TODO: understand why mouse position is a bit down (harcoded value 25)
+
+	float2 mouse((float*)& App->input->GetMousePosition());
+	float normalizedX, normalizedY;
+	//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
+	normalizedX = mapValues(mouse.x, posWindow.x, posWindow.x + sizeWindow.x, -1, 1);
+	normalizedY = mapValues(mouse.y, posWindow.y + 25, posWindow.y + sizeWindow.y, 1, -1);
+	LineSegment ray = *CreateRayCast(normalizedX, normalizedY);
+	GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
+	if (selectedGO != nullptr)
+	{
+		selectedByHierarchy = selectedGO;
+	}
+
+	currentRay = CreateRayCast(normalizedX, normalizedY);
+
+	return;
+}
+
+GameObject* ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)
+{
+	//First get aabb intersection ordered by distance, then compare with aabb that are closer to the closest triangle hit
+	std::map<float, GameObject*> hits;
+
+	for(auto go : allGameObjects)
+	{
+		if(go->globalBoundingBox != nullptr)
+		{
+			bool hit = ray.Intersects(*go->globalBoundingBox);
+			if(hit)
+			{
+				float dist = origin.Distance(*go->globalBoundingBox);
+				hits[dist] = go;
+			}
+
+		}
+	
+	}
+	
+	if (hits.size() == 0)
+		return nullptr;
+
+	float minDistTriangle = hits.rbegin()->first + 1.0f;
+	GameObject* hitGO = nullptr;
+	bool isHit = false;
+	
+	//Until first hit with triangle check all gameObjects by order
+	for(const auto& it : hits)
+	{
+		if(it.first < minDistTriangle)
+		{
+			//If hitDist is -1.0f then ray doesn't intersect any triangle
+			float hitDist = it.second->IsIntersectedByRay(origin, ray);
+			if (hitDist != -1.0f)
+			{
+				isHit = true;
+				minDistTriangle = hitDist;
+				hitGO = it.second;
+			}
+			
+		}
+
+	}
+
+	return hitGO;
+}
+
+
 

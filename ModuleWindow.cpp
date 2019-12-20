@@ -43,6 +43,12 @@ bool ModuleWindow::Init()
 			flags |= SDL_WINDOW_RESIZABLE;
 		}
 
+		SDL_DisplayMode DM;
+		SDL_GetCurrentDisplayMode(0, &DM);
+		width = (int)(DM.w);
+		height = (int)(DM.h * 0.925);
+
+
 		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 		
 		if(window == NULL)

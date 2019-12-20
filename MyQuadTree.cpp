@@ -326,6 +326,16 @@ bool MyQuadTree::GameObjectIsRepeated(const std::vector<GameObject*>& gameObject
 
 void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bbox)
 {
+	if(nodes[0]->isLeaf)
+	{
+		for(auto go : nodes[0]->gameObjects)
+		{
+			intersectionGO.insert(go);
+		}
+
+		return;
+	}
+
 	Node* current = nullptr;
 	Node* previous = nullptr;
 	std::stack<int> indexes;
@@ -390,7 +400,7 @@ void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bb
 
 		if (indexes.size() == 0 || stackOfNodes.size() == 0)
 		{
-			LOG("Times checked: %d", times);
+			//LOG("Times checked: %d", times);
 			return;
 		}
 			

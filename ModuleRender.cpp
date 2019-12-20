@@ -5,9 +5,11 @@
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
 #include "ModuleTimeManager.h"
+#include "ModuleIMGUI.h"
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
@@ -25,6 +27,7 @@
 #include <math.h>
 #include "MathGeoLib/Math/float4.h"
 #include "Brofiler/Brofiler.h"
+
 
 
 
@@ -108,7 +111,7 @@ bool ModuleRender::Init()
 	App->window->glcontext = SDL_GL_CreateContext(App->window->window);
 
 	GLenum err = glewInit();
-	// … check for errors
+	// â€¦ check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
 	LOG("Vendor: %s", glGetString(GL_VENDOR));
 	LOG("Renderer: %s", glGetString(GL_RENDERER));
@@ -155,6 +158,11 @@ bool ModuleRender::Init()
 
 	skybox = new Skybox();
 
+
+	//Scene w, h
+	widthScene = static_cast<int>(App->window->width * App->imgui->sceneSizeRatioWidth);
+	heightScene = static_cast<int>(App->window->height * App->imgui->sceneSizeRatioHeight);
+
 	return true;
 }
 
@@ -180,11 +188,11 @@ update_status ModuleRender::Update()
 	
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
 	ImGui::SetNextWindowPos(
-		ImVec2(352,19)
+		ImVec2(App->window->width * App->imgui->tabsPosRatioWidth,App->window->height * App->imgui->tabsPosRatioHeight)
 		
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1207,754)
+		ImVec2(App->window->width * App->imgui->tabsSizeRatioWidth, App->window->height * App->imgui->tabsSizeRatioHeight)
 		
 	);
 
@@ -245,59 +253,6 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
-void ModuleRender::DrawGrid()
-{
-	//Draw Grid
-	unsigned int progGrid = App->program->gridProg;
-	glUseProgram(progGrid);
-
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"model"), 1, GL_TRUE, &model[0][0]);
-
-	//Temporary as std140 doesnt work
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(progGrid,
-		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
-	
-	/*
-	glLineWidth(1.0f);
-	float d = 200.0f;
-	glBegin(GL_LINES);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	for (float i = -d; i <= d; i += 1.0f)
-	{
-		glVertex3f(i, 0.0f, -d);
-		glVertex3f(i, 0.0f, d);
-		glVertex3f(-d, 0.0f, i);
-		glVertex3f(d, 0.0f, i);
-	}
-	glEnd();
-	*/
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-	// red X
-	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
-	glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
-	// green Y
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-	glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
-	// blue Z
-	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
-	glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
-	glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
-	glEnd();
-	glLineWidth(1.0f);
-
-	glUseProgram(0);
-}
 
 void ModuleRender::DrawAllGameObjects()
 {
@@ -376,15 +331,25 @@ void ModuleRender::DrawGame()
 	if(frustumCullingIsActivated)
 	{
 	
-		for (auto gameObject : gameObjectsWithinFrustum)
+		std::set<GameObject*> staticGO;
+
+		if (App->scene->quadtreeIsComputed)
 		{
-			glUniformMatrix4fv(glGetUniformLocation(progModel,
-				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
+			App->scene->quadtreeIterative->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
+		}
 
-
-			if (gameObject->myMesh != nullptr)
+		for (auto gameObject : staticGO)
+		{
+			if (gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
-				gameObject->myMesh->Draw(progModel);
+				glUniformMatrix4fv(glGetUniformLocation(progModel,
+					"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
+
+
+				if (gameObject->myMesh != nullptr)
+				{
+					gameObject->myMesh->Draw(progModel);
+				}
 			}
 
 		}
@@ -422,8 +387,11 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 	if(scene)
 	{
 	
-		if (width != widthScene || height != heightScene)
+		if (width != widthScene || height != heightScene || firstTimeCreatingBuffer)
 		{
+			if (firstTimeCreatingBuffer)
+				firstTimeCreatingBuffer = false;
+
 			if (frameBufferObject == 0)
 			{
 				//Generate FrameBuffer if necessary
@@ -470,7 +438,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 	else
 	{
 	
-		if (width != widthGame || height != heightGame)
+		if (width != widthGame || height != heightGame || firstTimeCreatingBuffer)
 		{
 			if (frameBufferObjectGame == 0)
 			{
@@ -555,6 +523,19 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ModuleRender::Pick() const
+{
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+	{
+		ImVec2 pos = ImGui::GetWindowPos();
+		ImVec2 size = ImGui::GetWindowSize();
+		App->scene->PickObject(size, pos);
+
+	}
+
+	return;
+}
+
 void ModuleRender::DrawDebug() const
 {
 	if(showQuadTree && App->scene->quadtreeIsComputed)
@@ -581,18 +562,19 @@ void ModuleRender::DrawSceneBuffer()
 	bool isEnabled = true;
 	//First Scene window is created
 	ImGui::SetNextWindowPos(
-		ImVec2(353, 48),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1203, 722),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight)
 	);
 	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	App->camera->SceneNotActive = ImGui::IsWindowFocused();
 
 	ImVec2 wSize = ImGui::GetWindowSize();
 	App->camera->SetAspectRatio((int)wSize.x, (int)wSize.y);
+
+	//Call MousePicking routine
+	Pick();
 
 	CreateFrameBuffer((int)wSize.x, (int)wSize.y);
 	GenerateTexture((int)wSize.x, (int)wSize.y);
@@ -623,11 +605,11 @@ void ModuleRender::DrawGameBuffer()
 	bool gameIsEnabled = true;
 
 	ImGui::SetNextWindowPos(
-		ImVec2(353, 48),
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight),
 		ImGuiCond_Once
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1203, 722),
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight),
 		ImGuiCond_Once
 	);
 	//Game Window

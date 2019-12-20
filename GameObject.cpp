@@ -3,6 +3,8 @@
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
 #include "ModuleInput.h"
+#include "ModuleIMGUI.h"
+#include "ModuleWindow.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
@@ -11,6 +13,8 @@
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
+#include "imgui/imgui_stdlib.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
@@ -454,25 +458,21 @@ void GameObject::DrawAABB() const
 void GameObject::DrawInspector(bool &showInspector)
 {
 	ImGui::SetNextWindowPos(
-		ImVec2(1556, 18)
+		ImVec2(App->window->width * App->imgui->inspectorPosRatioWidth, App->window->height * App->imgui->inspectorPosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(357, 997)
+		ImVec2(App->window->width * App->imgui->inspectorSizeRatioWidth, App->window->height * App->imgui->inspectorSizeRatioHeight)
 	);
 
 	ImGui::Begin("Inspector", &showInspector);
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	char* go_name = new char[64];
-	strcpy(go_name, name.c_str());
-	if(ImGui::InputText("##Name", go_name, 64))
-	{
-		name = std::string(go_name);
-	}
+	ImGui::InputText("##Name", &name);
+
 	ImGui::SameLine();
 
-	delete[] go_name;
+	
 
 	ImGui::Checkbox("Static", &isStatic);
 
@@ -554,6 +554,19 @@ void GameObject::OnLoad(SceneLoader & loader)
 		component = CreateComponent(type);
 		component->OnLoad(loader);
 	}
+}
+
+float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & ray)
+{
+	if (myMesh == nullptr)
+		return -1.0f;
+
+	//Transform ray coordinates into local space
+	LineSegment localRay = LineSegment(ray);
+	localRay.Transform(myTransform->globalModelMatrix.Inverted());
+	
+
+	return myMesh->IsIntersectedByRay(origin,localRay);
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)

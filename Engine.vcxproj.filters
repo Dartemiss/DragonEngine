@@ -199,6 +199,9 @@
     <ClCompile Include="Dependencies\Include\PCG\pcg_basic.c">
       <Filter>Libraries\PCG</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\imgui\imgui_stdlib.cpp">
+      <Filter>Libraries\Imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -611,6 +614,10 @@
     <ClInclude Include="Dependencies\Include\PCG\pcg_basic.h">
       <Filter>Libraries\PCG</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\imgui\imgui_stdlib.h">
+      <Filter>Libraries\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

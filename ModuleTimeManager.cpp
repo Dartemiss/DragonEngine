@@ -139,5 +139,5 @@ void ModuleTimeManager::ExecuteNextFrames(int numberFrames)
 
 void ModuleTimeManager::Wait(float timeToWait)
 {
-	SDL_Delay(timeToWait);
+	SDL_Delay(static_cast<Uint32>(timeToWait));
 }

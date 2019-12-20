@@ -226,7 +226,7 @@ float3 SceneLoader::GetVec3f(const char * name, const float3 & defaultVal)
 		if (!vector.IsArray() || vector.Size() != 3)
 			return defaultVal;
 
-		for (int i = 0; i < vector.Size(); ++i)
+		for (unsigned int i = 0; i < vector.Size(); ++i)
 			if (!vector[i].IsFloat())
 				return defaultVal;
 
@@ -240,7 +240,7 @@ float3 SceneLoader::GetVec3f(const char * name, const float3 & defaultVal)
 	if (!vector.IsArray() || vector.Size() != 3)
 		return defaultVal;
 
-	for (int i = 0; i < vector.Size(); ++i)
+	for (unsigned int i = 0; i < vector.Size(); ++i)
 		if (!vector[i].IsFloat())
 			return defaultVal;
 
@@ -279,7 +279,7 @@ float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
 		if (!vector.IsArray() || vector.Size() != 4)
 			return defaultVal;
 
-		for (int i = 0; i < vector.Size(); ++i)
+		for (unsigned int i = 0; i < vector.Size(); ++i)
 			if (!vector[i].IsFloat())
 				return defaultVal;
 
@@ -293,7 +293,7 @@ float4 SceneLoader::GetVec4f(const char * name, const float4 & defaultVal)
 	if (!vector.IsArray() || vector.Size() != 4)
 		return defaultVal;
 
-	for (int i = 0; i < vector.Size(); ++i)
+	for (unsigned int i = 0; i < vector.Size(); ++i)
 		if (!vector[i].IsFloat())
 			return defaultVal;
 
