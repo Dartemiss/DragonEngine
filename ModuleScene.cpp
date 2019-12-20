@@ -77,9 +77,6 @@ update_status ModuleScene::Update()
 	}
 
 	DrawGUI();
-	
-	if(currentRay != nullptr)
-		dd::arrow(currentRay->a, currentRay->b, float3(1, 0, 0), 1);
 
 	return UPDATE_CONTINUE;
 }
@@ -738,11 +735,13 @@ LineSegment* ModuleScene::CreateRayCast(float normalizedX, float normalizedY) co
 
 void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 {
+	//TODO: understand why mouse position is a bit down (harcoded value 25)
+
 	float2 mouse((float*)& App->input->GetMousePosition());
 	float normalizedX, normalizedY;
 	//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
 	normalizedX = mapValues(mouse.x, posWindow.x, posWindow.x + sizeWindow.x, -1, 1);
-	normalizedY = mapValues(mouse.y, posWindow.y, posWindow.y + sizeWindow.y, 1, -1);
+	normalizedY = mapValues(mouse.y, posWindow.y + 25, posWindow.y + sizeWindow.y, 1, -1);
 	LineSegment ray = *CreateRayCast(normalizedX, normalizedY);
 	GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
 	if (selectedGO != nullptr)
