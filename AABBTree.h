@@ -2,7 +2,7 @@
 #define __AABBTree_H__
 
 #include "Globals.h"
-#include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/Geometry/AABB.h"
 #include "GameObject.h"
 #include <vector>
 #include <map>

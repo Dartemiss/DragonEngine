@@ -11,15 +11,16 @@
 #include "ComponentMesh.h"
 #include "MyQuadTree.h"
 #include "AABBTree.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
+#include "MathGeoLib/Math/float4.h"
 #include "Timer.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
-#include "Dependencies/MathGeoLib/include/Math/float4.h"
-#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
-#include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
-#include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
+#include "MathGeoLib/include/Geometry/Frustum.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/include/Geometry/Plane.h"
 #include "debugdraw.h"
+
 #include <random>
 #include "SceneLoader.h"
 #include <queue>

@@ -18,15 +18,16 @@
 #include "AABBTree.h"
 #include "debugdraw.h"
 #include "Skybox.h"
-#include "SDL.h"
-#include "glew.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
-#include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
-#include "Dependencies/MathGeoLib/include/Math/float4.h"
-#include "Dependencies/brofiler/Brofiler.h"
+#include "SDL/SDL.h"
+#include "GL/glew.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
+#include "MathGeoLib/Geometry/Frustum.h"
 #include <math.h>
+#include "MathGeoLib/Math/float4.h"
+#include "Brofiler/Brofiler.h"
+
 
 
 
@@ -110,7 +111,7 @@ bool ModuleRender::Init()
 	App->window->glcontext = SDL_GL_CreateContext(App->window->window);
 
 	GLenum err = glewInit();
-	// … check for errors
+	// â€¦ check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
 	LOG("Vendor: %s", glGetString(GL_VENDOR));
 	LOG("Renderer: %s", glGetString(GL_RENDERER));

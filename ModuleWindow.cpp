@@ -2,10 +2,10 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
-#include "glew.h"
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
+#include "GL/glew.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
 
 ModuleWindow::ModuleWindow()
 {

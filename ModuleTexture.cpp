@@ -1,10 +1,10 @@
 #include "ModuleTexture.h"
 #include "ModuleRender.h"
 #include "Application.h"
-#include "glew.h"
-#include <il.h>
-#include <ilu.h>
-#include <ilut.h>
+#include "GL/glew.h"
+#include <DevIL/il.h>
+#include <DevIL/ilu.h>
+#include <DevIL/ilut.h>
 
 
 ModuleTexture::ModuleTexture()

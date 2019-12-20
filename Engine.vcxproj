@@ -47,12 +47,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./SDL/include;./Dependencies/glew-2.1.0/include/GL;./Dependencies/MathGeoLib/include;./Dependencies/DevIL Windows SDK/include/IL;./Dependencies/assimp/include/assimp;./Dependencies/brofiler;./Dependencies/PCG</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Dependencies/Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>./Dependencies/glew-2.1.0/lib/Release/Win32;./Dependencies/DevIL Windows SDK/lib/x86/Release;./Dependencies/assimp/lib/x86;./Dependencies/brofiler</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./Dependencies/Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;ProfilerCore32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -64,14 +64,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>./SDL/include;./Dependencies/glew-2.1.0/include/GL;./Dependencies/MathGeoLib/include;./Dependencies/DevIL Windows SDK/include/IL;./Dependencies/assimp/include/assimp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./Dependencies/Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>./Dependencies/glew-2.1.0/lib/Release/Win32;./Dependencies/DevIL Windows SDK/lib/x86/Release;./Dependencies/assimp/lib/x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>./Dependencies/Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DevIL.lib;ILU.lib;ILUT.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
@@ -86,76 +86,112 @@
     <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="Dependencies\brofiler\Brofiler.h" />
-    <ClInclude Include="Dependencies\imgui\imconfig.h" />
-    <ClInclude Include="Dependencies\imgui\imgui.h" />
-    <ClInclude Include="Dependencies\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="Dependencies\imgui\imgui_impl_sdl.h" />
-    <ClInclude Include="Dependencies\imgui\imgui_internal.h" />
-    <ClInclude Include="Dependencies\imgui\imgui_stdlib.h" />
-    <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
-    <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
-    <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Algorithm\Random\LCG.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\AABB.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\AABB2D.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Capsule.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Circle.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Cone.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Cylinder.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Frustum.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\GeometryAll.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\GeomType.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\HitInfo.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\KDTree.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Line.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\LineSegment.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\OBB.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\PBVolume.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Plane.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Polygon.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Polyhedron.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\QuadTree.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Ray.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Sphere.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\Triangle.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Geometry\TriangleMesh.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\MathBuildConfig.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\MathGeoLib.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\MathGeoLibFwd.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\assume.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\BitOps.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\Complex.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\CoordinateAxisConvention.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\FixedPoint.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float2.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float3.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float3x3.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float3x4.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float4.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float4x4.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float4x4_neon.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float4x4_sse.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float4_neon.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\float4_sse.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\FloatCmp.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\MathAll.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\MathConstants.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\MathFunc.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\MathLog.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\MathNamespace.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\MathTypes.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\MatrixProxy.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\myassert.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\Polynomial.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\Quat.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\quat_simd.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\Rect.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\Reinterpret.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\SSEMath.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\sse_mathfun.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Math\TransformOps.h" />
-    <ClInclude Include="Dependencies\MathGeoLib\include\Time\Clock.h" />
-    <ClInclude Include="Dependencies\PCG\pcg_basic.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imconfig.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imgui.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imgui_impl_sdl.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imstb_textedit.h" />
+    <ClInclude Include="Dependencies\Include\Imgui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Algorithm\Random\LCG.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\AABB.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\AABB2D.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Capsule.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Circle.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Cone.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Cylinder.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Frustum.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\GeometryAll.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\GeomType.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\HitInfo.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\KDTree.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Line.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\LineSegment.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\OBB.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\PBVolume.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Plane.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Polygon.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Polyhedron.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\QuadTree.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Ray.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Sphere.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\Triangle.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Geometry\TriangleMesh.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\MathBuildConfig.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\MathGeoLib.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\MathGeoLibFwd.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\assume.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\BitOps.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\Complex.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\CoordinateAxisConvention.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\FixedPoint.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float2.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float3.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float3x3.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float3x4.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float4.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float4x4.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float4x4_neon.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float4x4_sse.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float4_neon.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\float4_sse.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\FloatCmp.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\MathAll.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\MathConstants.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\MathFunc.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\MathLog.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\MathNamespace.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\MathTypes.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\MatrixProxy.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\myassert.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\Polynomial.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\Quat.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\quat_simd.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\Rect.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\Reinterpret.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\SSEMath.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\sse_mathfun.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Math\TransformOps.h" />
+    <ClInclude Include="Dependencies\Include\MathGeoLib\Time\Clock.h" />
+    <ClInclude Include="Dependencies\Include\PCG\pcg_basic.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\allocators.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\cursorstreamwrapper.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\document.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\encodedstream.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\encodings.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\error\en.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\error\error.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\filereadstream.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\filewritestream.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\fwd.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\biginteger.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\clzll.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\diyfp.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\dtoa.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\ieee754.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\itoa.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\meta.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\pow10.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\regex.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\stack.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\strfunc.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\strtod.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\internal\swap.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\istreamwrapper.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\memorybuffer.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\memorystream.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\pointer.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\prettywriter.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\rapidjson.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\reader.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\schema.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\stream.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\stringbuffer.h" />
+    <ClInclude Include="Dependencies\Include\Rapidjson\writer.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GUI.h" />
@@ -194,46 +230,45 @@
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_demo.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_impl_sdl.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_stdlib.cpp" />
-    <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Algorithm\Random\LCG.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\AABB.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Capsule.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Circle.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Cone.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Cylinder.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Frustum.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Line.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\LineSegment.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\OBB.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Plane.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Polygon.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Polyhedron.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Ray.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Sphere.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\Triangle.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Geometry\TriangleMesh.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\BitOps.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\float2.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\float3.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\float3x3.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\float3x4.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\float4.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\float4x4.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\MathFunc.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\MathLog.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\MathOps.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\Polynomial.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\Quat.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\SSEMath.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Math\TransformOps.cpp" />
-    <ClCompile Include="Dependencies\MathGeoLib\include\Time\Clock.cpp" />
-    <ClCompile Include="Dependencies\PCG\pcg_basic.c" />
+    <ClCompile Include="Dependencies\Include\Imgui\imgui.cpp" />
+    <ClCompile Include="Dependencies\Include\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="Dependencies\Include\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="Dependencies\Include\Imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Dependencies\Include\Imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Dependencies\Include\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Algorithm\Random\LCG.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\AABB.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Capsule.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Circle.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Cone.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Cylinder.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Frustum.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Line.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\LineSegment.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\OBB.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Plane.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Polygon.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Polyhedron.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Ray.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Sphere.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\Triangle.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Geometry\TriangleMesh.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\BitOps.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\float2.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\float3.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\float3x3.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\float3x4.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\float4.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\float4x4.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\MathFunc.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\MathLog.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\MathOps.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\Polynomial.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\Quat.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\SSEMath.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Math\TransformOps.cpp" />
+    <ClCompile Include="Dependencies\Include\MathGeoLib\Time\Clock.cpp" />
+    <ClCompile Include="Dependencies\Include\PCG\pcg_basic.c" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GUIAbout.cpp" />
     <ClCompile Include="GUICamera.cpp" />
@@ -263,12 +298,12 @@
     <ClCompile Include="UUIDGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Dependencies\MathGeoLib\include\Geometry\KDTree.inl" />
-    <None Include="Dependencies\MathGeoLib\include\Geometry\QuadTree.inl" />
-    <None Include="Dependencies\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_AVX.inl" />
-    <None Include="Dependencies\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
-    <None Include="Dependencies\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
-    <None Include="Dependencies\MathGeoLib\include\Math\Matrix.inl" />
+    <None Include="Dependencies\Include\MathGeoLib\Geometry\KDTree.inl" />
+    <None Include="Dependencies\Include\MathGeoLib\Geometry\QuadTree.inl" />
+    <None Include="Dependencies\Include\MathGeoLib\Geometry\TriangleMesh_IntersectRay_AVX.inl" />
+    <None Include="Dependencies\Include\MathGeoLib\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
+    <None Include="Dependencies\Include\MathGeoLib\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
+    <None Include="Dependencies\Include\MathGeoLib\Math\Matrix.inl" />
     <None Include="imgui\.editorconfig" />
     <None Include="Shaders\FragmentShader.fs" />
     <None Include="Shaders\Grid.fs" />

@@ -1,10 +1,10 @@
 #include "Skybox.h"
-#include "glew.h"
+#include "GL/glew.h"
 #include "Application.h"
 #include "ModuleTexture.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
-#include "Dependencies/MathGeoLib/include/Math/float4.h"
+#include "MathGeoLib/Math/float4.h"
 
 Skybox::Skybox()
 {

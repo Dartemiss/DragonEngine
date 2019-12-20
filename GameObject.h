@@ -3,7 +3,7 @@
 
 #include "Globals.h"
 #include "Component.h"
-#include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/Geometry/AABB.h"
 #include <string>
 #include <vector>
 
