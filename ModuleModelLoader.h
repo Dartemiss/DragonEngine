@@ -20,7 +20,7 @@ struct Texture;
 
 struct Model
 {
-	std::multimap<Mesh*, Texture*> Meshes;
+	std::map<Mesh*, Texture*> Meshes;
 	std::string Name = "";
 	std::string Directory = "";
 	//TODO: add count of similar models to track delete and remove data?
@@ -56,7 +56,7 @@ public:
 	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
 	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
 
-	std::vector<Model*> models;
+	std::vector<Model> models;
 
 private:
 
@@ -64,7 +64,7 @@ private:
 	
 	void ProcessNode(aiNode* node, const aiScene *scene, Model &model);
 	Mesh* ProcessMesh(const aiMesh* mesh, const aiScene *scene);
-	std::vector<Texture> & ProcessTextures(const aiMesh *mesh, const aiScene *scene, const std::string &directory);
+	void ProcessTextures(const aiMesh *mesh, const aiScene *scene, const std::string &directory, std::vector<Texture> &textures);
 
 	std::string ComputeDirectory(const std::string &path) const;
 	std::string ComputeName(const std::string &path) const;

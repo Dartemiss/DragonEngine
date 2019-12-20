@@ -18,7 +18,7 @@ public:
 	void Update();
 	bool CleanUp();
 
-	void SetTextures(std::vector<Texture> & textures);
+	void SetTextures(std::vector<Texture*> & textures);
 	void SetDrawTextures(const unsigned int program);
 
 	//Saving and loading

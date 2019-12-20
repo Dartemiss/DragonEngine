@@ -233,7 +233,7 @@ void ModuleTexture::LoadTextureForModels(const char * path, const std::string &d
 	return;
 }
 
-std::vector<Texture> & ModuleTexture::loadMaterialTextures(aiMaterial * mat, const aiTextureType type, const std::string typeName, const std::string &directory)
+std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, const aiTextureType type, const std::string typeName, const std::string &directory)
 {
 	std::vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
@@ -242,11 +242,11 @@ std::vector<Texture> & ModuleTexture::loadMaterialTextures(aiMaterial * mat, con
 		aiTextureMapping mapping = aiTextureMapping_UV;
 		mat->GetTexture(type, i, &str, &mapping, 0);
 		bool skip = false;
-		for (unsigned int j = 0; j < App->texture->textures_loaded.size(); j++)
+		for (unsigned int j = 0; j < textures_loaded.size(); j++)
 		{
-			if (std::strcmp(App->texture->textures_loaded[j].path.data(), str.C_Str()) == 0)
+			if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
 			{
-				textures.push_back(App->texture->textures_loaded[j]);
+				textures.push_back(textures_loaded[j]);
 				skip = true;
 				break;
 			}
@@ -260,9 +260,8 @@ std::vector<Texture> & ModuleTexture::loadMaterialTextures(aiMaterial * mat, con
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);
-			App->texture->textures_loaded.push_back(texture); //adding new texture to texture loaded
+			textures_loaded.push_back(texture); //adding new texture to texture loaded
 		}
-
 
 	}
 	return textures;

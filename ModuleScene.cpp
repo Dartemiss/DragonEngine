@@ -143,8 +143,28 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 	parent->SetName(name);
 
 	LOG("For each mesh of the model we create a gameObject.");
-	/*
-	for(auto mesh : App->modelLoader->meshes)
+	
+	for (multimap<Mesh*, Texture*>::iterator it = modelLoaded.Meshes.begin(); it != modelLoaded.Meshes.end(); ++it)
+	{
+		std::string newName = name + std::to_string(numObject);
+		GameObject* newMeshObject = CreateGameObject(newName.c_str(), parent);
+		ComponentMesh* myMeshCreated = (ComponentMesh*)newMeshObject->CreateComponent(MESH);
+		ComponentMaterial* myMaterialCreated = (ComponentMaterial*)newMeshObject->CreateComponent(MATERIAL);
+
+
+		myMeshCreated->LoadMesh(it->first);
+		vector<Texture*> textures;
+		textures.push_back(it->second);
+		myMaterialCreated->SetTextures(textures);
+		newMeshObject->ComputeAABB();
+		allGameObjects.insert(newMeshObject);
+
+		++numObject;
+	}
+
+
+
+	/*for(auto mesh : App->modelLoader->meshes)
 	{
 		std::string newName = name + std::to_string(numObject);
 		GameObject* newMeshObject = CreateGameObject(newName.c_str(), parent);
@@ -160,10 +180,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 		++numObject;
 	}*/
 
-	//LOG("Deliting info from ModelLoader");
-	//App->modelLoader->emptyScene();
 	parent->ComputeAABB();
-
 	//Setting parent as a meshParent
 	parent->isParentOfMeshes = true;
 

@@ -57,8 +57,11 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 	//Check if model is already loaded
 	for (unsigned int i = 0; i < models.size(); i++)
 	{
-		if (model.Directory == models[i]->Directory && model.Name == models[i]->Name)
+		if (model.Directory == models[i].Directory && model.Name == models[i].Name)
+		{
+			model = models[i];
 			return;
+		}
 	}
 
 	LOG("Importing model \n");
@@ -79,6 +82,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 
 	LOG("For each mesh located on the current node, processing meshes.")
 	ProcessNode(scene->mRootNode, scene, model);
+	models.push_back(model);
 
 	DefaultLogger::kill();
 
@@ -96,12 +100,22 @@ void ModuleModelLoader::ProcessNode(aiNode * node, const aiScene * scene, Model 
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		Mesh* myMesh = ProcessMesh(mesh, scene);
-		vector<Texture> textures = ProcessTextures(mesh, scene, model.Directory);
+		aiMesh * mesh = scene->mMeshes[node->mMeshes[i]];
+		Mesh * myMesh = ProcessMesh(mesh, scene);
+		vector<Texture> textures;
+		ProcessTextures(mesh, scene, model.Directory, textures);
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
-			model.Meshes.emplace(myMesh, &textures[i]);
+			Texture * newTex = new Texture();
+			Texture currTex = textures[i];
+			newTex->id = currTex.id;
+			newTex->width = currTex.width;
+			newTex->height = currTex.height;
+			newTex->depth = currTex.depth;
+			newTex->format = currTex.format;
+			newTex->type = currTex.type;
+			newTex->path = currTex.path;
+			model.Meshes.emplace(myMesh, newTex);
 		}
 	}
 	// then do the same for each of its children
@@ -157,10 +171,8 @@ Mesh* ModuleModelLoader::ProcessMesh(const aiMesh *mesh, const aiScene *scene)
 	return new Mesh(vertices, indices);
 }
 
-vector<Texture> & ModuleModelLoader::ProcessTextures(const aiMesh *mesh, const aiScene *scene, const string &directory)
+void ModuleModelLoader::ProcessTextures(const aiMesh *mesh, const aiScene *scene, const string &directory, vector<Texture> &textures)
 {
-	vector<Texture> textures;
-
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
@@ -189,8 +201,6 @@ vector<Texture> & ModuleModelLoader::ProcessTextures(const aiMesh *mesh, const a
 			aiTextureType_HEIGHT, "texture_height", directory);
 		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 	}
-
-	return textures;
 }
 
 string ModuleModelLoader::ComputeDirectory(const string &path) const

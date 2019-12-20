@@ -39,7 +39,7 @@ public:
 
 	void LoadSkybox(const char* path, const std::string &directory, int index) const;
 	void LoadTextureForModels(const char* path, const std::string &directory, Texture &texture);
-	std::vector<Texture> & loadMaterialTextures(aiMaterial *mat, const aiTextureType type,
+	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, const aiTextureType type,
 		const std::string typeName, const std::string &directory);
 
 	//Vector of all the textures that have been loaded for avoiding reimporting

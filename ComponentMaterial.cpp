@@ -34,6 +34,11 @@ ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
 
 ComponentMaterial::~ComponentMaterial()
 {
+	//TODO: check it doesnt delete from moduleTextures too
+	delete diffuseMap;
+	delete specularMap;
+	delete occlusionMap;
+	delete emissiveMap;
 }
 
 void ComponentMaterial::Update()
@@ -46,21 +51,21 @@ bool ComponentMaterial::CleanUp()
 	return false;
 }
 
-void ComponentMaterial::SetTextures(std::vector<Texture> & textures)
+void ComponentMaterial::SetTextures(std::vector<Texture*> & textures)
 {
 	//TODO change textures parameter to pointers reference
 	std::string name;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
-		name = textures[i].type;
+		name = textures[i]->type;
 		if (name == "texture_diffuse")
-			diffuseMap = &textures[i];
+			diffuseMap = textures[i];
 		else if (name == "texture_specular")
-			specularMap = &textures[i];
+			specularMap = textures[i];
 		else if (name == "texture_occlusive")
-			occlusionMap = &textures[i];
+			occlusionMap = textures[i];
 		else if (name == "texture_emissive")
-			emissiveMap = &textures[i];
+			emissiveMap = textures[i];
 	}
 }
 
