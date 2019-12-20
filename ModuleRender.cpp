@@ -438,8 +438,11 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 	if(scene)
 	{
 	
-		if (width != widthScene || height != heightScene)
+		if (width != widthScene || height != heightScene || firstTimeCreatingBuffer)
 		{
+			if (firstTimeCreatingBuffer)
+				firstTimeCreatingBuffer = false;
+
 			if (frameBufferObject == 0)
 			{
 				//Generate FrameBuffer if necessary
@@ -486,7 +489,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 	else
 	{
 	
-		if (width != widthGame || height != heightGame)
+		if (width != widthGame || height != heightGame || firstTimeCreatingBuffer)
 		{
 			if (frameBufferObjectGame == 0)
 			{

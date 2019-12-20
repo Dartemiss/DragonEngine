@@ -75,7 +75,7 @@ void ComponentCamera::SetFOV()
 	proj = frustum->ProjectionMatrix();
 }
 
-void ComponentCamera::SetAspectRatio(int newHeight, int newWidth)
+void ComponentCamera::SetAspectRatio(int newWidth, int newHeight)
 {
 	aspect = ((float)newWidth / newHeight);
 	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);

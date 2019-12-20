@@ -77,6 +77,9 @@ public:
 	int heightScene, widthScene;
 	int heightGame, widthGame;
 
+	bool firstTimeCreatingBuffer = true;
+
+
 private:
 	void* context;
 
