@@ -273,6 +273,10 @@ void ModuleRender::DrawGuizmo() const
 		ImGuizmo::SetOrthographic(false);
 
 		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)0, (ImGuizmo::MODE)1, (float*)&model, NULL, NULL);
+
+		//Assign new model matrix
+
+		App->scene->selectedByHierarchy->myTransform->SetGlobalMatrix(model);
 	}
 
 }
