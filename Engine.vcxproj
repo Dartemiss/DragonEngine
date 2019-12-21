@@ -86,6 +86,10 @@
     <ClInclude Include="ComponentTransform.h" />
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="Dependencies\brofiler\Brofiler.h" />
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImGradient.h" />
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="Dependencies\Include\Imgui\imconfig.h" />
     <ClInclude Include="Dependencies\Include\Imgui\imgui.h" />
     <ClInclude Include="Dependencies\Include\Imgui\imgui_impl_opengl3.h" />
@@ -230,6 +234,10 @@
     <ClCompile Include="ComponentMaterial.cpp" />
     <ClCompile Include="ComponentMesh.cpp" />
     <ClCompile Include="ComponentTransform.cpp" />
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="Dependencies\Include\Imgui\imgui.cpp" />
     <ClCompile Include="Dependencies\Include\Imgui\imgui_demo.cpp" />
     <ClCompile Include="Dependencies\Include\Imgui\imgui_draw.cpp" />

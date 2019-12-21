@@ -1,6 +1,6 @@
 #include "ImCurveEdit.h"
-#include "imgui.h"
-#include "imgui_internal.h"
+#include "../Imgui/imgui.h"
+#include "../Imgui/imgui_internal.h"
 #include <stdint.h>
 #include <set>
 #include <vector>

@@ -257,9 +257,12 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::DrawGuizmo() const
 {
+
 	ImVec2 pos = ImGui::GetWindowPos();
 	ImGuizmo::SetRect(pos.x, pos.y, widthScene, heightScene);
 	ImGuizmo::SetDrawlist();
+
+	ImGui::SetCursorPos({ 20,30 });
 
 	//Chose which guizmo we will use
 	if(App->scene->selectedByHierarchy != nullptr)
@@ -270,15 +273,19 @@ void ModuleRender::DrawGuizmo() const
 		float4x4 view = App->camera->view;
 		float4x4 proj = App->camera->proj;
 
+		model.Transpose();
+
 		ImGuizmo::SetOrthographic(false);
 
 		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)0, (ImGuizmo::MODE)1, (float*)&model, NULL, NULL);
 
 		//Assign new model matrix
+		model.Transpose();
 
 		App->scene->selectedByHierarchy->myTransform->SetGlobalMatrix(model);
 	}
 
+	return;
 }
 
 void ModuleRender::DrawAllGameObjects()
@@ -527,14 +534,13 @@ void ModuleRender::GenerateTexture(int width, int height)
 
 	DrawDebug();
 	DrawAllGameObjects();
-
+	
 	
 	if(skybox != nullptr && showSkybox)
 		skybox->DrawSkybox();
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	//Why outside of framebuffer?
 	App->debugDraw->Draw(App->camera, frameBufferObject, height, width);
 }
@@ -606,7 +612,6 @@ void ModuleRender::DrawSceneBuffer()
 	CreateFrameBuffer((int)wSize.x, (int)wSize.y);
 	GenerateTexture((int)wSize.x, (int)wSize.y);
 
-
 	widthScene = (int)wSize.x;
 	heightScene = (int)wSize.y;
 
@@ -620,6 +625,8 @@ void ModuleRender::DrawSceneBuffer()
 		ImVec2(0, 1),
 		ImVec2(1, 0)
 	);
+
+	DrawGuizmo();
 
 
 	ImGui::End();
