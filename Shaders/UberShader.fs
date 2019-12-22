@@ -47,10 +47,9 @@ vec4 get_diffuse_color(const Material mat, const vec2 uv)
     return texture(mat.diffuse_map, uv) * mat.diffuse_color;
 }
 
-vec4 get_specular_color(const Material mat, const vec2 uv)
+vec3 get_specular_color(const Material mat, const vec2 uv)
 {
-    vec3 color = texture(mat.specular_map, uv).rgb * mat.specular_color;
-    return vec4(color, mat.shininess);
+    return texture(mat.specular_map, uv).rgb * mat.specular_color;
 }
 
 vec3 get_occlusion_color(const Material mat, const vec2 uv)
@@ -67,6 +66,12 @@ vec3 get_emissive_color(const Material mat, const vec2 uv)
 //Uniforms and variables
 uniform Material material;
 
+uniform mat4 view;
+uniform vec3 directionalLight;
+
+//uniform vec3 ambientColor
+//uniform vec3 lightDirColor
+
 in vec3 position;
 in vec3 normal;
 in vec2 texCoord;
@@ -76,12 +81,12 @@ out vec4 color;
 void main()
 {
     vec4 diffuse_color = get_diffuse_color(material, texCoord);
-    vec4 specular_color = get_specular_color(material, texCoord);
+    vec3 specular_color = get_specular_color(material, texCoord);
     vec3 occlusion_color = get_occlusion_color(material, texCoord);
     vec3 emissive_color = get_emissive_color(material, texCoord);
 
     float diffuse = lambert(normal, directionalLight);
-    float specular = specular_blinn(directionalLight, position, normal, view, specular_color.a);
+    float specular = specular_blinn(directionalLight, position, normal, view, material.shininess);
 
     vec3 colorSum = emissive_color + // emissive
     diffuse_color.rgb * (occlusion_color * material.k_ambient) + // ambient

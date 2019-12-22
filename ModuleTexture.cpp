@@ -267,3 +267,34 @@ std::vector<Texture> ModuleTexture::loadMaterialTextures(aiMaterial * mat, const
 	return textures;
 }
 
+void ModuleTexture::LoadWhiteFallbackTexture()
+{
+	float pixels[] = {1.0f, 1.0f, 1.0f};
+
+	unsigned int whiteTex;
+
+	glGenTextures(1, &whiteTex);
+	glBindTexture(GL_TEXTURE_2D, whiteTex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, pixels);
+
+	white_fallback.id = whiteTex;
+	white_fallback.width = 1;
+	white_fallback.height = 1;
+	white_fallback.depth = 1;
+	//white_fallback.format = 0;
+	//white_fallback.data = fallbackImage;
+	white_fallback.type = "white_fallback";
+	white_fallback.path = "";
+
+	LOG("White for texture fallback loaded.");
+
+}
+
+Texture* ModuleTexture::getWhiteFallbackTexture()
+{
+	return &white_fallback;
+}

@@ -7,6 +7,7 @@
 #include "ModuleTimeManager.h"
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
+#include "ModuleTexture.h"
 #include "ModuleDebugDraw.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
@@ -154,6 +155,10 @@ bool ModuleRender::Init()
 	//Skybox
 
 	skybox = new Skybox();
+
+
+	//TODO: move to texture Start
+	App->texture->LoadWhiteFallbackTexture();
 
 	return true;
 }

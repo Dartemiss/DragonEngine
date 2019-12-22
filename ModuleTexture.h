@@ -41,9 +41,13 @@ public:
 	void LoadTextureForModels(const char* path, const std::string &directory, Texture &texture);
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, const aiTextureType type,
 		const std::string typeName, const std::string &directory);
+	void LoadWhiteFallbackTexture();
+
+	Texture * getWhiteFallbackTexture();
 
 	//Vector of all the textures that have been loaded for avoiding reimporting
 	std::vector<Texture> textures_loaded;
+	Texture white_fallback;
 
 	unsigned int indexTex = 0;
 	bool isLoaded;

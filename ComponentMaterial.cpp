@@ -1,5 +1,6 @@
 #include "ComponentMaterial.h"
 #include "SceneLoader.h"
+#include "Application.h"
 #include "ModuleTexture.h"
 #include "GL/glew.h"
 
@@ -8,6 +9,21 @@ ComponentMaterial::ComponentMaterial(GameObject* go)
 {
 	myGameObject = go;
 	myType = MATERIAL;
+
+	whiteFallbackTexture = App->texture->getWhiteFallbackTexture();
+	whitefallbackColor = float4(1, 1, 1, 1);
+
+
+
+
+	kDiffuse = 0.5;
+	kSpecular = 0.2;
+	KAmbient = 0.2;
+	shininess = 128;
+
+	diffuseColor = float4(1, 0 ,0, 1);
+	specularColor = float3(0, 1, 0);
+	emissiveColor = float3(0, 0, 0.2);
 }
 
 ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
@@ -29,6 +45,9 @@ ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
 	this->specularMap = comp->specularMap;
 	this->occlusionMap = comp->occlusionMap;
 	this->emissiveMap = comp->emissiveMap;
+
+	this->whiteFallbackTexture = comp->whiteFallbackTexture;
+	this->whitefallbackColor = comp->whitefallbackColor;
 }
 
 
@@ -71,82 +90,74 @@ void ComponentMaterial::SetTextures(std::vector<Texture*> & textures)
 
 void ComponentMaterial::SetDrawTextures(const unsigned int program)
 {
-	/*glUniform1f(glGetUniformLocation(program, "material.k_diffuse"), kDiffuse);
+	//TODO: remove this and put into scene
+	float3 light = float3(0, 10, 5);
+	glUniform3fv(glGetUniformLocation(program, "directionalLight"), 1, &light[0]);
+
+
+	glUniform1f(glGetUniformLocation(program, "material.k_diffuse"), kDiffuse);
 	glUniform1f(glGetUniformLocation(program, "material.k_specular"), kSpecular);
 	glUniform1f(glGetUniformLocation(program, "material.k_ambient"), KAmbient);
-	glUniform1f(glGetUniformLocation(program, "material.shininess"), shininess);*/
+	glUniform1f(glGetUniformLocation(program, "material.shininess"), shininess);
 
 	unsigned int tCount = 0;
 
-	/*int n;
-	glGetProgramStageiv(program, GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS, &n);
-	unsigned * indices = new unsigned[n];*/
-
-	/*const unsigned difColor = 0, difTexture = 1, specColor = 2, specTexture = 3,
-		occNot = 4, occTexture = 5, emisColor = 6, emisTexture = 7;*/
-
 	//Set diffuse color or texture
-	//int current_loc = glGetSubroutineUniformLocation(program, GL_FRAGMENT_SHADER, "get_diffuse_color");
+	glActiveTexture(GL_TEXTURE0 + tCount);
+	glProgramUniform1i(program, glGetUniformLocation(program, "material.diffuse_map"), tCount);
 	if (diffuseMap != nullptr)
 	{
-		glActiveTexture(GL_TEXTURE0 + tCount);
 		glBindTexture(GL_TEXTURE_2D, diffuseMap->id);
-		glProgramUniform1i(program, glGetUniformLocation(program, "material.diffuse_map"), tCount);
-		++tCount;
-		glProgramUniform4fv(program, glGetUniformLocation(program, "material.diffuse_color"), 1, &float4(255, 255, 255, 1)[0]);
-		//indices[current_loc] = glGetSubroutineIndex(program, GL_FRAGMENT_SHADER, "get_diffuse_from_texture");
+		glProgramUniform4fv(program, glGetUniformLocation(program, "material.diffuse_color"), 1, &whitefallbackColor[0]);
 	}
 	else
 	{
+		glBindTexture(GL_TEXTURE_2D, whiteFallbackTexture->id);
 		glProgramUniform4fv(program, glGetUniformLocation(program, "material.diffuse_color"), 1, &diffuseColor[0]);
-		//indices[current_loc] = glGetSubroutineIndex(program, GL_FRAGMENT_SHADER, "get_diffuse_from_color");
 	}
 
 	//Set specular color or texture
-	//current_loc = glGetSubroutineUniformLocation(program, GL_FRAGMENT_SHADER, "get_specular_color");
-	//if (specularMap != nullptr)
-	//{
-	//	glActiveTexture(GL_TEXTURE0 + tCount);
-	//	glUniform1i(glGetUniformLocation(program, "material.specular_map"), tCount);
-	//	++tCount;
-	//	indices[current_loc] = specTexture;
-	//}
-	//else
-	//{
-	//	glUniform3fv(glGetUniformLocation(program, "material.specular_color"), 3, &specularColor[0]);
-	//	indices[current_loc] = specColor;
-	//}
+	++tCount;
+	glActiveTexture(GL_TEXTURE0 + tCount);
+	glProgramUniform1i(program, glGetUniformLocation(program, "material.specular_map"), tCount);
+	if (specularMap != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, specularMap->id);
+		glUniform3fv(glGetUniformLocation(program, "material.specular_color"), 1, &whitefallbackColor[0]);
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, whiteFallbackTexture->id);
+		glUniform3fv(glGetUniformLocation(program, "material.specular_color"), 1, &specularColor[0]);
+	}
 
-	////Set occlusion texture or disable
-	//current_loc = glGetSubroutineUniformLocation(program, GL_FRAGMENT_SHADER, "get_occlusion_color");
-	//if (occlusionMap != nullptr)
-	//{
-	//	glActiveTexture(GL_TEXTURE0 + tCount);
-	//	glUniform1i(glGetUniformLocation(program, "material.occlusion_map"), tCount);
-	//	++tCount;
-	//	indices[current_loc] = occTexture;
-	//}
-	//else
-	//{
-	//	indices[current_loc] = occNot;
-	//}
+	//Set occlusion texture or disable
+	++tCount;
+	glActiveTexture(GL_TEXTURE0 + tCount);
+	glProgramUniform1i(program, glGetUniformLocation(program, "material.occlusion_map"), tCount);
+	if (occlusionMap != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, occlusionMap->id);
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, whiteFallbackTexture->id);
+	}
 
-	////Set emissive color or texture
-	//current_loc = glGetSubroutineUniformLocation(program, GL_FRAGMENT_SHADER, "get_emissive_color");
-	//if (emissiveMap != nullptr)
-	//{
-	//	glActiveTexture(GL_TEXTURE0 + tCount);
-	//	glUniform1i(glGetUniformLocation(program, "material.emissive_map"), tCount);
-	//	indices[current_loc] = emisTexture;
-	//}
-	//else
-	//{
-	//	glUniform3fv(glGetUniformLocation(program, "material.emissive_color"), 3, &emissiveColor[0]);
-	//	indices[current_loc] = emisColor;
-	//}
-
-	//glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, n, indices);
-	//delete[] indices;
+	//Set emissive color or texture
+	++tCount;
+	glActiveTexture(GL_TEXTURE0 + tCount);
+	glUniform1i(glGetUniformLocation(program, "material.emissive_map"), tCount);
+	if (emissiveMap != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, emissiveMap->id);
+		glUniform3fv(glGetUniformLocation(program, "material.emissive_color"), 1, &whitefallbackColor[0]);
+	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, whiteFallbackTexture->id);
+		glUniform3fv(glGetUniformLocation(program, "material.emissive_color"), 1, &emissiveColor[0]);
+	}
 }
 
 void ComponentMaterial::OnSave(SceneLoader & loader)

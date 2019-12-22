@@ -38,6 +38,9 @@ public:
 	Texture * specularMap = nullptr;
 	Texture * occlusionMap = nullptr;
 	Texture * emissiveMap = nullptr;
+
+	Texture * whiteFallbackTexture = nullptr;
+	float4 whitefallbackColor;
 };
 
 #endif __ComponentMaterial_H__
