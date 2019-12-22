@@ -747,6 +747,10 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 	GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
 	if (selectedGO != nullptr)
 	{
+		if (!selectedGO->isParentOfMeshes && selectedGO->parent != nullptr)
+		{
+			selectedGO = selectedGO->parent;
+		}
 		selectedByHierarchy = selectedGO;
 	}
 
