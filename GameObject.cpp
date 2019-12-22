@@ -569,6 +569,17 @@ float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & r
 	return myMesh->IsIntersectedByRay(origin,localRay);
 }
 
+void GameObject::SetGlobalMatrix(const float4x4 & newGlobal)
+{
+	assert(myTransform != nullptr);
+	if(parent != nullptr && parent->myTransform != nullptr)
+	{
+		myTransform->SetGlobalMatrix(newGlobal, parent->myTransform->globalModelMatrix);
+	}
+
+	return;
+}
+
 void GameObject::CheckDragAndDrop(GameObject * go)
 {
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {

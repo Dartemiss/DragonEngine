@@ -259,7 +259,8 @@ void ModuleRender::DrawGuizmo() const
 {
 
 	ImVec2 pos = ImGui::GetWindowPos();
-	ImGuizmo::SetRect(pos.x, pos.y, widthScene, heightScene);
+	ImVec2 size = ImGui::GetWindowSize();
+	ImGuizmo::SetRect((float)pos.x, (float)pos.y, (float)widthScene, (float)heightScene);
 	ImGuizmo::SetDrawlist();
 
 	ImGui::SetCursorPos({ 20,30 });
@@ -273,16 +274,21 @@ void ModuleRender::DrawGuizmo() const
 		float4x4 view = App->camera->view;
 		float4x4 proj = App->camera->proj;
 
-		model.Transpose();
-
 		ImGuizmo::SetOrthographic(false);
 
-		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)0, (ImGuizmo::MODE)1, (float*)&model, NULL, NULL);
+		model.Transpose();
+		view.Transpose();
+		proj.Transpose();
+
+		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)0, (ImGuizmo::MODE)1, (float*)&model, NULL, NULL,NULL,NULL);
 
 		//Assign new model matrix
-		model.Transpose();
+		if(ImGuizmo::IsUsing())
+		{
+			model.Transpose();
+			App->scene->selectedByHierarchy->SetGlobalMatrix(model);
+		}
 
-		App->scene->selectedByHierarchy->myTransform->SetGlobalMatrix(model);
 	}
 
 	return;
@@ -592,6 +598,7 @@ void ModuleRender::DrawDebug() const
 
 void ModuleRender::DrawSceneBuffer()
 {
+	ImGuizmo::BeginFrame();
 	bool isEnabled = true;
 	//First Scene window is created
 	ImGui::SetNextWindowPos(

@@ -42,12 +42,18 @@ void ComponentTransform::UpdateMatrices()
 	globalModelMatrix = globalModelMatrix * localModelMatrix;
 }
 
-void ComponentTransform::SetGlobalMatrix(float4x4 &parentGlobal)
+void ComponentTransform::SetGlobalMatrix(const float4x4 &parentGlobal)
 {
 	globalModelMatrix = parentGlobal * localModelMatrix;
 }
 
-void ComponentTransform::SetLocalMatrix(float4x4 &newParentGlobalMatrix)
+void ComponentTransform::SetGlobalMatrix(const float4x4 & newGlobal, const float4x4 & parentGlobal)
+{
+	globalModelMatrix = newGlobal;
+	SetLocalMatrix(parentGlobal);
+}
+
+void ComponentTransform::SetLocalMatrix(const float4x4 &newParentGlobalMatrix)
 {
 	localModelMatrix = newParentGlobalMatrix.Inverted() *  globalModelMatrix;
 	localModelMatrix.Decompose(position, rotation, scale);
