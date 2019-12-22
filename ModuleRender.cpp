@@ -257,11 +257,12 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::DrawGuizmo() const
 {
-
 	ImVec2 pos = ImGui::GetWindowPos();
 	ImVec2 size = ImGui::GetWindowSize();
 	ImGuizmo::SetRect((float)pos.x, (float)pos.y, (float)widthScene, (float)heightScene);
 	ImGuizmo::SetDrawlist();
+
+	DrawGuizmoButtons();
 
 	ImGui::SetCursorPos({ 20,30 });
 
@@ -280,7 +281,7 @@ void ModuleRender::DrawGuizmo() const
 		view.Transpose();
 		proj.Transpose();
 
-		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)0, (ImGuizmo::MODE)1, (float*)&model, NULL, NULL,NULL,NULL);
+		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)currentOperation, (ImGuizmo::MODE)currentMode, (float*)&model, NULL, NULL,NULL,NULL);
 
 		//Assign new model matrix
 		if(ImGuizmo::IsUsing())
@@ -573,6 +574,41 @@ void ModuleRender::Pick() const
 	}
 
 	return;
+}
+
+void ModuleRender::DrawGuizmoButtons() const
+{
+	
+	if(ImGui::Button("T"))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::TRANSLATE;
+	}
+
+	ImGui::SameLine();
+
+	if(ImGui::Button("R"))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::ROTATE;
+	}
+
+	ImGui::SameLine();
+
+	if(ImGui::Button("S"))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::SCALE;
+	}
+	ImGui::SameLine();
+
+	if(ImGui::Button("W"))
+	{
+		(ImGuizmo::MODE)currentMode = ImGuizmo::WORLD;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("L"))
+	{
+		(ImGuizmo::MODE)currentMode = ImGuizmo::LOCAL;
+	}
+
 }
 
 void ModuleRender::DrawDebug() const

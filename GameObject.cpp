@@ -360,6 +360,7 @@ void GameObject::UpdateTransform()
 
 			globalBoundingBox->minPoint = (boundingBox->minPoint + globalPos);
 			globalBoundingBox->maxPoint = (boundingBox->maxPoint + globalPos);
+			
 		}
 	}
 }

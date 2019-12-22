@@ -7,6 +7,7 @@
 #include "MathGeoLib/Math/float3x3.h"
 #include "ComponentCamera.h"
 #include "GL/glew.h"
+#include "ImGuizmo/ImGuizmo.h"
 #include <vector>
 #include <set>
 
@@ -80,6 +81,10 @@ public:
 	bool firstTimeCreatingBuffer = true;
 
 	void Pick() const;
+	void DrawGuizmoButtons() const;
+
+	ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
+	ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
 
 
 private:

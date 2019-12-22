@@ -57,6 +57,16 @@ void ComponentTransform::SetLocalMatrix(const float4x4 &newParentGlobalMatrix)
 {
 	localModelMatrix = newParentGlobalMatrix.Inverted() *  globalModelMatrix;
 	localModelMatrix.Decompose(position, rotation, scale);
+	
+	if (scale.x < 0.01f)
+		scale.x = 0.01f;
+
+	if (scale.y < 0.01f)
+		scale.y = 0.01f;
+	
+	if (scale.z < 0.01f)
+		scale.z = 0.01f;
+
 	QuatToEuler();
 }
 
