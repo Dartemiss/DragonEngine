@@ -68,6 +68,7 @@ public:
 	float hierarchySizeRatioWidth = 0.185f;
 	float hierarchySizeRatioHeight = 0.745f;
 
+	void DrawPlayPauseButtons() const;
 
 
 private:
@@ -79,6 +80,5 @@ private:
 	bool showTimers = false;
 	bool showInspector = false;
 
-	void DrawPlayPauseButtons() const;
 };
 #endif // __ModuleIMGUI_H__

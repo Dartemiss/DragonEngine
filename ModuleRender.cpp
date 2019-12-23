@@ -204,23 +204,28 @@ update_status ModuleRender::Update()
 	{
 		ImGui::BeginTabBar("");
 
-		if (ImGui::BeginTabItem("Scene"))
+		if (ImGui::BeginTabItem(ICON_FA_BUILDING " Scene"))
 		{
 			DrawSceneBuffer();
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Game"))
+		if (ImGui::BeginTabItem(ICON_FA_GAMEPAD  " Game"))
 		{
 			DrawGameBuffer();
 			ImGui::EndTabItem();
 		}
 
 		ImGui::EndTabBar();
+
+		//Draw Buttons
+		App->imgui->DrawPlayPauseButtons();
+
 	}
 	ImGui::End();
 
 	ImGui::PopStyleVar();
+
 
 	return UPDATE_CONTINUE;
 }
@@ -691,7 +696,7 @@ void ModuleRender::DrawGameBuffer()
 		ImGuiCond_Once
 	);
 	//Game Window
-	ImGui::Begin("Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	ImGui::Begin(" Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 	ImVec2 wSizeGame = ImGui::GetWindowSize();
 

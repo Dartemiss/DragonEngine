@@ -79,8 +79,6 @@ update_status ModuleIMGUI::Update()
 	timeManager.Draw("Timers");
 	inspector.Draw("Properties");
 
-	DrawPlayPauseButtons();
-
 	ImGui::BeginTabBar("MainViewTabs");
 	ImGui::EndTabBar();
 
@@ -203,17 +201,18 @@ void ModuleIMGUI::DrawPlayPauseButtons() const
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
 	ImGui::SetNextWindowPos(
-		ImVec2(App->window->width * 0.5f, App->window->height * 0.019f)
+		ImVec2(App->window->width * 0.254f, App->window->height * 0.019f)
 
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(App->window->width * 0.046f, App->window->height * 0.012f)
+		ImVec2(App->window->width * 0.555f, App->window->height * 0.001f)
 
 	);
 
 	//Draw Scene and Game Windows
-	ImGui::Begin("MainView", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin("ButtonView", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 	
+	ImGui::SetCursorPos(ImVec2(App->window->width * 0.25f, App->window->height * 0.0075f));
 	if(ImGui::Button(ICON_FA_PLAY ""))
 	{
 		//Do things
