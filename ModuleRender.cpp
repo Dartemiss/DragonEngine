@@ -204,19 +204,21 @@ update_status ModuleRender::Update()
 	{
 		ImGui::BeginTabBar("");
 
-		if (ImGui::BeginTabItem(ICON_FA_BUILDING " Scene"))
+		if (ImGui::BeginTabItem(ICON_FA_BUILDING " Scene") && !isGamePlaying)
 		{
 			DrawSceneBuffer();
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem(ICON_FA_GAMEPAD  " Game"))
+		if (ImGui::BeginTabItem(ICON_FA_GAMEPAD  " Game") || isGamePlaying)
 		{
 			DrawGameBuffer();
 			ImGui::EndTabItem();
 		}
 
 		ImGui::EndTabBar();
+
+		//Draw Scene or game depending 
 
 		//Draw Buttons
 		App->imgui->DrawPlayPauseButtons();

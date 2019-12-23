@@ -8,6 +8,8 @@
 #include "ModuleWindow.h"
 #include "ModuleTexture.h"
 #include "ModuleScene.h"
+#include "ModuleRender.h"
+#include "ModuleTimeManager.h"
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include "FontAwesome/IconsFontAwesome5.h"
@@ -216,16 +218,20 @@ void ModuleIMGUI::DrawPlayPauseButtons() const
 	if(ImGui::Button(ICON_FA_PLAY ""))
 	{
 		//Do things
+		App->timemanager->PlayGame();
+		App->renderer->isGamePlaying = !App->renderer->isGamePlaying;
 	}
 	ImGui::SameLine();
 	if(ImGui::Button(ICON_FA_PAUSE ""))
 	{
 		//Do things
+		App->timemanager->PauseGame();
 	}
 	ImGui::SameLine();
 	if(ImGui::Button(ICON_FA_STEP_FORWARD ""))
 	{
 		//Do things
+		App->timemanager->ExecuteNextFrames(2);
 	}
 	
 

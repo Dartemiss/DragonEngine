@@ -68,6 +68,7 @@ void ComponentTransform::SetLocalMatrix(const float4x4 &newParentGlobalMatrix)
 		scale.z = 0.01f;
 
 	QuatToEuler();
+	
 }
 
 void ComponentTransform::TranslateTo(const float3 & newPos)

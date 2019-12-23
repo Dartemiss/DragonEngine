@@ -86,6 +86,7 @@ public:
 	ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
 	ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
 
+	bool isGamePlaying = false;
 
 private:
 	void* context;

@@ -32,21 +32,6 @@ void GUITime::Draw(const char * title)
 		ImGui::Text("FPS: %d", App->timemanager->FPS); ImGui::SameLine();
 		ImGui::Text("Frame Count: %d", App->timemanager->frameCount);
 
-		if(ImGui::Button("Play"))
-		{
-			App->timemanager->UnPauseGame();
-		}
-
-		if(ImGui::Button("Pause"))
-		{
-			App->timemanager->PauseGame();
-		}
-
-		if (ImGui::Button("Next Frames"))
-		{
-			App->timemanager->ExecuteNextFrames(2);
-		}
-
 		ImGui::Checkbox("Fix FPS", &App->timemanager->fixFPS);
 		ImGui::SliderInt("FPS", &App->timemanager->fixedFPS, 10, 60);
 

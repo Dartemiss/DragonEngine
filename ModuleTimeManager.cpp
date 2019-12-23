@@ -34,7 +34,7 @@ update_status ModuleTimeManager::PreUpdate()
 
 update_status ModuleTimeManager::Update()
 {
-	if(!isPaused)
+	if(!isPaused && isPlaying)
 	{
 		gameTime += (realTimer->ReadTimer() - realGameTime) * timeScale;
 	}
@@ -62,7 +62,7 @@ void ModuleTimeManager::InitDeltaTimes()
 
 void ModuleTimeManager::FinalDeltaTimes()
 {
-	if(!isPaused)
+	if(!isPaused && isPlaying)
 	{
 		deltaTime = (gameTime + (realTimer->ReadTimer() - realGameTime) * timeScale) - initialGameFrameTime;
 	}
@@ -114,12 +114,8 @@ float ModuleTimeManager::GetRealDeltaTime() const
 
 void ModuleTimeManager::PauseGame()
 {
-	isPaused = true;
-}
-
-void ModuleTimeManager::UnPauseGame()
-{
-	isPaused = false;
+	if(isPlaying)
+		isPaused = !isPaused;
 }
 
 void ModuleTimeManager::ExecuteNextFrames(int numberFrames)
@@ -127,7 +123,7 @@ void ModuleTimeManager::ExecuteNextFrames(int numberFrames)
 	if(isPaused)
 	{
 		waitingToPause = true;
-		UnPauseGame();
+		isPaused = false;
 		framesToPause = frameCount + numberFrames;
 		return;
 	}
@@ -140,4 +136,11 @@ void ModuleTimeManager::ExecuteNextFrames(int numberFrames)
 void ModuleTimeManager::Wait(float timeToWait)
 {
 	SDL_Delay(static_cast<Uint32>(timeToWait));
+}
+
+void ModuleTimeManager::PlayGame()
+{
+	gameTime = 0.0f;
+	isPaused = false;
+	isPlaying = !isPlaying;
 }
