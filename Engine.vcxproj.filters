@@ -81,7 +81,6 @@
     <ClCompile Include="AABBTree.cpp" />
     <ClCompile Include="UUIDGenerator.cpp" />
     <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="Dependencies\Include\MathGeoLib\Time\Clock.cpp">
       <Filter>Libraries\MathGeoLib</Filter>
     </ClCompile>
@@ -199,6 +198,10 @@
     <ClCompile Include="Dependencies\Include\PCG\pcg_basic.c">
       <Filter>Libraries\PCG</Filter>
     </ClCompile>
+    <ClCompile Include="SceneLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFilesystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -290,7 +293,6 @@
     <ClInclude Include="AABBTree.h" />
     <ClInclude Include="UUIDGenerator.h" />
     <ClInclude Include="Skybox.h" />
-    <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="Dependencies\brofiler\Brofiler.h" />
     <ClInclude Include="Dependencies\Include\MathGeoLib\MathBuildConfig.h">
@@ -611,6 +613,10 @@
     <ClInclude Include="Dependencies\Include\PCG\pcg_basic.h">
       <Filter>Libraries\PCG</Filter>
     </ClInclude>
+    <ClInclude Include="SceneLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFilesystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
