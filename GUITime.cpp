@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleIMGUI.h"
 #include "ModuleTimeManager.h"
+#include "FontAwesome/IconsFontAwesome5.h"
 
 GUITime::GUITime()
 {
@@ -20,7 +21,7 @@ void GUITime::Draw(const char * title)
 			ImVec2(App->window->width * App->imgui->timerSizeRatioWidth, App->window->height * App->imgui->timerSizeRatioHeight)
 		);
 
-		ImGui::Begin(title, &isEnabled);
+		ImGui::Begin(ICON_FA_CLOCK " Timers", &isEnabled);
 		ImGui::Text("Real Time Since Start: %.3f", App->timemanager->GetRealGameTime()/1000.0f); ImGui::SameLine();
 		ImGui::Text("Real Time dt: %.3f", App->timemanager->GetRealDeltaTime() / 1000.0f);
 

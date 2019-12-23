@@ -18,6 +18,7 @@
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
+#include "FontAwesome/IconsFontAwesome5.h"
 
 using namespace std;
 
@@ -225,6 +226,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 	{
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 	}
+
 	bool objOpen = ImGui::TreeNodeEx(this, flags, name.c_str());
 
 	if(ImGui::IsItemClicked())
@@ -356,10 +358,16 @@ void GameObject::UpdateTransform()
 
 			float3 globalPos, globalScale;
 			float3x3 globalRot;
+			
 			myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
 
-			globalBoundingBox->minPoint = (boundingBox->minPoint + globalPos);
-			globalBoundingBox->maxPoint = (boundingBox->maxPoint + globalPos);
+			//boundingBox->TransformAsAABB(myTransform->localModelMatrix);
+
+			//globalBoundingBox->minPoint = (boundingBox->minPoint + globalPos);
+			//globalBoundingBox->maxPoint = (boundingBox->maxPoint + globalPos);
+
+			//globalBoundingBox->minPoint = globalScale.Mul(globalBoundingBox->minPoint);
+			//globalBoundingBox->maxPoint = globalScale.Mul(globalBoundingBox->maxPoint);
 			
 		}
 	}
@@ -416,7 +424,8 @@ void GameObject::ComputeAABB()
 		float3 globalPos, globalScale;
 		float3x3 globalRot;
 		myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-		globalBoundingBox = new AABB(min + globalPos, max + globalPos);
+
+		globalBoundingBox = new AABB(min.Mul(globalScale) + globalPos, max.Mul(globalScale) + globalPos);
 
 		return;
 	}
@@ -446,7 +455,8 @@ void GameObject::ComputeAABB()
 	float3 globalPos, globalScale;
 	float3x3 globalRot;
 	myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-	globalBoundingBox = new AABB(min + globalPos, max + globalPos);
+
+	globalBoundingBox = new AABB(min.Mul(globalScale) + globalPos, max.Mul(globalScale) + globalPos);
 
 	return;
 }
@@ -465,7 +475,7 @@ void GameObject::DrawInspector(bool &showInspector)
 		ImVec2(App->window->width * App->imgui->inspectorSizeRatioWidth, App->window->height * App->imgui->inspectorSizeRatioHeight)
 	);
 
-	ImGui::Begin("Inspector", &showInspector);
+	ImGui::Begin(ICON_FA_INFO_CIRCLE " Inspector", &showInspector);
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	

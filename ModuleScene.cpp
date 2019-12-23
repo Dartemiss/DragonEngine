@@ -25,6 +25,7 @@
 #include "SceneLoader.h"
 #include <queue>
 #include <map>
+#include "FontAwesome/IconsFontAwesome5.h"
 
 using namespace std;
 
@@ -363,7 +364,7 @@ void ModuleScene::DrawGUI()
 			ImVec2(App->window->width * App->imgui->hierarchySizeRatioWidth, App->window->height * App->imgui->hierarchySizeRatioHeight)
 		);
 
-		ImGui::Begin("Hierarchy", &showHierarchy, flags);
+		ImGui::Begin(ICON_FA_SITEMAP " Hierarchy", &showHierarchy, flags);
 		root->DrawHierarchy(selectedByHierarchy);
 		ImGui::End();
 	}

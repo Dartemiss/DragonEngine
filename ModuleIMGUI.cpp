@@ -10,6 +10,8 @@
 #include "ModuleScene.h"
 #include <stdio.h>
 #include <SDL/SDL.h>
+#include "FontAwesome/IconsFontAwesome5.h"
+#include "FontAwesome/IconsFontAwesome5Brands.h"
 
 
 #define DOCUMENTATION "https://github.com/ocornut/imgui/wiki"
@@ -34,8 +36,26 @@ bool ModuleIMGUI::Init()
 
 	ImGui::StyleColorsDark();
 
-	//Console is active by default
-	//console.SetEnable(true);
+
+	//Font Awesome Init
+	ImGuiIO& io = ImGui::GetIO();
+
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	ImFontConfig icons_config; 
+	icons_config.MergeMode = true; 
+	icons_config.PixelSnapH = true;
+
+	io.Fonts->AddFontDefault();
+	io.Fonts->AddFontFromFileTTF("../Fonts/" FONT_ICON_FILE_NAME_FAS, 12.0f, &icons_config, icons_ranges);
+
+	io.Fonts->AddFontDefault();
+	io.Fonts->AddFontFromFileTTF("../Fonts/" FONT_ICON_FILE_NAME_FAR, 12.0f, &icons_config, icons_ranges);
+
+	io.Fonts->AddFontDefault();
+	static const ImWchar icons_ranges_fab[] = { ICON_MIN_FAB, ICON_MAX_FAB, 0 };
+	io.Fonts->AddFontFromFileTTF("../Fonts/" FONT_ICON_FILE_NAME_FAB, 12.f, &icons_config, icons_ranges_fab);
+	// use FONT_ICON_FILE_NAME_FAR if you want regular instead of solid
+
 
 	return true;
 }

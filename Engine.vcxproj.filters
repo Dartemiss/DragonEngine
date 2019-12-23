@@ -636,6 +636,7 @@
     <ClInclude Include="Dependencies\Include\ImGuizmo\ImGuizmo.h">
       <Filter>Libraries\ImGuizmo</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -713,5 +714,8 @@
     <None Include="Dependencies\Include\MathGeoLib\Geometry\TriangleMesh_IntersectRay_SSE.inl">
       <Filter>Libraries\MathGeoLib</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="badprog.rc" />
   </ItemGroup>
 </Project>

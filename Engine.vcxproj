@@ -221,6 +221,7 @@
     <ClInclude Include="MyQuadTree.h" />
     <ClInclude Include="myStream.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Timer.h" />
@@ -320,6 +321,9 @@
     <None Include="Shaders\Skybox.fs" />
     <None Include="Shaders\Skybox.vs" />
     <None Include="Shaders\VertexShader.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="badprog.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

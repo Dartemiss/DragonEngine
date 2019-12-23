@@ -28,6 +28,8 @@
 #include "MathGeoLib/Math/float4.h"
 #include "Brofiler/Brofiler.h"
 #include "ImGuizmo/ImGuizmo.h"
+#include "FontAwesome/IconsFontAwesome5.h"
+#include "FontAwesome/IconsFontAwesome5Brands.h"
 
 
 
@@ -578,33 +580,32 @@ void ModuleRender::Pick() const
 
 void ModuleRender::DrawGuizmoButtons() const
 {
-	
-	if(ImGui::Button("T"))
+	if(ImGui::Button(ICON_FA_HAND_ROCK ""))
 	{
 		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::TRANSLATE;
 	}
 
 	ImGui::SameLine();
 
-	if(ImGui::Button("R"))
+	if(ImGui::Button(ICON_FA_SYNC ""))
 	{
 		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::ROTATE;
 	}
 
 	ImGui::SameLine();
 
-	if(ImGui::Button("S"))
+	if(ImGui::Button(ICON_FA_BALANCE_SCALE ""))
 	{
 		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::SCALE;
 	}
 	ImGui::SameLine();
 
-	if(ImGui::Button("W"))
+	if(ImGui::Button(ICON_FA_GLOBE ""))
 	{
 		(ImGuizmo::MODE)currentMode = ImGuizmo::WORLD;
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("L"))
+	if (ImGui::Button(ICON_FA_MAP_MARKER ""))
 	{
 		(ImGuizmo::MODE)currentMode = ImGuizmo::LOCAL;
 	}
