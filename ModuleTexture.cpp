@@ -291,7 +291,6 @@ void ModuleTexture::LoadWhiteFallbackTexture()
 	white_fallback.path = "";
 
 	LOG("White for texture fallback loaded.");
-
 }
 
 Texture* ModuleTexture::getWhiteFallbackTexture()

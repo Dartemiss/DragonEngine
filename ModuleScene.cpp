@@ -221,6 +221,29 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	return;
 }
 
+void ModuleScene::CreateGameObjectZomBunny(GameObject * parent)
+{
+	if (parent == nullptr)
+	{
+		LOG("ERROR: Parent is nullptr, cannot create gameObject.");
+		return;
+	}
+
+	LOG("Creating a Zom Bunny.");
+	std::string defaultName = "ZomBunny";
+	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
+	LoadModel("../Models/ZomBunny/Zombunny.fbx", newGameObject);
+	++numberOfBakerHouse;
+
+	allGameObjects.insert(newGameObject);
+	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+
+	if (quadTreeInitialized)
+		AddToQuadtree(newGameObject);
+
+	return;
+}
+
 void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 {
 	//if (parent == nullptr)

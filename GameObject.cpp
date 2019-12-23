@@ -299,6 +299,11 @@ void GameObject::DrawHierarchy(GameObject * selected)
 				App->scene->CreateGameObjectBakerHouse(this);
 			}
 
+			if (ImGui::MenuItem("Zom Bunny"))
+			{
+				App->scene->CreateGameObjectZomBunny(this);
+			}
+
 			ImGui::EndMenu();
 		}
 
