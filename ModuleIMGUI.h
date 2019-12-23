@@ -78,5 +78,7 @@ private:
 	bool showCameraGUI = false;
 	bool showTimers = false;
 	bool showInspector = false;
+
+	void DrawPlayPauseButtons() const;
 };
 #endif // __ModuleIMGUI_H__

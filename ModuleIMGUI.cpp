@@ -79,6 +79,8 @@ update_status ModuleIMGUI::Update()
 	timeManager.Draw("Timers");
 	inspector.Draw("Properties");
 
+	DrawPlayPauseButtons();
+
 	ImGui::BeginTabBar("MainViewTabs");
 	ImGui::EndTabBar();
 
@@ -195,4 +197,39 @@ bool ModuleIMGUI::CleanUp()
 	
 
 	return true;
+}
+
+void ModuleIMGUI::DrawPlayPauseButtons() const
+{
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::SetNextWindowPos(
+		ImVec2(App->window->width * 0.5f, App->window->height * 0.019f)
+
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(App->window->width * 0.046f, App->window->height * 0.012f)
+
+	);
+
+	//Draw Scene and Game Windows
+	ImGui::Begin("MainView", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+	
+	if(ImGui::Button(ICON_FA_PLAY ""))
+	{
+		//Do things
+	}
+	ImGui::SameLine();
+	if(ImGui::Button(ICON_FA_PAUSE ""))
+	{
+		//Do things
+	}
+	ImGui::SameLine();
+	if(ImGui::Button(ICON_FA_STEP_FORWARD ""))
+	{
+		//Do things
+	}
+	
+
+	ImGui::End();
+	ImGui::PopStyleVar();
 }

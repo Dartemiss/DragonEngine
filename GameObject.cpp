@@ -361,14 +361,19 @@ void GameObject::UpdateTransform()
 			
 			myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
 
-			//boundingBox->TransformAsAABB(myTransform->localModelMatrix);
+			float3 newMinPoint = boundingBox->minPoint;
+			newMinPoint.x *= globalScale.x;
+			newMinPoint.y *= globalScale.y;
+			newMinPoint.z *= globalScale.z;
 
-			//globalBoundingBox->minPoint = (boundingBox->minPoint + globalPos);
-			//globalBoundingBox->maxPoint = (boundingBox->maxPoint + globalPos);
+			float3 newMaxPoint = boundingBox->maxPoint;
+			newMaxPoint.x *= globalScale.x;
+			newMaxPoint.y *= globalScale.y;
+			newMaxPoint.z *= globalScale.z;
 
-			//globalBoundingBox->minPoint = globalScale.Mul(globalBoundingBox->minPoint);
-			//globalBoundingBox->maxPoint = globalScale.Mul(globalBoundingBox->maxPoint);
-			
+			globalBoundingBox->minPoint = newMinPoint + globalPos;
+			globalBoundingBox->maxPoint = newMaxPoint + globalPos;
+
 		}
 	}
 }
