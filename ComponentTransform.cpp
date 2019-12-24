@@ -33,6 +33,9 @@ void ComponentTransform::EulerToQuat()
 void ComponentTransform::QuatToEuler()
 {
 	eulerRotation = rotation.ToEulerXYZ();
+	eulerRotation.x = math::RadToDeg(eulerRotation.x);
+	eulerRotation.y = math::RadToDeg(eulerRotation.y);
+	eulerRotation.z = math::RadToDeg(eulerRotation.z);
 }
 
 void ComponentTransform::UpdateMatrices()
@@ -56,8 +59,9 @@ void ComponentTransform::SetGlobalMatrix(const float4x4 & newGlobal, const float
 void ComponentTransform::SetLocalMatrix(const float4x4 &newParentGlobalMatrix)
 {
 	localModelMatrix = newParentGlobalMatrix.Inverted() *  globalModelMatrix;
+
 	localModelMatrix.Decompose(position, rotation, scale);
-	
+
 	if (scale.x < 0.01f)
 		scale.x = 0.01f;
 
