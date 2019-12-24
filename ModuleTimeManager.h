@@ -28,9 +28,9 @@ public:
 	float GetDeltaTime() const;
 	float GetRealDeltaTime() const;
 	void PauseGame();
-	void UnPauseGame();
 	void ExecuteNextFrames(int numberFrames);
 	void Wait(float timeToWait);
+	void PlayGame();
 
 	//Variables
 	long long frameCount = 0;
@@ -40,6 +40,7 @@ public:
 	bool isPaused = false;
 	bool waitingToPause = false;
 	bool fixFPS = false;
+	bool isPlaying = false;
 
 private:
 

@@ -7,6 +7,7 @@
 #include "MathGeoLib/Math/float3x3.h"
 #include "ComponentCamera.h"
 #include "GL/glew.h"
+#include "ImGuizmo/ImGuizmo.h"
 #include <vector>
 #include <set>
 
@@ -58,7 +59,7 @@ public:
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
-	void DrawGrid();
+	void DrawGuizmo() const;
 	void DrawAllGameObjects();
 	void DrawGame();
 	
@@ -80,7 +81,12 @@ public:
 	bool firstTimeCreatingBuffer = true;
 
 	void Pick() const;
+	void DrawGuizmoButtons() const;
 
+	ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
+	ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
+
+	bool isGamePlaying = false;
 
 private:
 	void* context;

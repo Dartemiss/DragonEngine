@@ -90,6 +90,10 @@ public:
 	float IsIntersectedByRay(const float3 &origin, const LineSegment & ray);
 	std::string name = "";
 
+	//ImGuizmo SetModelMatrix
+	void SetGlobalMatrix(const float4x4 &newGlobal);
+
+
 private:
 	void CheckDragAndDrop(GameObject* go);
 

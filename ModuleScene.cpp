@@ -16,15 +16,16 @@
 #include "Imgui/imgui_impl_opengl3.h"
 #include "MathGeoLib/Math/float4.h"
 #include "Timer.h"
-#include "MathGeoLib/include/Geometry/Frustum.h"
-#include "MathGeoLib/include/Geometry/LineSegment.h"
-#include "MathGeoLib/include/Geometry/Plane.h"
+#include "MathGeoLib/Geometry/Frustum.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
+#include "MathGeoLib/Geometry/Plane.h"
 #include "debugdraw.h"
 
 #include <random>
 #include "SceneLoader.h"
 #include <queue>
 #include <map>
+#include "FontAwesome/IconsFontAwesome5.h"
 
 using namespace std;
 
@@ -366,7 +367,7 @@ void ModuleScene::DrawGUI()
 			ImVec2(App->window->width * App->imgui->hierarchySizeRatioWidth, App->window->height * App->imgui->hierarchySizeRatioHeight)
 		);
 
-		ImGui::Begin("Hierarchy", &showHierarchy, flags);
+		ImGui::Begin(ICON_FA_SITEMAP " Hierarchy", &showHierarchy, flags);
 		root->DrawHierarchy(selectedByHierarchy);
 		ImGui::End();
 	}
@@ -748,6 +749,10 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 	GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
 	if (selectedGO != nullptr)
 	{
+		if (!selectedGO->isParentOfMeshes && selectedGO->parent != nullptr)
+		{
+			selectedGO = selectedGO->parent;
+		}
 		selectedByHierarchy = selectedGO;
 	}
 

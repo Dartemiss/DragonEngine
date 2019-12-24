@@ -14,10 +14,11 @@
 #include "Imgui/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
 #include "imgui/imgui_stdlib.h"
-#include "MathGeoLib/include/Geometry/LineSegment.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
+#include "FontAwesome/IconsFontAwesome5.h"
 
 using namespace std;
 
@@ -225,6 +226,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 	{
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 	}
+
 	bool objOpen = ImGui::TreeNodeEx(this, flags, name.c_str());
 
 	if(ImGui::IsItemClicked())
@@ -356,10 +358,22 @@ void GameObject::UpdateTransform()
 
 			float3 globalPos, globalScale;
 			float3x3 globalRot;
+			
 			myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
 
-			globalBoundingBox->minPoint = (boundingBox->minPoint + globalPos);
-			globalBoundingBox->maxPoint = (boundingBox->maxPoint + globalPos);
+			float3 newMinPoint = boundingBox->minPoint;
+			newMinPoint.x *= globalScale.x;
+			newMinPoint.y *= globalScale.y;
+			newMinPoint.z *= globalScale.z;
+
+			float3 newMaxPoint = boundingBox->maxPoint;
+			newMaxPoint.x *= globalScale.x;
+			newMaxPoint.y *= globalScale.y;
+			newMaxPoint.z *= globalScale.z;
+
+			globalBoundingBox->minPoint = newMinPoint + globalPos;
+			globalBoundingBox->maxPoint = newMaxPoint + globalPos;
+
 		}
 	}
 }
@@ -415,7 +429,8 @@ void GameObject::ComputeAABB()
 		float3 globalPos, globalScale;
 		float3x3 globalRot;
 		myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-		globalBoundingBox = new AABB(min + globalPos, max + globalPos);
+
+		globalBoundingBox = new AABB(min.Mul(globalScale) + globalPos, max.Mul(globalScale) + globalPos);
 
 		return;
 	}
@@ -445,7 +460,8 @@ void GameObject::ComputeAABB()
 	float3 globalPos, globalScale;
 	float3x3 globalRot;
 	myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-	globalBoundingBox = new AABB(min + globalPos, max + globalPos);
+
+	globalBoundingBox = new AABB(min.Mul(globalScale) + globalPos, max.Mul(globalScale) + globalPos);
 
 	return;
 }
@@ -464,11 +480,11 @@ void GameObject::DrawInspector(bool &showInspector)
 		ImVec2(App->window->width * App->imgui->inspectorSizeRatioWidth, App->window->height * App->imgui->inspectorSizeRatioHeight)
 	);
 
-	ImGui::Begin("Inspector", &showInspector);
+	ImGui::Begin(ICON_FA_INFO_CIRCLE " Inspector", &showInspector);
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	ImGui::InputText("##Name", &name);
+	//ImGui::InputText("##Name", &name);
 
 	ImGui::SameLine();
 
@@ -567,6 +583,17 @@ float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & r
 	
 
 	return myMesh->IsIntersectedByRay(origin,localRay);
+}
+
+void GameObject::SetGlobalMatrix(const float4x4 & newGlobal)
+{
+	assert(myTransform != nullptr);
+	if(parent != nullptr && parent->myTransform != nullptr)
+	{
+		myTransform->SetGlobalMatrix(newGlobal, parent->myTransform->globalModelMatrix);
+	}
+
+	return;
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)

@@ -27,6 +27,9 @@
 #include <math.h>
 #include "MathGeoLib/Math/float4.h"
 #include "Brofiler/Brofiler.h"
+#include "ImGuizmo/ImGuizmo.h"
+#include "FontAwesome/IconsFontAwesome5.h"
+#include "FontAwesome/IconsFontAwesome5Brands.h"
 
 
 
@@ -201,23 +204,30 @@ update_status ModuleRender::Update()
 	{
 		ImGui::BeginTabBar("");
 
-		if (ImGui::BeginTabItem("Scene"))
+		if (ImGui::BeginTabItem(ICON_FA_BUILDING " Scene") && !isGamePlaying)
 		{
 			DrawSceneBuffer();
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Game"))
+		if (ImGui::BeginTabItem(ICON_FA_GAMEPAD  " Game") || isGamePlaying)
 		{
 			DrawGameBuffer();
 			ImGui::EndTabItem();
 		}
 
 		ImGui::EndTabBar();
+
+		//Draw Scene or game depending 
+
+		//Draw Buttons
+		App->imgui->DrawPlayPauseButtons();
+
 	}
 	ImGui::End();
 
 	ImGui::PopStyleVar();
+
 
 	return UPDATE_CONTINUE;
 }
@@ -253,6 +263,46 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
+
+void ModuleRender::DrawGuizmo() const
+{
+	ImVec2 pos = ImGui::GetWindowPos();
+	ImVec2 size = ImGui::GetWindowSize();
+	ImGuizmo::SetRect((float)pos.x, (float)pos.y, (float)widthScene, (float)heightScene);
+	ImGuizmo::SetDrawlist();
+
+	DrawGuizmoButtons();
+
+	ImGui::SetCursorPos({ 20,30 });
+
+	//Chose which guizmo we will use
+	if(App->scene->selectedByHierarchy != nullptr)
+	{
+		//Use guizmos only if object is static
+		ImGuizmo::Enable(true);
+		float4x4 model = App->scene->selectedByHierarchy->myTransform->globalModelMatrix;
+		float4x4 view = App->camera->view;
+		float4x4 proj = App->camera->proj;
+
+		ImGuizmo::SetOrthographic(false);
+
+		model.Transpose();
+		view.Transpose();
+		proj.Transpose();
+
+		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)currentOperation, (ImGuizmo::MODE)currentMode, (float*)&model, NULL, NULL,NULL,NULL);
+
+		//Assign new model matrix
+		if(ImGuizmo::IsUsing())
+		{
+			model.Transpose();
+			App->scene->selectedByHierarchy->SetGlobalMatrix(model);
+		}
+
+	}
+
+	return;
+}
 
 void ModuleRender::DrawAllGameObjects()
 {
@@ -500,14 +550,13 @@ void ModuleRender::GenerateTexture(int width, int height)
 
 	DrawDebug();
 	DrawAllGameObjects();
-
+	
 	
 	if(skybox != nullptr && showSkybox)
 		skybox->DrawSkybox();
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	//Why outside of framebuffer?
 	App->debugDraw->Draw(App->camera, frameBufferObject, height, width);
 }
@@ -536,6 +585,40 @@ void ModuleRender::Pick() const
 	return;
 }
 
+void ModuleRender::DrawGuizmoButtons() const
+{
+	if(ImGui::Button(ICON_FA_HAND_ROCK ""))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::TRANSLATE;
+	}
+
+	ImGui::SameLine();
+
+	if(ImGui::Button(ICON_FA_SYNC ""))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::ROTATE;
+	}
+
+	ImGui::SameLine();
+
+	if(ImGui::Button(ICON_FA_BALANCE_SCALE ""))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::SCALE;
+	}
+	ImGui::SameLine();
+
+	if(ImGui::Button(ICON_FA_GLOBE ""))
+	{
+		(ImGuizmo::MODE)currentMode = ImGuizmo::WORLD;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_MAP_MARKER ""))
+	{
+		(ImGuizmo::MODE)currentMode = ImGuizmo::LOCAL;
+	}
+
+}
+
 void ModuleRender::DrawDebug() const
 {
 	if(showQuadTree && App->scene->quadtreeIsComputed)
@@ -559,6 +642,7 @@ void ModuleRender::DrawDebug() const
 
 void ModuleRender::DrawSceneBuffer()
 {
+	ImGuizmo::BeginFrame();
 	bool isEnabled = true;
 	//First Scene window is created
 	ImGui::SetNextWindowPos(
@@ -579,7 +663,6 @@ void ModuleRender::DrawSceneBuffer()
 	CreateFrameBuffer((int)wSize.x, (int)wSize.y);
 	GenerateTexture((int)wSize.x, (int)wSize.y);
 
-
 	widthScene = (int)wSize.x;
 	heightScene = (int)wSize.y;
 
@@ -593,6 +676,8 @@ void ModuleRender::DrawSceneBuffer()
 		ImVec2(0, 1),
 		ImVec2(1, 0)
 	);
+
+	DrawGuizmo();
 
 
 	ImGui::End();
@@ -613,7 +698,7 @@ void ModuleRender::DrawGameBuffer()
 		ImGuiCond_Once
 	);
 	//Game Window
-	ImGui::Begin("Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	ImGui::Begin(" Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 	ImVec2 wSizeGame = ImGui::GetWindowSize();
 

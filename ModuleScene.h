@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "Timer.h"
 #include "Point.h"
-#include "Dependencies/imgui/imgui.h"
+#include "imgui/imgui.h"
 #include <set>
 
 class MyQuadTree;

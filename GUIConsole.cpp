@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleIMGUI.h"
+#include "FontAwesome/IconsFontAwesome5.h"
 
 GUIConsole::GUIConsole()
 {
@@ -31,7 +32,7 @@ void GUIConsole::Draw(const char * title)
 		ImGui::SetNextWindowSize(
 			ImVec2(App->window->width * App->imgui->consoleSizeRatioWidth, App->window->height * App->imgui->consoleSizeRatioHeight)
 		);
-		ImGui::Begin(title, &isEnabled);
+		ImGui::Begin(ICON_FA_TERMINAL " Console", &isEnabled);
 
 		if(firstTime)
 		{

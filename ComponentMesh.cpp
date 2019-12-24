@@ -4,8 +4,8 @@
 #include "GameObject.h"
 #include "ComponentMesh.h"
 #include "SceneLoader.h"
-#include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
-#include "Dependencies/MathGeoLib/include/Geometry/Triangle.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
+#include "MathGeoLib/Geometry/Triangle.h"
 
 ComponentMesh::ComponentMesh(GameObject* go)
 {

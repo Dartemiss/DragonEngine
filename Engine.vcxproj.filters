@@ -199,8 +199,17 @@
     <ClCompile Include="Dependencies\Include\PCG\pcg_basic.c">
       <Filter>Libraries\PCG</Filter>
     </ClCompile>
-    <ClCompile Include="Dependencies\imgui\imgui_stdlib.cpp">
-      <Filter>Libraries\Imgui</Filter>
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImCurveEdit.cpp">
+      <Filter>Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImGradient.cpp">
+      <Filter>Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImGuizmo.cpp">
+      <Filter>Libraries\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\Include\ImGuizmo\ImSequencer.cpp">
+      <Filter>Libraries\ImGuizmo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -614,10 +623,20 @@
     <ClInclude Include="Dependencies\Include\PCG\pcg_basic.h">
       <Filter>Libraries\PCG</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\imgui\imgui_stdlib.h">
-      <Filter>Libraries\Imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImSequencer.h">
+      <Filter>Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImCurveEdit.h">
+      <Filter>Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImGradient.h">
+      <Filter>Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Include\ImGuizmo\ImGuizmo.h">
+      <Filter>Libraries\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -649,6 +668,9 @@
     </Filter>
     <Filter Include="Libraries\IMGUI">
       <UniqueIdentifier>{4c219d9d-d5eb-4240-9bbd-c88b7b62a4bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\ImGuizmo">
+      <UniqueIdentifier>{559cb708-dbb7-45ab-bbf7-b857ef91a365}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -692,5 +714,8 @@
     <None Include="Dependencies\Include\MathGeoLib\Geometry\TriangleMesh_IntersectRay_SSE.inl">
       <Filter>Libraries\MathGeoLib</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="badprog.rc" />
   </ItemGroup>
 </Project>

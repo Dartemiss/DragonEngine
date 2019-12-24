@@ -2,13 +2,18 @@
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
+#include "ImGuizmo/ImGuizmo.h"
 #include "GL/glew.h"
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleTexture.h"
 #include "ModuleScene.h"
+#include "ModuleRender.h"
+#include "ModuleTimeManager.h"
 #include <stdio.h>
 #include <SDL/SDL.h>
+#include "FontAwesome/IconsFontAwesome5.h"
+#include "FontAwesome/IconsFontAwesome5Brands.h"
 
 
 #define DOCUMENTATION "https://github.com/ocornut/imgui/wiki"
@@ -33,8 +38,26 @@ bool ModuleIMGUI::Init()
 
 	ImGui::StyleColorsDark();
 
-	//Console is active by default
-	//console.SetEnable(true);
+
+	//Font Awesome Init
+	ImGuiIO& io = ImGui::GetIO();
+
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+	ImFontConfig icons_config; 
+	icons_config.MergeMode = true; 
+	icons_config.PixelSnapH = true;
+
+	io.Fonts->AddFontDefault();
+	io.Fonts->AddFontFromFileTTF("../Fonts/" FONT_ICON_FILE_NAME_FAS, 12.0f, &icons_config, icons_ranges);
+
+	io.Fonts->AddFontDefault();
+	io.Fonts->AddFontFromFileTTF("../Fonts/" FONT_ICON_FILE_NAME_FAR, 12.0f, &icons_config, icons_ranges);
+
+	io.Fonts->AddFontDefault();
+	static const ImWchar icons_ranges_fab[] = { ICON_MIN_FAB, ICON_MAX_FAB, 0 };
+	io.Fonts->AddFontFromFileTTF("../Fonts/" FONT_ICON_FILE_NAME_FAB, 12.f, &icons_config, icons_ranges_fab);
+	// use FONT_ICON_FILE_NAME_FAR if you want regular instead of solid
+
 
 	return true;
 }
@@ -174,4 +197,44 @@ bool ModuleIMGUI::CleanUp()
 	
 
 	return true;
+}
+
+void ModuleIMGUI::DrawPlayPauseButtons() const
+{
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::SetNextWindowPos(
+		ImVec2(App->window->width * 0.254f, App->window->height * 0.019f)
+
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(App->window->width * 0.555f, App->window->height * 0.001f)
+
+	);
+
+	//Draw Scene and Game Windows
+	ImGui::Begin("ButtonView", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+	
+	ImGui::SetCursorPos(ImVec2(App->window->width * 0.25f, App->window->height * 0.0075f));
+	if(ImGui::Button(ICON_FA_PLAY ""))
+	{
+		//Do things
+		App->timemanager->PlayGame();
+		App->renderer->isGamePlaying = !App->renderer->isGamePlaying;
+	}
+	ImGui::SameLine();
+	if(ImGui::Button(ICON_FA_PAUSE ""))
+	{
+		//Do things
+		App->timemanager->PauseGame();
+	}
+	ImGui::SameLine();
+	if(ImGui::Button(ICON_FA_STEP_FORWARD ""))
+	{
+		//Do things
+		App->timemanager->ExecuteNextFrames(2);
+	}
+	
+
+	ImGui::End();
+	ImGui::PopStyleVar();
 }
