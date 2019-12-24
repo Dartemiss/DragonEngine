@@ -79,9 +79,6 @@ update_status ModuleScene::Update()
 	}
 
 	DrawGUI();
-	
-	if(currentRay != nullptr)
-		dd::arrow(currentRay->a, currentRay->b, float3(1, 0, 0), 1);
 
 	return UPDATE_CONTINUE;
 }
@@ -756,7 +753,7 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 		selectedByHierarchy = selectedGO;
 	}
 
-	currentRay = CreateRayCast(normalizedX, normalizedY);
+	
 
 	return;
 }
