@@ -49,7 +49,7 @@ public:
 	unsigned allocatedNodeCount = 0;
 	unsigned nextFreeNodeIndex = 0;
 	unsigned nodeCapacity;
-	unsigned growthSize;
+	unsigned growthSize = 10;
 
 
 private:

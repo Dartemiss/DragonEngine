@@ -493,6 +493,8 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	if(ImGui::Checkbox("Static", &isStatic))
 	{
+		//TODO: what happens if camera is static (crashes)
+
 		if(isRoot)
 		{
 			isStatic = true;
@@ -523,12 +525,17 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		//Aux variables if static
+		float3 auxPos = myTransform->position;
+		float3 auxRot = myTransform->eulerRotation;
+		float3 auxScale = myTransform->scale;
+
 		ImGui::Text("Position");
-		ImGui::DragFloat3("Position", (float *)&myTransform->position, 0.1f);
+		ImGui::DragFloat3("Position", (float *)((isStatic) ? &auxPos : &myTransform->position), 0.1f);
 		ImGui::Text("Rotation");
-		ImGui::DragFloat3("Rotation", (float *)&myTransform->eulerRotation, 1.0f, -360.0f, 360.0f);
+		ImGui::DragFloat3("Rotation", (float *)((isStatic) ? &auxRot : &myTransform->eulerRotation), 1.0f, -360.0f, 360.0f);
 		ImGui::Text("Scale");
-		ImGui::DragFloat3("Scale", (float *)&myTransform->scale, 0.01f, 0.01f, 1000.0f);
+		ImGui::DragFloat3("Scale", (float *)((isStatic) ? &auxScale : &myTransform->scale), 0.01f, 0.01f, 1000.0f);
 
 		ImGui::Separator();
 

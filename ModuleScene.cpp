@@ -51,7 +51,7 @@ bool ModuleScene::Init()
 	allGameObjects.insert(mainCamera);
 	dynamicGO.insert(mainCamera);
 
-	aabbTree = new AABBTree(20);
+	aabbTree = new AABBTree(10);
 
 	return true;
 }
@@ -505,7 +505,7 @@ AABB * ModuleScene::ComputeSceneAABB() const
 
 void ModuleScene::CreateCubesScript()
 {
-	for (int i = 0; i < 200; ++i)
+	for (int i = 0; i < 50; ++i)
 	{
 		CreateGameObjectShape(root, CUBE);
 	}

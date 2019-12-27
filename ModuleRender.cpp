@@ -276,7 +276,7 @@ void ModuleRender::DrawGuizmo() const
 	ImGui::SetCursorPos({ 20,30 });
 
 	//Chose which guizmo we will use
-	if(App->scene->selectedByHierarchy != nullptr)
+	if(App->scene->selectedByHierarchy != nullptr && !App->scene->selectedByHierarchy->isStatic)
 	{
 		//Use guizmos only if object is static
 		ImGuizmo::Enable(true);
