@@ -332,6 +332,9 @@ void ModuleRender::DrawAllGameObjects()
 
 	for(auto gameObject : onCameraGO)
 	{
+		if (!gameObject->isEnabled)
+			continue;
+
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
@@ -395,6 +398,9 @@ void ModuleRender::DrawGame()
 
 	for (auto gameObject : onCameraGO)
 	{
+		if (!gameObject->isEnabled)
+			continue;
+
 		if (gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 		{
 			glUniformMatrix4fv(glGetUniformLocation(progModel,

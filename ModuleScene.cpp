@@ -65,21 +65,26 @@ update_status ModuleScene::Update()
 {
 	for(auto gameObject : staticGO)
 	{
-		gameObject->Update();
+		if(gameObject->isEnabled)
+			gameObject->Update();
 	}
 
 	for(auto GO : dynamicGO)
 	{
-		GO->UpdateTransform();
-		GO->Update();
-
-		if (GO->globalBoundingBox != nullptr)
+		if(GO->isEnabled)
 		{
-			aabbTree->UpdateObject(GO);
+			GO->UpdateTransform();
+			GO->Update();
+
+			if (GO->globalBoundingBox != nullptr)
+			{
+				aabbTree->UpdateObject(GO);
+			}
+
+			if (moveObjectsArround)
+				MoveObjects(GO);
 		}
 
-		if (moveObjectsArround)
-			MoveObjects(GO);
 	}
 	//TODO: How to treat cameras
 	mainCamera->UpdateTransform();
