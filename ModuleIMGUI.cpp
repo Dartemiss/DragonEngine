@@ -110,8 +110,6 @@ update_status ModuleIMGUI::Update()
 			ImGui::EndMenu();
 		}
 
-		App->scene->DrawUIBarMenuGameObject();
-
 		if(ImGui::BeginMenu("Debug"))
 		{
 			if(ImGui::MenuItem("Console"))

@@ -49,9 +49,8 @@ bool ModuleScene::Init()
 	mainCamera->CreateComponent(CAMERA);
 
 	allGameObjects.insert(mainCamera);
+	dynamicGO.insert(mainCamera);
 
-	//quadtree = new MyQuadTree(AABB(float3(-100,0,-40), float3(100,0,100)),1);
-	//quadtreeIterative = new MyQuadTree(new AABB(float3(-100, 0, -100), float3(100, 0, 100)));
 	aabbTree = new AABBTree(20);
 
 	return true;
@@ -64,19 +63,27 @@ update_status ModuleScene::PreUpdate()
 
 update_status ModuleScene::Update()
 {
-	for(auto gameObject : allGameObjects)
+	for(auto gameObject : staticGO)
 	{
-		gameObject->UpdateTransform();
 		gameObject->Update();
+	}
 
-		if(aabbTreeIsComputed && gameObject->globalBoundingBox != nullptr)
+	for(auto GO : dynamicGO)
+	{
+		GO->UpdateTransform();
+		GO->Update();
+
+		if (GO->globalBoundingBox != nullptr)
 		{
-			aabbTree->UpdateObject(gameObject);
+			aabbTree->UpdateObject(GO);
 		}
 
 		if (moveObjectsArround)
-			MoveObjects(gameObject);
+			MoveObjects(GO);
 	}
+	//TODO: How to treat cameras
+	mainCamera->UpdateTransform();
+	mainCamera->Update();
 
 	DrawGUI();
 
@@ -87,10 +94,8 @@ bool ModuleScene::CleanUp()
 {
 	if (quadtreeIsComputed)
 	{
-		quadtree->Clear();
-		quadtreeIterative->ClearIterative();
+		quadtree->ClearIterative();
 		delete quadtree;
-		delete quadtreeIterative;
 	}
 
 	for(auto GO : allGameObjects)
@@ -160,7 +165,8 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 		myMeshCreated->LoadMesh(mesh);
 		newMeshObject->ComputeAABB();
 		allGameObjects.insert(newMeshObject);
-
+		dynamicGO.insert(newMeshObject);
+		aabbTree->Insert(newMeshObject);
 		++numObject;
 	}
 
@@ -174,13 +180,15 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 	return;
 }
 
-void ModuleScene::CreateEmpy(GameObject* parent)
+void ModuleScene::CreateEmpty(GameObject* parent)
 {
 	std::string defaultName = "NewGameObject" + std::to_string(numberOfGameObjects + 1);
 	GameObject* empty = CreateGameObject(defaultName.c_str(), parent);
 	
 
 	allGameObjects.insert(empty);
+	dynamicGO.insert(empty);
+	aabbTree->Insert(empty);
 
 	return;
 }
@@ -200,10 +208,10 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	++numberOfBakerHouse;
 
 	allGameObjects.insert(newGameObject);
+	dynamicGO.insert(newGameObject);
+	aabbTree->Insert(newGameObject);
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
-
-	if(quadTreeInitialized)
-		AddToQuadtree(newGameObject);
+	
 
 	return;
 }
@@ -288,7 +296,8 @@ void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 	newGameObject->isParentOfMeshes = true;
 
 	allGameObjects.insert(newGameObject);
-
+	dynamicGO.insert(newGameObject);
+	aabbTree->Insert(newGameObject);
 
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
 	//Deleting model loader information
@@ -302,6 +311,17 @@ void ModuleScene::RemoveGameObject(GameObject * go)
 	if (!allGameObjects.empty())
 	{
 		allGameObjects.erase(go);
+		
+		if (go->isStatic)
+		{
+			staticGO.erase(go);
+		}
+		else
+		{
+			dynamicGO.erase(go);
+			aabbTree->Remove(go);
+		}
+			
 	}
 
 	return;
@@ -314,41 +334,6 @@ void ModuleScene::SelectObjectInHierarchy(GameObject * selected)
 	return;
 }
 
-void ModuleScene::DrawUIBarMenuGameObject()
-{
-	if (ImGui::BeginMenu("GameObject"))
-	{
-		if (ImGui::MenuItem("Create House GameObject"))
-		{
-			GameObject* newGameObject = CreateGameObject();
-
-			newGameObject->myTransform->position += float3(numberOfGameObjects * 4.0f, 0.0f, 0.0f);
-			newGameObject->myTransform->UpdateMatrices();
-
-			allGameObjects.insert(newGameObject);
-
-
-			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
-			
-			//-----------------------------------------------------------------//
-
-			GameObject* newGameObjectChild = CreateGameObject("Child", newGameObject);
-
-			newGameObjectChild->myTransform->position += float3(8.0f, 0.0f, 0.0f);
-			newGameObjectChild->myTransform->UpdateMatrices();
-
-
-			LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObjectChild);
-			
-
-			allGameObjects.insert(newGameObjectChild);
-
-		}
-
-
-		ImGui::EndMenu();
-	}
-}
 
 void ModuleScene::DrawGUI()
 {
@@ -388,12 +373,11 @@ void ModuleScene::AddToQuadtree(GameObject* go) const
 	return;
 }
 
-void ModuleScene::RemoveFromQuadTree(GameObject* go) const
-{
-}
-
 void ModuleScene::BuildQuadTree()
 {
+	if (staticGO.size() == 0)
+		return;
+
 	AABB* sceneBox = ComputeSceneAABB();
 
 	quadtreeIsComputed = false;
@@ -401,48 +385,28 @@ void ModuleScene::BuildQuadTree()
 	//Recursive
 	if (quadTreeInitialized)
 	{
-		quadtree->Clear();
+		quadtree->ClearIterative();
 		delete quadtree;
 	}
 	
-	quadtree = new MyQuadTree(*sceneBox,1);
+	quadtree = new MyQuadTree(sceneBox);
 
 	recursive.StartTimer();
-	for(auto go : allGameObjects)
+	for(auto go : staticGO)
 	{
 		if(go->globalBoundingBox != nullptr)
 		{
-			quadtree->Insert(go);
+			quadtree->InsertIterative(quadtree->nodes, go);
 		}
 	}
 
 	timeRecursive = recursive.StopTimer();
 
-	
-
-	//Iterative
-	if (quadTreeInitialized)
-	{
-		quadtreeIterative->ClearIterative();
-		delete quadtreeIterative;
-	}
-		
-	quadtreeIterative = new MyQuadTree(sceneBox);
-
-	iterative.StartTimer();
-	for (auto go : allGameObjects)
-	{
-		if (go->globalBoundingBox != nullptr)
-		{
-			quadtreeIterative->InsertIterative(quadtreeIterative->nodes,go);
-		}
-	}
-
 	quadTreeInitialized = true;
 
-	timeIterative = iterative.StopTimer();
-
 	quadtreeIsComputed = true;	
+
+	return;
 }
 
 void ModuleScene::BuildAABBTree()
@@ -515,7 +479,7 @@ void ModuleScene::CreateHousesScript()
 
 AABB * ModuleScene::ComputeSceneAABB() const
 {
-	auto someElementIterator = allGameObjects.begin();
+	auto someElementIterator = staticGO.begin();
 	while((*someElementIterator)->globalBoundingBox == nullptr)
 	{
 		++someElementIterator;
@@ -523,7 +487,7 @@ AABB * ModuleScene::ComputeSceneAABB() const
 	float3 minPoint = (*someElementIterator)->globalBoundingBox->minPoint;
 	float3 maxPoint = (*someElementIterator)->globalBoundingBox->maxPoint;
 	
-	for(auto it = ++someElementIterator; it != allGameObjects.end(); ++it)
+	for(auto it = ++someElementIterator; it != staticGO.end(); ++it)
 	{
 		if((*it)->globalBoundingBox != nullptr)
 		{
@@ -732,7 +696,7 @@ LineSegment* ModuleScene::CreateRayCast(float3 origin, float3 direction, float m
 
 LineSegment* ModuleScene::CreateRayCast(float normalizedX, float normalizedY) const	
 {
-	return new LineSegment(App->camera->frustum->UnProjectLineSegment(normalizedX, normalizedY));
+	return new LineSegment(App->camera->editorCamera->frustum->UnProjectLineSegment(normalizedX, normalizedY));
 }
 
 void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
@@ -743,7 +707,7 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 	normalizedX = mapValues(mouse.x, posWindow.x, posWindow.x + sizeWindow.x, -1, 1);
 	normalizedY = mapValues(mouse.y, posWindow.y, posWindow.y + sizeWindow.y, 1, -1);
 	LineSegment ray = *CreateRayCast(normalizedX, normalizedY);
-	GameObject* selectedGO = IntersectRayCast(App->camera->frustum->pos, ray);
+	GameObject* selectedGO = IntersectRayCast(App->camera->editorCamera->frustum->pos, ray);
 	if (selectedGO != nullptr)
 	{
 		if (!selectedGO->isParentOfMeshes && selectedGO->parent != nullptr)
@@ -756,6 +720,11 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 	
 
 	return;
+}
+
+GameObject * ModuleScene::GetRoot() const
+{
+	return root;
 }
 
 GameObject* ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)

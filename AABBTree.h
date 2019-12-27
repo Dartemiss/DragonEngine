@@ -5,6 +5,7 @@
 #include "MathGeoLib/Geometry/AABB.h"
 #include "GameObject.h"
 #include <vector>
+#include <set>
 #include <map>
 
 
@@ -35,6 +36,8 @@ public:
 	void Insert(GameObject* go);
 	void Remove(GameObject* go);
 	void UpdateObject(GameObject* go);
+
+	void GetIntersection(std::set<GameObject*> &intersectionGO, AABB* bbox);
 	
 	void Draw() const;
 

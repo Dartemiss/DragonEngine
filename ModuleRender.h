@@ -110,8 +110,6 @@ private:
 	
 	ComponentCamera* gameCamera = nullptr;
 	
-	std::vector<GameObject*> gameObjectsWithinFrustum;
-
 	//Skybox
 	Skybox* skybox = nullptr;
 

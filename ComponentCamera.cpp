@@ -120,11 +120,13 @@ void ComponentCamera::TranslateCameraToPoint(const float3 & newPos)
 void ComponentCamera::SetNearPlaneDistance(const float nearDist)
 {
 	frustum->nearPlaneDistance = nearDist;
+	proj = frustum->ProjectionMatrix();
 }
 
 void ComponentCamera::SetFarPlaneDistance(const float farDist)
 {
 	frustum->farPlaneDistance = farDist;
+	proj = frustum->ProjectionMatrix();
 }
 
 void ComponentCamera::LookAt(const float3 target)
@@ -133,6 +135,18 @@ void ComponentCamera::LookAt(const float3 target)
 	float3x3 rot = float3x3::LookAt(frustum->front, dir, frustum->up, float3::unitY);
 	frustum->front = rot.Transform(frustum->front).Normalized();
 	frustum->up = rot.Transform(frustum->up).Normalized();
+}
+
+void ComponentCamera::ComputeViewMatrix() 
+{
+	view = frustum->ViewMatrix();
+	return;
+}
+
+void ComponentCamera::ComputeProjMatrix()
+{
+	proj = frustum->ProjectionMatrix();
+	return;
 }
 
 int ComponentCamera::AABBWithinFrustum(const AABB &aabb) const

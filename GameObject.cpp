@@ -9,6 +9,7 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "AABBTree.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
@@ -276,7 +277,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		if(ImGui::Selectable("Create Empty"))
 		{
 			//Create empty gameobject
-			App->scene->CreateEmpy(this);
+			App->scene->CreateEmpty(this);
 		}
 
 		if (ImGui::BeginMenu("Create 3D Object"))
@@ -490,7 +491,34 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	
 
-	ImGui::Checkbox("Static", &isStatic);
+	if(ImGui::Checkbox("Static", &isStatic))
+	{
+		if(isRoot)
+		{
+			isStatic = true;
+			LOG("Root must be static. STOP!.");
+		}
+
+		else
+		{
+			if (isStatic)
+			{
+				App->scene->dynamicGO.erase(this);
+				App->scene->staticGO.insert(this);
+				App->scene->aabbTree->Remove(this);
+				App->scene->BuildQuadTree();
+			}
+
+			else
+			{
+				App->scene->staticGO.erase(this);
+				App->scene->dynamicGO.insert(this);
+				App->scene->aabbTree->Insert(this);
+				App->scene->BuildQuadTree();
+			}
+		}
+
+	}
 
 
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))

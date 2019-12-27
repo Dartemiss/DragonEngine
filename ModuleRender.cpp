@@ -281,8 +281,8 @@ void ModuleRender::DrawGuizmo() const
 		//Use guizmos only if object is static
 		ImGuizmo::Enable(true);
 		float4x4 model = App->scene->selectedByHierarchy->myTransform->globalModelMatrix;
-		float4x4 view = App->camera->view;
-		float4x4 proj = App->camera->proj;
+		float4x4 view = App->camera->GetViewMatrix();
+		float4x4 proj = App->camera->GetProjMatrix();
 
 		ImGuizmo::SetOrthographic(false);
 
@@ -313,31 +313,33 @@ void ModuleRender::DrawAllGameObjects()
 
 	//Temporary as std140 doesnt work
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
+		"proj"), 1, GL_TRUE, &App->camera->editorCamera->proj[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
+		"view"), 1, GL_TRUE, &App->camera->editorCamera->view[0][0]);
 
 	std::set<GameObject*> staticGO;
-
+	std::set<GameObject*> dynamicGO;
+	
 	if(App->scene->quadtreeIsComputed)
 	{
-		App->scene->quadtreeIterative->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
+		App->scene->quadtree->GetIntersection(staticGO, &App->camera->editorCamera->frustum->MinimalEnclosingAABB());
 	}
+	App->scene->aabbTree->GetIntersection(dynamicGO, &App->camera->editorCamera->frustum->MinimalEnclosingAABB());
 
-	bool quadAndCulling = App->scene->quadtreeIsComputed && frustumCullingIsActivated;
+	//With C++ 17 we could do staticGO.merge(dynamicGO);
+	std::set<GameObject*> onCameraGO = staticGO;
+	onCameraGO.insert(dynamicGO.begin(), dynamicGO.end());
 
-	for(auto gameObject : (quadAndCulling) ? staticGO : App->scene->allGameObjects)
+	for(auto gameObject : onCameraGO)
 	{
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-		if(quadAndCulling && gameObject->globalBoundingBox != nullptr)
+		if(gameObject->globalBoundingBox != nullptr)
 		{
 
-			if(gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
+			if(App->camera->editorCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
-				gameObjectsWithinFrustum.push_back(gameObject);
-
 				if (gameObject->myMesh != nullptr)
 				{
 					gameObject->myMesh->Draw(progModel);
@@ -378,38 +380,22 @@ void ModuleRender::DrawGame()
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
 		"view"), 1, GL_TRUE, &gameCamera->view[0][0]);
 
-	if(frustumCullingIsActivated)
-	{
 	
-		std::set<GameObject*> staticGO;
+	std::set<GameObject*> staticGO;
+	std::set<GameObject*> dynamicGO;
 
-		if (App->scene->quadtreeIsComputed)
-		{
-			App->scene->quadtreeIterative->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
-		}
-
-		for (auto gameObject : staticGO)
-		{
-			if (gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
-			{
-				glUniformMatrix4fv(glGetUniformLocation(progModel,
-					"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
-
-
-				if (gameObject->myMesh != nullptr)
-				{
-					gameObject->myMesh->Draw(progModel);
-				}
-			}
-
-		}
-		
-		gameObjectsWithinFrustum.clear();
+	if (App->scene->quadtreeIsComputed)
+	{
+		App->scene->quadtree->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
 	}
-	else
+
+	App->scene->aabbTree->GetIntersection(dynamicGO, &gameCamera->frustum->MinimalEnclosingAABB());
+	std::set<GameObject*> onCameraGO = staticGO;
+	onCameraGO.insert(dynamicGO.begin(), dynamicGO.end());
+
+	for (auto gameObject : onCameraGO)
 	{
-	
-		for (auto gameObject : App->scene->allGameObjects)
+		if (gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 		{
 			glUniformMatrix4fv(glGetUniformLocation(progModel,
 				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
@@ -419,11 +405,9 @@ void ModuleRender::DrawGame()
 			{
 				gameObject->myMesh->Draw(progModel);
 			}
-
 		}
-	
-	}
 
+	}
 
 	glUseProgram(0);
 }
@@ -624,7 +608,7 @@ void ModuleRender::DrawDebug() const
 	if(showQuadTree && App->scene->quadtreeIsComputed)
 	{
 		//Iterative
-		App->scene->quadtreeIterative->DrawIterative();
+		App->scene->quadtree->DrawIterative();
 	}
 
 	if(showGrid)

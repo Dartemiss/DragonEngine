@@ -7,6 +7,7 @@
 #include "MathGeoLib/Math/float4x4.h"
 
 class Application;
+class ComponentCamera;
 
 class ModuleCamera : public Module
 {
@@ -21,6 +22,8 @@ public:
 	update_status Update();
 	update_status PostUpdate();
 	bool CleanUp();
+
+	ComponentCamera* editorCamera = nullptr;
 
 	//Methods
 	void SetFOV();
@@ -38,18 +41,10 @@ public:
 	//Update Projection and View matrices
 	void UpdateUniformShaderMatrices();
 
-	//Variables
-	float aspect = 1.0f;
-	Frustum* frustum;
-
 	//Getter Matrix
 	float4x4 GetProjMatrix() const;
 	float4x4 GetViewMatrix() const;
 
-
-	//Matrices
-	float4x4 proj = float4x4::zero;
-	float4x4 view = float4x4::zero;
 
 	float movementSpeed = 0.2f;
 	float rotationSpeed = 0.015f;
