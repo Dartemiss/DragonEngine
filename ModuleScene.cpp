@@ -387,7 +387,7 @@ void ModuleScene::BuildQuadTree()
 
 	quadtreeIsComputed = false;
 
-	//Recursive
+	//Iterative
 	if (quadTreeInitialized)
 	{
 		quadtree->ClearIterative();
