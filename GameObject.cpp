@@ -494,31 +494,7 @@ void GameObject::DrawInspector(bool &showInspector)
 	if(ImGui::Checkbox("Static", &isStatic))
 	{
 		//TODO: what happens if camera is static (crashes)
-
-		if(isRoot)
-		{
-			isStatic = true;
-			LOG("Root must be static. STOP!.");
-		}
-
-		else
-		{
-			if (isStatic)
-			{
-				App->scene->dynamicGO.erase(this);
-				App->scene->staticGO.insert(this);
-				App->scene->aabbTree->Remove(this);
-				App->scene->BuildQuadTree();
-			}
-
-			else
-			{
-				App->scene->staticGO.erase(this);
-				App->scene->dynamicGO.insert(this);
-				App->scene->aabbTree->Insert(this);
-				App->scene->BuildQuadTree();
-			}
-		}
+		SetStatic();
 
 	}
 
@@ -626,6 +602,63 @@ void GameObject::SetGlobalMatrix(const float4x4 & newGlobal)
 	if(parent != nullptr && parent->myTransform != nullptr)
 	{
 		myTransform->SetGlobalMatrix(newGlobal, parent->myTransform->globalModelMatrix);
+	}
+
+	return;
+}
+
+void GameObject::SetStatic()
+{
+	if(UID == 1)
+	{
+		isStatic = true;
+		LOG("Root must be static. STOP!.");
+		return;
+	}
+
+	//Get all GO related with this GO
+	std::vector<GameObject*> myRelatedGO;
+	GameObject* grandParent = this;
+	while(grandParent->parent->UID != 1)
+	{
+		grandParent = grandParent->parent;
+	}
+
+	myRelatedGO.push_back(grandParent);
+
+	//Get all children and set static boolean
+	grandParent->GetAllChilds(myRelatedGO);
+	for(auto go : myRelatedGO)
+	{
+		go->isStatic = isStatic;
+
+		if (isStatic)
+		{
+			App->scene->dynamicGO.erase(go);
+			App->scene->staticGO.insert(go);
+			App->scene->aabbTree->Remove(go);
+		}
+
+		else
+		{
+			App->scene->staticGO.erase(go);
+			App->scene->dynamicGO.insert(go);
+			App->scene->aabbTree->Insert(go);
+		}
+
+	}
+
+	App->scene->BuildQuadTree();
+
+	return;
+}
+
+void GameObject::GetAllChilds(std::vector<GameObject*>& allChilds)
+{
+	for(auto ch : children)
+	{
+		allChilds.push_back(ch);
+		ch->GetAllChilds(allChilds);
 	}
 
 	return;
