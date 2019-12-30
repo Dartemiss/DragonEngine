@@ -233,7 +233,6 @@ void ComponentCamera::OnLoad(SceneLoader & loader)
 void ComponentCamera::DrawFrustum()
 {
 	//Draw frustum
-	//TODO: Find an optimization for not having to multiply matrix every frame
 	float4x4 clipMatrix = proj * view;	
 	dd::frustum(clipMatrix.Inverted(), float3(0, 0, 1));
 

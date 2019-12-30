@@ -268,7 +268,6 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 		if (ImGui::Selectable("Delete"))
 		{
-			//TODO: Delete gameobjects
 			DeleteGameObject();
 		}
 

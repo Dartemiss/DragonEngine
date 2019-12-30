@@ -73,6 +73,7 @@ public:
 	bool showAABBTree = true;
 	bool showFrustum = true;
 	bool showGrid = false;
+	bool antialiasing = false;
 
 	//Windows size
 	int heightScene, widthScene;
@@ -104,6 +105,9 @@ private:
 	//Framebuffer windows variables
 	unsigned int frameBufferObjectGame = 0; // FBO
 	unsigned int renderBufferObjectGame = 0; // RBO
+
+	unsigned int multiSampledAntiAliasingDepth = 0; //MSAAD
+	unsigned int multiSampledAntiAliasingColor = 0; //MSAAC
 
 	unsigned int sceneTexture = 0;
 	unsigned int gameTexture = 0;

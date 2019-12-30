@@ -293,6 +293,7 @@ void ModuleRender::DrawGuizmo() const
 		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)currentOperation, (ImGuizmo::MODE)currentMode, (float*)&model, NULL, NULL,NULL,NULL);
 
 		//Assign new model matrix
+		//TODO: fix bug crash when creating two baker house on the same place and then try to move one with guizmo
 		if(ImGuizmo::IsUsing())
 		{
 			model.Transpose();
@@ -564,7 +565,7 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 
 void ModuleRender::Pick() const
 {
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && !ImGuizmo::IsUsing() && ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
 	{
 		ImVec2 pos = ImGui::GetWindowPos();
 		ImVec2 size = ImGui::GetWindowSize();

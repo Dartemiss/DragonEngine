@@ -199,20 +199,8 @@ bool ModuleIMGUI::CleanUp()
 
 void ModuleIMGUI::DrawPlayPauseButtons() const
 {
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
-	ImGui::SetNextWindowPos(
-		ImVec2(App->window->width * 0.254f, App->window->height * 0.019f)
-
-	);
-	ImGui::SetNextWindowSize(
-		ImVec2(App->window->width * 0.555f, App->window->height * 0.001f)
-
-	);
-
-	//Draw Scene and Game Windows
-	ImGui::Begin("ButtonView", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
-	
-	ImGui::SetCursorPos(ImVec2(App->window->width * 0.25f, App->window->height * 0.0075f));
+	//Draw Scene and Game Windows	
+	ImGui::SetCursorPos(ImVec2(App->window->width * 0.30f, App->window->height * 0.0055f));
 	if(ImGui::Button(ICON_FA_PLAY ""))
 	{
 		//Do things
@@ -231,8 +219,11 @@ void ModuleIMGUI::DrawPlayPauseButtons() const
 		//Do things
 		App->timemanager->ExecuteNextFrames(2);
 	}
-	
 
-	ImGui::End();
-	ImGui::PopStyleVar();
+	ImGui::SetCursorPos(ImVec2(App->window->width * 0.35f, App->window->height * 0.0055f));
+	if (ImGui::Checkbox("MSAA", &App->renderer->antialiasing))
+	{
+		//Do things
+		//TODO: Activate MSAA
+	}
 }

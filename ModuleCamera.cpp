@@ -15,7 +15,6 @@
 #include "GL/glew.h"
 #include <math.h>
 
-//TODO: Fix aspect ratio in main camera
 
 
 ModuleCamera::ModuleCamera()
