@@ -6,6 +6,8 @@
 #include "ModuleInput.h"
 #include "ModuleProgram.h"
 #include "ModuleModelLoader.h"
+#include "ModuleScene.h"
+#include "ComponentCamera.h"
 #include "Imgui/imgui.h"
 #include "MathGeoLib/Geometry/Frustum.h"
 #include "MathGeoLib/Math/float4.h"
@@ -13,7 +15,6 @@
 #include "GL/glew.h"
 #include <math.h>
 
-//TODO: Fix aspect ratio in main camera
 
 
 ModuleCamera::ModuleCamera()
@@ -28,21 +29,9 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Init()
 {
-	frustum = new Frustum();
-	frustum->type = FrustumType::PerspectiveFrustum;
-	frustum->pos = float3::zero;
-	frustum->front = -float3::unitZ;
-	frustum->up = float3::unitY;
-	frustum->nearPlaneDistance = 0.1f;
-	frustum->farPlaneDistance = 300.0f;
-	frustum->verticalFov = (float)M_PI / 4.0f;
-	aspect = (float)App->renderer->widthScene / App->renderer->heightScene;
-	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
 
-	frustum->Translate(float3(1.0f, 1.0f, 1.0f));
-
-	proj = frustum->ProjectionMatrix();
-	view = frustum->ViewMatrix();
+	editorCamera = new ComponentCamera(App->scene->GetRoot());
+	editorCamera->SetFarPlaneDistance(300.0f);
 
 	//UpdateUniformShaderMatrices();
 
@@ -66,28 +55,28 @@ update_status ModuleCamera::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_Q))
 	{	
-		mov += frustum->up * movementSpeed;
+		mov += editorCamera->frustum->up * movementSpeed;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_E))
 	{
-		mov -= frustum->up * movementSpeed;
+		mov -= editorCamera->frustum->up * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D))
 	{
-		mov += frustum->WorldRight() * movementSpeed;
+		mov += editorCamera->frustum->WorldRight() * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A))
 	{
-		mov -= frustum->WorldRight() * movementSpeed;
+		mov -= editorCamera->frustum->WorldRight() * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_W))
 	{
-		mov += frustum->front * movementSpeed;
+		mov += editorCamera->frustum->front * movementSpeed;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S))
 	{
-		mov -= frustum->front * movementSpeed;
+		mov -= editorCamera->frustum->front * movementSpeed;
 	}
 
 	
@@ -156,7 +145,7 @@ update_status ModuleCamera::Update()
 
 
 	//Generate viewing matrix for camera movement/rotation
-	view = frustum->ViewMatrix();
+	editorCamera->ComputeViewMatrix();
 
 	return UPDATE_CONTINUE;
 }
@@ -168,29 +157,30 @@ update_status ModuleCamera::PostUpdate()
 
 bool ModuleCamera::CleanUp()
 {
-	delete frustum;
+	editorCamera->CleanUp();
+	delete editorCamera;
 	return true;
 }
 
 void ModuleCamera::SetFOV()
 {
-	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
-	proj = frustum->ProjectionMatrix();
+	editorCamera->frustum->horizontalFov = 2.0f * atanf(tanf(editorCamera->frustum->verticalFov * 0.5f) *editorCamera->aspect);
+	editorCamera->ComputeProjMatrix();
 }
 
 void ModuleCamera::SetAspectRatio()
 {
-	aspect = ((float)App->window->width / App->window->height);
-	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
-	proj = frustum->ProjectionMatrix();
+	editorCamera->aspect = ((float)App->window->width / App->window->height);
+	editorCamera->frustum->horizontalFov = 2.0f * atanf(tanf(editorCamera->frustum->verticalFov * 0.5f) *editorCamera->aspect);
+	editorCamera->ComputeProjMatrix();
 }
 
 void ModuleCamera::SetAspectRatio(int newWidth, int newHeight)
 {
-	aspect = ((float)newWidth / newHeight);
-	frustum->horizontalFov = 2.0f * atanf(tanf(frustum->verticalFov * 0.5f) *aspect);
+	editorCamera->aspect = ((float)newWidth / newHeight);
+	editorCamera->frustum->horizontalFov = 2.0f * atanf(tanf(editorCamera->frustum->verticalFov * 0.5f) *editorCamera->aspect);
 
-	proj = frustum->ProjectionMatrix();
+	editorCamera->ComputeProjMatrix();
 
 }
 
@@ -200,17 +190,18 @@ void ModuleCamera::Rotate(const float dx, const float dy)
 	if(dx != 0.0f)
 	{
 		float3x3 rotationY = float3x3::RotateY(dx);
-		frustum->front = rotationY.Transform(frustum->front).Normalized();
-		frustum->up = rotationY.Transform(frustum->up).Normalized();
+		editorCamera->frustum->front = rotationY.Transform(editorCamera->frustum->front).Normalized();
+		editorCamera->frustum->up = rotationY.Transform(editorCamera->frustum->up).Normalized();
 	}
 
 	if(dy != 0.0f)
 	{
-		float3x3 rotationX = float3x3::RotateAxisAngle(frustum->WorldRight(),dy);
-		frustum->up = rotationX.Transform(frustum->up).Normalized();
-		frustum->front = rotationX.Transform(frustum->front).Normalized();
+		float3x3 rotationX = float3x3::RotateAxisAngle(editorCamera->frustum->WorldRight(),dy);
+		editorCamera->frustum->up = rotationX.Transform(editorCamera->frustum->up).Normalized();
+		editorCamera->frustum->front = rotationX.Transform(editorCamera->frustum->front).Normalized();
 	}
 
+	return;
 }
 
 void ModuleCamera::Move(float3 direction)
@@ -221,7 +212,9 @@ void ModuleCamera::Move(float3 direction)
 	}
 
 	if(!direction.Equals(float3::zero))
-		frustum->Translate(direction);
+		editorCamera->frustum->Translate(direction);
+
+	return;
 }
 
 void ModuleCamera::Orbit(const float dx, const float dy)
@@ -231,13 +224,13 @@ void ModuleCamera::Orbit(const float dx, const float dy)
 	if(dx != 0.0f)
 	{
 		float3x3 rot = float3x3::RotateY(dx);
-		frustum->pos = rot.Transform(frustum->pos - center) + center;
+		editorCamera->frustum->pos = rot.Transform(editorCamera->frustum->pos - center) + center;
 	}
 
 	if (dy != 0.0f)
 	{
-		float3x3 rot = float3x3::RotateAxisAngle(frustum->WorldRight(), dy);
-		frustum->pos = rot.Transform(frustum->pos - center) + center;
+		float3x3 rot = float3x3::RotateAxisAngle(editorCamera->frustum->WorldRight(), dy);
+		editorCamera->frustum->pos = rot.Transform(editorCamera->frustum->pos - center) + center;
 	}
 
 	LookAt(center);
@@ -248,11 +241,11 @@ void ModuleCamera::Zoom(const bool direction)
 {
 	if(direction)
 	{
-		Move(frustum->front);
+		Move(editorCamera->frustum->front);
 	}
 	else
 	{
-		Move(frustum->front * -1.0f);
+		Move(editorCamera->frustum->front * -1.0f);
 	}
 
 	return;
@@ -260,53 +253,53 @@ void ModuleCamera::Zoom(const bool direction)
 
 void ModuleCamera::TranslateCameraToPoint(const float3 & newPos)
 {
-	frustum->pos = newPos;
-	frustum->front = -float3::unitZ;
-	frustum->up = float3::unitY;
+	editorCamera->frustum->pos = newPos;
+	editorCamera->frustum->front = -float3::unitZ;
+	editorCamera->frustum->up = float3::unitY;
 
 	LookAt(App->modelLoader->modelCenter);
 
-	view = frustum->ViewMatrix();
+	editorCamera->ComputeViewMatrix();
 
 }
 
 void ModuleCamera::SetNearPlaneDistance(const float nearDist)
 {
-	frustum->nearPlaneDistance = nearDist;
-	proj = frustum->ProjectionMatrix();
+	editorCamera->frustum->nearPlaneDistance = nearDist;
+	editorCamera->ComputeProjMatrix();
 }
 
 void ModuleCamera::SetFarPlaneDistance(const float farDist)
 {
-	frustum->farPlaneDistance = farDist;
-	proj = frustum->ProjectionMatrix();
+	editorCamera->frustum->farPlaneDistance = farDist;
+	editorCamera->ComputeProjMatrix();
 }
 
 void ModuleCamera::LookAt(const float3 target)
 {
-	float3 dir = (target - frustum->pos).Normalized();
-	float3x3 rot = float3x3::LookAt(frustum->front, dir, frustum->up, float3::unitY);
-	frustum->front = rot.Transform(frustum->front).Normalized();
-	frustum->up = rot.Transform(frustum->up).Normalized();
+	float3 dir = (target - editorCamera->frustum->pos).Normalized();
+	float3x3 rot = float3x3::LookAt(editorCamera->frustum->front, dir, editorCamera->frustum->up, float3::unitY);
+	editorCamera->frustum->front = rot.Transform(editorCamera->frustum->front).Normalized();
+	editorCamera->frustum->up = rot.Transform(editorCamera->frustum->up).Normalized();
 }
 
 void ModuleCamera::UpdateUniformShaderMatrices()
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, App->program->uniformsBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float4x4), &proj[0][0]);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float4x4), &editorCamera->proj[0][0]);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, App->program->uniformsBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float4x4), sizeof(float4x4), &view[0][0]);
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float4x4), sizeof(float4x4), &editorCamera->view[0][0]);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 float4x4 ModuleCamera::GetProjMatrix() const
 {
-	return proj;
+	return editorCamera->proj;
 }
 
 float4x4 ModuleCamera::GetViewMatrix() const
 {
-	return view;
+	return editorCamera->view;
 }

@@ -33,6 +33,8 @@ public:
 	void SetNearPlaneDistance(const float nearDist);
 	void SetFarPlaneDistance(const float farDist);
 	void LookAt(const float3 target);
+	void ComputeViewMatrix();
+	void ComputeProjMatrix();
 
 	//Frutum intersection
 	int AABBWithinFrustum(const AABB &aabb) const;

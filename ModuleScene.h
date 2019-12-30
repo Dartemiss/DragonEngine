@@ -42,7 +42,7 @@ public:
 	void LoadModel(const char* path, GameObject* parent);
 
 	//Creators
-	void CreateEmpy(GameObject* parent);
+	void CreateEmpty(GameObject* parent);
 	void CreateGameObjectBakerHouse(GameObject* parent);
 	void CreateGameObjectShape(GameObject* parent, ShapeType shape);
 
@@ -51,11 +51,12 @@ public:
 
 	void SelectObjectInHierarchy(GameObject* selected);
 	//Drawing Methods
-	void DrawUIBarMenuGameObject();
 	void DrawGUI();
 
 	//AllGameObjectsCreated
 	std::set<GameObject*> allGameObjects;
+	std::set<GameObject*> staticGO;
+	std::set<GameObject*> dynamicGO;
 	bool showHierarchy = true;
 	bool showInspector = true;
 	//Game's Main Camera Object
@@ -63,11 +64,9 @@ public:
 
 	//QuadTree
 	MyQuadTree* quadtree = nullptr;
-	MyQuadTree* quadtreeIterative = nullptr;
 	AABBTree* aabbTree = nullptr;
 
 	void AddToQuadtree(GameObject* go) const;
-	void RemoveFromQuadTree(GameObject* go) const;
 
 	bool quadTreeInitialized = false;
 
@@ -117,6 +116,8 @@ public:
 	LineSegment* currentRay = nullptr;
 
 	void PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow);
+
+	GameObject* GetRoot() const;
 
 
 private:

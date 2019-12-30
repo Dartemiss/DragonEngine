@@ -4,6 +4,7 @@
 #include "ModuleTexture.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "ComponentCamera.h"
 #include "MathGeoLib/Math/float4.h"
 
 Skybox::Skybox()
@@ -128,9 +129,9 @@ void Skybox::DrawSkybox() const
 
 	// ... set view and projection matrix
 	glUniformMatrix4fv(glGetUniformLocation(skyboxProg,
-		"projection"), 1, GL_TRUE, &App->camera->proj[0][0]);
+		"projection"), 1, GL_TRUE, &App->camera->editorCamera->proj[0][0]);
 
-	float4x4 view = App->camera->view;
+	float4x4 view = App->camera->editorCamera->view;
 	view.SetRow(3, float4::zero);
 	view.SetCol(3, float4::zero);
 

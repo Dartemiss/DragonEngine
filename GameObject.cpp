@@ -9,6 +9,7 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "AABBTree.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
@@ -267,7 +268,6 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 		if (ImGui::Selectable("Delete"))
 		{
-			//TODO: Delete gameobjects
 			DeleteGameObject();
 		}
 
@@ -276,7 +276,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		if(ImGui::Selectable("Create Empty"))
 		{
 			//Create empty gameobject
-			App->scene->CreateEmpy(this);
+			App->scene->CreateEmpty(this);
 		}
 
 		if (ImGui::BeginMenu("Create 3D Object"))
@@ -490,17 +490,27 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	
 
-	ImGui::Checkbox("Static", &isStatic);
+	if(ImGui::Checkbox("Static", &isStatic))
+	{
+		//TODO: what happens if camera is static (crashes)
+		SetStatic();
+
+	}
 
 
 	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		//Aux variables if static
+		float3 auxPos = myTransform->position;
+		float3 auxRot = myTransform->eulerRotation;
+		float3 auxScale = myTransform->scale;
+
 		ImGui::Text("Position");
-		ImGui::DragFloat3("Position", (float *)&myTransform->position, 0.1f);
+		ImGui::DragFloat3("Position", (float *)((isStatic) ? &auxPos : &myTransform->position), 0.1f);
 		ImGui::Text("Rotation");
-		ImGui::DragFloat3("Rotation", (float *)&myTransform->eulerRotation, 1.0f, -360.0f, 360.0f);
+		ImGui::DragFloat3("Rotation", (float *)((isStatic) ? &auxRot : &myTransform->eulerRotation), 1.0f, -360.0f, 360.0f);
 		ImGui::Text("Scale");
-		ImGui::DragFloat3("Scale", (float *)&myTransform->scale, 0.01f, 0.01f, 1000.0f);
+		ImGui::DragFloat3("Scale", (float *)((isStatic) ? &auxScale : &myTransform->scale), 0.01f, 0.01f, 1000.0f);
 
 		ImGui::Separator();
 
@@ -532,6 +542,22 @@ void GameObject::OnSave(SceneLoader & loader)
 		loader.AddUnsignedInt("parentUID", 0); 
 	loader.AddString("Name", name.c_str());
 
+	loader.AddUnsignedInt("isEnabled", isEnabled);
+	loader.AddUnsignedInt("isStatic", isStatic);
+
+	loader.AddUnsignedInt("HaveAABB", globalBoundingBox != nullptr && boundingBox != nullptr);
+
+	if (globalBoundingBox != nullptr && boundingBox != nullptr)
+	{
+		//Save AABBs
+		loader.AddVec3f("AABBMinPoint", boundingBox->minPoint);
+		loader.AddVec3f("AABBMaxPoint", boundingBox->maxPoint);
+
+		loader.AddVec3f("GlobalAABBMinPoint", globalBoundingBox->minPoint);
+		loader.AddVec3f("GlobalAABBMaxPoint", globalBoundingBox->maxPoint);
+	}
+
+
 	//Save all components
 	myTransform->OnSave(loader);
 
@@ -552,14 +578,32 @@ void GameObject::OnSave(SceneLoader & loader)
 
 void GameObject::OnLoad(SceneLoader & loader)
 {
+	//TODO: When loading crashes because mesh loading is not implemented
+
 	UID = loader.GetUnsignedInt("UID", 0);
 	assert(UID != 0);
 
 	name = loader.GetString("Name", "GameObject");
 
+	isEnabled = loader.GetUnsignedInt("isEnabled", 0);
+	isStatic = loader.GetUnsignedInt("isStatic", 0);
+
 	//Special load for Transform
 	CreateComponent(TRANSFORM);
 	myTransform->OnLoad(loader);
+
+	bool haveAABB = loader.GetUnsignedInt("HaveAABB", 0);
+	if (haveAABB)
+	{
+		float3 minPoint = loader.GetVec3f("AABBMinPoint", float3(0, 0, 0));
+		float3 maxPoint = loader.GetVec3f("AABBMaxPoint", float3(0, 0, 0));
+
+		float3 globalMinPoint = loader.GetVec3f("GlobalAABBMinPoint", float3(0, 0, 0));
+		float3 globalMaxPoint = loader.GetVec3f("GlobalAABBMaxPoint", float3(0, 0, 0));
+
+		boundingBox = new AABB(minPoint, maxPoint);
+		globalBoundingBox = new AABB(globalMinPoint, globalMaxPoint);
+	}
 
 	Component* component;
 	while (loader.SelectNextComponent())
@@ -570,6 +614,8 @@ void GameObject::OnLoad(SceneLoader & loader)
 		component = CreateComponent(type);
 		component->OnLoad(loader);
 	}
+
+	return;
 }
 
 float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & ray)
@@ -591,6 +637,63 @@ void GameObject::SetGlobalMatrix(const float4x4 & newGlobal)
 	if(parent != nullptr && parent->myTransform != nullptr)
 	{
 		myTransform->SetGlobalMatrix(newGlobal, parent->myTransform->globalModelMatrix);
+	}
+
+	return;
+}
+
+void GameObject::SetStatic()
+{
+	if(UID == 1)
+	{
+		isStatic = true;
+		LOG("Root must be static. STOP!.");
+		return;
+	}
+
+	//Get all GO related with this GO
+	std::vector<GameObject*> myRelatedGO;
+	GameObject* grandParent = this;
+	while(grandParent->parent->UID != 1)
+	{
+		grandParent = grandParent->parent;
+	}
+
+	myRelatedGO.push_back(grandParent);
+
+	//Get all children and set static boolean
+	grandParent->GetAllChilds(myRelatedGO);
+	for(auto go : myRelatedGO)
+	{
+		go->isStatic = isStatic;
+
+		if (isStatic)
+		{
+			App->scene->dynamicGO.erase(go);
+			App->scene->staticGO.insert(go);
+			App->scene->aabbTree->Remove(go);
+		}
+
+		else
+		{
+			App->scene->staticGO.erase(go);
+			App->scene->dynamicGO.insert(go);
+			App->scene->aabbTree->Insert(go);
+		}
+
+	}
+
+	App->scene->BuildQuadTree();
+
+	return;
+}
+
+void GameObject::GetAllChilds(std::vector<GameObject*>& allChilds)
+{
+	for(auto ch : children)
+	{
+		allChilds.push_back(ch);
+		ch->GetAllChilds(allChilds);
 	}
 
 	return;
