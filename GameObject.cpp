@@ -545,6 +545,19 @@ void GameObject::OnSave(SceneLoader & loader)
 	loader.AddUnsignedInt("isEnabled", isEnabled);
 	loader.AddUnsignedInt("isStatic", isStatic);
 
+	loader.AddUnsignedInt("HaveAABB", globalBoundingBox != nullptr && boundingBox != nullptr);
+
+	if (globalBoundingBox != nullptr && boundingBox != nullptr)
+	{
+		//Save AABBs
+		loader.AddVec3f("AABBMinPoint", boundingBox->minPoint);
+		loader.AddVec3f("AABBMaxPoint", boundingBox->maxPoint);
+
+		loader.AddVec3f("GlobalAABBMinPoint", globalBoundingBox->minPoint);
+		loader.AddVec3f("GlobalAABBMaxPoint", globalBoundingBox->maxPoint);
+	}
+
+
 	//Save all components
 	myTransform->OnSave(loader);
 
@@ -560,25 +573,13 @@ void GameObject::OnSave(SceneLoader & loader)
 		loader.FinishComponent();
 	}
 
-	loader.AddUnsignedInt("HaveAABB", globalBoundingBox != nullptr && boundingBox != nullptr);
-
-	if(globalBoundingBox != nullptr && boundingBox != nullptr)
-	{
-		//Save AABBs
-		loader.AddVec3f("AABBMinPoint", boundingBox->minPoint);
-		loader.AddVec3f("AABBMaxPoint", boundingBox->maxPoint);
-
-		loader.AddVec3f("GlobalAABBMinPoint", globalBoundingBox->minPoint);
-		loader.AddVec3f("GlobalAABBMaxPoint", globalBoundingBox->maxPoint);
-	}
-
-
-
 	loader.FinishGameObject();
 }
 
 void GameObject::OnLoad(SceneLoader & loader)
 {
+	//TODO: When loading crashes because mesh loading is not implemented
+
 	UID = loader.GetUnsignedInt("UID", 0);
 	assert(UID != 0);
 
@@ -591,6 +592,19 @@ void GameObject::OnLoad(SceneLoader & loader)
 	CreateComponent(TRANSFORM);
 	myTransform->OnLoad(loader);
 
+	bool haveAABB = loader.GetUnsignedInt("HaveAABB", 0);
+	if (haveAABB)
+	{
+		float3 minPoint = loader.GetVec3f("AABBMinPoint", float3(0, 0, 0));
+		float3 maxPoint = loader.GetVec3f("AABBMaxPoint", float3(0, 0, 0));
+
+		float3 globalMinPoint = loader.GetVec3f("GlobalAABBMinPoint", float3(0, 0, 0));
+		float3 globalMaxPoint = loader.GetVec3f("GlobalAABBMaxPoint", float3(0, 0, 0));
+
+		boundingBox = new AABB(minPoint, maxPoint);
+		globalBoundingBox = new AABB(globalMinPoint, globalMaxPoint);
+	}
+
 	Component* component;
 	while (loader.SelectNextComponent())
 	{
@@ -599,19 +613,6 @@ void GameObject::OnLoad(SceneLoader & loader)
 		
 		component = CreateComponent(type);
 		component->OnLoad(loader);
-	}
-
-	bool haveAABB = loader.GetUnsignedInt("HaveAABB", 0);
-	if(haveAABB)
-	{
-		float3 minPoint = loader.GetVec3f("AABBMinPoint", float3(0, 0, 0));
-		float3 maxPoint = loader.GetVec3f("AABBMaxPoint", float3(0, 0, 0));
-
-		float3 globalMinPoint = loader.GetVec3f("GlobalAABBMinPoint", float3(0, 0, 0));
-		float3 globalMaxPoint = loader.GetVec3f("GlobalAABBMaxPoint", float3(0, 0, 0));
-		
-		boundingBox = new AABB(minPoint, maxPoint);
-		globalBoundingBox = new AABB(globalMinPoint, globalMaxPoint);
 	}
 
 	return;

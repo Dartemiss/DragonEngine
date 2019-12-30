@@ -591,6 +591,8 @@ void ModuleScene::LoadScene()
 	root = new GameObject();
 	root->OnLoad(*loader);
 
+	selectedByHierarchy = root;
+
 	//Create AABBtree
 	aabbTree = new AABBTree(10);
 
@@ -626,7 +628,8 @@ void ModuleScene::LoadScene()
 		else
 		{
 			dynamicGO.insert(currentGameObject);
-			aabbTree->Insert(currentGameObject);
+			if(currentGameObject->globalBoundingBox != nullptr)
+				aabbTree->Insert(currentGameObject);
 		}
 
 		//Add gameobject to queue

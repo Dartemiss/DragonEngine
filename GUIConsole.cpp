@@ -34,14 +34,6 @@ void GUIConsole::Draw(const char * title)
 		);
 		ImGui::Begin(ICON_FA_TERMINAL " Console", &isEnabled);
 
-		if(firstTime)
-		{
-			firstTime = false;
-			ImGui::SetWindowSize(ImVec2(static_cast<float>(width), static_cast<float>(height)));
-			ImGui::SetWindowPos(ImVec2(100,700));
-			ImGui::End();
-			return;
-		}
 
 		ImVec2 size = ImGui::GetWindowSize();
 		
@@ -56,6 +48,12 @@ void GUIConsole::Draw(const char * title)
 		if (ScrollToBottom)
 			ImGui::SetScrollHere(1.0f);
 		ScrollToBottom = false;
+
+		if (ImGui::Button("Clear"))
+		{
+			Clear();
+		}
+
 		ImGui::End();
 	}
 }
