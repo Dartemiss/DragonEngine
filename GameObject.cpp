@@ -542,6 +542,9 @@ void GameObject::OnSave(SceneLoader & loader)
 		loader.AddUnsignedInt("parentUID", 0); 
 	loader.AddString("Name", name.c_str());
 
+	loader.AddUnsignedInt("isEnabled", isEnabled);
+	loader.AddUnsignedInt("isStatic", isStatic);
+
 	//Save all components
 	myTransform->OnSave(loader);
 
@@ -557,6 +560,20 @@ void GameObject::OnSave(SceneLoader & loader)
 		loader.FinishComponent();
 	}
 
+	loader.AddUnsignedInt("HaveAABB", globalBoundingBox != nullptr && boundingBox != nullptr);
+
+	if(globalBoundingBox != nullptr && boundingBox != nullptr)
+	{
+		//Save AABBs
+		loader.AddVec3f("AABBMinPoint", boundingBox->minPoint);
+		loader.AddVec3f("AABBMaxPoint", boundingBox->maxPoint);
+
+		loader.AddVec3f("GlobalAABBMinPoint", globalBoundingBox->minPoint);
+		loader.AddVec3f("GlobalAABBMaxPoint", globalBoundingBox->maxPoint);
+	}
+
+
+
 	loader.FinishGameObject();
 }
 
@@ -566,6 +583,9 @@ void GameObject::OnLoad(SceneLoader & loader)
 	assert(UID != 0);
 
 	name = loader.GetString("Name", "GameObject");
+
+	isEnabled = loader.GetUnsignedInt("isEnabled", 0);
+	isStatic = loader.GetUnsignedInt("isStatic", 0);
 
 	//Special load for Transform
 	CreateComponent(TRANSFORM);
@@ -580,6 +600,21 @@ void GameObject::OnLoad(SceneLoader & loader)
 		component = CreateComponent(type);
 		component->OnLoad(loader);
 	}
+
+	bool haveAABB = loader.GetUnsignedInt("HaveAABB", 0);
+	if(haveAABB)
+	{
+		float3 minPoint = loader.GetVec3f("AABBMinPoint", float3(0, 0, 0));
+		float3 maxPoint = loader.GetVec3f("AABBMaxPoint", float3(0, 0, 0));
+
+		float3 globalMinPoint = loader.GetVec3f("GlobalAABBMinPoint", float3(0, 0, 0));
+		float3 globalMaxPoint = loader.GetVec3f("GlobalAABBMaxPoint", float3(0, 0, 0));
+		
+		boundingBox = new AABB(minPoint, maxPoint);
+		globalBoundingBox = new AABB(globalMinPoint, globalMaxPoint);
+	}
+
+	return;
 }
 
 float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & ray)

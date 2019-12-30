@@ -565,7 +565,7 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 
 void ModuleRender::Pick() const
 {
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && !ImGuizmo::IsUsing() && ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
 	{
 		ImVec2 pos = ImGui::GetWindowPos();
 		ImVec2 size = ImGui::GetWindowSize();

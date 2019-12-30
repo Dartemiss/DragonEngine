@@ -396,7 +396,7 @@ void ModuleScene::BuildQuadTree()
 	
 	quadtree = new MyQuadTree(sceneBox);
 
-	recursive.StartTimer();
+	iterative.StartTimer();
 	for(auto go : staticGO)
 	{
 		if(go->globalBoundingBox != nullptr)
@@ -405,7 +405,7 @@ void ModuleScene::BuildQuadTree()
 		}
 	}
 
-	timeRecursive = recursive.StopTimer();
+	timeRecursive = iterative.StopTimer();
 
 	quadTreeInitialized = true;
 
@@ -584,10 +584,15 @@ void ModuleScene::LoadScene()
 	//Remove previous data
 	CleanUp();
 	allGameObjects.clear();
+	staticGO.clear();
+	dynamicGO.clear();
 
 	//Create root
 	root = new GameObject();
 	root->OnLoad(*loader);
+
+	//Create AABBtree
+	aabbTree = new AABBTree(10);
 
 	//Start queue for loading the rest of the scene
 	queue<GameObject*> parents;
@@ -615,10 +620,22 @@ void ModuleScene::LoadScene()
 			mainCamera = currentGameObject;
 
 		allGameObjects.insert(currentGameObject);
+		//Add to quadtree or aabbtree set (dynamic or static)
+		if (currentGameObject->isStatic)
+			staticGO.insert(currentGameObject);
+		else
+		{
+			dynamicGO.insert(currentGameObject);
+			aabbTree->Insert(currentGameObject);
+		}
 
 		//Add gameobject to queue
 		parents.push(currentGameObject);
 	}
+
+	//Build QuadTree
+	BuildQuadTree();
+
 }
 
 void ModuleScene::PasteGameObject(GameObject * go)
