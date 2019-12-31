@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "ModuleFilesystem.h"
+#include "ModuleTexture.h"
 #include <DevIL/il.h>
 #include <DevIL/ilu.h>
 #include <DevIL/ilut.h>
@@ -36,6 +37,8 @@ bool MaterialImporter::Import(const char * path, const char * file, string & out
 	{
 		ILenum error = ilGetError();
 		LOG("Error converting image to rgb: %s - %s", std::to_string(error), iluErrorString(error));
+		iluDeleteImage(image);
+		return false;
 	}
 
 	//Make sure image is not flipped
@@ -77,5 +80,33 @@ bool MaterialImporter::Import(const char* file, const void * buffer, unsigned in
 	
 	string filename = file; filename += ".dds";
 	output_file = "../Library/Materials/"; output_file += filename.c_str();
+
 	return App->filesystem->Save("../Library/Materials/", filename.c_str(), buffer, size, false);
+}
+
+bool MaterialImporter::Load(const char * exported_file, Texture & resource)
+{
+	ILuint image;
+	ilGenImages(1, &image);
+	ilBindImage(image);
+
+	string filepath = "../Library/Materials/"; filepath += exported_file;
+	bool isLoaded = ilLoadImage(filepath.c_str());
+
+	if (!isLoaded)
+	{
+		LOG("Error loading material %s from library", exported_file);
+		return false;
+	}
+
+	ILubyte* data = ilGetData();
+
+	resource.width = ilGetInteger(IL_IMAGE_WIDTH);
+	resource.height = ilGetInteger(IL_IMAGE_HEIGHT);
+	resource.depth = ilGetInteger(IL_IMAGE_DEPTH);
+	resource.format = ilDetermineType(exported_file);
+	resource.data = data;
+	resource.path = exported_file;
+
+	return true;
 }
