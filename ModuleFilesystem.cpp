@@ -45,7 +45,7 @@ bool ModuleFilesystem::Load(const char * path, const char * file, char ** buffer
 	return 1;
 }
 
-bool ModuleFilesystem::Save(const char * path, const char * file, const char * buffer, unsigned int size, bool append) const
+bool ModuleFilesystem::Save(const char * path, const char * file, const void * buffer, unsigned int size, bool append) const
 {
 	string filename = path; filename += file;
 
