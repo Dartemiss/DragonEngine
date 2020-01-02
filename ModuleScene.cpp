@@ -86,9 +86,7 @@ update_status ModuleScene::Update()
 		}
 
 	}
-	//TODO: How to treat cameras
-	mainCamera->UpdateTransform();
-	mainCamera->Update();
+	//TODO: How to treat cameras : as a normal object but we only put on quadtree objects with mesh or parent of mesh
 
 	DrawGUI();
 

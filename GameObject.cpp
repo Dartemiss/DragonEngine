@@ -671,14 +671,19 @@ void GameObject::SetStatic()
 		{
 			App->scene->dynamicGO.erase(go);
 			App->scene->staticGO.insert(go);
-			App->scene->aabbTree->Remove(go);
+
+			//Only added/removed to aabbtree if GO have mesh or is parent of mesh
+			if((go->myMesh != nullptr || go->isParentOfMeshes) && go->globalBoundingBox != nullptr)
+				App->scene->aabbTree->Remove(go);
 		}
 
 		else
 		{
 			App->scene->staticGO.erase(go);
 			App->scene->dynamicGO.insert(go);
-			App->scene->aabbTree->Insert(go);
+
+			if ((go->myMesh != nullptr || go->isParentOfMeshes) && go->globalBoundingBox != nullptr)
+				App->scene->aabbTree->Insert(go);
 		}
 
 	}

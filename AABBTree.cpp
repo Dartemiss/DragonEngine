@@ -32,6 +32,7 @@ unsigned AABBTree::AllocateNode()
 
 		nodeCapacity += growthSize;
 		nodes.resize(nodeCapacity);
+		nodes[allocatedNodeCount - 1].nextNodeIndex = allocatedNodeCount;
 		for (unsigned nodeIndex = allocatedNodeCount; nodeIndex < nodeCapacity; nodeIndex++)
 		{
 			NodeAABB& node = nodes[nodeIndex];
@@ -161,7 +162,9 @@ void AABBTree::InsertLeaf(unsigned leafNodeIndex)
 	newParent.aabb = MergeAABB(leafNode.aabb, leafSibling.aabb); // the new parents aabb is the leaf aabb combined with it's siblings aabb
 	newParent.leftNodeIndex = leafSiblingIndex;
 	newParent.rightNodeIndex = leafNodeIndex;
-	leafNode.parentNodeIndex = newParentIndex;
+	nodes[leafNodeIndex].parentNodeIndex = newParentIndex;
+	//TODO: this was the source of the error, leafNode didnt change nodes[X] if x is 9, wonder why
+	//leafNode.parentNodeIndex = newParentIndex;
 	leafSibling.parentNodeIndex = newParentIndex;
 
 	if (oldParentIndex == AABB_NULL_NODE)
@@ -185,7 +188,8 @@ void AABBTree::InsertLeaf(unsigned leafNodeIndex)
 	}
 
 	// finally we need to walk back up the tree fixing heights and areas
-	treeNodeIndex = leafNode.parentNodeIndex;
+	//treeNodeIndex = leafNode.parentNodeIndex;
+	treeNodeIndex = nodes[leafNodeIndex].parentNodeIndex;
 	FixUpwardsTree(treeNodeIndex);
 
 	return;
@@ -233,6 +237,8 @@ void AABBTree::RemoveLeaf(unsigned leafNodeIndex)
 
 	NodeAABB& leafNode = nodes[leafNodeIndex];
 	unsigned parentNodeIndex = leafNode.parentNodeIndex;
+	if (parentNodeIndex >= nodes.size())
+		LOG("ERROR IS HERE BRO");
 	const NodeAABB& parentNode = nodes[parentNodeIndex];
 	unsigned grandParentNodeIndex = parentNode.parentNodeIndex;
 	unsigned siblingNodeIndex = parentNode.leftNodeIndex == leafNodeIndex ? parentNode.rightNodeIndex : parentNode.leftNodeIndex;
