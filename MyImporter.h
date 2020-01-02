@@ -1,11 +1,9 @@
-#ifndef __Importer_H__
-#define __Importer_H__
+#ifndef __MyImporter_H__
+#define __MyImporter_H__
 
 #include <string>
 
-using namespace std;
-
-class Importer
+class MyImporter
 {
 	virtual bool Import(const char* path, const char* file, std::string& output_file)
 	{
@@ -17,4 +15,4 @@ class Importer
 	}
 };
 
-#endif __Importer_H__
+#endif __MyImporter_H__

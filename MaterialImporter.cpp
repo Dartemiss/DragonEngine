@@ -7,6 +7,8 @@
 #include <DevIL/ilu.h>
 #include <DevIL/ilut.h>
 
+using namespace std;
+
 //TODO: when calling the function "Import", make sure to check first the fbx path, then model folder and last Textures folder.
 bool MaterialImporter::Import(const char * path, const char * file, string & output_file)
 {
@@ -79,7 +81,7 @@ bool MaterialImporter::Import(const char* file, const void * buffer, unsigned in
 		App->filesystem->MakeDirectory("../Library/Materials");
 	
 	string filename = file; filename += ".dds";
-	output_file = "../Library/Materials/"; output_file += filename.c_str();
+	output_file = file;
 
 	return App->filesystem->Save("../Library/Materials/", filename.c_str(), buffer, size, false);
 }
@@ -90,7 +92,7 @@ bool MaterialImporter::Load(const char * exported_file, Texture & resource)
 	ilGenImages(1, &image);
 	ilBindImage(image);
 
-	string filepath = "../Library/Materials/"; filepath += exported_file;
+	string filepath = "../Library/Materials/"; filepath += exported_file; filepath += ".dds";
 	bool isLoaded = ilLoadImage(filepath.c_str());
 
 	if (!isLoaded)

@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "ModuleFilesystem.h"
 
+using namespace std;
+
 bool MeshImporter::Save(const char * file, const MeshData & mesh, string & output_file)
 {
 	unsigned int ranges[2] = { mesh.num_indices, mesh.num_vertices };
@@ -10,7 +12,7 @@ bool MeshImporter::Save(const char * file, const MeshData & mesh, string & outpu
 	unsigned int size = sizeof(ranges)					//ranges
 		+ sizeof(unsigned int) * mesh.num_indices		//indices
 		+ sizeof(float) * mesh.num_vertices * 3			//vertex positions
-		+ sizeof(float) * mesh.num_vertices * 2			//vertex normals
+		+ sizeof(float) * mesh.num_vertices * 3			//vertex normals
 		+ sizeof(float) * mesh.num_vertices * 2;		//vertex texture coord
 	//	+ sizeof(float) * 6;							//AABB
 	//TODO: add AABB and color to save and to load
@@ -30,7 +32,7 @@ bool MeshImporter::Save(const char * file, const MeshData & mesh, string & outpu
 	memcpy(cursor, mesh.positions, bytes);
 
 	cursor += bytes; // Store vertex normals
-	bytes = sizeof(float) * mesh.num_vertices * 2;
+	bytes = sizeof(float) * mesh.num_vertices * 3;
 	memcpy(cursor, mesh.normals, bytes);
 
 	cursor += bytes; // Store vertex texture coords
@@ -44,7 +46,7 @@ bool MeshImporter::Save(const char * file, const MeshData & mesh, string & outpu
 
 
 	string filename = file; filename += ".mesh";
-	output_file = "../Library/Meshes/"; output_file += filename.c_str();
+	output_file = file;
 
 	return App->filesystem->Save("../Library/Meshes/", filename.c_str(), data, size, false);
 }
@@ -52,8 +54,9 @@ bool MeshImporter::Save(const char * file, const MeshData & mesh, string & outpu
 bool MeshImporter::Load(const char * exported_file, MeshData & mesh)
 {
 	char* buffer;
+	string mesh_file = exported_file; mesh_file += ".mesh";
 
-	if (!App->filesystem->Load("../Library/Meshes/", exported_file, &buffer))
+	if (!App->filesystem->Load("../Library/Meshes/", mesh_file.c_str(), &buffer))
 		return false;
 
 	char* cursor = buffer;
@@ -76,8 +79,8 @@ bool MeshImporter::Load(const char * exported_file, MeshData & mesh)
 	memcpy(mesh.positions, cursor, bytes);
 	
 	cursor += bytes; // Load vertex normals
-	bytes = sizeof(float) * mesh.num_vertices * 2;
-	mesh.normals = new float[mesh.num_vertices * 2];
+	bytes = sizeof(float) * mesh.num_vertices * 3;
+	mesh.normals = new float[mesh.num_vertices * 3];
 	memcpy(mesh.normals, cursor, bytes);
 	
 	cursor += bytes; // Load vertex texture coords

@@ -1,7 +1,7 @@
 #ifndef __MeshImporter_H__
 #define __MeshImporter_H__
 
-#include "Importer.h"
+#include "MyImporter.h"
 
 struct MeshData
 {
@@ -14,7 +14,7 @@ struct MeshData
 	float * texture_coords;
 };
 
-class MeshImporter : public Importer
+class MeshImporter : public MyImporter
 {
 public:
 	bool Save(const char* file, const MeshData & mesh, std::string& output_file);

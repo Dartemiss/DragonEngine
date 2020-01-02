@@ -207,6 +207,9 @@
     <ClCompile Include="MaterialImporter.cpp">
       <Filter>Importers</Filter>
     </ClCompile>
+    <ClCompile Include="ModelImporter.cpp">
+      <Filter>Importers</Filter>
+    </ClCompile>
     <ClCompile Include="MeshImporter.cpp">
       <Filter>Importers</Filter>
     </ClCompile>
@@ -627,10 +630,13 @@
     <ClInclude Include="ModuleFilesystem.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Importer.h">
+    <ClInclude Include="MaterialImporter.h">
       <Filter>Importers</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialImporter.h">
+    <ClInclude Include="ModelImporter.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyImporter.h">
       <Filter>Importers</Filter>
     </ClInclude>
     <ClInclude Include="MeshImporter.h">
