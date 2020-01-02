@@ -492,9 +492,7 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	if(ImGui::Checkbox("Static", &isStatic))
 	{
-		//TODO: what happens if camera is static (crashes)
 		SetStatic();
-
 	}
 
 
