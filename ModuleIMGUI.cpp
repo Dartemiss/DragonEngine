@@ -72,14 +72,14 @@ update_status ModuleIMGUI::PreUpdate()
 
 update_status ModuleIMGUI::Update()
 {
-	//ImGui::ShowDemoWindow();
-
 	guiWindow.Draw("Window Configuration");
 	console.Draw("Console");
 	about.Draw("About");
 	guiCamera.Draw("Camera Settings");
 	timeManager.Draw("Timers");
 	inspector.Draw("Properties");
+
+	//ImGui::ShowDemoWindow();
 
 	ImGui::BeginTabBar("MainViewTabs");
 	ImGui::EndTabBar();

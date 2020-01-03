@@ -1,6 +1,9 @@
 #include "ComponentTransform.h"
 #include "MathGeoLib/Math/MathFunc.h"
 #include "GameObject.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
 #include "SceneLoader.h"
 
 ComponentTransform::ComponentTransform(GameObject* gameObject)
@@ -78,6 +81,42 @@ void ComponentTransform::SetLocalMatrix(const float4x4 &newParentGlobalMatrix)
 void ComponentTransform::TranslateTo(const float3 & newPos)
 {
 	position = newPos;
+}
+
+void ComponentTransform::DrawInspector()
+{
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		//Aux variables if static
+		float3 auxPos = position;
+		float3 auxRot = eulerRotation;
+		float3 auxScale = scale;
+
+		bool isStatic = myGameObject->isStatic;
+
+		ImGui::Text("Position");
+		ImGui::DragFloat3("Position", (float *)((isStatic) ? &auxPos : &position), 0.1f);
+		ImGui::Text("Rotation");
+		ImGui::DragFloat3("Rotation", (float *)((isStatic) ? &auxRot : &eulerRotation), 1.0f, -360.0f, 360.0f);
+		ImGui::Text("Scale");
+		ImGui::DragFloat3("Scale", (float *)((isStatic) ? &auxScale : &scale), 0.01f, 0.01f, 1000.0f);
+
+		ImGui::Separator();
+
+		ImGui::Text("AABB");
+		if (myGameObject->globalBoundingBox == nullptr)
+		{
+			ImGui::Text("Is nullptr.");
+		}
+		else
+		{
+			ImGui::DragFloat3("Min Point", (float *)&myGameObject->globalBoundingBox->minPoint, 0.01f, 0.01f, 1000.0f);
+			ImGui::DragFloat3("Max Point", (float *)&myGameObject->globalBoundingBox->maxPoint, 0.01f, 0.01f, 1000.0f);
+		}
+
+	}
+
+	return;
 }
 
 void ComponentTransform::OnSave(SceneLoader & loader)

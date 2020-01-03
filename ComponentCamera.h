@@ -35,6 +35,7 @@ public:
 	void LookAt(const float3 target);
 	void ComputeViewMatrix();
 	void ComputeProjMatrix();
+	void DrawInspector();
 
 	//Frutum intersection
 	int AABBWithinFrustum(const AABB &aabb) const;
@@ -85,6 +86,14 @@ public:
 	float3 FarTopRight;
 	float3 FarBottomLeft;
 	float3 FarBottomRight;
+
+private:
+	bool isPerspective = true;
+	const char* perspectives[2] = { "Perspective", "Orthogonal"};
+	int currentPerspective = 0;
+	const char* usedPerspective = perspectives[0];
+
+	void ChangeFrustumType();
 
 };
 

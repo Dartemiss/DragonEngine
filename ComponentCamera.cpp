@@ -8,6 +8,9 @@
 #include "SceneLoader.h"
 #include <math.h>
 #include "MathGeoLib/Geometry/Plane.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
 #include "debugdraw.h"
 #include "GL/glew.h"
 
@@ -149,6 +152,30 @@ void ComponentCamera::ComputeProjMatrix()
 	return;
 }
 
+void ComponentCamera::DrawInspector()
+{
+	if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Combo(":Projection ", &currentPerspective, perspectives, IM_ARRAYSIZE(perspectives));
+		ChangeFrustumType();
+
+		float auxNearPlane = frustum->nearPlaneDistance;
+		float auxFarPlane = frustum->farPlaneDistance;
+
+		ImGui::SliderFloat(":NearPlane dist", &auxNearPlane, 0.0001f, 9.0f);
+		ImGui::SliderFloat(":FarPlane dist", &auxFarPlane,10.0f, 1000.0f);
+
+		SetNearPlaneDistance(auxNearPlane);
+		SetFarPlaneDistance(auxFarPlane);
+
+		ImGui::SliderFloat(":FOV", &frustum->verticalFov, 0.0001f, 9.0f);
+
+		SetFOV();
+	}
+
+	return;
+}
+
 int ComponentCamera::AABBWithinFrustum(const AABB &aabb) const
 {
 	//Tests if an AABB is within the frusum
@@ -235,6 +262,24 @@ void ComponentCamera::DrawFrustum()
 	//Draw frustum
 	float4x4 clipMatrix = proj * view;	
 	dd::frustum(clipMatrix.Inverted(), float3(0, 0, 1));
+
+	return;
+}
+
+void ComponentCamera::ChangeFrustumType()
+{
+	if (perspectives[currentPerspective] != usedPerspective)
+	{
+		if (currentPerspective == 0)
+		{
+			frustum->type = FrustumType::PerspectiveFrustum;
+		}
+		else
+		{
+			frustum->type = FrustumType::OrthographicFrustum;
+		}
+		usedPerspective = perspectives[currentPerspective];
+	}
 
 	return;
 }
