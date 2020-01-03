@@ -229,20 +229,20 @@ void ModelImporter::SaveModelFile(string & output_file)
 
 	//Set up mesh sizes
 	unsigned int * meshNameSizes = new unsigned int[modelData.meshes.size()];
-	unsigned int meshSize = sizeof(meshNameSizes);
+	unsigned int meshNamesSize = 0;
 	for (unsigned int i = 0; i < modelData.meshes.size(); i++)
 	{
 		meshNameSizes[i] = modelData.meshes[i].size();
-		meshSize += meshNameSizes[i];
+		meshNamesSize += meshNameSizes[i] + 1;
 	}
 
 	//Set up texture sizes
 	unsigned int * textureNameSizes = new unsigned int[modelData.textures.size()];
-	unsigned int textureSize = sizeof(textureNameSizes);
+	unsigned int textureNamesSize = 0;
 	for (unsigned int i = 0; i < modelData.textures.size(); i++)
 	{
 		textureNameSizes[i] = modelData.textures[i].size();
-		textureSize += textureNameSizes[i];
+		textureNamesSize += textureNameSizes[i] + 1;
 	}
 
 	//Set up pair sizes
@@ -255,10 +255,12 @@ void ModelImporter::SaveModelFile(string & output_file)
 
 
 	//Calculate total size
-	unsigned int size = sizeof(ranges)		//ranges
-		+ meshSize							//mesh names
-		+ textureSize						//texture names
-		+ sizeof(pairData);					//mesh - texture pairs
+	unsigned int size = sizeof(ranges)							//ranges
+		+ sizeof(unsigned int) * modelData.meshes.size()		//mesh name sizes
+		+ meshNamesSize											//mesh names
+		+ sizeof(unsigned int) * modelData.textures.size()		//texture name sizes
+		+ textureNamesSize										//texture names
+		+ sizeof(unsigned int) * 2 * modelData.pairs.size();	//mesh - texture pairs
 
 	char* data = new char[size];
 	char* cursor = data;
@@ -267,29 +269,29 @@ void ModelImporter::SaveModelFile(string & output_file)
 	memcpy(cursor, ranges, bytes);
 
 	cursor += bytes; // Store mesh name sizes
-	bytes = sizeof(meshNameSizes);
+	bytes = sizeof(unsigned int) * modelData.meshes.size();
 	memcpy(cursor, meshNameSizes, bytes);
 	
 	for (unsigned int i = 0; i < modelData.meshes.size(); i++) // Store mesh names (strings)
 	{
 		cursor += bytes;
-		bytes = modelData.meshes[i].size();
+		bytes = modelData.meshes[i].size() + 1;
 		memcpy(cursor, modelData.meshes[i].c_str(), bytes);
 	}
 	
 	cursor += bytes; // Store texture name sizes
-	bytes = sizeof(textureNameSizes);
+	bytes = sizeof(unsigned int) * modelData.textures.size();
 	memcpy(cursor, textureNameSizes, bytes);
 	
 	for (unsigned int i = 0; i < modelData.textures.size(); i++) // Store texture names (strings)
 	{
 		cursor += bytes;
-		bytes = modelData.textures[i].size();
+		bytes = modelData.textures[i].size() + 1;
 		memcpy(cursor, modelData.textures[i].c_str(), bytes);
 	}
 
 	cursor += bytes; // Store mesh - texture pairs
-	bytes = sizeof(pairData);
+	bytes = sizeof(unsigned int) * 2 * modelData.pairs.size();
 	memcpy(cursor, pairData, bytes);
 
 	Import(modelName.c_str(), data, size, output_file);
@@ -297,6 +299,7 @@ void ModelImporter::SaveModelFile(string & output_file)
 
 bool ModelImporter::Load(const char* exported_file)
 {
+	ModelData model;
 	char* buffer;
 
 	string model_file = exported_file; model_file += ".notfbx";
@@ -314,13 +317,43 @@ bool ModelImporter::Load(const char* exported_file)
 	unsigned int texNum = ranges[1];
 	unsigned int pairNum = ranges[2];
 
-	cursor += bytes; // Load mesh name sizes
+
+	cursor += bytes; //Load mesh name sizes
 	bytes = sizeof(unsigned int) * meshNum;
-	unsigned int * meshes = new unsigned int[meshNum];
-	memcpy(meshes, cursor, bytes);
+	unsigned int * meshSizes = new unsigned int[meshNum];
+	memcpy(meshSizes, cursor, bytes);
 
-	for (int i = 0; i < meshNum; i++)
-		meshes[i];
+	char * name = new char;
+	for (unsigned int i = 0; i < meshNum; i++) //For each mesh name size, load its name
+	{
+		cursor += bytes;
+		bytes = meshSizes[i] + 1;
+		memcpy(name, cursor, bytes);
+		model.meshes.push_back(name);
+	}
 
+	cursor += bytes; //Load texture name sizes
+	bytes = sizeof(unsigned int) * texNum;
+	unsigned int * textureSizes = new unsigned int[texNum];
+	memcpy(textureSizes, cursor, bytes);
 
+	for (unsigned int i = 0; i < texNum; i++) //For each texture name size, load its name
+	{
+		cursor += bytes;
+		bytes = textureSizes[i] + 1;
+		memcpy(name, cursor, bytes);
+		model.textures.push_back(name);
+	}
+
+	unsigned int * pair = new unsigned int[2];
+	MeshTexPair pairData;
+	for (unsigned int i = 0; i < pairNum; i++)
+	{
+		cursor += bytes;
+		bytes = sizeof(unsigned int) * 2;
+		memcpy(pair, cursor, bytes);
+		pairData.mesh = pair[0];
+		pairData.tex = pair[1];
+		model.pairs.push_back(pairData);
+	}
 }
