@@ -4,6 +4,7 @@
 #include "ModuleIMGUI.h"
 #include "ModuleTimeManager.h"
 #include "FontAwesome/IconsFontAwesome5.h"
+#include "SDL/SDL.h"
 
 GUITime::GUITime()
 {
@@ -34,6 +35,14 @@ void GUITime::Draw(const char * title)
 
 		ImGui::Checkbox("Fix FPS", &App->timemanager->fixFPS);
 		ImGui::SliderInt("FPS", &App->timemanager->fixedFPS, 10, 60);
+
+
+		if(ImGui::Checkbox("Vsync",&vsyncActive))
+		{
+			SDL_GL_SetSwapInterval(vsyncActive);
+		}
+
+		int aux = SDL_GL_GetSwapInterval();
 
 		ImGui::End();
 
