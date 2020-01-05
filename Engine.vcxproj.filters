@@ -81,7 +81,6 @@
     <ClCompile Include="AABBTree.cpp" />
     <ClCompile Include="UUIDGenerator.cpp" />
     <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="Dependencies\Include\MathGeoLib\Time\Clock.cpp">
       <Filter>Libraries\MathGeoLib</Filter>
     </ClCompile>
@@ -199,6 +198,21 @@
     <ClCompile Include="Dependencies\Include\PCG\pcg_basic.c">
       <Filter>Libraries\PCG</Filter>
     </ClCompile>
+    <ClCompile Include="SceneLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFilesystem.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialImporter.cpp">
+      <Filter>Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelImporter.cpp">
+      <Filter>Importers</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshImporter.cpp">
+      <Filter>Importers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -290,7 +304,6 @@
     <ClInclude Include="AABBTree.h" />
     <ClInclude Include="UUIDGenerator.h" />
     <ClInclude Include="Skybox.h" />
-    <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="debugdraw.h" />
     <ClInclude Include="Dependencies\brofiler\Brofiler.h" />
     <ClInclude Include="Dependencies\Include\MathGeoLib\MathBuildConfig.h">
@@ -611,6 +624,24 @@
     <ClInclude Include="Dependencies\Include\PCG\pcg_basic.h">
       <Filter>Libraries\PCG</Filter>
     </ClInclude>
+    <ClInclude Include="SceneLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFilesystem.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialImporter.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelImporter.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyImporter.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshImporter.h">
+      <Filter>Importers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -642,6 +673,9 @@
     </Filter>
     <Filter Include="Libraries\IMGUI">
       <UniqueIdentifier>{4c219d9d-d5eb-4240-9bbd-c88b7b62a4bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Importers">
+      <UniqueIdentifier>{636a0386-6a5c-45fc-95f7-e206e726bb30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
