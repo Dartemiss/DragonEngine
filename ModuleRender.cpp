@@ -190,6 +190,8 @@ update_status ModuleRender::Update()
 	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
 	
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 1, 0, 1));
+	
 	ImGui::SetNextWindowPos(
 		ImVec2(App->window->width * App->imgui->tabsPosRatioWidth,App->window->height * App->imgui->tabsPosRatioHeight)
 		
@@ -225,7 +227,7 @@ update_status ModuleRender::Update()
 
 	}
 	ImGui::End();
-
+	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
 
 
