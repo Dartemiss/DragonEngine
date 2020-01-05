@@ -239,10 +239,6 @@ update_status ModuleRender::PostUpdate()
 	App->timemanager->FinalDeltaTimes();
 	App->timemanager->InitDeltaTimes();
 
-	
-	
-	
-
 	return UPDATE_CONTINUE;
 }
 
