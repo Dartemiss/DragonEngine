@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleIMGUI.h"
 #include "ModuleTimeManager.h"
+#include "ModuleRender.h"
 #include "FontAwesome/IconsFontAwesome5.h"
 #include "SDL/SDL.h"
 
@@ -42,7 +43,7 @@ void GUITime::Draw(const char * title)
 			SDL_GL_SetSwapInterval(vsyncActive);
 		}
 
-		int aux = SDL_GL_GetSwapInterval();
+		ImGui::Checkbox("MSAA", &App->renderer->antialiasing);
 
 		ImGui::End();
 

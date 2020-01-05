@@ -221,9 +221,6 @@ void ModuleIMGUI::DrawPlayPauseButtons() const
 	}
 
 	ImGui::SetCursorPos(ImVec2(App->window->width * 0.35f, App->window->height * 0.0055f));
-	if (ImGui::Checkbox("MSAA", &App->renderer->antialiasing))
-	{
-		//Do things
-		//TODO: Activate MSAA
-	}
+	ImGui::Checkbox("MSAA", &App->renderer->antialiasing);
+
 }

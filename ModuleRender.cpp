@@ -461,7 +461,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			//Generate RenderBuffers
 			glGenRenderbuffers(1, &renderBufferObject);
 			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height) : glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject);
@@ -509,7 +509,8 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			//Generate RenderBuffers
 			glGenRenderbuffers(1, &renderBufferObjectGame);
 			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObjectGame);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height) : glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, width, height);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, width, height);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObjectGame);
