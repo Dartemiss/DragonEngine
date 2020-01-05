@@ -61,7 +61,7 @@ public:
 	float tabsPosRatioHeight = 0.018f;
 
 	float tabsSizeRatioWidth = 0.628f;
-	float tabsSizeRatioHeight = 0.741f;
+	float tabsSizeRatioHeight = 0.01f;//741f;
 
 
 	//Values hierarchy

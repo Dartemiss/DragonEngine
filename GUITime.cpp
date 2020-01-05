@@ -43,8 +43,6 @@ void GUITime::Draw(const char * title)
 			SDL_GL_SetSwapInterval(vsyncActive);
 		}
 
-		ImGui::Checkbox("MSAA", &App->renderer->antialiasing);
-
 		ImGui::End();
 
 	}
