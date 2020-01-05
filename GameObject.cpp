@@ -488,12 +488,14 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	ImGui::SameLine();
 
-	
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 1, 0, 1));
 
 	if(ImGui::Checkbox("Static", &isStatic))
 	{
 		SetStatic();
 	}
+
+	ImGui::PopStyleColor();
 
 	//Draw Components
 	for(auto c : components)

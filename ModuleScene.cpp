@@ -378,7 +378,7 @@ void ModuleScene::AddToQuadtree(GameObject* go) const
 
 void ModuleScene::BuildQuadTree()
 {
-	if (staticGO.size() == 0)
+	if (staticGO.size() == 0 || (staticGO.size() == 1 && (*staticGO.begin())->globalBoundingBox == nullptr))
 		return;
 
 	AABB* sceneBox = ComputeSceneAABB();
