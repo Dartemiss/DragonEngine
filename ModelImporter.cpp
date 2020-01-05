@@ -4,6 +4,7 @@
 #include "ModuleFilesystem.h"
 #include "MeshImporter.h"
 #include "MaterialImporter.h"
+#include "ModuleTexture.h"
 
 #include <Assimp/Importer.hpp>
 #include <Assimp/postprocess.h>
@@ -356,4 +357,21 @@ bool ModelImporter::Load(const char* exported_file)
 		pairData.tex = pair[1];
 		model.pairs.push_back(pairData);
 	}
+
+	MeshImporter meshImp;
+	MaterialImporter materialImp;
+	Texture tex;
+	MeshData mesh;
+
+	for (int i = 0; i < model.meshes.size(); i++)
+	{
+		meshImp.Load(model.meshes[i].c_str(), mesh);
+	}
+	
+	for (int i = 0; i < model.textures.size(); i++)
+	{
+		materialImp.Load(model.textures[i].c_str(), tex);
+	}
+
+
 }
