@@ -35,4 +35,6 @@ private:
 	MaterialImporter * materialImp;
 };
 
+extern SceneImporter* Importer;
+
 #endif __SceneImporter_H__

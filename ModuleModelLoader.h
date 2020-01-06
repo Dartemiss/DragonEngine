@@ -6,23 +6,16 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "Mesh.h"
-#include <Assimp/postprocess.h>
-#include <Assimp/Importer.hpp>
-#include <Assimp/scene.h>
 #include "GL/glew.h"
-#include <DevIL/il.h>
-#include <DevIL/ilu.h>
-#include <DevIL/ilut.h>
-#include <Assimp/material.h>
+#include "Mesh.h"
 
 struct Texture;
+struct MeshData;
 
 struct Model
 {
 	std::map<Mesh*, Texture*> Meshes;
 	std::string Name = "";
-	std::string Directory = "";
 	//TODO: add count of similar models to track delete and remove data?
 };
 
@@ -41,7 +34,7 @@ public:
 	void LoadModel(const std::string &path, Model& model);
 
 	const int GetNumberOfMeshes() const;
-	bool LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,
+	/*bool LoadSphere(const char* name, const math::float3& pos, const math::Quat& rot, float size,
 		unsigned slices, unsigned stacks, const math::float4& color);
 
 	bool LoadCylinder(const char* name, const math::float3& pos, const math::Quat& rot, float height,
@@ -50,7 +43,7 @@ public:
 	bool LoadTorus(const char* name, const math::float3& pos, const math::Quat& rot, float inner_r, float outer_r,
 		unsigned slices, unsigned stacks, const math::float4& color);
 
-	bool LoadCube(const char* name, const math::float3& pos, const math::Quat& rot, float size, const math::float4& color);
+	bool LoadCube(const char* name, const math::float3& pos, const math::Quat& rot, float size, const math::float4& color);*/
 	
 
 	float3 correctCameraPositionForModel = float3(0.0f, 0.0f, 0.0f);
@@ -61,14 +54,9 @@ public:
 private:
 
 	/*  Functions   */
-	
-	void ProcessNode(aiNode* node, const aiScene *scene, Model &model);
-	Mesh* ProcessMesh(const aiMesh* mesh, const aiScene *scene);
-	void ProcessTextures(const aiMesh *mesh, const aiScene *scene, const std::string &directory, std::vector<Texture> &textures);
-
-	std::string ComputeDirectory(const std::string &path) const;
+	//std::string ComputeDirectory(const std::string &path) const;
 	std::string ComputeName(const std::string &path) const;
-
+	void ProcessMeshData(const MeshData & data, Mesh & mesh);
 };
 
 #endif __ModuleModelLoader_h__

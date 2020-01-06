@@ -3,6 +3,10 @@
 
 using namespace std;
 
+Mesh::Mesh()
+{
+}
+
 Mesh::Mesh(const vector<Vertex>& vertices, const vector<unsigned int>& indices)
 {
 	this->vertices = vertices;

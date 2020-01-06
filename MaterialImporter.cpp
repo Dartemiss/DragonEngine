@@ -87,8 +87,8 @@ bool MaterialImporter::Import(const char* file, const void * buffer, unsigned in
 	if(!App->filesystem->IsDirectory("../Library/Materials"))
 		App->filesystem->MakeDirectory("../Library/Materials");
 	
-	string filename = file; filename += ".dds";
-	output_file = file;
+	string filename = file + output_file; filename += ".dds";
+	output_file = file + output_file;
 
 	return App->filesystem->Save("../Library/Materials/", filename.c_str(), buffer, size, false);
 }

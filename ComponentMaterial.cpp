@@ -77,13 +77,13 @@ void ComponentMaterial::SetTextures(std::vector<Texture*> & textures)
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		name = textures[i]->type;
-		if (name == "texture_diffuse")
+		if (name == "_diffuse")
 			diffuseMap = textures[i];
-		else if (name == "texture_specular")
+		else if (name == "_specular")
 			specularMap = textures[i];
-		else if (name == "texture_occlusive")
+		else if (name == "_occlusive")
 			occlusionMap = textures[i];
-		else if (name == "texture_emissive")
+		else if (name == "_emissive")
 			emissiveMap = textures[i];
 	}
 }

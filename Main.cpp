@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "Globals.h"
 #include "UUIDGenerator.h"
+#include "SceneImporter.h"
 
 #include "SDL/SDL.h"
 #pragma comment( lib, "SDL2.lib" )
@@ -19,6 +20,7 @@ enum main_states
 
 Application* App = NULL;
 UUIDGenerator* UUIDGen = NULL;
+SceneImporter* Importer = NULL;
 
 int main(int argc, char ** argv)
 {
@@ -33,6 +35,7 @@ int main(int argc, char ** argv)
 
 			LOG("Application Creation --------------");
 			UUIDGen = new UUIDGenerator();
+			Importer = new SceneImporter();
 			App = new Application();
 			state = MAIN_START;
 			break;
@@ -87,5 +90,6 @@ int main(int argc, char ** argv)
 
 	delete App;
 	delete UUIDGen;
+	delete Importer;
 	return main_return;
 }

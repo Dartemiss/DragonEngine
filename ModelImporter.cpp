@@ -197,7 +197,7 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 		material->GetTexture(texType, i, &str, &mapping, 0);
 		string textureName = str.C_Str();
 		size_t lastindex = textureName.find_last_of(".");
-		textureName = textureName.substr(0, lastindex);
+		textureName = textureName.substr(0, lastindex) + typeName;
 
 		bool skip = false;
 		for (unsigned int i = 0; i < modelData.textures.size(); i++)
@@ -214,13 +214,12 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 		if (!skip)
 		{
 			MaterialImporter materialImporter;
-			string materialOutput;
+			string materialOutput = typeName;
 
 			string directoryPath;
 			string name;
 
 			SearchTextureDir(directory, str.C_Str(), directoryPath, name);
-			name += typeName;
 
 			materialImporter.Import(directoryPath.c_str(), name.c_str(), materialOutput);
 
