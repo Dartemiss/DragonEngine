@@ -7,6 +7,9 @@
 struct aiNode;
 struct aiMesh;
 struct aiScene;
+struct aiMaterial;
+
+enum aiTextureType;
 
 struct MeshTexPair
 {
@@ -27,13 +30,14 @@ class ModelImporter : public MyImporter
 public:
 	bool Import(const char* path, const char* file, std::string& output_file);
 	bool Import(const char* file, const void* buffer, unsigned int size, std::string& output_file);
-	bool Load(const char* exported_file /*, Model*/); //TODO: add return with model data 
+	bool Load(const char* exported_file, ModelData & model);
 
 private:
 	void ProcessNode(aiNode * node, const aiScene * scene);
 	void ProcessMesh(const aiMesh * mesh, const aiScene * scene);
 
 	void SearchTextureDir(const std::string & fbxDir, const std::string & texDir, std::string & foundDir, std::string & texName);
+	void SearchTextureByType(const aiMaterial* material, const aiTextureType texType, const unsigned int currentMeshCount, const std::string & typeName);
 	void SaveModelFile(std::string & output_file);
 
 	ModelData modelData;

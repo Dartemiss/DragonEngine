@@ -4,7 +4,6 @@
 #include "ModuleFilesystem.h"
 #include "MeshImporter.h"
 #include "MaterialImporter.h"
-#include "ModuleTexture.h"
 
 #include <Assimp/Importer.hpp>
 #include <Assimp/postprocess.h>
@@ -144,49 +143,13 @@ void ModelImporter::ProcessMesh(const aiMesh * mesh, const aiScene * scene)
 	{
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-
-		//TODO: add types of textures other than diffuse
-		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
-		{
-			aiString str;
-			aiTextureMapping mapping = aiTextureMapping_UV;
-
-			material->GetTexture(aiTextureType_DIFFUSE, i, &str, &mapping, 0);
-			string textureName = str.C_Str();
-			size_t lastindex = textureName.find_last_of(".");
-			textureName = textureName.substr(0, lastindex);
-
-			bool skip = false;
-			for (unsigned int j = 0; j < modelData.textures.size(); j++)
-			{
-				if (std::strcmp(modelData.textures[j].c_str(), textureName.c_str()) == 0)
-				{
-					MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = j + 1;
-					modelData.pairs.push_back(pair);
-					skip = true;
-					break;
-				}
-			}
-
-			if (!skip)
-			{
-				MaterialImporter materialImporter;
-				string materialOutput;
-			
-				string directoryPath;
-				string name;
-
-				SearchTextureDir(directory, str.C_Str(), directoryPath, name);
-
-				materialImporter.Import(directoryPath.c_str(), name.c_str(), materialOutput);
-
-				modelData.textures.push_back(materialOutput);
-				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = modelData.textures.size();
-				modelData.pairs.push_back(pair);
-			}
-
-		}
-
+		//TODO: chech this works correctly
+		SearchTextureByType(material, aiTextureType_DIFFUSE, currentMeshCount, "_diffuse");
+		SearchTextureByType(material, aiTextureType_SPECULAR, currentMeshCount, "_specular");
+		SearchTextureByType(material, aiTextureType_AMBIENT, currentMeshCount, "_occlusive");
+		SearchTextureByType(material, aiTextureType_EMISSIVE, currentMeshCount, "_emissive");
+		SearchTextureByType(material, aiTextureType_NORMALS, currentMeshCount, "_normal");
+		SearchTextureByType(material, aiTextureType_HEIGHT, currentMeshCount, "_height");
 	}
 }
 
@@ -222,6 +185,51 @@ void ModelImporter::SearchTextureDir(const string & fbxDir, const string & texDi
 
 	checkingDir = "";
 	LOG("Couldn't find texture");
+}
+
+void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTextureType texType, const unsigned int currentMeshCount, const string & typeName)
+{
+	for (unsigned int i = 0; i < material->GetTextureCount(texType); i++)
+	{
+		aiString str;
+		aiTextureMapping mapping = aiTextureMapping_UV;
+
+		material->GetTexture(texType, i, &str, &mapping, 0);
+		string textureName = str.C_Str();
+		size_t lastindex = textureName.find_last_of(".");
+		textureName = textureName.substr(0, lastindex);
+
+		bool skip = false;
+		for (unsigned int j = 0; j < modelData.textures.size(); j++)
+		{
+			if (std::strcmp(modelData.textures[j].c_str(), textureName.c_str()) == 0)
+			{
+				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = j + 1;
+				modelData.pairs.push_back(pair);
+				skip = true;
+				break;
+			}
+		}
+
+		if (!skip)
+		{
+			MaterialImporter materialImporter;
+			string materialOutput;
+
+			string directoryPath;
+			string name;
+
+			SearchTextureDir(directory, str.C_Str(), directoryPath, name);
+			name += typeName;
+
+			materialImporter.Import(directoryPath.c_str(), name.c_str(), materialOutput);
+
+			modelData.textures.push_back(materialOutput);
+			MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = modelData.textures.size();
+			modelData.pairs.push_back(pair);
+		}
+
+	}
 }
 
 void ModelImporter::SaveModelFile(string & output_file)
@@ -298,9 +306,8 @@ void ModelImporter::SaveModelFile(string & output_file)
 	Import(modelName.c_str(), data, size, output_file);
 }
 
-bool ModelImporter::Load(const char* exported_file)
+bool ModelImporter::Load(const char* exported_file, ModelData & model)
 {
-	ModelData model;
 	char* buffer;
 
 	string model_file = exported_file; model_file += ".notfbx";
@@ -346,7 +353,7 @@ bool ModelImporter::Load(const char* exported_file)
 		model.textures.push_back(name);
 	}
 
-	unsigned int * pair = new unsigned int[2];
+	unsigned int * pair = new unsigned int[2]; //Load mesh - texture pairs
 	MeshTexPair pairData;
 	for (unsigned int i = 0; i < pairNum; i++)
 	{
@@ -357,21 +364,4 @@ bool ModelImporter::Load(const char* exported_file)
 		pairData.tex = pair[1];
 		model.pairs.push_back(pairData);
 	}
-
-	MeshImporter meshImp;
-	MaterialImporter materialImp;
-	Texture tex;
-	MeshData mesh;
-
-	for (int i = 0; i < model.meshes.size(); i++)
-	{
-		meshImp.Load(model.meshes[i].c_str(), mesh);
-	}
-	
-	for (int i = 0; i < model.textures.size(); i++)
-	{
-		materialImp.Load(model.textures[i].c_str(), tex);
-	}
-
-
 }
