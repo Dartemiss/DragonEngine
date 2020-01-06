@@ -9,6 +9,13 @@
 
 using namespace std;
 
+MaterialImporter::MaterialImporter()
+{
+	ilInit();
+	iluInit();
+	ilutInit();
+}
+
 //TODO: when calling the function "Import", make sure to check first the fbx path, then model folder and last Textures folder.
 bool MaterialImporter::Import(const char * path, const char * file, string & output_file)
 {
@@ -109,6 +116,10 @@ bool MaterialImporter::Load(const char * exported_file, Texture & resource)
 	resource.format = ilDetermineType(exported_file);
 	resource.data = data;
 	resource.path = exported_file;
+
+	resource.type = exported_file;
+	size_t lastindex = resource.type.find_last_of("_");
+	resource.type = resource.type.substr(lastindex);
 
 	return true;
 }

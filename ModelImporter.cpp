@@ -133,7 +133,7 @@ void ModelImporter::ProcessMesh(const aiMesh * mesh, const aiScene * scene)
 	string meshOutput;
 	unsigned int currentMeshCount = modelData.meshes.size() + 1;
 	string meshName = modelName; meshName += to_string(currentMeshCount);
-	meshImporter.Save(meshName.c_str(), meshData, meshOutput);
+	meshImporter.Import(meshName.c_str(), meshData, meshOutput);
 	modelData.meshes.push_back(meshOutput);
 
 
@@ -200,11 +200,11 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 		textureName = textureName.substr(0, lastindex);
 
 		bool skip = false;
-		for (unsigned int j = 0; j < modelData.textures.size(); j++)
+		for (unsigned int i = 0; i < modelData.textures.size(); i++)
 		{
-			if (std::strcmp(modelData.textures[j].c_str(), textureName.c_str()) == 0)
+			if (strcmp(modelData.textures[i].c_str(), textureName.c_str()) == 0)
 			{
-				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = j + 1;
+				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = i + 1;
 				modelData.pairs.push_back(pair);
 				skip = true;
 				break;

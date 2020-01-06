@@ -17,7 +17,8 @@ struct MeshData
 class MeshImporter : public MyImporter
 {
 public:
-	bool Save(const char* file, const MeshData & mesh, std::string& output_file);
+	bool Import(const char* file, const MeshData & mesh, std::string& output_file);
+	bool Import(const char* file, const void* buffer, unsigned int size, std::string& output_file);
 	bool Load(const char* exported_file, MeshData & mesh);
 };
 

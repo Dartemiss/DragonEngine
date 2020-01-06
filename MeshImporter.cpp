@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool MeshImporter::Save(const char * file, const MeshData & mesh, string & output_file)
+bool MeshImporter::Import(const char * file, const MeshData & mesh, string & output_file)
 {
 	unsigned int ranges[2] = { mesh.num_indices, mesh.num_vertices };
 
@@ -39,16 +39,20 @@ bool MeshImporter::Save(const char * file, const MeshData & mesh, string & outpu
 	bytes = sizeof(float) * mesh.num_vertices * 2;
 	memcpy(cursor, mesh.texture_coords, bytes);
 
+	Import(file, data, size, output_file);
+}
+
+bool MeshImporter::Import(const char * file, const void * buffer, unsigned int size, std::string & output_file)
+{
 	if (!App->filesystem->IsDirectory("../Library"))
 		App->filesystem->MakeDirectory("../Library");
 	if (!App->filesystem->IsDirectory("../Library/Meshes"))
 		App->filesystem->MakeDirectory("../Library/Meshes");
 
-
 	string filename = file; filename += ".mesh";
 	output_file = file;
 
-	return App->filesystem->Save("../Library/Meshes/", filename.c_str(), data, size, false);
+	return App->filesystem->Save("../Library/Meshes/", filename.c_str(), buffer, size, false);
 }
 
 bool MeshImporter::Load(const char * exported_file, MeshData & mesh)
