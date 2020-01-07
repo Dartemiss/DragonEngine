@@ -27,7 +27,7 @@ public:
 
 	float kDiffuse;
 	float kSpecular;
-	float KAmbient;
+	float kAmbient;
 	float shininess;
 
 	float4 diffuseColor;

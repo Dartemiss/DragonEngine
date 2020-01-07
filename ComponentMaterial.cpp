@@ -18,7 +18,7 @@ ComponentMaterial::ComponentMaterial(GameObject* go)
 
 	kDiffuse = 0.5;
 	kSpecular = 0.2;
-	KAmbient = 0.2;
+	kAmbient = 0.2;
 	shininess = 128;
 
 	diffuseColor = float4(1, 0 ,0, 1);
@@ -33,7 +33,7 @@ ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
 	//TODO: When this component is done this method have to copy all comp relevant data to this object
 
 	this->kDiffuse = comp->kDiffuse;
-	this->KAmbient = comp->KAmbient;
+	this->kAmbient = comp->kAmbient;
 	this->kSpecular = comp->kSpecular;
 	this->shininess = comp->shininess;
 
@@ -97,7 +97,7 @@ void ComponentMaterial::SetDrawTextures(const unsigned int program)
 
 	glUniform1f(glGetUniformLocation(program, "material.k_diffuse"), kDiffuse);
 	glUniform1f(glGetUniformLocation(program, "material.k_specular"), kSpecular);
-	glUniform1f(glGetUniformLocation(program, "material.k_ambient"), KAmbient);
+	glUniform1f(glGetUniformLocation(program, "material.k_ambient"), kAmbient);
 	glUniform1f(glGetUniformLocation(program, "material.shininess"), shininess);
 
 	unsigned int tCount = 0;
@@ -163,7 +163,25 @@ void ComponentMaterial::SetDrawTextures(const unsigned int program)
 void ComponentMaterial::OnSave(SceneLoader & loader)
 {
 	loader.AddUnsignedInt("Type", myType);
-	//TODO implement save
+
+	loader.AddFloat("kDiffuse", kDiffuse);
+	loader.AddFloat("kSpecular", kSpecular);
+	loader.AddFloat("kAmbient", kAmbient);
+	loader.AddFloat("shininess", shininess);
+
+	loader.AddVec4f("diffuseColor", diffuseColor);
+	loader.AddVec3f("specularColor", specularColor);
+	loader.AddVec3f("emissiveColor", emissiveColor);
+
+	if (diffuseMap != nullptr)
+		loader.AddString("diffuseMap", diffuseMap->path.c_str());
+	if (specularMap != nullptr)
+		loader.AddString("diffuseMap", specularMap->path.c_str());
+	if (occlusionMap != nullptr)
+		loader.AddString("diffuseMap", occlusionMap->path.c_str());
+	if (emissiveMap != nullptr)
+		loader.AddString("diffuseMap", emissiveMap->path.c_str());
+
 }
 
 void ComponentMaterial::OnLoad(SceneLoader & loader)
