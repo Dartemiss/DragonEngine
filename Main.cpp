@@ -89,7 +89,7 @@ int main(int argc, char ** argv)
 	}
 
 	delete App;
-	delete UUIDGen;
 	delete Importer;
+	delete UUIDGen;
 	return main_return;
 }

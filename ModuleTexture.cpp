@@ -50,7 +50,7 @@ void ModuleTexture::LoadTexture(Texture & texture)
 	{
 		//Binding texture and generating mipmaps
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else

@@ -71,7 +71,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 		if (Importer->LoadMesh(modelData.meshes[i].c_str(), currentMeshData))
 		{
 			ProcessMeshData(currentMeshData, currentMesh);
-			currentMesh.setupMesh();
+			//currentMesh.setupMesh();
 			meshes.push_back(currentMesh);
 		}
 		else
@@ -93,7 +93,24 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 	for (int i = 0; i < modelData.pairs.size(); i++)
 	{
 		pair = modelData.pairs[i];
-		model.Meshes.emplace(&meshes[pair.mesh-1], &textures[pair.tex-1]);
+
+		Mesh * newMesh = new Mesh();
+		newMesh->vertices = meshes[pair.mesh - 1].vertices;
+		newMesh->indices = meshes[pair.mesh - 1].indices;
+		newMesh->setupMesh();
+
+		Texture * newTex = new Texture();
+		newMesh->vertices = meshes[pair.mesh - 1].vertices;
+		newTex->id = textures[pair.tex - 1].id;
+		newTex->width = textures[pair.tex - 1].width;
+		newTex->height = textures[pair.tex - 1].height;
+		newTex->depth = textures[pair.tex - 1].depth;
+		newTex->format = textures[pair.tex - 1].format;
+		newTex->data = textures[pair.tex - 1].data;
+		newTex->type = textures[pair.tex - 1].type;
+		newTex->path = textures[pair.tex - 1].path;
+
+		model.Meshes.emplace(newMesh, newTex);
 	}
 
 	models.push_back(model);

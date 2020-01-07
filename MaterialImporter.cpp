@@ -100,7 +100,7 @@ bool MaterialImporter::Load(const char * exported_file, Texture & resource)
 	ilBindImage(image);
 
 	string filepath = "../Library/Materials/"; filepath += exported_file; filepath += ".dds";
-	bool isLoaded = ilLoadImage(filepath.c_str());
+	bool isLoaded = ilLoad(IL_DDS, filepath.c_str());
 
 	if (!isLoaded)
 	{
@@ -108,13 +108,11 @@ bool MaterialImporter::Load(const char * exported_file, Texture & resource)
 		return false;
 	}
 
-	ILubyte* data = ilGetData();
-
 	resource.width = ilGetInteger(IL_IMAGE_WIDTH);
 	resource.height = ilGetInteger(IL_IMAGE_HEIGHT);
 	resource.depth = ilGetInteger(IL_IMAGE_DEPTH);
 	resource.format = ilDetermineType(exported_file);
-	resource.data = data;
+	resource.data = ilGetData();
 	resource.path = exported_file;
 
 	resource.type = exported_file;

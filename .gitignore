@@ -349,3 +349,4 @@ healthchecksdb
 MigrationBackup/
 
 !/Dependencies/**
+/Library

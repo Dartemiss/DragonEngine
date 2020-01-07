@@ -209,7 +209,7 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	LOG("Creating a GameObject with Baker House Mesh.");
 	std::string defaultName = "BakerHouse" + std::to_string(numberOfBakerHouse + 1);
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
-	LoadModel("../Models/baker_house/BakerHouse.fbx", newGameObject);
+	LoadModel("BakerHouse", newGameObject);
 	++numberOfBakerHouse;
 
 	allGameObjects.insert(newGameObject);
