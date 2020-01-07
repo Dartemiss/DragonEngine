@@ -5,6 +5,8 @@
 #include "Module.h"
 #include "GameObject.h"
 #include "Timer.h"
+#include "Point.h"
+#include "imgui/imgui.h"
 #include <set>
 
 class MyQuadTree;
@@ -40,7 +42,7 @@ public:
 	void LoadModel(const char* path, GameObject* parent);
 
 	//Creators
-	void CreateEmpy(GameObject* parent);
+	void CreateEmpty(GameObject* parent);
 	void CreateGameObjectBakerHouse(GameObject* parent);
 	void CreateGameObjectZomBunny(GameObject* parent);
 	void CreateGameObjectShape(GameObject* parent, ShapeType shape);
@@ -50,11 +52,12 @@ public:
 
 	void SelectObjectInHierarchy(GameObject* selected);
 	//Drawing Methods
-	void DrawUIBarMenuGameObject();
 	void DrawGUI();
 
 	//AllGameObjectsCreated
 	std::set<GameObject*> allGameObjects;
+	std::set<GameObject*> staticGO;
+	std::set<GameObject*> dynamicGO;
 	bool showHierarchy = true;
 	bool showInspector = true;
 	//Game's Main Camera Object
@@ -62,11 +65,9 @@ public:
 
 	//QuadTree
 	MyQuadTree* quadtree = nullptr;
-	MyQuadTree* quadtreeIterative = nullptr;
 	AABBTree* aabbTree = nullptr;
 
 	void AddToQuadtree(GameObject* go) const;
-	void RemoveFromQuadTree(GameObject* go) const;
 
 	bool quadTreeInitialized = false;
 
@@ -76,6 +77,7 @@ public:
 	void BuildAABBTree();
 	void CreateCubesScript();
 	void CreateShapesScript();
+	void CreateHousesScript();
 
 	AABB* ComputeSceneAABB() const;
 
@@ -107,6 +109,17 @@ public:
 	void InsertChilds(GameObject* go);
 
 	GameObject* selectedByHierarchy = nullptr;
+
+	//Mouse Picking
+	LineSegment* CreateRayCast(float3 origin, float3 direction, float maxDistance);
+	GameObject* IntersectRayCast(float3 origin, const LineSegment &ray);
+	LineSegment* CreateRayCast(float normalizedX, float normalizedY) const;
+	LineSegment* currentRay = nullptr;
+
+	void PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow);
+
+	GameObject* GetRoot() const;
+
 
 private:
 	//Root

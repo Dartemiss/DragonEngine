@@ -14,12 +14,12 @@ void GUICamera::Draw(const char * title)
 		ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_FirstUseEver);
 		ImGui::Begin(title, &isEnabled);
 
-		ImGui::SliderFloat("FOV", &App->camera->frustum->verticalFov, 0.100f, 3.000f, "%.3f");
+		ImGui::SliderFloat("FOV", &App->camera->editorCamera->frustum->verticalFov, 0.100f, 3.000f, "%.3f");
 		App->camera->SetFOV();
 
-		ImGui::Text("Camera Position: (%.3f,%.3f,%.3f)", App->camera->frustum->pos.x, App->camera->frustum->pos.y, App->camera->frustum->pos.z);
-		ImGui::Text("Camera near distance: %.3f", App->camera->frustum->nearPlaneDistance);
-		ImGui::Text("Camera far distance: %.3f", App->camera->frustum->farPlaneDistance);
+		ImGui::Text("Camera Position: (%.3f,%.3f,%.3f)", App->camera->editorCamera->frustum->pos.x, App->camera->editorCamera->frustum->pos.y, App->camera->editorCamera->frustum->pos.z);
+		ImGui::Text("Camera near distance: %.3f", App->camera->editorCamera->frustum->nearPlaneDistance);
+		ImGui::Text("Camera far distance: %.3f", App->camera->editorCamera->frustum->farPlaneDistance);
 		ImGui::Text("Time for building recursive quadtree: %f", App->scene->timeRecursive);
 		ImGui::Text("Time for building iterative quadtree: %f", App->scene->timeIterative);
 
@@ -49,6 +49,10 @@ void GUICamera::Draw(const char * title)
 		if (ImGui::Button("Generate Shapes"))
 		{
 			App->scene->CreateShapesScript();
+		}
+		if (ImGui::Button("Generate Houses"))
+		{
+			App->scene->CreateHousesScript();
 		}
 
 		ImGui::End();

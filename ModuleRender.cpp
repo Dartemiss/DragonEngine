@@ -5,10 +5,12 @@
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
 #include "ModuleTimeManager.h"
+#include "ModuleIMGUI.h"
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
 #include "ModuleTexture.h"
 #include "ModuleDebugDraw.h"
+#include "ModuleInput.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "GameObject.h"
@@ -26,6 +28,10 @@
 #include <math.h>
 #include "MathGeoLib/Math/float4.h"
 #include "Brofiler/Brofiler.h"
+#include "ImGuizmo/ImGuizmo.h"
+#include "FontAwesome/IconsFontAwesome5.h"
+#include "FontAwesome/IconsFontAwesome5Brands.h"
+
 
 
 
@@ -109,7 +115,7 @@ bool ModuleRender::Init()
 	App->window->glcontext = SDL_GL_CreateContext(App->window->window);
 
 	GLenum err = glewInit();
-	// … check for errors
+	// â€¦ check for errors
 	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
 	LOG("Vendor: %s", glGetString(GL_VENDOR));
 	LOG("Renderer: %s", glGetString(GL_RENDERER));
@@ -156,9 +162,12 @@ bool ModuleRender::Init()
 
 	skybox = new Skybox();
 
-
 	//TODO: move to texture Start
 	App->texture->LoadWhiteFallbackTexture();
+
+	//Scene w, h
+	widthScene = static_cast<int>(App->window->width * App->imgui->sceneSizeRatioWidth);
+	heightScene = static_cast<int>(App->window->height * App->imgui->sceneSizeRatioHeight);
 
 	return true;
 }
@@ -184,12 +193,14 @@ update_status ModuleRender::Update()
 	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
 	
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 1, 0, 1));
+	
 	ImGui::SetNextWindowPos(
-		ImVec2(352,19)
+		ImVec2(App->window->width * App->imgui->tabsPosRatioWidth,App->window->height * App->imgui->tabsPosRatioHeight)
 		
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1207,754)
+		ImVec2(App->window->width * App->imgui->tabsSizeRatioWidth, App->window->height * App->imgui->tabsSizeRatioHeight)
 		
 	);
 
@@ -198,23 +209,30 @@ update_status ModuleRender::Update()
 	{
 		ImGui::BeginTabBar("");
 
-		if (ImGui::BeginTabItem("Scene"))
+		if (ImGui::BeginTabItem(ICON_FA_BUILDING " Scene") && !isGamePlaying)
 		{
 			DrawSceneBuffer();
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Game"))
+		if (ImGui::BeginTabItem(ICON_FA_GAMEPAD  " Game") || isGamePlaying)
 		{
 			DrawGameBuffer();
 			ImGui::EndTabItem();
 		}
 
 		ImGui::EndTabBar();
+
+		//Draw Scene or game depending
+
+		//Draw Buttons
+		App->imgui->DrawPlayPauseButtons();
+
 	}
 	ImGui::End();
-
+	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
+
 
 	return UPDATE_CONTINUE;
 }
@@ -225,10 +243,6 @@ update_status ModuleRender::PostUpdate()
 	++App->timemanager->frameCount;
 	App->timemanager->FinalDeltaTimes();
 	App->timemanager->InitDeltaTimes();
-
-	
-	
-	
 
 	return UPDATE_CONTINUE;
 }
@@ -250,6 +264,46 @@ bool ModuleRender::CleanUp()
 	return true;
 }
 
+void ModuleRender::DrawGuizmo() const
+{
+	ImVec2 pos = ImGui::GetWindowPos();
+	ImVec2 size = ImGui::GetWindowSize();
+	ImGuizmo::SetRect((float)pos.x, (float)pos.y, (float)widthScene, (float)heightScene);
+	ImGuizmo::SetDrawlist();
+
+	DrawGuizmoButtons();
+
+	ImGui::SetCursorPos({ 20,30 });
+
+	//Chose which guizmo we will use
+	if(App->scene->selectedByHierarchy != nullptr && !App->scene->selectedByHierarchy->isStatic)
+	{
+		//Use guizmos only if object is static
+		ImGuizmo::Enable(true);
+		float4x4 model = App->scene->selectedByHierarchy->myTransform->globalModelMatrix;
+		float4x4 view = App->camera->GetViewMatrix();
+		float4x4 proj = App->camera->GetProjMatrix();
+
+		ImGuizmo::SetOrthographic(false);
+
+		model.Transpose();
+		view.Transpose();
+		proj.Transpose();
+
+		ImGuizmo::Manipulate((float *)&view, (float *)&proj, (ImGuizmo::OPERATION)currentOperation, (ImGuizmo::MODE)currentMode, (float*)&model, NULL, NULL,NULL,NULL);
+
+		//Assign new model matrix
+		if(ImGuizmo::IsUsing())
+		{
+			model.Transpose();
+			App->scene->selectedByHierarchy->SetGlobalMatrix(model);
+		}
+
+	}
+
+	return;
+}
+
 void ModuleRender::DrawAllGameObjects()
 {
 
@@ -260,31 +314,36 @@ void ModuleRender::DrawAllGameObjects()
 
 	//Temporary as std140 doesnt work
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"proj"), 1, GL_TRUE, &App->camera->proj[0][0]);
+		"proj"), 1, GL_TRUE, &App->camera->editorCamera->proj[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
-		"view"), 1, GL_TRUE, &App->camera->view[0][0]);
+		"view"), 1, GL_TRUE, &App->camera->editorCamera->view[0][0]);
 
 	std::set<GameObject*> staticGO;
-
+	std::set<GameObject*> dynamicGO;
+	
 	if(App->scene->quadtreeIsComputed)
 	{
-		App->scene->quadtreeIterative->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
+		App->scene->quadtree->GetIntersection(staticGO, &App->camera->editorCamera->frustum->MinimalEnclosingAABB());
 	}
+	App->scene->aabbTree->GetIntersection(dynamicGO, &App->camera->editorCamera->frustum->MinimalEnclosingAABB());
 
-	bool quadAndCulling = App->scene->quadtreeIsComputed && frustumCullingIsActivated;
+	//With C++ 17 we could do staticGO.merge(dynamicGO);
+	std::set<GameObject*> onCameraGO = staticGO;
+	onCameraGO.insert(dynamicGO.begin(), dynamicGO.end());
 
-	for(auto gameObject : (quadAndCulling) ? staticGO : App->scene->allGameObjects)
+	for(auto gameObject : onCameraGO)
 	{
+		if (!gameObject->isEnabled)
+			continue;
+
 		glUniformMatrix4fv(glGetUniformLocation(progModel,
 			"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-		if(quadAndCulling && gameObject->globalBoundingBox != nullptr)
+		if(gameObject->globalBoundingBox != nullptr)
 		{
 
-			if(gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
+			if(App->camera->editorCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
-				gameObjectsWithinFrustum.push_back(gameObject);
-
 				if (gameObject->myMesh != nullptr)
 				{
 					gameObject->Draw(progModel);
@@ -325,10 +384,25 @@ void ModuleRender::DrawGame()
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
 		"view"), 1, GL_TRUE, &gameCamera->view[0][0]);
 
-	if(frustumCullingIsActivated)
-	{
 	
-		for (auto gameObject : gameObjectsWithinFrustum)
+	std::set<GameObject*> staticGO;
+	std::set<GameObject*> dynamicGO;
+
+	if (App->scene->quadtreeIsComputed)
+	{
+		App->scene->quadtree->GetIntersection(staticGO, &gameCamera->frustum->MinimalEnclosingAABB());
+	}
+
+	App->scene->aabbTree->GetIntersection(dynamicGO, &gameCamera->frustum->MinimalEnclosingAABB());
+	std::set<GameObject*> onCameraGO = staticGO;
+	onCameraGO.insert(dynamicGO.begin(), dynamicGO.end());
+
+	for (auto gameObject : onCameraGO)
+	{
+		if (!gameObject->isEnabled)
+			continue;
+
+		if (gameCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 		{
 			glUniformMatrix4fv(glGetUniformLocation(progModel,
 				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
@@ -339,45 +413,23 @@ void ModuleRender::DrawGame()
 				gameObject->Draw(progModel);
 				//gameObject->myMesh->Draw(progModel);
 			}
-
 		}
-		
-		gameObjectsWithinFrustum.clear();
+
 	}
-	else
-	{
-	
-		for (auto gameObject : App->scene->allGameObjects)
-		{
-			glUniformMatrix4fv(glGetUniformLocation(progModel,
-				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
-
-
-			if (gameObject->myMesh != nullptr)
-			{
-				gameObject->Draw(progModel);
-				//gameObject->myMesh->Draw(progModel);
-			}
-
-		}
-	
-	}
-
 
 	glUseProgram(0);
 }
-
-
-
-
 
 void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 {
 	if(scene)
 	{
 	
-		if (width != widthScene || height != heightScene)
+		if (width != widthScene || height != heightScene || firstTimeCreatingBuffer)
 		{
+			if (firstTimeCreatingBuffer)
+				firstTimeCreatingBuffer = false;
+
 			if (frameBufferObject == 0)
 			{
 				//Generate FrameBuffer if necessary
@@ -409,7 +461,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			//Generate RenderBuffers
 			glGenRenderbuffers(1, &renderBufferObject);
 			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height) : glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject);
@@ -424,7 +476,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 	else
 	{
 	
-		if (width != widthGame || height != heightGame)
+		if (width != widthGame || height != heightGame || firstTimeCreatingBuffer)
 		{
 			if (frameBufferObjectGame == 0)
 			{
@@ -457,7 +509,8 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			//Generate RenderBuffers
 			glGenRenderbuffers(1, &renderBufferObjectGame);
 			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObjectGame);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height) : glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, width, height);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, width, height);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObjectGame);
@@ -486,14 +539,13 @@ void ModuleRender::GenerateTexture(int width, int height)
 
 	DrawDebug();
 	DrawAllGameObjects();
-
+	
 	
 	if(skybox != nullptr && showSkybox)
 		skybox->DrawSkybox();
 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	//Why outside of framebuffer?
 	App->debugDraw->Draw(App->camera, frameBufferObject, height, width);
 }
@@ -509,12 +561,59 @@ void ModuleRender::GenerateTextureGame(int width, int height)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ModuleRender::Pick() const
+{
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && ImGui::IsWindowFocused() && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+	{
+		ImVec2 pos = ImGui::GetWindowPos();
+		ImVec2 size = ImGui::GetWindowSize();
+		App->scene->PickObject(size, pos);
+
+	}
+
+	return;
+}
+
+void ModuleRender::DrawGuizmoButtons() const
+{
+	if(ImGui::Button(ICON_FA_HAND_ROCK ""))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::TRANSLATE;
+	}
+
+	ImGui::SameLine();
+
+	if(ImGui::Button(ICON_FA_SYNC ""))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::ROTATE;
+	}
+
+	ImGui::SameLine();
+
+	if(ImGui::Button(ICON_FA_BALANCE_SCALE ""))
+	{
+		(ImGuizmo::OPERATION)currentOperation = ImGuizmo::SCALE;
+	}
+	ImGui::SameLine();
+
+	if(ImGui::Button(ICON_FA_GLOBE ""))
+	{
+		(ImGuizmo::MODE)currentMode = ImGuizmo::WORLD;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_MAP_MARKER ""))
+	{
+		(ImGuizmo::MODE)currentMode = ImGuizmo::LOCAL;
+	}
+
+}
+
 void ModuleRender::DrawDebug() const
 {
 	if(showQuadTree && App->scene->quadtreeIsComputed)
 	{
 		//Iterative
-		App->scene->quadtreeIterative->DrawIterative();
+		App->scene->quadtree->DrawIterative();
 	}
 
 	if(showGrid)
@@ -532,15 +631,14 @@ void ModuleRender::DrawDebug() const
 
 void ModuleRender::DrawSceneBuffer()
 {
+	ImGuizmo::BeginFrame();
 	bool isEnabled = true;
 	//First Scene window is created
 	ImGui::SetNextWindowPos(
-		ImVec2(353, 48),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1203, 722),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight)
 	);
 	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	App->camera->SceneNotActive = ImGui::IsWindowFocused();
@@ -548,9 +646,11 @@ void ModuleRender::DrawSceneBuffer()
 	ImVec2 wSize = ImGui::GetWindowSize();
 	App->camera->SetAspectRatio((int)wSize.x, (int)wSize.y);
 
+	//Call MousePicking routine
+	Pick();
+
 	CreateFrameBuffer((int)wSize.x, (int)wSize.y);
 	GenerateTexture((int)wSize.x, (int)wSize.y);
-
 
 	widthScene = (int)wSize.x;
 	heightScene = (int)wSize.y;
@@ -566,6 +666,8 @@ void ModuleRender::DrawSceneBuffer()
 		ImVec2(1, 0)
 	);
 
+	DrawGuizmo();
+
 
 	ImGui::End();
 
@@ -577,15 +679,15 @@ void ModuleRender::DrawGameBuffer()
 	bool gameIsEnabled = true;
 
 	ImGui::SetNextWindowPos(
-		ImVec2(353, 48),
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight),
 		ImGuiCond_Once
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(1203, 722),
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight),
 		ImGuiCond_Once
 	);
 	//Game Window
-	ImGui::Begin("Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+	ImGui::Begin(" Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 	ImVec2 wSizeGame = ImGui::GetWindowSize();
 

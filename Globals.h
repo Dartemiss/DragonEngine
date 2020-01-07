@@ -15,9 +15,21 @@ enum update_status
 	UPDATE_ERROR
 };
 
+static float mapValues(float value,
+	float start1, float stop1,
+	float start2, float stop2) {
+
+	float outgoing =
+		start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+
+	return outgoing;
+}
+
+
+
 // Configuration -----------
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
+#define SCREEN_WIDTH 1680
+#define SCREEN_HEIGHT 1050
 #define FULLSCREEN false
 #define RESIZABLE true
 #define VSYNC true

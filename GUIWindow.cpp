@@ -40,6 +40,17 @@ void GUIWindow::Draw(const char * title)
 		ImGui::SameLine();
 		ImGui::Checkbox("Resizable", &App->window->resizable);
 		
+		int currentColorStyle = -1;
+		if (ImGui::Combo("Color Style", &currentColorStyle, "Classic\0Dark\0Light\0"))
+		{
+			switch (currentColorStyle)
+			{
+				case 0: ImGui::StyleColorsClassic(); break;
+				case 1: ImGui::StyleColorsDark(); break;
+				case 2: ImGui::StyleColorsLight(); break;
+			}
+			
+		}
 		
 		ImGui::SliderFloat("Brightness", &actualBright, 0.000f, 1.000f, "%.3f");
 		ImGui::SliderInt("Width", &App->window->width, 1, 2500, "%d");

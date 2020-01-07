@@ -88,9 +88,17 @@ public:
 
 	int numberOfCopies = 0;
 
-private:
-	std::string name;
+	float IsIntersectedByRay(const float3 &origin, const LineSegment & ray);
+	std::string name = "";
 
+	//ImGuizmo SetModelMatrix
+	void SetGlobalMatrix(const float4x4 &newGlobal);
+
+	void SetStatic();
+	void GetAllChilds(std::vector<GameObject*> &allChilds);
+
+
+private:
 	void CheckDragAndDrop(GameObject* go);
 
 

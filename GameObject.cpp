@@ -3,17 +3,23 @@
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
 #include "ModuleInput.h"
+#include "ModuleIMGUI.h"
+#include "ModuleWindow.h"
 #include "ComponentTransform.h"
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "AABBTree.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
+#include "imgui/imgui_stdlib.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
+#include "FontAwesome/IconsFontAwesome5.h"
 
 using namespace std;
 
@@ -221,6 +227,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 	{
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 	}
+
 	bool objOpen = ImGui::TreeNodeEx(this, flags, name.c_str());
 
 	if(ImGui::IsItemClicked())
@@ -261,7 +268,6 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 		if (ImGui::Selectable("Delete"))
 		{
-			//TODO: Delete gameobjects
 			DeleteGameObject();
 		}
 
@@ -270,7 +276,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 		if(ImGui::Selectable("Create Empty"))
 		{
 			//Create empty gameobject
-			App->scene->CreateEmpy(this);
+			App->scene->CreateEmpty(this);
 		}
 
 		if (ImGui::BeginMenu("Create 3D Object"))
@@ -357,10 +363,22 @@ void GameObject::UpdateTransform()
 
 			float3 globalPos, globalScale;
 			float3x3 globalRot;
+			
 			myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
 
-			globalBoundingBox->minPoint = (boundingBox->minPoint + globalPos);
-			globalBoundingBox->maxPoint = (boundingBox->maxPoint + globalPos);
+			float3 newMinPoint = boundingBox->minPoint;
+			newMinPoint.x *= globalScale.x;
+			newMinPoint.y *= globalScale.y;
+			newMinPoint.z *= globalScale.z;
+
+			float3 newMaxPoint = boundingBox->maxPoint;
+			newMaxPoint.x *= globalScale.x;
+			newMaxPoint.y *= globalScale.y;
+			newMaxPoint.z *= globalScale.z;
+
+			globalBoundingBox->minPoint = newMinPoint + globalPos;
+			globalBoundingBox->maxPoint = newMaxPoint + globalPos;
+
 		}
 	}
 }
@@ -416,7 +434,8 @@ void GameObject::ComputeAABB()
 		float3 globalPos, globalScale;
 		float3x3 globalRot;
 		myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-		globalBoundingBox = new AABB(min + globalPos, max + globalPos);
+
+		globalBoundingBox = new AABB(min.Mul(globalScale) + globalPos, max.Mul(globalScale) + globalPos);
 
 		return;
 	}
@@ -446,7 +465,8 @@ void GameObject::ComputeAABB()
 	float3 globalPos, globalScale;
 	float3x3 globalRot;
 	myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-	globalBoundingBox = new AABB(min + globalPos, max + globalPos);
+
+	globalBoundingBox = new AABB(min.Mul(globalScale) + globalPos, max.Mul(globalScale) + globalPos);
 
 	return;
 }
@@ -465,51 +485,33 @@ void GameObject::Draw(const unsigned int program)
 void GameObject::DrawInspector(bool &showInspector)
 {
 	ImGui::SetNextWindowPos(
-		ImVec2(1556, 18)
+		ImVec2(App->window->width * App->imgui->inspectorPosRatioWidth, App->window->height * App->imgui->inspectorPosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(357, 997)
+		ImVec2(App->window->width * App->imgui->inspectorSizeRatioWidth, App->window->height * App->imgui->inspectorSizeRatioHeight)
 	);
 
-	ImGui::Begin("Inspector", &showInspector);
+	ImGui::Begin(ICON_FA_INFO_CIRCLE " Inspector", &showInspector);
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	char* go_name = new char[64];
-	strcpy(go_name, name.c_str());
-	if(ImGui::InputText("##Name", go_name, 64))
-	{
-		name = std::string(go_name);
-	}
+	//ImGui::InputText("##Name", &name);
+
 	ImGui::SameLine();
 
-	delete[] go_name;
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 1, 0, 1));
 
-	ImGui::Checkbox("Static", &isStatic);
-
-
-	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+	if(ImGui::Checkbox("Static", &isStatic))
 	{
-		ImGui::Text("Position");
-		ImGui::DragFloat3("Position", (float *)&myTransform->position, 0.1f);
-		ImGui::Text("Rotation");
-		ImGui::DragFloat3("Rotation", (float *)&myTransform->eulerRotation, 1.0f, -360.0f, 360.0f);
-		ImGui::Text("Scale");
-		ImGui::DragFloat3("Scale", (float *)&myTransform->scale, 0.01f, 0.01f, 1000.0f);
+		SetStatic();
+	}
 
-		ImGui::Separator();
+	ImGui::PopStyleColor();
 
-		ImGui::Text("AABB");
-		if(globalBoundingBox == nullptr)
-		{
-			ImGui::Text("Is nullptr.");
-		}
-		else
-		{
-			ImGui::DragFloat3("Min Point", (float *)&globalBoundingBox->minPoint, 0.01f, 0.01f, 1000.0f);
-			ImGui::DragFloat3("Max Point", (float *)&globalBoundingBox->maxPoint, 0.01f, 0.01f, 1000.0f);
-		}
-		
+	//Draw Components
+	for(auto c : components)
+	{
+		c->DrawInspector();
 	}
 
 	ImGui::End();
@@ -526,6 +528,22 @@ void GameObject::OnSave(SceneLoader & loader)
 	else
 		loader.AddUnsignedInt("parentUID", 0); 
 	loader.AddString("Name", name.c_str());
+
+	loader.AddUnsignedInt("isEnabled", isEnabled);
+	loader.AddUnsignedInt("isStatic", isStatic);
+
+	loader.AddUnsignedInt("HaveAABB", globalBoundingBox != nullptr && boundingBox != nullptr);
+
+	if (globalBoundingBox != nullptr && boundingBox != nullptr)
+	{
+		//Save AABBs
+		loader.AddVec3f("AABBMinPoint", boundingBox->minPoint);
+		loader.AddVec3f("AABBMaxPoint", boundingBox->maxPoint);
+
+		loader.AddVec3f("GlobalAABBMinPoint", globalBoundingBox->minPoint);
+		loader.AddVec3f("GlobalAABBMaxPoint", globalBoundingBox->maxPoint);
+	}
+
 
 	//Save all components
 	myTransform->OnSave(loader);
@@ -547,14 +565,32 @@ void GameObject::OnSave(SceneLoader & loader)
 
 void GameObject::OnLoad(SceneLoader & loader)
 {
+	//TODO: When loading crashes because mesh loading is not implemented
+
 	UID = loader.GetUnsignedInt("UID", 0);
 	assert(UID != 0);
 
 	name = loader.GetString("Name", "GameObject");
 
+	isEnabled = loader.GetUnsignedInt("isEnabled", 0);
+	isStatic = loader.GetUnsignedInt("isStatic", 0);
+
 	//Special load for Transform
 	CreateComponent(TRANSFORM);
 	myTransform->OnLoad(loader);
+
+	bool haveAABB = loader.GetUnsignedInt("HaveAABB", 0);
+	if (haveAABB)
+	{
+		float3 minPoint = loader.GetVec3f("AABBMinPoint", float3(0, 0, 0));
+		float3 maxPoint = loader.GetVec3f("AABBMaxPoint", float3(0, 0, 0));
+
+		float3 globalMinPoint = loader.GetVec3f("GlobalAABBMinPoint", float3(0, 0, 0));
+		float3 globalMaxPoint = loader.GetVec3f("GlobalAABBMaxPoint", float3(0, 0, 0));
+
+		boundingBox = new AABB(minPoint, maxPoint);
+		globalBoundingBox = new AABB(globalMinPoint, globalMaxPoint);
+	}
 
 	Component* component;
 	while (loader.SelectNextComponent())
@@ -565,6 +601,94 @@ void GameObject::OnLoad(SceneLoader & loader)
 		component = CreateComponent(type);
 		component->OnLoad(loader);
 	}
+
+	return;
+}
+
+float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & ray)
+{
+	if (myMesh == nullptr)
+		return -1.0f;
+
+	//Transform ray coordinates into local space
+	LineSegment localRay = LineSegment(ray);
+	localRay.Transform(myTransform->globalModelMatrix.Inverted());
+	
+
+	return myMesh->IsIntersectedByRay(origin,localRay);
+}
+
+void GameObject::SetGlobalMatrix(const float4x4 & newGlobal)
+{
+	assert(myTransform != nullptr);
+	if(parent != nullptr && parent->myTransform != nullptr)
+	{
+		myTransform->SetGlobalMatrix(newGlobal, parent->myTransform->globalModelMatrix);
+	}
+
+	return;
+}
+
+void GameObject::SetStatic()
+{
+	if(UID == 1)
+	{
+		isStatic = true;
+		LOG("Root must be static. STOP!.");
+		return;
+	}
+
+	//Get all GO related with this GO
+	std::vector<GameObject*> myRelatedGO;
+	GameObject* grandParent = this;
+	while(grandParent->parent->UID != 1)
+	{
+		grandParent = grandParent->parent;
+	}
+
+	myRelatedGO.push_back(grandParent);
+
+	//Get all children and set static boolean
+	grandParent->GetAllChilds(myRelatedGO);
+	for(auto go : myRelatedGO)
+	{
+		go->isStatic = isStatic;
+
+		if (isStatic)
+		{
+			App->scene->dynamicGO.erase(go);
+			App->scene->staticGO.insert(go);
+
+			//Only added/removed to aabbtree if GO have mesh or is parent of mesh
+			if((go->myMesh != nullptr || go->isParentOfMeshes) && go->globalBoundingBox != nullptr)
+				App->scene->aabbTree->Remove(go);
+		}
+
+		else
+		{
+			App->scene->staticGO.erase(go);
+			App->scene->dynamicGO.insert(go);
+
+			if ((go->myMesh != nullptr || go->isParentOfMeshes) && go->globalBoundingBox != nullptr)
+				App->scene->aabbTree->Insert(go);
+		}
+
+	}
+
+	App->scene->BuildQuadTree();
+
+	return;
+}
+
+void GameObject::GetAllChilds(std::vector<GameObject*>& allChilds)
+{
+	for(auto ch : children)
+	{
+		allChilds.push_back(ch);
+		ch->GetAllChilds(allChilds);
+	}
+
+	return;
 }
 
 void GameObject::CheckDragAndDrop(GameObject * go)

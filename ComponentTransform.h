@@ -17,9 +17,11 @@ public:
 	void EulerToQuat();
 	void QuatToEuler();
 	void UpdateMatrices();
-	void SetGlobalMatrix(float4x4 &parentGlobal);
-	void SetLocalMatrix(float4x4 &newParentGlobalMatrix);
+	void SetGlobalMatrix(const float4x4 &parentGlobal);
+	void SetGlobalMatrix(const float4x4 &newGlobal, const float4x4 &parentGlobal);
+	void SetLocalMatrix(const float4x4 &newParentGlobalMatrix);
 	void TranslateTo(const float3 &newPos);
+	void DrawInspector();
 
 	//Saving and loading
 	void OnSave(SceneLoader & loader);

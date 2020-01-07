@@ -55,6 +55,11 @@ public:
 
 	virtual void OnLoad(SceneLoader & loader) {}
 
+	virtual void DrawInspector() 
+	{
+		return;
+	}
+
 	//GameObject Parent: 
 	//IMPORTANT, THIS POINTER MUST BE SYNC WITH PARENTS CHILDREN, BE CAREFUL
 	GameObject* myGameObject = nullptr;

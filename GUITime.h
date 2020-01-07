@@ -14,8 +14,7 @@ public:
 	~GUITime() = default;
 
 	void Draw(const char* title);
-
-	
+	bool vsyncActive = true;
 
 };
 

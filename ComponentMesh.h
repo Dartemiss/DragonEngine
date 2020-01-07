@@ -14,6 +14,8 @@ public:
 	void LoadMesh(Mesh* mesh);
 	void Draw(const unsigned int program) const;
 
+	float IsIntersectedByRay(const float3 &origin, const LineSegment &ray);
+
 	//Saving and loading
 	void OnSave(SceneLoader & loader);
 	void OnLoad(SceneLoader & loader);

@@ -7,6 +7,7 @@
 #include "MathGeoLib/Math/float3x3.h"
 #include "ComponentCamera.h"
 #include "GL/glew.h"
+#include "ImGuizmo/ImGuizmo.h"
 #include <vector>
 #include <set>
 
@@ -58,6 +59,7 @@ public:
 	//Debug
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
+	void DrawGuizmo() const;
 	void DrawAllGameObjects();
 	void DrawGame();
 	
@@ -71,6 +73,21 @@ public:
 	bool showAABBTree = true;
 	bool showFrustum = true;
 	bool showGrid = false;
+	bool antialiasing = false;
+
+	//Windows size
+	int heightScene, widthScene;
+	int heightGame, widthGame;
+
+	bool firstTimeCreatingBuffer = true;
+
+	void Pick() const;
+	void DrawGuizmoButtons() const;
+
+	ImGuizmo::OPERATION currentOperation = ImGuizmo::TRANSLATE;
+	ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
+
+	bool isGamePlaying = false;
 
 private:
 	void* context;
@@ -89,16 +106,14 @@ private:
 	unsigned int frameBufferObjectGame = 0; // FBO
 	unsigned int renderBufferObjectGame = 0; // RBO
 
-	int heightScene, widthScene;
-	int heightGame, widthGame;
+	unsigned int multiSampledAntiAliasingDepth = 0; //MSAAD
+	unsigned int multiSampledAntiAliasingColor = 0; //MSAAC
 
 	unsigned int sceneTexture = 0;
 	unsigned int gameTexture = 0;
 	
 	ComponentCamera* gameCamera = nullptr;
 	
-	std::vector<GameObject*> gameObjectsWithinFrustum;
-
 	//Skybox
 	Skybox* skybox = nullptr;
 
