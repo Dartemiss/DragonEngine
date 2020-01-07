@@ -62,16 +62,14 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 
 	vector<Mesh> meshes;
 	MeshData currentMeshData;
-	Mesh currentMesh;
 	vector<Texture> textures;
-	Texture currentTexture;
-
+	
 	for (int i = 0; i < modelData.meshes.size(); i++)
 	{
+		Mesh currentMesh;
 		if (Importer->LoadMesh(modelData.meshes[i].c_str(), currentMeshData))
 		{
 			ProcessMeshData(currentMeshData, currentMesh);
-			//currentMesh.setupMesh();
 			meshes.push_back(currentMesh);
 		}
 		else
@@ -80,6 +78,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 
 	for (int i = 0; i < modelData.textures.size(); i++)
 	{
+		Texture currentTexture;
 		if (Importer->LoadMaterial(modelData.textures[i].c_str(), currentTexture))
 		{
 			App->texture->LoadTexture(currentTexture);
@@ -122,146 +121,6 @@ const int ModuleModelLoader::GetNumberOfMeshes() const
 	//TODO change or delete
 	return 0;
 }
-
-//void ModuleModelLoader::ProcessNode(aiNode * node, const aiScene * scene, Model & model)
-//{
-//	// process all the node's meshes (if any)
-//	for (unsigned int i = 0; i < node->mNumMeshes; i++)
-//	{
-//		aiMesh * mesh = scene->mMeshes[node->mMeshes[i]];
-//		Mesh * myMesh = ProcessMesh(mesh, scene);
-//		vector<Texture> textures;
-//		ProcessTextures(mesh, scene, model.Directory, textures);
-//		for (unsigned int i = 0; i < textures.size(); i++)
-//		{
-//			Texture * newTex = new Texture();
-//			Texture currTex = textures[i];
-//			newTex->id = currTex.id;
-//			newTex->width = currTex.width;
-//			newTex->height = currTex.height;
-//			newTex->depth = currTex.depth;
-//			newTex->format = currTex.format;
-//			newTex->type = currTex.type;
-//			newTex->path = currTex.path;
-//			model.Meshes.emplace(myMesh, newTex);
-//		}
-//	}
-//	// then do the same for each of its children
-//	for (unsigned int i = 0; i < node->mNumChildren; i++)
-//	{
-//		ProcessNode(node->mChildren[i], scene, model);
-//	}
-//}
-//
-//Mesh* ModuleModelLoader::ProcessMesh(const aiMesh *mesh, const aiScene *scene)
-//{
-//	//Filling data
-//	vector<Vertex> vertices;
-//	vector<unsigned int> indices;
-//
-//	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-//	{
-//		Vertex vertex;
-//		// process vertex positions, normals and texture coordinates
-//		float3 positions;
-//		positions.x = mesh->mVertices[i].x;
-//		positions.y = mesh->mVertices[i].y;
-//		positions.z = mesh->mVertices[i].z;
-//		vertex.Position = positions;
-//
-//		float3 normals;
-//		normals.x = mesh->mNormals[i].x;
-//		normals.y = mesh->mNormals[i].y;
-//		normals.z = mesh->mNormals[i].z;
-//		vertex.Normal = normals;
-//
-//		
-//		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
-//		{
-//			float2 texturesCoords;
-//			texturesCoords.x = mesh->mTextureCoords[0][i].x;
-//			texturesCoords.y = mesh->mTextureCoords[0][i].y;
-//			vertex.TexCoords = texturesCoords;
-//		}
-//		else
-//			vertex.TexCoords = float2(0.0f, 0.0f);
-//
-//		vertices.push_back(vertex);
-//	}
-//	// process indices of each face
-//	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-//	{
-//		aiFace face = mesh->mFaces[i];
-//		for (unsigned int j = 0; j < face.mNumIndices; j++)
-//			indices.push_back(face.mIndices[j]);
-//	}
-//	
-//	return new Mesh(vertices, indices);
-//}
-//
-//void ModuleModelLoader::ProcessTextures(const aiMesh *mesh, const aiScene *scene, const string &directory, vector<Texture> &textures)
-//{
-//	if (mesh->mMaterialIndex >= 0)
-//	{
-//		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-//		// 1. diffuse maps
-//		vector<Texture> diffuseMaps = App->texture->loadMaterialTextures(material,
-//			aiTextureType_DIFFUSE, "texture_diffuse", directory);
-//		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-//		// 2. specular maps
-//		vector<Texture> specularMaps = App->texture->loadMaterialTextures(material,
-//			aiTextureType_SPECULAR, "texture_specular", directory);
-//		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-//		// 3. ambient maps
-//		vector<Texture> ambientMaps = App->texture->loadMaterialTextures(material,
-//			aiTextureType_AMBIENT, "texture_occlusive", directory);
-//		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-//		// 4. emissive maps
-//		vector<Texture> emissiveMaps = App->texture->loadMaterialTextures(material,
-//			aiTextureType_EMISSIVE, "texture_emissive", directory);
-//		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-//		// 5. normal maps
-//		vector<Texture> normalMaps = App->texture->loadMaterialTextures(material,
-//			aiTextureType_NORMALS, "texture_normal", directory);
-//		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-//		// 6. height maps
-//		vector<Texture> heightMaps = App->texture->loadMaterialTextures(material,
-//			aiTextureType_HEIGHT, "texture_height", directory);
-//		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-//	}
-//}
-
-//string ModuleModelLoader::ComputeDirectory(const string &path) const
-//{
-//	size_t simpleRightSlash = path.find_last_of('/');
-//	if (string::npos != simpleRightSlash)
-//	{
-//		LOG("Directory with simpleRightSlashes.")
-//		return path.substr(0, path.find_last_of('/') + 1);
-//	}
-//	size_t simpleLeftSlash = path.find_last_of('\\');
-//	if (string::npos != simpleLeftSlash)
-//	{
-//		LOG("Directory with simpleLeftSlashes.")
-//			return path.substr(0, path.find_last_of('\\') + 1);
-//	}
-//	size_t doubleRightSlash = path.find_last_of("//");
-//	if (string::npos != doubleRightSlash)
-//	{
-//		LOG("Directory with doubleRightSlashes.")
-//		return path.substr(0, path.find_last_of("//") + 1);
-//	}
-//
-//	size_t doubleLeftSlash = path.find_last_of("\\\\");
-//	if (string::npos != doubleLeftSlash)
-//	{
-//		LOG("Directory with doubleLeftSlashes.")
-//		return path.substr(0, path.find_last_of("\\\\") + 1);
-//	}
-//
-//	LOG("ERROR: Invalid path.");
-//	return "";
-//}
 
 string ModuleModelLoader::ComputeName(const string & path) const
 {

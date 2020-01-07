@@ -54,7 +54,6 @@ public:
 private:
 
 	/*  Functions   */
-	//std::string ComputeDirectory(const std::string &path) const;
 	std::string ComputeName(const std::string &path) const;
 	void ProcessMeshData(const MeshData & data, Mesh & mesh);
 };
