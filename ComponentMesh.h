@@ -21,6 +21,7 @@ public:
 	void OnLoad(SceneLoader & loader);
 
 	Mesh* mesh;
+	void ProcessMeshData(const MeshData & data, Mesh & mesh);
 };
 
 #endif __ComponentMesh_H__

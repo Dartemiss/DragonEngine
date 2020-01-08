@@ -4,6 +4,7 @@
 #include "MathGeoLib/Math/float3.h"
 #include "MathGeoLib/Math/float2.h"
 #include <vector>
+#include <string>
 
 struct Vertex {
 	float3 Position;
@@ -17,6 +18,7 @@ public:
 	/*  Mesh Data  */
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
+	std::string name;
 
 	/*  Functions  */
 	Mesh();

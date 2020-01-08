@@ -144,7 +144,7 @@ void GameObject::RemoveChildren(GameObject * child)
 
 	if(!children.empty())
 	{
-		children.erase(std::remove(children.begin(), children.end(), child), children.end());
+		children.erase(std::find(children.begin(), children.end(), child));
 	}
 	
 	return;

@@ -12,6 +12,8 @@ struct MeshData
 	float * positions;
 	float * normals;
 	float * texture_coords;
+
+	std::string name;
 };
 
 class MeshImporter : public MyImporter
