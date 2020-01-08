@@ -144,7 +144,7 @@ void GameObject::RemoveChildren(GameObject * child)
 
 	if(!children.empty())
 	{
-		children.erase(std::remove(children.begin(), children.end(), child), children.end());
+		children.erase(std::find(children.begin(), children.end(), child));
 	}
 	
 	return;
@@ -303,6 +303,11 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			if (ImGui::MenuItem("Baker House"))
 			{
 				App->scene->CreateGameObjectBakerHouse(this);
+			}
+
+			if (ImGui::MenuItem("Zom Bunny"))
+			{
+				App->scene->CreateGameObjectZomBunny(this);
 			}
 
 			ImGui::EndMenu();
@@ -469,6 +474,12 @@ void GameObject::ComputeAABB()
 void GameObject::DrawAABB() const
 {
 	dd::aabb(globalBoundingBox->minPoint, globalBoundingBox->maxPoint, float3(0, 1, 0));
+}
+
+void GameObject::Draw(const unsigned int program)
+{
+	myMaterial->SetDrawTextures(program);
+	myMesh->Draw(program);
 }
 
 void GameObject::DrawInspector(bool &showInspector)

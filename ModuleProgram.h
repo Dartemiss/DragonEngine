@@ -15,29 +15,28 @@ public:
 	~ModuleProgram() = default;
 
 	bool Init();
-	update_status PreUpdate();
-	update_status Update();
-	update_status PostUpdate();
 	bool CleanUp();
-
-	unsigned int createVertexShader(char* filename);
-	unsigned int createFragmentShader(char* filename);
-	unsigned int createProgram(const unsigned int vShader, const unsigned int fShader);
-
-	void setBool(const std::string &name, bool value, unsigned int prog) const;
-	void setInt(const std::string &name, int value, unsigned int prog) const;
-	void setFloat(const std::string &name, float value, unsigned int prog) const;
 
 	void SetUpUniformsBuffer();
 
-	char* readFile(char* filename) const;
-
 	//Programs
-	unsigned int gridProg = 0;
 	unsigned int defaultProg = 0;
 	unsigned int skyboxProg = 0;
 	unsigned int uniformsBuffer = 0;
 
+	unsigned int flatLighting = 0;
+	unsigned int gouraudLighting = 0;
+	unsigned int phongLighting = 0;
+	unsigned int blinnLighting = 0;
+
+	unsigned int uber = 0;
+
+private:
+	unsigned int createProgramWithShaders(const char * vertexShader, const char * fragmentShader) const;
+	unsigned int createShader(const char * filename, unsigned int shaderType) const;
+	unsigned int createProgram(unsigned int vShader, unsigned int fShader) const;
+
+	char* readFile(const char* filename) const;
 };
 
 #endif // __ModuleProgram_H__

@@ -23,7 +23,8 @@ void GUIInspector::Draw(const char * title)
 		ImGui::Separator();
 
 		ImGui::Text("Texture");
-		int numTex = App->modelLoader->numberOfTextures;
+		//TODO: change mockup
+		int numTex = 0;//App->modelLoader->numberOfTextures;
 		ImGui::DragInt("Number of textures", (int *)&numTex, 1, -1000, 1000);
 
 

@@ -12,115 +12,41 @@
 
 bool ModuleProgram::Init()
 {
+	//Lighting shaders
+	flatLighting = createProgramWithShaders("../Shaders/flat.vs", "../Shaders/flat.fs");
+	gouraudLighting = createProgramWithShaders("../Shaders/Gouraud.vs", "../Shaders/Gouraud.fs");
+	phongLighting = createProgramWithShaders("../Shaders/Phong.vs", "../Shaders/Phong.fs");
+	blinnLighting = createProgramWithShaders("../Shaders/Blinn.vs", "../Shaders/Blinn.fs");
 
-	//Grid shader
-	unsigned int vs2 = App->program->createVertexShader("../Shaders/Grid.vs");
-	unsigned int fs2 = App->program->createFragmentShader("../Shaders/Grid.fs");
-
-	gridProg = App->program->createProgram(vs2, fs2);
+	uber = createProgramWithShaders("../Shaders/UberShader.vs", "../Shaders/UberShader.fs");
 
 	//Skybox shader
-	unsigned int vs3 = App->program->createVertexShader("../Shaders/Skybox.vs");
-	unsigned int fs3 = App->program->createFragmentShader("../Shaders/Skybox.fs");
-
-	skyboxProg = createProgram(vs3, fs3);
+	skyboxProg = createProgramWithShaders("../Shaders/Skybox.vs", "../Shaders/Skybox.fs");
 
 	//Default shader
-	unsigned int vs = App->program->createVertexShader("../Shaders/VertexShader.vs");
-	unsigned int fs = App->program->createFragmentShader("../Shaders/Model.fs");
-
-	defaultProg = App->program->createProgram(vs, fs);
+	defaultProg = createProgramWithShaders("../Shaders/VertexShader.vs", "../Shaders/Model.fs");
 
 	SetUpUniformsBuffer();
 
 	return true;
 }
 
-update_status ModuleProgram::PreUpdate()
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleProgram::Update()
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleProgram::PostUpdate()
-{
-	return UPDATE_CONTINUE;
-}
-
 bool ModuleProgram::CleanUp()
 {
 	glDeleteProgram(defaultProg);
-	glDeleteProgram(gridProg);
 
+	glDeleteProgram(flatLighting);
+	glDeleteProgram(gouraudLighting);
+	glDeleteProgram(phongLighting);
+	glDeleteProgram(blinnLighting);
+	
 	return true;
-}
-
-unsigned int ModuleProgram::createProgram(const unsigned int vShader, const unsigned int fShader)
-{
-	unsigned int program = glCreateProgram();
-	
-	if (vShader != NULL) 
-	{
-		LOG("Attaching Vertex Shader");
-		glAttachShader(program, vShader);
-	}
-
-	if(fShader != NULL)
-	{
-		LOG("Attaching Fragment Shader");
-		glAttachShader(program, fShader);
-	}
-
-	LOG("Linking program");
-	glLinkProgram(program);
-
-	LOG("Deleting Vertex Shader");
-	glDeleteShader(vShader);
-
-	LOG("Deleting Fragment Shader");
-	glDeleteShader(fShader);
-
-	//Now we can delete shaders
-	int  success;
-	char infoLog[512];
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		LOG("ERROR::PROGRAM::CREATION_FAILED\n");
-		LOG("ERROR: %s\n", infoLog);
-	}
-
-	
-	return program;
-}
-
-void ModuleProgram::setBool(const std::string & name, bool value, unsigned int prog) const
-{
-	glUniform1i(glGetUniformLocation(prog, name.c_str()), (int)value);
-}
-
-void ModuleProgram::setInt(const std::string & name, int value, unsigned int prog) const
-{
-	glUniform1i(glGetUniformLocation(prog, name.c_str()), value);
-}
-
-void ModuleProgram::setFloat(const std::string & name, float value, unsigned int prog) const
-{
-	glUniform1f(glGetUniformLocation(prog, name.c_str()), value);
 }
 
 void ModuleProgram::SetUpUniformsBuffer()
 {
-	unsigned int uniformBlockIndexGrid = glGetUniformBlockIndex(gridProg, "Matrices");
-	glUniformBlockBinding(gridProg, uniformBlockIndexGrid, 0);
-
 	unsigned int uniformBlockIndexDefault = glGetUniformBlockIndex(defaultProg, "Matrices");
 	glUniformBlockBinding(defaultProg, uniformBlockIndexDefault, 0);
-
 
 	glGenBuffers(1, &uniformsBuffer);
 
@@ -129,39 +55,62 @@ void ModuleProgram::SetUpUniformsBuffer()
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uniformsBuffer, 0, 2 * sizeof(float4x4));
-
 }
 
-
-unsigned int ModuleProgram::createVertexShader(char * filename)
+unsigned int ModuleProgram::createProgramWithShaders(const char * vertexFilename, const char * fragmentFilename) const
 {
-	assert(filename != NULL);
-	char* data = readFile(filename);
-	unsigned int shaderId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(shaderId,1,&data,NULL);
-	glCompileShader(shaderId);
-	delete data;
+	LOG("Compiling Vertex Shader from %s", vertexFilename);
+	unsigned int vertexShader = createShader(vertexFilename, GL_VERTEX_SHADER);
+	LOG("Compiling Fragment Shader from %s", fragmentFilename);
+	unsigned int fragmentShader = createShader(fragmentFilename, GL_FRAGMENT_SHADER);
 
-	GLint success = GL_FALSE;
-	int logLength;
-	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+	return createProgram(vertexShader, fragmentShader);
+}
 
-	if (!success) {
-		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
-		std::vector<GLchar> vertexShaderError((logLength > 1) ? logLength : 1);
-		glGetShaderInfoLog(shaderId, logLength, NULL, &vertexShaderError[0]);
-		LOG("ERROR: Shader coudn't be compiled : %s\n", &vertexShaderError[0]);
+unsigned int ModuleProgram::createProgram(unsigned int vShader, unsigned int fShader) const
+{
+	unsigned int program = glCreateProgram();
+
+	if (vShader != NULL)
+	{
+		LOG("Attaching Vertex Shader");
+		glAttachShader(program, vShader);
 	}
-	
 
-	return shaderId;
+	if (fShader != NULL)
+	{
+		LOG("Attaching Fragment Shader");
+		glAttachShader(program, fShader);
+	}
+
+	LOG("Linking program");
+	glLinkProgram(program);
+
+	int  success;
+	char infoLog[512];
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(program, 512, NULL, infoLog);
+		LOG("\nERROR::PROGRAM::CREATION_FAILED");
+		LOG("ERROR: %s\n", infoLog);
+	}
+
+	//Now we can delete shaders
+	LOG("Deleting Vertex Shader");
+	glDeleteShader(vShader);
+
+	LOG("Deleting Fragment Shader\n");
+	glDeleteShader(fShader);
+
+	return program;
 }
 
-unsigned int ModuleProgram::createFragmentShader(char * filename)
+unsigned int ModuleProgram::createShader(const char * filename, unsigned int shaderType) const
 {
-	assert(filename != NULL);
+	assert(filename != nullptr);
+
 	char* data = readFile(filename);
-	unsigned int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int shaderId = glCreateShader(shaderType);
 	glShaderSource(shaderId, 1, &data, NULL);
 	glCompileShader(shaderId);
 	delete data;
@@ -172,18 +121,18 @@ unsigned int ModuleProgram::createFragmentShader(char * filename)
 
 	if (!success) {
 		glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logLength);
-		std::vector<GLchar> fragmentShaderError((logLength > 1) ? logLength : 1);
-		glGetShaderInfoLog(shaderId, logLength, NULL, &fragmentShaderError[0]);
-		LOG("ERROR: Shader coudn't be compiled : %s\n", &fragmentShaderError[0]);
+		std::vector<GLchar> shaderError((logLength > 1) ? logLength : 1);
+		glGetShaderInfoLog(shaderId, logLength, NULL, &shaderError[0]);
+		LOG("ERROR: Shader with path %s coudn't be compiled : %s\n", filename, &shaderError[0]);
 	}
 
 	return shaderId;
 }
 
-
-
-char* ModuleProgram::readFile(char* file_name) const
+char* ModuleProgram::readFile(const char* file_name) const
 {
+	assert(file_name != nullptr);
+
 	char* result = nullptr;
 	FILE* file = nullptr;
 	fopen_s(&file, file_name, "rb");
@@ -200,7 +149,3 @@ char* ModuleProgram::readFile(char* file_name) const
 	
 	return result;
 }
-
-
-
-

@@ -8,6 +8,7 @@
 #include "ModuleIMGUI.h"
 #include "ModuleModelLoader.h"
 #include "ModuleScene.h"
+#include "ModuleTexture.h"
 #include "ModuleDebugDraw.h"
 #include "ModuleInput.h"
 #include "ComponentTransform.h"
@@ -161,6 +162,8 @@ bool ModuleRender::Init()
 
 	skybox = new Skybox();
 
+	//TODO: move to texture Start
+	App->texture->LoadWhiteFallbackTexture();
 
 	//Scene w, h
 	widthScene = static_cast<int>(App->window->width * App->imgui->sceneSizeRatioWidth);
@@ -220,7 +223,7 @@ update_status ModuleRender::Update()
 
 		ImGui::EndTabBar();
 
-		//Draw Scene or game depending 
+		//Draw Scene or game depending
 
 		//Draw Buttons
 		App->imgui->DrawPlayPauseButtons();
@@ -260,7 +263,6 @@ bool ModuleRender::CleanUp()
 
 	return true;
 }
-
 
 void ModuleRender::DrawGuizmo() const
 {
@@ -306,7 +308,8 @@ void ModuleRender::DrawGuizmo() const
 void ModuleRender::DrawAllGameObjects()
 {
 
-	unsigned int progModel = App->program->defaultProg;
+	//unsigned int progModel = App->program->defaultProg;
+	unsigned int progModel = App->program->uber;
 
 	glUseProgram(progModel);
 
@@ -344,8 +347,7 @@ void ModuleRender::DrawAllGameObjects()
 			{
 				if (gameObject->myMesh != nullptr)
 				{
-					gameObject->myMesh->Draw(progModel);
-
+					gameObject->Draw(progModel);
 				}
 
 				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr && showBoundingBox)
@@ -357,7 +359,8 @@ void ModuleRender::DrawAllGameObjects()
 		{
 			if (gameObject->myMesh != nullptr)
 			{
-				gameObject->myMesh->Draw(progModel);
+				gameObject->Draw(progModel);
+				//gameObject->myMesh->Draw(progModel);
 
 			}
 			if (gameObject->boundingBox != nullptr && gameObject->isParentOfMeshes && showBoundingBox)
@@ -374,7 +377,7 @@ void ModuleRender::DrawAllGameObjects()
 
 void ModuleRender::DrawGame()
 {
-	unsigned int progModel = App->program->defaultProg;
+	unsigned int progModel = App->program->uber;
 	glUseProgram(progModel);
 
 	glUniformMatrix4fv(glGetUniformLocation(progModel,
@@ -408,7 +411,8 @@ void ModuleRender::DrawGame()
 
 			if (gameObject->myMesh != nullptr)
 			{
-				gameObject->myMesh->Draw(progModel);
+				gameObject->Draw(progModel);
+				//gameObject->myMesh->Draw(progModel);
 			}
 		}
 
@@ -416,10 +420,6 @@ void ModuleRender::DrawGame()
 
 	glUseProgram(0);
 }
-
-
-
-
 
 void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 {
