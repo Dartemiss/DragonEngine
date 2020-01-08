@@ -2,8 +2,10 @@
 #include "SceneLoader.h"
 #include "Application.h"
 #include "ModuleTexture.h"
+#include "SceneImporter.h"
 #include "GL/glew.h"
 
+using namespace std;
 
 ComponentMaterial::ComponentMaterial(GameObject* go)
 {
@@ -70,10 +72,10 @@ bool ComponentMaterial::CleanUp()
 	return false;
 }
 
-void ComponentMaterial::SetTextures(std::vector<Texture*> & textures)
+void ComponentMaterial::SetTextures(vector<Texture*> & textures)
 {
 	//TODO change textures parameter to pointers reference
-	std::string name;
+	string name;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		name = textures[i]->type;
@@ -169,22 +171,69 @@ void ComponentMaterial::OnSave(SceneLoader & loader)
 	loader.AddFloat("kAmbient", kAmbient);
 	loader.AddFloat("shininess", shininess);
 
-	loader.AddVec4f("diffuseColor", diffuseColor);
-	loader.AddVec3f("specularColor", specularColor);
-	loader.AddVec3f("emissiveColor", emissiveColor);
 
 	if (diffuseMap != nullptr)
 		loader.AddString("diffuseMap", diffuseMap->path.c_str());
-	if (specularMap != nullptr)
-		loader.AddString("diffuseMap", specularMap->path.c_str());
-	if (occlusionMap != nullptr)
-		loader.AddString("diffuseMap", occlusionMap->path.c_str());
-	if (emissiveMap != nullptr)
-		loader.AddString("diffuseMap", emissiveMap->path.c_str());
+	else
+		loader.AddVec4f("diffuseColor", diffuseColor);
 
+	if (specularMap != nullptr)
+		loader.AddString("specularMap", specularMap->path.c_str());
+	else
+		loader.AddVec3f("specularColor", specularColor);
+
+	if (occlusionMap != nullptr)
+		loader.AddString("occlusionMap", occlusionMap->path.c_str());
+
+	if (emissiveMap != nullptr)
+		loader.AddString("emissiveMap", emissiveMap->path.c_str());
+	else
+		loader.AddVec3f("emissiveColor", emissiveColor);
 }
 
 void ComponentMaterial::OnLoad(SceneLoader & loader)
 {
-	//TODO implement load
+	kDiffuse = loader.GetFloat("kDiffuse", 0.0f);
+	kSpecular = loader.GetFloat("kSpecular", 0.0f);
+	kAmbient = loader.GetFloat("kAmbient", 0.0f);
+	shininess = loader.GetFloat("shininess", 0.0f);
+
+	string currName;
+	currName = loader.GetString("diffuseMap", "non-existent");
+	if (currName != "non-existent")
+	{
+		diffuseMap = new Texture();
+		Importer->LoadMaterial(currName.c_str(), *diffuseMap);
+		App->texture->LoadTexture(*diffuseMap);
+	}
+	else
+		diffuseColor = loader.GetVec4f("diffuseColor", float4(0, 0, 0, 0));
+	
+	currName = loader.GetString("specularMap", "non-existent");
+	if (currName != "non-existent")
+	{
+		specularMap = new Texture();
+		Importer->LoadMaterial(currName.c_str(), *specularMap);
+		App->texture->LoadTexture(*specularMap);
+	}
+	else
+		specularColor = loader.GetVec3f("specularColor", float3(0, 0, 0));
+	
+	currName = loader.GetString("occlusionMap", "non-existent");
+	if (currName != "non-existent")
+	{
+		occlusionMap = new Texture();
+		Importer->LoadMaterial(currName.c_str(), *occlusionMap);
+		App->texture->LoadTexture(*occlusionMap);
+	}
+
+	currName = loader.GetString("emissiveMap", "non-existent");
+	if (currName != "non-existent")
+	{
+		emissiveMap = new Texture();
+		Importer->LoadMaterial(currName.c_str(), *emissiveMap);
+		App->texture->LoadTexture(*emissiveMap);
+	}
+	else
+		emissiveColor = loader.GetVec3f("emissiveColor", float3(0, 0, 0));
 }

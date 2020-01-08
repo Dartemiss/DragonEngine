@@ -280,6 +280,7 @@ void ModuleRender::DrawGuizmo() const
 	{
 		//Use guizmos only if object is static
 		ImGuizmo::Enable(true);
+		//TODO: Fix a bug where if you modify first rotation and then you use guizmo to scale rotation comeback to default (related with ImGuizmo::MODE = WORLD)
 		float4x4 model = App->scene->selectedByHierarchy->myTransform->globalModelMatrix;
 		float4x4 view = App->camera->GetViewMatrix();
 		float4x4 proj = App->camera->GetProjMatrix();

@@ -92,5 +92,7 @@ bool MeshImporter::Load(const char * exported_file, MeshData & mesh)
 	mesh.texture_coords = new float[mesh.num_vertices * 2];
 	memcpy(mesh.texture_coords, cursor, bytes);
 
+	mesh.name = exported_file;
+
 	return true;
 }

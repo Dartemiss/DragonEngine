@@ -96,6 +96,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 		Mesh * newMesh = new Mesh();
 		newMesh->vertices = meshes[pair.mesh - 1].vertices;
 		newMesh->indices = meshes[pair.mesh - 1].indices;
+		newMesh->name = meshes[pair.mesh - 1].name;
 		newMesh->setupMesh();
 
 		Texture * newTex = new Texture();
@@ -441,4 +442,6 @@ void ModuleModelLoader::ProcessMeshData(const MeshData & data, Mesh & mesh)
 	{
 		mesh.indices.push_back(data.indices[i]);
 	}
+
+	mesh.name = data.name;
 }
