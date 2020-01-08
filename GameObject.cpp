@@ -129,6 +129,9 @@ void GameObject::SetParent(GameObject * newParent)
 		parent = newParent;
 		parent->children.push_back(this);
 
+		if(myMesh != nullptr)
+			parent->isParentOfMeshes = true;
+
 		return;
 	}
 
