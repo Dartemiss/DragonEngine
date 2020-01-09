@@ -9,6 +9,7 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "ComponentLight.h"
 #include "AABBTree.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl.h"
@@ -199,9 +200,11 @@ Component * GameObject::CreateComponent(ComponentType type)
 			component = new ComponentMaterial(this);
 			myMaterial = (ComponentMaterial*)component;
 			break;
-
 		case CAMERA:
 			component = new ComponentCamera(this);
+			break;
+		case LIGHT:
+			component = new ComponentLight(this);
 			break;
 		default:
 			LOG("ERROR: INVALID TYPE OF COMPONENT");
