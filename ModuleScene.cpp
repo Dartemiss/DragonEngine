@@ -47,14 +47,15 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
+	aabbTree = new AABBTree(10);
+
 	//Creating the main camera of the game
 	mainCamera = CreateGameObject("Main Camera", root);
 	mainCamera->CreateComponent(CAMERA);
 
 	allGameObjects.insert(mainCamera);
 	dynamicGO.insert(mainCamera);
-
-	aabbTree = new AABBTree(10);
+	aabbTree->Insert(mainCamera);
 
 	return true;
 }
@@ -103,6 +104,8 @@ bool ModuleScene::CleanUp()
 		quadtree->ClearIterative();
 		delete quadtree;
 	}
+
+	quadTreeInitialized = false;
 
 	for(auto GO : allGameObjects)
 	{

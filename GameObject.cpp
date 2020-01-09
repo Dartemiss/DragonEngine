@@ -32,6 +32,9 @@ GameObject::GameObject(const char * name)
 	this->name = name;
 	CreateComponent(TRANSFORM);
 	this->UID = UUIDGen->getUUID();
+	boundingBox = new AABB(myTransform->position - float3(1, 1, 1), myTransform->position + float3(1, 1, 1));
+	globalBoundingBox = new AABB(*boundingBox);
+
 }
 
 GameObject::GameObject(const GameObject &go, GameObject* parent)
