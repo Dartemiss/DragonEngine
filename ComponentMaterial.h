@@ -18,6 +18,8 @@ public:
 	void Update();
 	bool CleanUp();
 
+	void DrawInspector();
+
 	void SetTextures(std::vector<Texture*> & textures);
 	void SetDrawTextures(const unsigned int program);
 
@@ -41,6 +43,12 @@ public:
 
 	Texture * whiteFallbackTexture = nullptr;
 	float4 whitefallbackColor;
+
+private:
+	bool ambientMipMapActive = false;
+	bool diffuseMipMapActive = false;
+	bool specularMipMapActive = false;
+
 };
 
 #endif __ComponentMaterial_H__

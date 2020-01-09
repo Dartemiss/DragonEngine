@@ -8,9 +8,6 @@
 #include "SceneLoader.h"
 #include <math.h>
 #include "MathGeoLib/Geometry/Plane.h"
-#include "Imgui/imgui.h"
-#include "Imgui/imgui_impl_sdl.h"
-#include "Imgui/imgui_impl_opengl3.h"
 #include "debugdraw.h"
 #include "GL/glew.h"
 
@@ -156,6 +153,19 @@ void ComponentCamera::DrawInspector()
 {
 	if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		//TODO: Make that isActive is used
+		ImGui::Checkbox("Active", &isActive);
+		ImGui::SameLine();
+		if(ImGui::Button("Remove Component",ImVec2(130,20)))
+		{
+			LOG("Removing Component Camera from %s", myGameObject->name);
+			myGameObject->components.erase(std::find(myGameObject->components.begin(), myGameObject->components.end(), this));
+			CleanUp();
+			delete this;
+			
+			return;
+		}
+
 		ImGui::Combo(":Projection ", &currentPerspective, perspectives, IM_ARRAYSIZE(perspectives));
 		ChangeFrustumType();
 

@@ -3,7 +3,6 @@
 #include <stack>
 #include "debugdraw.h"
 
-//TODO: For knowing if an object is really moving have an aabb a litle more bigger than the mesh and only remove it if necessary
 
 AABBTree::AABBTree(unsigned initialSize)
 {

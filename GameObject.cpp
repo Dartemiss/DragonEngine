@@ -484,8 +484,12 @@ void GameObject::DrawAABB() const
 
 void GameObject::Draw(const unsigned int program)
 {
-	myMaterial->SetDrawTextures(program);
-	myMesh->Draw(program);
+	if(myMesh != nullptr)
+	{
+		myMaterial->SetDrawTextures(program);
+		myMesh->Draw(program);
+	}
+
 }
 
 void GameObject::DrawInspector(bool &showInspector)
@@ -571,7 +575,6 @@ void GameObject::OnSave(SceneLoader & loader)
 
 void GameObject::OnLoad(SceneLoader & loader)
 {
-	//TODO: When loading crashes because mesh loading is not implemented
 
 	UID = loader.GetUnsignedInt("UID", 0);
 	assert(UID != 0);
