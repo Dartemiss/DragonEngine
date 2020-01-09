@@ -32,6 +32,9 @@ GameObject::GameObject(const char * name)
 	this->name = name;
 	CreateComponent(TRANSFORM);
 	this->UID = UUIDGen->getUUID();
+	boundingBox = new AABB(myTransform->position - float3(1, 1, 1), myTransform->position + float3(1, 1, 1));
+	globalBoundingBox = new AABB(*boundingBox);
+
 }
 
 GameObject::GameObject(const GameObject &go, GameObject* parent)
@@ -128,6 +131,9 @@ void GameObject::SetParent(GameObject * newParent)
 		LOG("Setting new GamesObject parent and children.")
 		parent = newParent;
 		parent->children.push_back(this);
+
+		if(myMesh != nullptr)
+			parent->isParentOfMeshes = true;
 
 		return;
 	}

@@ -12,7 +12,8 @@ class GameObject;
 
 struct Node
 {
-	//Pointer to childs	
+	//Pointer to childs
+	Node* parent = nullptr;
 	Node* children[4];
 
 	std::vector<GameObject*> gameObjects;
@@ -22,6 +23,7 @@ struct Node
 	AABB* quadrant = nullptr;
 
 	int level = 0;
+	unsigned int index = 0;
 	
 };
 
@@ -62,6 +64,7 @@ public:
 	
 	int levelOfDepth = 0;
 	int maxHeight = 0;
+	unsigned int currentMaxIndex = 0;
 	
 	//Children
 	MyQuadTree* topLeft = nullptr;
