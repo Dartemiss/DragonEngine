@@ -206,6 +206,15 @@ void ModuleIMGUI::DrawPlayPauseButtons() const
 		//Do things
 		App->timemanager->PlayGame();
 		App->renderer->isGamePlaying = !App->renderer->isGamePlaying;
+		//If now is going to be game
+		if(App->renderer->isGamePlaying)
+		{
+			App->scene->SaveScene();
+		}
+		else
+		{
+			App->scene->LoadScene();
+		}
 	}
 	ImGui::SameLine();
 	if(ImGui::Button(ICON_FA_PAUSE ""))

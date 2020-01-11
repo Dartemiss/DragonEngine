@@ -47,12 +47,15 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
+	aabbTree = new AABBTree(10);
+
 	//Creating the main camera of the game
 	mainCamera = CreateGameObject("Main Camera", root);
 	mainCamera->CreateComponent(CAMERA);
 
 	allGameObjects.insert(mainCamera);
 	dynamicGO.insert(mainCamera);
+	aabbTree->Insert(mainCamera);
 
 	//Creating the sun light
 	directionalLight = CreateGameObject("Directional Light", root);
@@ -61,8 +64,7 @@ bool ModuleScene::Init()
 
 	allGameObjects.insert(directionalLight);
 	dynamicGO.insert(directionalLight);
-
-	aabbTree = new AABBTree(10);
+	aabbTree->Insert(directionalLight);
 
 	return true;
 }
@@ -111,6 +113,8 @@ bool ModuleScene::CleanUp()
 		quadtree->ClearIterative();
 		delete quadtree;
 	}
+
+	quadTreeInitialized = false;
 
 	for(auto GO : allGameObjects)
 	{
@@ -168,7 +172,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 	int numObject = 0;
 	std::string name = modelLoaded.Name;
 	LOG("Creating parent gameObject %s", name.c_str());
-	parent->SetName(name);
+	//parent->SetName(name);
 
 	LOG("For each mesh of the model we create a gameObject.");
 	
@@ -191,24 +195,6 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 		++numObject;
 	}
 
-
-
-	/*for(auto mesh : App->modelLoader->meshes)
-	{
-		std::string newName = name + std::to_string(numObject);
-		GameObject* newMeshObject = CreateGameObject(newName.c_str(), parent);
-		ComponentMesh* myMeshCreated = (ComponentMesh*)newMeshObject->CreateComponent(MESH);
-		ComponentMaterial* myMaterialCreated = (ComponentMaterial*)newMeshObject->CreateComponent(MATERIAL);
-		
-
-		myMeshCreated->LoadMesh(mesh);
-		myMaterialCreated->SetTextures(myMeshCreated->mesh->textures);
-		newMeshObject->ComputeAABB();
-		allGameObjects.insert(newMeshObject);
-		dynamicGO.insert(newMeshObject);
-		aabbTree->Insert(newMeshObject);
-		++numObject;
-	}*/
 
 	parent->ComputeAABB();
 	//Setting parent as a meshParent
@@ -239,7 +225,7 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	}
 
 	LOG("Creating a GameObject with Baker House Mesh.");
-	std::string defaultName = "BakerHouse" + std::to_string(numberOfBakerHouse + 1);
+	std::string defaultName = "ParentBakerHouse" + std::to_string(numberOfBakerHouse + 1);
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
 	LoadModel("BakerHouse", newGameObject);
 	++numberOfBakerHouse;

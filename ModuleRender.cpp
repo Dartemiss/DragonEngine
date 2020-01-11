@@ -345,10 +345,9 @@ void ModuleRender::DrawAllGameObjects()
 
 			if(App->camera->editorCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
-				if (gameObject->myMesh != nullptr)
-				{
-					gameObject->Draw(progModel);
-				}
+
+				gameObject->Draw(progModel);
+				
 
 				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr && showBoundingBox)
 					gameObject->DrawAABB();
@@ -357,12 +356,9 @@ void ModuleRender::DrawAllGameObjects()
 		}
 		else
 		{
-			if (gameObject->myMesh != nullptr)
-			{
-				gameObject->Draw(progModel);
-				//gameObject->myMesh->Draw(progModel);
 
-			}
+			gameObject->Draw(progModel);
+
 			if (gameObject->boundingBox != nullptr && gameObject->isParentOfMeshes && showBoundingBox)
 				gameObject->DrawAABB();
 		}

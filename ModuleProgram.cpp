@@ -35,6 +35,7 @@ bool ModuleProgram::CleanUp()
 {
 	glDeleteProgram(defaultProg);
 
+	//TODO: Randomly this line crashes on close
 	glDeleteProgram(flatLighting);
 	glDeleteProgram(gouraudLighting);
 	glDeleteProgram(phongLighting);

@@ -113,3 +113,28 @@ void ComponentMesh::ProcessMeshData(const MeshData & data, Mesh & mesh)
 	mesh.name = data.name;
 }
 
+void ComponentMesh::DrawInspector()
+{
+	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		//TODO: Make that isActive is used
+		ImGui::Checkbox("Active", &isActive);
+		ImGui::SameLine();
+		if (ImGui::Button("Remove Component", ImVec2(130, 20)))
+		{
+			LOG("Removing Component Mesh from %s", myGameObject->name);
+			myGameObject->components.erase(std::find(myGameObject->components.begin(), myGameObject->components.end(), this));
+			CleanUp();
+			delete this;
+
+			return;
+		}
+
+		ImGui::Text("Path: %s", mesh->name.c_str());
+		ImGui::Text("Number of triangles: %d", mesh->indices.size() / 3);
+
+	}
+
+	return;
+}
+

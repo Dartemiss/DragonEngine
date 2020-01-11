@@ -2,6 +2,9 @@
 #define __Component_H__
 
 #include "Globals.h"
+#include "Imgui/imgui.h"
+#include "Imgui/imgui_impl_sdl.h"
+#include "Imgui/imgui_impl_opengl3.h"
 #include <string>
 
 enum ComponentType

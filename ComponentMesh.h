@@ -22,6 +22,7 @@ public:
 
 	Mesh* mesh;
 	void ProcessMeshData(const MeshData & data, Mesh & mesh);
+	void DrawInspector();
 };
 
 #endif __ComponentMesh_H__

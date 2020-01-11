@@ -3,7 +3,6 @@
 #include <stack>
 #include "debugdraw.h"
 
-//TODO: For knowing if an object is really moving have an aabb a litle more bigger than the mesh and only remove it if necessary
 
 AABBTree::AABBTree(unsigned initialSize)
 {
@@ -68,7 +67,9 @@ void AABBTree::Insert(GameObject * go)
 	unsigned nodeIndex = AllocateNode();
 	NodeAABB& node = nodes[nodeIndex];
 
-	node.aabb = *go->globalBoundingBox;
+	//AABB a bit bigger for avoiding little movements
+	AABB auxAABB = AABB(go->globalBoundingBox->minPoint - float3(2,2,2), go->globalBoundingBox->maxPoint + float3(2,2,2));
+	node.aabb = auxAABB;
 	node.go = go;
 
 	InsertLeaf(nodeIndex);
@@ -237,8 +238,6 @@ void AABBTree::RemoveLeaf(unsigned leafNodeIndex)
 
 	NodeAABB& leafNode = nodes[leafNodeIndex];
 	unsigned parentNodeIndex = leafNode.parentNodeIndex;
-	if (parentNodeIndex >= nodes.size())
-		LOG("ERROR IS HERE BRO");
 	const NodeAABB& parentNode = nodes[parentNodeIndex];
 	unsigned grandParentNodeIndex = parentNode.parentNodeIndex;
 	unsigned siblingNodeIndex = parentNode.leftNodeIndex == leafNodeIndex ? parentNode.rightNodeIndex : parentNode.leftNodeIndex;
@@ -354,7 +353,8 @@ void AABBTree::UpdateLeaf(unsigned leafNodeIndex, const AABB & newAaab)
 	if (node.aabb.Contains(newAaab)) return;
 
 	RemoveLeaf(leafNodeIndex);
-	node.aabb = newAaab;
+	//AABB a bit bigger for avoiding little movements
+	node.aabb = AABB(newAaab.minPoint - float3(2, 2, 2), newAaab.maxPoint + float3(2, 2, 2));
 	InsertLeaf(leafNodeIndex);
 	
 	return;

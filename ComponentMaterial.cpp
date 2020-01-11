@@ -2,6 +2,7 @@
 #include "SceneLoader.h"
 #include "Application.h"
 #include "ModuleTexture.h"
+#include "GameObject.h"
 #include "SceneImporter.h"
 #include "GL/glew.h"
 
@@ -231,4 +232,73 @@ void ComponentMaterial::OnLoad(SceneLoader & loader)
 	}
 	else
 		emissiveColor = loader.GetVec3f("emissiveColor", float3(0, 0, 0));
+}
+
+
+void ComponentMaterial::DrawInspector()
+{
+	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		//TODO: Make that isActive is used
+		ImGui::Checkbox("Active", &isActive);
+		ImGui::SameLine();
+		if (ImGui::Button("Remove Component", ImVec2(130, 20)))
+		{
+			LOG("Removing Component Material from %s", myGameObject->name);
+			myGameObject->components.erase(std::find(myGameObject->components.begin(), myGameObject->components.end(), this));
+			CleanUp();
+			delete this;
+
+			return;
+		}
+
+		if(ImGui::CollapsingHeader("Ambient", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			if(ImGui::Checkbox("Mipmaps", &ambientMipMapActive))
+			{
+				//Do something
+			}
+
+			ImGui::DragFloat("k ambient", &kAmbient, 0.01f, 0.0f, 1.0f);
+
+		}
+
+		if (ImGui::CollapsingHeader("Diffuse", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			if (ImGui::Checkbox("Mipmaps", &ambientMipMapActive))
+			{
+				//Do something
+			}
+
+			ImGui::ColorEdit4("Color Diffuse", (float*)&diffuseColor);
+			ImGui::DragFloat("k diffuse", &kDiffuse, 0.01f, 0.0f, 1.0f);
+
+		}
+		if (ImGui::CollapsingHeader("Specular", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			if (ImGui::Checkbox("Mipmaps", &ambientMipMapActive))
+			{
+				//Do something
+			}
+
+			ImGui::ColorEdit3("Color Specular", (float*)&specularColor);
+			ImGui::DragFloat("k specular", &kSpecular, 0.01f, 0.0f, 1.0f);
+
+		}
+
+		if (ImGui::CollapsingHeader("Emissive", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			if (ImGui::Checkbox("Mipmaps", &ambientMipMapActive))
+			{
+				//Do something
+			}
+
+			ImGui::ColorEdit3("Color Emissive", (float*)&emissiveColor);
+
+		}
+
+
+	}
+
+	return;
 }

@@ -50,11 +50,11 @@ public:
 	float3 modelCenter = float3(0.0f, 0.0f, 0.0f);
 
 	std::vector<Model> models;
+	std::string ComputeName(const std::string &path) const;
 
 private:
 
 	/*  Functions   */
-	std::string ComputeName(const std::string &path) const;
 	void ProcessMeshData(const MeshData & data, Mesh & mesh);
 };
 

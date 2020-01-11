@@ -260,21 +260,35 @@ void MyQuadTree::SubdivideIterative(Node* node, GameObject* go)
 	float3 center = node->quadrant->CenterPoint();
 	//Z axis is pointing to negative (top)
 
+	++currentMaxIndex;
+
 	node->isLeaf = false;
 	//Top Left
 	node->children[0] = new Node();
+	node->children[0]->index = currentMaxIndex;
+	++currentMaxIndex;
+	node->children[0]->parent = node;
 	node->children[0]->quadrant = new AABB(node->quadrant->minPoint, center);
 	node->children[0]->level = node->level + 1;
 	//Top Right
 	node->children[1] = new Node();
+	node->children[1]->index = currentMaxIndex;
+	++currentMaxIndex;
+	node->children[1]->parent = node;
 	node->children[1]->quadrant = new AABB(float3(center.x, 0, node->quadrant->minPoint.z), float3(node->quadrant->maxPoint.x, 0, center.z));
 	node->children[1]->level = node->level + 1;
 	//Bottom Left
 	node->children[2] = new Node();
+	node->children[2]->index = currentMaxIndex;
+	++currentMaxIndex;
+	node->children[2]->parent = node;
 	node->children[2]->quadrant = new AABB(float3(node->quadrant->minPoint.x, 0, center.z), float3(center.x, 0, node->quadrant->maxPoint.z));
 	node->children[2]->level = node->level + 1;
 	//BottomRight
 	node->children[3] = new Node();
+	node->children[3]->index = currentMaxIndex;
+	++currentMaxIndex;
+	node->children[3]->parent = node;
 	node->children[3]->quadrant = new AABB(center, node->quadrant->maxPoint);
 	node->children[3]->level = node->level + 1;
 
@@ -338,9 +352,12 @@ void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bb
 
 	Node* current = nullptr;
 	Node* previous = nullptr;
+
 	std::stack<int> indexes;
 	std::stack<Node*> stackOfNodes;
 	current = nodes[0];
+	indexes.push(0);
+	stackOfNodes.push(current);
 	int times = 0;
 	while(true)
 	{

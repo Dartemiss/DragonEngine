@@ -2,12 +2,16 @@
 #define __ModuleFilesystem_H__
 
 #include "Module.h"
+#include <string>
 
 class ModuleFilesystem : public Module
 {
 public:
 	ModuleFilesystem();
 	~ModuleFilesystem();
+	bool Init();
+
+	std::string ComputeName(const std::string &path) const;
 
 	bool Load(const char* path, const char* file, char** buffer) const;
 	bool Save(const char* path, const char* file, const void* buffer, unsigned int size, bool append = false) const;
