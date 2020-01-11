@@ -92,11 +92,6 @@ void ComponentMaterial::SetTextures(vector<Texture*> & textures)
 
 void ComponentMaterial::SetDrawTextures(const unsigned int program)
 {
-	//TODO: remove this and put into scene
-	float3 light = float3(0, 10, 5);
-	glUniform3fv(glGetUniformLocation(program, "directionalLight"), 1, &light[0]);
-
-
 	glUniform1f(glGetUniformLocation(program, "material.k_diffuse"), kDiffuse);
 	glUniform1f(glGetUniformLocation(program, "material.k_specular"), kSpecular);
 	glUniform1f(glGetUniformLocation(program, "material.k_ambient"), kAmbient);

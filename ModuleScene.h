@@ -60,8 +60,12 @@ public:
 	std::set<GameObject*> dynamicGO;
 	bool showHierarchy = true;
 	bool showInspector = true;
+
 	//Game's Main Camera Object
 	GameObject* mainCamera = nullptr;
+
+	//Directional light
+	GameObject* directionalLight = nullptr;
 
 	//QuadTree
 	MyQuadTree* quadtree = nullptr;

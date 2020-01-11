@@ -205,6 +205,7 @@ Component * GameObject::CreateComponent(ComponentType type)
 			break;
 		case LIGHT:
 			component = new ComponentLight(this);
+			myLight = (ComponentLight*)component;
 			break;
 		default:
 			LOG("ERROR: INVALID TYPE OF COMPONENT");

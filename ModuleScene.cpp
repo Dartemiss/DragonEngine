@@ -54,6 +54,14 @@ bool ModuleScene::Init()
 	allGameObjects.insert(mainCamera);
 	dynamicGO.insert(mainCamera);
 
+	//Creating the sun light
+	directionalLight = CreateGameObject("Directional Light", root);
+	directionalLight->CreateComponent(LIGHT);
+	directionalLight->myTransform->position = float3(0, 5, 0);
+
+	allGameObjects.insert(directionalLight);
+	dynamicGO.insert(directionalLight);
+
 	aabbTree = new AABBTree(10);
 
 	return true;

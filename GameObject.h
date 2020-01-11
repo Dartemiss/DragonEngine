@@ -13,6 +13,7 @@ class ComponentTransform;
 class ComponentMesh;
 class ComponentMaterial;
 class ComponentCamera;
+class ComponentLight;
 class SceneLoader;
 
 class GameObject
@@ -50,6 +51,7 @@ public:
 	ComponentTransform* myTransform = nullptr;
 	ComponentMesh* myMesh = nullptr;
 	ComponentMaterial* myMaterial = nullptr;
+	ComponentLight* myLight = nullptr;
 
 	//Parent
 	GameObject* parent = nullptr;
