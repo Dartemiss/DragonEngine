@@ -486,12 +486,18 @@ void GameObject::DrawAABB() const
 	dd::aabb(globalBoundingBox->minPoint, globalBoundingBox->maxPoint, float3(0, 1, 0));
 }
 
-void GameObject::Draw(const unsigned int program)
+void GameObject::Draw(const unsigned int program, bool isGamePlaying, bool drawAABB)
 {
-	if (myLight != nullptr)
+	if (!isGamePlaying)
 	{
-		myLight->SetDrawLightsForMeshes(program);
-		myLight->Draw();
+		if (myLight != nullptr)
+		{
+			myLight->SetDrawLightsForMeshes(program);
+			myLight->Draw();
+		}
+
+		if (isParentOfMeshes && boundingBox != nullptr && drawAABB)
+			DrawAABB();
 	}
 
 	if(myMesh != nullptr)
@@ -499,7 +505,6 @@ void GameObject::Draw(const unsigned int program)
 		myMaterial->SetDrawTextures(program);
 		myMesh->Draw(program);
 	}
-
 }
 
 void GameObject::DrawInspector(bool &showInspector)

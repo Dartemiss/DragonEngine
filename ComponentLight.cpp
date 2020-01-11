@@ -43,6 +43,8 @@ void ComponentLight::DrawInspector()
 		{
 			ImGui::DragFloat("Azimuth (rad)", &azimuth, 0.01f, 0.0f, 3.1415f * 2);
 			ImGui::DragFloat("Polar (rad)", &polar, 0.01f, 0.0f, 3.1415f * 2);
+
+			ImGui::DragFloat3("Direction", &direction[0], 0.0f);
 		}
 
 
