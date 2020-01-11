@@ -488,14 +488,15 @@ void GameObject::DrawAABB() const
 
 void GameObject::Draw(const unsigned int program, bool isGamePlaying, bool drawAABB)
 {
+	if (myLight != nullptr)
+	{
+		myLight->SetDrawLightsForMeshes(program);
+		if (!isGamePlaying)
+			myLight->Draw();
+	}
+
 	if (!isGamePlaying)
 	{
-		if (myLight != nullptr)
-		{
-			myLight->SetDrawLightsForMeshes(program);
-			myLight->Draw();
-		}
-
 		if (isParentOfMeshes && boundingBox != nullptr && drawAABB)
 			DrawAABB();
 	}

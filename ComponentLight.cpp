@@ -80,10 +80,24 @@ void ComponentLight::Draw()
 
 void ComponentLight::OnSave(SceneLoader & loader)
 {
+	loader.AddUnsignedInt("Type", myType);
+
+	loader.AddUnsignedInt("LightType", lightType);
+
+	loader.AddFloat("Azimuth", azimuth);
+	loader.AddFloat("Polar", polar);
+
+	loader.AddVec3f("Color", color);
 }
 
 void ComponentLight::OnLoad(SceneLoader & loader)
 {
+	lightType = (LightType)loader.GetUnsignedInt("LightType", 0);
+
+	azimuth = loader.GetFloat("Azimuth", 0.0f);
+	polar= loader.GetFloat("Polar", 0.0f);
+
+	color = loader.GetVec3f("Color", float3(1.0f, 1.0f, 1.0f));
 }
 
 void ComponentLight::CalculateDirection()
