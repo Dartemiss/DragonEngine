@@ -488,6 +488,12 @@ void GameObject::DrawAABB() const
 
 void GameObject::Draw(const unsigned int program)
 {
+	if (myLight != nullptr)
+	{
+		myLight->SetDrawLightsForMeshes(program);
+		myLight->Draw();
+	}
+
 	if(myMesh != nullptr)
 	{
 		myMaterial->SetDrawTextures(program);

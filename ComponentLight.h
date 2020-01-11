@@ -18,7 +18,8 @@ public:
 	ComponentLight(GameObject* go, ComponentLight* comp);
 	~ComponentLight();
 
-	void SetDirection(const float3 newDir);
+	void DrawInspector();
+
 	void SetDrawLightsForMeshes(const unsigned int program);
 	void Draw();
 
@@ -28,10 +29,15 @@ public:
 
 private:
 	LightType lightType = LDIRECTIONAL;
-	float3 direction = float3(0.0f, -1.0f, 0.0f);
+
+	float azimuth = 0.0f;
+	float polar = 0.0f;
+	float3 direction;
 	float3 color = float3(1.0f, 1.0f, 1.0f);
 	//TODO: be able to change light type with dropdown on Inspector
 	//TODO: be able to change light color on Inspector
+
+	void CalculateDirection();
 };
 
 #endif __ComponentLight_H__
