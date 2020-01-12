@@ -8,6 +8,7 @@
 #include "ComponentCamera.h"
 #include "GL/glew.h"
 #include "ImGuizmo/ImGuizmo.h"
+#include "Timer.h"
 #include <vector>
 #include <set>
 
@@ -88,10 +89,12 @@ public:
 	ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
 
 	bool isGamePlaying = false;
+	float timeForRendering = 0.0f;
 
 private:
 	void* context;
 
+	Timer* timeRender = nullptr;
 	int height = 0;
 	int width = 0;
 

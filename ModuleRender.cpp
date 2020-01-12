@@ -169,6 +169,8 @@ bool ModuleRender::Init()
 	widthScene = static_cast<int>(App->window->width * App->imgui->sceneSizeRatioWidth);
 	heightScene = static_cast<int>(App->window->height * App->imgui->sceneSizeRatioHeight);
 
+	timeRender = new Timer();
+
 	return true;
 }
 
@@ -192,6 +194,8 @@ update_status ModuleRender::Update()
 	//Use this line to compute information about this function
 	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
 	
+	timeRender->StartTimer();
+
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
 	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 1, 0, 1));
 	
@@ -233,6 +237,7 @@ update_status ModuleRender::Update()
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
 
+	timeForRendering = timeRender->StopTimer();
 
 	return UPDATE_CONTINUE;
 }
@@ -252,6 +257,7 @@ bool ModuleRender::CleanUp()
 {
 	delete skybox;
 	delete gameCamera;
+	delete timeRender;
 
 	LOG("Destroying renderer");
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
