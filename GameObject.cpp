@@ -9,6 +9,7 @@
 #include "ComponentMesh.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "ComponentLight.h"
 #include "AABBTree.h"
 #include "Imgui/imgui.h"
 #include "Imgui/imgui_impl_sdl.h"
@@ -205,9 +206,12 @@ Component * GameObject::CreateComponent(ComponentType type)
 			component = new ComponentMaterial(this);
 			myMaterial = (ComponentMaterial*)component;
 			break;
-
 		case CAMERA:
 			component = new ComponentCamera(this);
+			break;
+		case LIGHT:
+			component = new ComponentLight(this);
+			myLight = (ComponentLight*)component;
 			break;
 		default:
 			LOG("ERROR: INVALID TYPE OF COMPONENT");
@@ -482,14 +486,26 @@ void GameObject::DrawAABB() const
 	dd::aabb(globalBoundingBox->minPoint, globalBoundingBox->maxPoint, float3(0, 1, 0));
 }
 
-void GameObject::Draw(const unsigned int program)
+void GameObject::Draw(const unsigned int program, bool isGamePlaying, bool drawAABB)
 {
+	if (myLight != nullptr)
+	{
+		myLight->SetDrawLightsForMeshes(program);
+		if (!isGamePlaying)
+			myLight->Draw();
+	}
+
+	if (!isGamePlaying)
+	{
+		if (isParentOfMeshes && boundingBox != nullptr && drawAABB)
+			DrawAABB();
+	}
+
 	if(myMesh != nullptr)
 	{
 		myMaterial->SetDrawTextures(program);
 		myMesh->Draw(program);
 	}
-
 }
 
 void GameObject::DrawInspector(bool &showInspector)

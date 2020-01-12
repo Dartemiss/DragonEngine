@@ -16,6 +16,12 @@ struct Material
     vec3 emissive_color;
 };
 
+struct DirLight
+{
+	vec3 direction;
+	vec3 color;
+};
+
 //General functions
 float lambert(vec3 normal, vec3 light)
 {
@@ -38,7 +44,19 @@ float specular_blinn(vec3 lightDir, vec3 position, vec3 normal, mat4 view, float
     {
         specular = pow(sp, shininess);
     }
-    return specular;
+    return min(specular, 10.0);
+}
+
+vec3 dir_blinn(const vec3 pos, const vec3 normal, const mat4 view_pos, const DirLight light,
+	const vec3 diffuse_color, const vec3 specular_color, Material material)
+{
+	float distance = length(light.direction);
+	vec3 light_dir = light.direction/distance;
+
+	float diffuse = lambert(normal, light_dir);
+	float specular = specular_blinn(light_dir, pos, normal, view_pos, material.shininess);
+
+	return light.color*(diffuse_color*(diffuse*material.k_diffuse)+specular_color*(specular*material.k_specular));
 }
 
 //Texture and color functions
@@ -65,9 +83,9 @@ vec3 get_emissive_color(const Material mat, const vec2 uv)
 
 //Uniforms and variables
 uniform Material material;
+uniform DirLight dirLight;
 
 uniform mat4 view;
-uniform vec3 directionalLight;
 
 //uniform vec3 ambientColor
 //uniform vec3 lightDirColor
@@ -85,8 +103,8 @@ void main()
     vec3 occlusion_color = get_occlusion_color(material, texCoord);
     vec3 emissive_color = get_emissive_color(material, texCoord);
 
-    float diffuse = lambert(normal, directionalLight);
-    float specular = specular_blinn(directionalLight, position, normal, view, material.shininess);
+    float diffuse = lambert(normal, dirLight.direction);
+    float specular = specular_blinn(dirLight.direction, position, normal, view, material.shininess);
 
     vec3 colorSum = emissive_color + // emissive
     diffuse_color.rgb * (occlusion_color * material.k_ambient) + // ambient
@@ -94,4 +112,11 @@ void main()
     specular_color.rgb * specular * material.k_specular; // specular
 
     color = vec4(colorSum, diffuse_color.a);
+
+
+    vec3 colorDir = dir_blinn(position, normal, view, dirLight, diffuse_color.rgb, specular_color.rgb, material);
+    colorDir += diffuse_color.rgb * (occlusion_color * material.k_ambient);
+    colorDir += emissive_color;
+
+    color = vec4(colorDir, diffuse_color.a);
 }
