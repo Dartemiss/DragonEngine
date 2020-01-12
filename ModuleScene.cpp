@@ -167,17 +167,25 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 
 	LOG("For each mesh of the model we create a gameObject.");
 	
-	for (multimap<Mesh*, Texture*>::iterator it = modelLoaded.Meshes.begin(); it != modelLoaded.Meshes.end(); ++it)
+	for (multimap<Mesh*, Texture*>::iterator it = modelLoaded.Meshes.begin(); it != modelLoaded.Meshes.end();)
 	{
 		std::string newName = name + std::to_string(numObject);
 		GameObject* newMeshObject = CreateGameObject(newName.c_str(), parent);
 		ComponentMesh* myMeshCreated = (ComponentMesh*)newMeshObject->CreateComponent(MESH);
 		ComponentMaterial* myMaterialCreated = (ComponentMaterial*)newMeshObject->CreateComponent(MATERIAL);
 
-
-		myMeshCreated->LoadMesh(it->first);
 		vector<Texture*> textures;
+		myMeshCreated->LoadMesh(it->first);
 		textures.push_back(it->second);
+
+		++it;
+
+		while (it != modelLoaded.Meshes.end() && it->first->name == myMeshCreated->mesh->name)
+		{
+			textures.push_back(it->second);
+			++it;
+		}
+
 		myMaterialCreated->SetTextures(textures);
 		newMeshObject->ComputeAABB();
 		allGameObjects.insert(newMeshObject);
@@ -241,7 +249,7 @@ void ModuleScene::CreateGameObjectZomBunny(GameObject * parent)
 	LOG("Creating a Zom Bunny.");
 	std::string defaultName = "ZomBunny";
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
-	LoadModel("../Models/ZomBunny/Zombunny.fbx", newGameObject);
+	LoadModel("Zombunny", newGameObject);
 	++numberOfBakerHouse;
 
 	allGameObjects.insert(newGameObject);

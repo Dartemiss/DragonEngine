@@ -32,6 +32,8 @@ public:
 	bool Import(const char* file, const void* buffer, unsigned int size, std::string& output_file);
 	bool Load(const char* exported_file, ModelData & model);
 
+	void LoadBunny();
+
 private:
 	void ProcessNode(aiNode * node, const aiScene * scene);
 	void ProcessMesh(const aiMesh * mesh, const aiScene * scene);

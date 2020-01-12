@@ -39,7 +39,7 @@ bool ModuleFilesystem::Init()
 			path = path.substr(0, sizeFile);
 
 			string s;
-			Importer->ImportModel(path.c_str(),file.c_str(),s);
+			//Importer->ImportModel(path.c_str(),file.c_str(),s);
 			
 		}
 

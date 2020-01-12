@@ -16,9 +16,6 @@ ComponentMaterial::ComponentMaterial(GameObject* go)
 	whiteFallbackTexture = App->texture->getWhiteFallbackTexture();
 	whitefallbackColor = float4(1, 1, 1, 1);
 
-
-
-
 	kDiffuse = 0.5;
 	kSpecular = 0.2;
 	kAmbient = 0.2;

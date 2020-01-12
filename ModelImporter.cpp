@@ -44,6 +44,10 @@ bool ModelImporter::Import(const char * path, const char * file, string & output
 	modelName = modelName.substr(0, lastindex);
 	directory = path;
 
+	modelData.meshes.clear();
+	modelData.textures.clear();
+	modelData.pairs.clear();
+
 	ProcessNode(scene->mRootNode, scene);
 
 
@@ -363,4 +367,35 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 		pairData.tex = pair[1];
 		model.pairs.push_back(pairData);
 	}
+}
+
+void ModelImporter::LoadBunny()
+{
+	modelName = "Zombunny";
+
+	modelData.meshes.push_back("Zombunny1");
+	modelData.meshes.push_back("Zombunny2");
+
+	modelData.textures.push_back("ZomBunnyDiffuse_diffuse");
+	modelData.textures.push_back("ZomBunnyEmissive_emissive");
+	modelData.textures.push_back("ZomBunnyOcclusion_occlusion");
+	modelData.textures.push_back("ZomBunnySpecular_specular");
+
+	MeshTexPair pair; pair.mesh = 1; pair.tex = 1;
+	modelData.pairs.push_back(pair);
+	
+	pair.mesh = 1; pair.tex = 2;
+	modelData.pairs.push_back(pair);
+
+	pair.mesh = 1; pair.tex = 3;
+	modelData.pairs.push_back(pair);
+
+	pair.mesh = 1; pair.tex = 4;
+	modelData.pairs.push_back(pair);
+
+	pair.mesh = 2; pair.tex = 0;
+	modelData.pairs.push_back(pair);
+
+	string output;
+	SaveModelFile(output);
 }
