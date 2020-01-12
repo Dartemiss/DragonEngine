@@ -44,17 +44,17 @@ float specular_blinn(vec3 lightDir, vec3 position, vec3 normal, mat4 view, float
     {
         specular = pow(sp, shininess);
     }
-    return specular;
+    return min(specular, 10.0);
 }
 
-vec3 dir_blinn(const vec3 pos, const vec3 normal, const mat4 view_pos, const DirLight light, const Material mat,
-	const vec3 diffuse_color, const vec3 specular_color, float shininess, Material material)
+vec3 dir_blinn(const vec3 pos, const vec3 normal, const mat4 view_pos, const DirLight light,
+	const vec3 diffuse_color, const vec3 specular_color, Material material)
 {
 	float distance = length(light.direction);
 	vec3 light_dir = light.direction/distance;
 
-	float diffuse = lambert(light_dir, normal);
-	float specular = specular_blinn(light_dir, pos, normal, view_pos, shininess);
+	float diffuse = lambert(normal, light_dir);
+	float specular = specular_blinn(light_dir, pos, normal, view_pos, material.shininess);
 
 	return light.color*(diffuse_color*(diffuse*material.k_diffuse)+specular_color*(specular*material.k_specular));
 }
@@ -112,4 +112,11 @@ void main()
     specular_color.rgb * specular * material.k_specular; // specular
 
     color = vec4(colorSum, diffuse_color.a);
+
+
+    vec3 colorDir = dir_blinn(position, normal, view, dirLight, diffuse_color.rgb, specular_color.rgb, material);
+    colorDir += diffuse_color.rgb * (occlusion_color * material.k_ambient);
+    colorDir += emissive_color;
+
+    color = vec4(colorDir, diffuse_color.a);
 }

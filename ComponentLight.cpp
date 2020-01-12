@@ -56,7 +56,9 @@ void ComponentLight::SetDrawLightsForMeshes(const unsigned int program)
 {
 	CalculateDirection();
 
-	glProgramUniform3fv(program, glGetUniformLocation(program, "dirLight.direction"), 1, &direction[0]);
+	float3 invDir = -direction;
+
+	glProgramUniform3fv(program, glGetUniformLocation(program, "dirLight.direction"), 1, &invDir[0]);
 	glProgramUniform3fv(program, glGetUniformLocation(program, "dirLight.color"), 1, &color[0]);
 }
 
