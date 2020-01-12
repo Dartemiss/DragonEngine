@@ -50,6 +50,7 @@ ComponentCamera::ComponentCamera(GameObject * go, ComponentCamera * comp)
 
 ComponentCamera::~ComponentCamera()
 {
+	delete frustum;
 }
 
 void ComponentCamera::Update()
@@ -64,9 +65,7 @@ void ComponentCamera::Update()
 
 bool ComponentCamera::CleanUp()
 {
-	delete frustum;
-
-	return false;
+	return true;
 }
 
 void ComponentCamera::SetFOV()

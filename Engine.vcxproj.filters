@@ -228,6 +228,9 @@
     <ClCompile Include="Dependencies\Include\ImGuizmo\ImSequencer.cpp">
       <Filter>Libraries\ImGuizmo</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentLight.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -674,6 +677,9 @@
       <Filter>Libraries\ImGuizmo</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ComponentLight.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

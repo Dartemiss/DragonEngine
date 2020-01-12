@@ -346,21 +346,13 @@ void ModuleRender::DrawAllGameObjects()
 			if(App->camera->editorCamera->AABBWithinFrustum(*gameObject->globalBoundingBox) != 0)
 			{
 
-				gameObject->Draw(progModel);
-				
-
-				if (gameObject->isParentOfMeshes && gameObject->boundingBox != nullptr && showBoundingBox)
-					gameObject->DrawAABB();
+				gameObject->Draw(progModel, false, showBoundingBox);
 			}
 
 		}
 		else
 		{
-
-			gameObject->Draw(progModel);
-
-			if (gameObject->boundingBox != nullptr && gameObject->isParentOfMeshes && showBoundingBox)
-				gameObject->DrawAABB();
+			gameObject->Draw(progModel, false, showBoundingBox);
 		}
 
 
@@ -404,12 +396,8 @@ void ModuleRender::DrawGame()
 			glUniformMatrix4fv(glGetUniformLocation(progModel,
 				"model"), 1, GL_TRUE, &gameObject->myTransform->globalModelMatrix[0][0]);
 
-
-			if (gameObject->myMesh != nullptr)
-			{
-				gameObject->Draw(progModel);
-				//gameObject->myMesh->Draw(progModel);
-			}
+			gameObject->Draw(progModel, true);
+			
 		}
 
 	}

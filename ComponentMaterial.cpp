@@ -16,17 +16,14 @@ ComponentMaterial::ComponentMaterial(GameObject* go)
 	whiteFallbackTexture = App->texture->getWhiteFallbackTexture();
 	whitefallbackColor = float4(1, 1, 1, 1);
 
-
-
-
-	kDiffuse = 0.5;
-	kSpecular = 0.2;
+	kDiffuse = 0.8;
+	kSpecular = 0.1;
 	kAmbient = 0.2;
-	shininess = 128;
+	shininess = 5;
 
-	diffuseColor = float4(1, 0 ,0, 1);
-	specularColor = float3(0, 1, 0);
-	emissiveColor = float3(0, 0, 0.2);
+	diffuseColor = float4(0.6, 0.6, 0.6, 1);
+	specularColor = float3(1, 1, 1);
+	emissiveColor = float3(0, 0, 0);
 }
 
 ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
@@ -93,11 +90,6 @@ void ComponentMaterial::SetTextures(vector<Texture*> & textures)
 
 void ComponentMaterial::SetDrawTextures(const unsigned int program)
 {
-	//TODO: remove this and put into scene
-	float3 light = float3(0, 10, 5);
-	glUniform3fv(glGetUniformLocation(program, "directionalLight"), 1, &light[0]);
-
-
 	glUniform1f(glGetUniformLocation(program, "material.k_diffuse"), kDiffuse);
 	glUniform1f(glGetUniformLocation(program, "material.k_specular"), kSpecular);
 	glUniform1f(glGetUniformLocation(program, "material.k_ambient"), kAmbient);
@@ -130,7 +122,10 @@ void ComponentMaterial::SetDrawTextures(const unsigned int program)
 	}
 	else
 	{
-		glBindTexture(GL_TEXTURE_2D, whiteFallbackTexture->id);
+		if (diffuseMap != nullptr)
+			glBindTexture(GL_TEXTURE_2D, diffuseMap->id);
+		else
+			glBindTexture(GL_TEXTURE_2D, whiteFallbackTexture->id);
 		glUniform3fv(glGetUniformLocation(program, "material.specular_color"), 1, &specularColor[0]);
 	}
 
