@@ -13,12 +13,12 @@ Skybox::Skybox()
 	
 	std::vector<std::string> faces
 	{
-			"right.jpg",
-			"left.jpg",
-			"top.jpg",
-			"bottom.jpg",
-			"front.jpg",
-			"back.jpg"
+			"skybox_right",
+			"skybox_left",
+			"skybox_top",
+			"skybox_bottom",
+			"skybox_front",
+			"skybox_back"
 	};
 	/*
 	std::vector<std::string> faces

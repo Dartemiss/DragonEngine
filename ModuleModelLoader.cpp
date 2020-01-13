@@ -15,7 +15,6 @@ using namespace std;
 
 bool ModuleModelLoader::Init()
 {
-
 	return true;
 }
 
