@@ -30,7 +30,6 @@ ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
 {
 	myGameObject = go;
 	myType = MATERIAL;
-	//TODO: When this component is done this method have to copy all comp relevant data to this object
 
 	this->kDiffuse = comp->kDiffuse;
 	this->kAmbient = comp->kAmbient;
@@ -53,11 +52,6 @@ ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
 
 ComponentMaterial::~ComponentMaterial()
 {
-	//TODO: check it doesnt delete from moduleTextures too
-	delete diffuseMap;
-	delete specularMap;
-	delete occlusionMap;
-	delete emissiveMap;
 }
 
 void ComponentMaterial::Update()
@@ -67,7 +61,7 @@ void ComponentMaterial::Update()
 
 bool ComponentMaterial::CleanUp()
 {
-	return false;
+	return true;
 }
 
 void ComponentMaterial::SetTextures(vector<Texture*> & textures)
