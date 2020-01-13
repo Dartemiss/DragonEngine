@@ -155,6 +155,8 @@ void ModelImporter::ProcessMesh(const aiMesh * mesh, const aiScene * scene)
 		SearchTextureByType(material, aiTextureType_NORMALS, currentMeshCount, "_normal");
 		SearchTextureByType(material, aiTextureType_HEIGHT, currentMeshCount, "_height");
 	}
+
+	secondMesh = true;
 }
 
 void ModelImporter::SearchTextureDir(const string & fbxDir, const string & texDir, string & foundDir, string & texName)
@@ -193,7 +195,7 @@ void ModelImporter::SearchTextureDir(const string & fbxDir, const string & texDi
 
 void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTextureType texType, const unsigned int currentMeshCount, const string & typeName)
 {
-	for (unsigned int i = 0; i < material->GetTextureCount(texType); i++)
+	for (unsigned int i = 0; i < 1; i++)
 	{
 		aiString str;
 		aiTextureMapping mapping = aiTextureMapping_UV;
@@ -202,6 +204,40 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 		string textureName = str.C_Str();
 		size_t lastindex = textureName.find_last_of(".");
 		textureName = textureName.substr(0, lastindex) + typeName;
+
+
+		//Use this for hardcoding imports
+		if(typeName == "_diffuse")
+		{
+			if(secondMesh)
+				str = "../Assets/Player/PlayerDiffuse.png";
+			else
+				str = "../Assets/Player/GunDiffuse.png";
+		}
+		else if(typeName == "_specular")
+		{
+			if (secondMesh)
+				str = "../Assets/Player/PlayerSpecular.tif";
+			else
+				str = "../Assets/Player/GunSpecular.tif";
+		}
+		else if (typeName == "_occlusive")
+		{
+			if (secondMesh)
+				str = "../Assets/Player/PlayerOcclusion.png";
+			else
+				str = "../Assets/Player/GunOcclusion.png";
+		}
+		else if (typeName == "_normal")
+		{
+			return;
+		}
+		else if(typeName == "_emissive" || typeName == "_height")
+		{
+			return;
+		}
+
+
 
 		bool skip = false;
 		for (unsigned int i = 0; i < modelData.textures.size(); i++)
@@ -232,6 +268,7 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 			modelData.pairs.push_back(pair);
 		}
 
+		return;
 	}
 }
 

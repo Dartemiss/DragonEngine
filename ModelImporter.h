@@ -45,6 +45,8 @@ private:
 	ModelData modelData;
 	std::string modelName;
 	std::string directory;
+
+	bool secondMesh = false;
 };
 
 #endif __ModelImporter_H__

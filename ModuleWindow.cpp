@@ -83,6 +83,7 @@ bool ModuleWindow::CleanUp()
 	}
 
 	//Quit SDL subsystems
+	//TODO: Fix error when closing SDL_Quit crashes : Destroying SDL window and quitting all SDL systemsExcepción producida en 0x8D000424 en DragonEngine.exe: 0xC0000005: Infracción de acceso al ejecutar la ubicación 0x8D000424.
 	SDL_Quit();
 	return true;
 }

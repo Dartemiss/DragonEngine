@@ -45,6 +45,7 @@ public:
 	void CreateEmpty(GameObject* parent);
 	void CreateGameObjectBakerHouse(GameObject* parent);
 	void CreateGameObjectZomBunny(GameObject* parent);
+	void CreateGameObjectByName(GameObject* parent, const char* name);
 	void CreateGameObjectShape(GameObject* parent, ShapeType shape);
 
 	//Delete

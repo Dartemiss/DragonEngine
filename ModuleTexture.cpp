@@ -51,6 +51,7 @@ void ModuleTexture::LoadTexture(Texture & texture)
 		//Binding texture and generating mipmaps
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.width, texture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.data);
+		//TODO: fix error when loading bunny: critical error detected c0000374
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else

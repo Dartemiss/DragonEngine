@@ -270,6 +270,27 @@ void ModuleScene::CreateGameObjectZomBunny(GameObject * parent)
 	return;
 }
 
+void ModuleScene::CreateGameObjectByName(GameObject * parent, const char* name)
+{
+	if (parent == nullptr)
+	{
+		LOG("ERROR: Parent is nullptr, cannot create gameObject.");
+		return;
+	}
+
+	LOG("Creating a %s.", name);
+	GameObject* newGameObject = CreateGameObject(name, parent);
+	LoadModel(name, newGameObject);
+	++numberOfBakerHouse;
+
+	allGameObjects.insert(newGameObject);
+	dynamicGO.insert(newGameObject);
+	aabbTree->Insert(newGameObject);
+	LOG("%s created with %s as parent.", name, parent->GetName());
+
+
+	return;
+}
 
 void ModuleScene::CreateGameObjectShape(GameObject * parent, ShapeType shape)
 {
