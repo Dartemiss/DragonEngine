@@ -205,7 +205,7 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 		size_t lastindex = textureName.find_last_of(".");
 		textureName = textureName.substr(0, lastindex) + typeName;
 
-
+		/*
 		//Use this for hardcoding imports
 		if(typeName == "_diffuse")
 		{
@@ -237,7 +237,33 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 			return;
 		}
 
+		*/
 
+		if (typeName == "_diffuse")
+		{
+
+			str = "../Assets/Wall/WallDiffuse.png";
+
+		}
+		else if (typeName == "_specular")
+		{
+			str = "../Assets/Wall/WallSpecular.tif";
+
+		}
+		else if (typeName == "_occlusive")
+		{
+
+			str = "../Assets/Wall/WallOcclusion.png";
+
+		}
+		else if (typeName == "_normal")
+		{
+			str = "../Assets/Wall/WallNormals.png";
+		}
+		else if (typeName == "_emissive" || typeName == "_height")
+		{
+			return;
+		}
 
 		bool skip = false;
 		for (unsigned int i = 0; i < modelData.textures.size(); i++)

@@ -325,9 +325,9 @@ void GameObject::DrawHierarchy(GameObject * selected)
 				App->scene->CreateGameObjectByName(this,"Player");
 			}
 
-			if(ImGui::MenuItem("Drawers"))
+			if(ImGui::MenuItem("Wall"))
 			{
-				App->scene->CreateGameObjectByName(this,"Drawers");
+				App->scene->CreateGameObjectByName(this,"Wall");
 			}
 
 			ImGui::EndMenu();

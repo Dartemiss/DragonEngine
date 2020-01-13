@@ -124,6 +124,10 @@ bool ModuleScene::CleanUp()
 	delete aabbTree;
 	delete root;
 
+	dynamicGO.clear();
+	staticGO.clear();
+	allGameObjects.clear();
+
 	return true;
 }
 
@@ -711,6 +715,7 @@ void ModuleScene::LoadScene()
 	//Build QuadTree
 	BuildQuadTree();
 
+	delete loader;
 }
 
 void ModuleScene::PasteGameObject(GameObject * go)
@@ -803,8 +808,8 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 	//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
 	normalizedX = mapValues(mouse.x, posWindow.x, posWindow.x + sizeWindow.x, -1, 1);
 	normalizedY = mapValues(mouse.y, posWindow.y, posWindow.y + sizeWindow.y, 1, -1);
-	LineSegment ray = *CreateRayCast(normalizedX, normalizedY);
-	GameObject* selectedGO = IntersectRayCast(App->camera->editorCamera->frustum->pos, ray);
+	LineSegment* ray = CreateRayCast(normalizedX, normalizedY);
+	GameObject* selectedGO = IntersectRayCast(App->camera->editorCamera->frustum->pos, *ray);
 	if (selectedGO != nullptr)
 	{
 		if (!selectedGO->isParentOfMeshes && selectedGO->parent != nullptr)
@@ -814,6 +819,7 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 		selectedByHierarchy = selectedGO;
 	}
 
+	delete ray;
 	
 
 	return;
