@@ -33,16 +33,11 @@ bool ModuleCamera::Init()
 	editorCamera = new ComponentCamera(App->scene->GetRoot());
 	editorCamera->SetFarPlaneDistance(300.0f);
 
-	//UpdateUniformShaderMatrices();
-
-	
 	return true;
 }
 
 update_status ModuleCamera::PreUpdate()
 {
-	UpdateUniformShaderMatrices();
-
 	return UPDATE_CONTINUE;
 }
 
@@ -281,17 +276,6 @@ void ModuleCamera::LookAt(const float3 target)
 	float3x3 rot = float3x3::LookAt(editorCamera->frustum->front, dir, editorCamera->frustum->up, float3::unitY);
 	editorCamera->frustum->front = rot.Transform(editorCamera->frustum->front).Normalized();
 	editorCamera->frustum->up = rot.Transform(editorCamera->frustum->up).Normalized();
-}
-
-void ModuleCamera::UpdateUniformShaderMatrices()
-{
-	glBindBuffer(GL_UNIFORM_BUFFER, App->program->uniformsBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float4x4), &editorCamera->proj[0][0]);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, App->program->uniformsBuffer);
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(float4x4), sizeof(float4x4), &editorCamera->view[0][0]);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 float4x4 ModuleCamera::GetProjMatrix() const

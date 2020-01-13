@@ -309,7 +309,7 @@ void ModuleRender::DrawAllGameObjects()
 {
 
 	//unsigned int progModel = App->program->defaultProg;
-	unsigned int progModel = App->program->uber;
+	unsigned int progModel = App->program->uberProg;
 
 	glUseProgram(progModel);
 
@@ -365,7 +365,7 @@ void ModuleRender::DrawAllGameObjects()
 
 void ModuleRender::DrawGame()
 {
-	unsigned int progModel = App->program->uber;
+	unsigned int progModel = App->program->uberProg;
 	glUseProgram(progModel);
 
 	glUniformMatrix4fv(glGetUniformLocation(progModel,

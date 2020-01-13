@@ -38,9 +38,6 @@ public:
 	void SetFarPlaneDistance(const float farDist);
 	void LookAt(const float3 target);
 
-	//Update Projection and View matrices
-	void UpdateUniformShaderMatrices();
-
 	//Getter Matrix
 	float4x4 GetProjMatrix() const;
 	float4x4 GetViewMatrix() const;

@@ -12,50 +12,25 @@
 
 bool ModuleProgram::Init()
 {
-	//Lighting shaders
-	flatLighting = createProgramWithShaders("../Shaders/flat.vs", "../Shaders/flat.fs");
-	gouraudLighting = createProgramWithShaders("../Shaders/Gouraud.vs", "../Shaders/Gouraud.fs");
-	phongLighting = createProgramWithShaders("../Shaders/Phong.vs", "../Shaders/Phong.fs");
-	blinnLighting = createProgramWithShaders("../Shaders/Blinn.vs", "../Shaders/Blinn.fs");
-
-	uber = createProgramWithShaders("../Shaders/UberShader.vs", "../Shaders/UberShader.fs");
+	//Lighting shader
+	uberProg = createProgramWithShaders("../Shaders/UberShader.vs", "../Shaders/UberShader.fs");
 
 	//Skybox shader
 	skyboxProg = createProgramWithShaders("../Shaders/Skybox.vs", "../Shaders/Skybox.fs");
 
 	//Default shader
-	defaultProg = createProgramWithShaders("../Shaders/VertexShader.vs", "../Shaders/Model.fs");
-
-	SetUpUniformsBuffer();
+	defaultProg = createProgramWithShaders("../Shaders/VertexShader.vs", "../Shaders/FragmentShader.fs");
 
 	return true;
 }
 
 bool ModuleProgram::CleanUp()
 {
+	glDeleteProgram(uberProg);
+	glDeleteProgram(skyboxProg);
 	glDeleteProgram(defaultProg);
-
-	//TODO: Randomly this line crashes on close
-	glDeleteProgram(flatLighting);
-	glDeleteProgram(gouraudLighting);
-	glDeleteProgram(phongLighting);
-	glDeleteProgram(blinnLighting);
 	
 	return true;
-}
-
-void ModuleProgram::SetUpUniformsBuffer()
-{
-	unsigned int uniformBlockIndexDefault = glGetUniformBlockIndex(defaultProg, "Matrices");
-	glUniformBlockBinding(defaultProg, uniformBlockIndexDefault, 0);
-
-	glGenBuffers(1, &uniformsBuffer);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, uniformsBuffer);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(float4x4), NULL, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uniformsBuffer, 0, 2 * sizeof(float4x4));
 }
 
 unsigned int ModuleProgram::createProgramWithShaders(const char * vertexFilename, const char * fragmentFilename) const
