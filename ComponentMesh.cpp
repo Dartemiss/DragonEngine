@@ -47,7 +47,7 @@ float ComponentMesh::IsIntersectedByRay(const float3 &origin ,const LineSegment 
 	{
 
 		Triangle tri = Triangle(mesh->vertices[mesh->indices[i]].Position, mesh->vertices[mesh->indices[i+1]].Position, mesh->vertices[mesh->indices[i+2]].Position);
-		if(tri.Intersects(tri))
+		if(tri.Intersects(ray))
 		{
 			minDist = tri.Distance(origin);
 		}
@@ -78,7 +78,7 @@ void ComponentMesh::OnLoad(SceneLoader & loader)
 }
 
 
-void ComponentMesh::ProcessMeshData(const MeshData & data, Mesh & mesh)
+void ComponentMesh::ProcessMeshData(const MeshData & data, Mesh & myMesh)
 {
 	for (unsigned int i = 0; i < data.num_vertices; i++)
 	{
@@ -101,15 +101,15 @@ void ComponentMesh::ProcessMeshData(const MeshData & data, Mesh & mesh)
 		texturesCoords.y = data.texture_coords[i * 2 + 1];
 		vertex.TexCoords = texturesCoords;
 
-		mesh.vertices.push_back(vertex);
+		myMesh.vertices.push_back(vertex);
 	}
 
 	for (unsigned int i = 0; i < data.num_indices; i++)
 	{
-		mesh.indices.push_back(data.indices[i]);
+		myMesh.indices.push_back(data.indices[i]);
 	}
 
-	mesh.name = data.name;
+	myMesh.name = data.name;
 }
 
 void ComponentMesh::DrawInspector()

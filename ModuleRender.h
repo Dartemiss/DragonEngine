@@ -47,8 +47,6 @@ public:
 
 	float aspect = 1.0f;
 
-	float4x4 model = float4x4::zero;
-
 	bool showBoundingBox = true;
 	bool showSkybox = false;
 

@@ -48,6 +48,7 @@ void GUIWindow::Draw(const char * title)
 				case 0: ImGui::StyleColorsClassic(); break;
 				case 1: ImGui::StyleColorsDark(); break;
 				case 2: ImGui::StyleColorsLight(); break;
+				default: break;
 			}
 			
 		}

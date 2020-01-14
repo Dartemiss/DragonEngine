@@ -93,10 +93,6 @@ update_status ModuleWindow::Update()
 	return UPDATE_CONTINUE;
 }
 
-void ModuleWindow::setFullscreen(bool fullscrean)
-{
-
-}
 
 void ModuleWindow::Resize(unsigned int newWidth, unsigned int newHeight)
 {

@@ -327,9 +327,9 @@ void MyQuadTree::DrawIterative() const
 	return;
 }
 
-bool MyQuadTree::GameObjectIsRepeated(const std::vector<GameObject*>& gameObjects, GameObject * go)
+bool MyQuadTree::GameObjectIsRepeated(const std::vector<GameObject*>& allGameObjects, GameObject * go)
 {
-	for(auto game : gameObjects)
+	for(auto game : allGameObjects)
 	{
 		if (game == go)
 			return true;

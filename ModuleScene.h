@@ -7,6 +7,7 @@
 #include "Timer.h"
 #include "Point.h"
 #include "imgui/imgui.h"
+#include "MathGeoLib/Math/float2.h"
 #include <set>
 
 class MyQuadTree;
@@ -136,6 +137,7 @@ private:
 	unsigned int numberOfTorus = 0;
 	unsigned int numberOfCylinder = 0;
 
+	float2 offset = float2(-5.0f, -25.0f);
 
 	
 	

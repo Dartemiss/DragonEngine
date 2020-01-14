@@ -30,7 +30,7 @@ public:
 	bool CleanUp();
 
 	void LoadTexture(Texture & texture);
-	void LoadSkybox(const char* path, const std::string &directory, int index) const;
+	void LoadSkybox(const char* path, int index) const;
 	void LoadWhiteFallbackTexture();
 
 	Texture * getWhiteFallbackTexture();

@@ -200,11 +200,11 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 		textureName = textureName.substr(0, lastindex) + typeName;
 
 		bool skip = false;
-		for (unsigned int i = 0; i < modelData.textures.size(); i++)
+		for (unsigned int j = 0; j < modelData.textures.size(); j++)
 		{
-			if (strcmp(modelData.textures[i].c_str(), textureName.c_str()) == 0)
+			if (strcmp(modelData.textures[j].c_str(), textureName.c_str()) == 0)
 			{
-				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = i + 1;
+				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = j + 1;
 				modelData.pairs.push_back(pair);
 				skip = true;
 				break;

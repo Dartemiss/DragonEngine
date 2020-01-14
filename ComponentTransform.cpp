@@ -30,7 +30,7 @@ ComponentTransform::~ComponentTransform()
 
 void ComponentTransform::EulerToQuat()
 {
-	rotation = rotation.FromEulerXYX(DegToRad(eulerRotation).x, DegToRad(eulerRotation).y, DegToRad(eulerRotation).z);
+	rotation = math::Quat::FromEulerXYZ(DegToRad(eulerRotation).x, DegToRad(eulerRotation).y, DegToRad(eulerRotation).z);
 }
 
 void ComponentTransform::QuatToEuler()

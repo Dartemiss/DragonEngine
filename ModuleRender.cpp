@@ -147,9 +147,6 @@ bool ModuleRender::Init()
 
 
 	//Project view model matrix and prog
-
-	model = float4x4::FromTRS(float3(0.0f, 0.0f, 0.0f), float3x3::RotateX(0.0f)* float3x3::RotateY(0.0f), float3(1.0f, 1.0f, 1.0f));
-
 	for (auto comp : App->scene->mainCamera->components)
 	{
 		if (comp->myType == CAMERA)
@@ -192,7 +189,7 @@ update_status ModuleRender::Update()
 	//Use this line to compute information about this function
 	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
 	
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 1, 0, 1));
 	
 	ImGui::SetNextWindowPos(
@@ -267,7 +264,6 @@ bool ModuleRender::CleanUp()
 void ModuleRender::DrawGuizmo() const
 {
 	ImVec2 pos = ImGui::GetWindowPos();
-	ImVec2 size = ImGui::GetWindowSize();
 	ImGuizmo::SetRect((float)pos.x, (float)pos.y, (float)widthScene, (float)heightScene);
 	ImGuizmo::SetDrawlist();
 
@@ -405,12 +401,12 @@ void ModuleRender::DrawGame()
 	glUseProgram(0);
 }
 
-void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
+void ModuleRender::CreateFrameBuffer(int myWidth, int myHeight, bool scene)
 {
 	if(scene)
 	{
 	
-		if (width != widthScene || height != heightScene || firstTimeCreatingBuffer)
+		if (myWidth != widthScene || myHeight != heightScene || firstTimeCreatingBuffer)
 		{
 			if (firstTimeCreatingBuffer)
 				firstTimeCreatingBuffer = false;
@@ -436,7 +432,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			glGenTextures(1, &sceneTexture);
 			glBindTexture(GL_TEXTURE_2D, sceneTexture);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, myWidth, myHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glBindTexture(GL_TEXTURE_2D, 0);
@@ -446,7 +442,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			//Generate RenderBuffers
 			glGenRenderbuffers(1, &renderBufferObject);
 			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObject);
-			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height) : glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height);
+			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, myWidth, myHeight) : glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, myWidth, myHeight);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObject);
@@ -461,7 +457,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 	else
 	{
 	
-		if (width != widthGame || height != heightGame || firstTimeCreatingBuffer)
+		if (myWidth != widthGame || myHeight != heightGame || firstTimeCreatingBuffer)
 		{
 			if (frameBufferObjectGame == 0)
 			{
@@ -484,7 +480,7 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			glGenTextures(1, &gameTexture);
 			glBindTexture(GL_TEXTURE_2D, gameTexture);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, myWidth, myHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glBindTexture(GL_TEXTURE_2D, 0);
@@ -494,8 +490,8 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 			//Generate RenderBuffers
 			glGenRenderbuffers(1, &renderBufferObjectGame);
 			glBindRenderbuffer(GL_RENDERBUFFER, renderBufferObjectGame);
-			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height) : glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, width, height);
-			glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, width, height);
+			(!antialiasing) ? glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, myWidth, myHeight) : glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, myWidth, myHeight);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER,4, GL_DEPTH24_STENCIL8, myWidth, myHeight);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferObjectGame);
@@ -511,10 +507,10 @@ void ModuleRender::CreateFrameBuffer(int width, int height, bool scene)
 
 }
 
-void ModuleRender::GenerateTexture(int width, int height)
+void ModuleRender::GenerateTexture(int myWidth, int myHeight)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, myWidth, myHeight);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -532,13 +528,13 @@ void ModuleRender::GenerateTexture(int width, int height)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//Why outside of framebuffer?
-	App->debugDraw->Draw(App->camera, frameBufferObject, height, width);
+	App->debugDraw->Draw(App->camera, frameBufferObject, myWidth, myHeight);
 }
 
-void ModuleRender::GenerateTextureGame(int width, int height)
+void ModuleRender::GenerateTextureGame(int myWidth, int myHeight)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObjectGame);
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, myWidth, myHeight);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	DrawGame();

@@ -160,7 +160,7 @@ GameObject * ModuleScene::CreateGameObject(GameObject * go)
 {
 	GameObject* gameObject = new GameObject(*go);
 
-	return nullptr;
+	return gameObject;
 }
 
 void ModuleScene::LoadModel(const char * path, GameObject* parent)
@@ -682,6 +682,8 @@ void ModuleScene::LoadScene()
 	//Build QuadTree
 	BuildQuadTree();
 
+	delete loader;
+
 }
 
 void ModuleScene::PasteGameObject(GameObject * go)
@@ -769,7 +771,9 @@ LineSegment* ModuleScene::CreateRayCast(float normalizedX, float normalizedY) co
 
 void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 {
-	float2 mouse((float*)& App->input->GetMousePosition());
+	float2 mouse(App->input->GetMousePosition().x, App->input->GetMousePosition().y);
+	//Move offset for cursor being on top of mouse
+	mouse += offset;
 	float normalizedX, normalizedY;
 	//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
 	normalizedX = mapValues(mouse.x, posWindow.x, posWindow.x + sizeWindow.x, -1, 1);
@@ -785,7 +789,7 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 		selectedByHierarchy = selectedGO;
 	}
 
-	
+	dd::arrow(ray.a, ray.b, float3(1, 0, 0),10);
 
 	return;
 }

@@ -15,7 +15,7 @@
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
-#include "imgui/imgui_stdlib.h"
+#include "Imgui/imgui_stdlib.h"
 #include "MathGeoLib/Geometry/LineSegment.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
@@ -371,6 +371,8 @@ void GameObject::UpdateTransform()
 			//AABB Global Update
 			//Compute globalBoundingBox
 
+			
+
 			float3 globalPos, globalScale;
 			float3x3 globalRot;
 			
@@ -388,6 +390,7 @@ void GameObject::UpdateTransform()
 
 			globalBoundingBox->minPoint = newMinPoint + globalPos;
 			globalBoundingBox->maxPoint = newMaxPoint + globalPos;
+		
 
 		}
 	}
@@ -495,10 +498,9 @@ void GameObject::Draw(const unsigned int program, bool isGamePlaying, bool drawA
 			myLight->Draw();
 	}
 
-	if (!isGamePlaying)
+	if (!isGamePlaying && isParentOfMeshes && boundingBox != nullptr && drawAABB)
 	{
-		if (isParentOfMeshes && boundingBox != nullptr && drawAABB)
-			DrawAABB();
+		DrawAABB();
 	}
 
 	if(myMesh != nullptr)
@@ -521,7 +523,7 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	//ImGui::InputText("##Name", &name);
+	ImGui::InputText("Name", &name);
 
 	ImGui::SameLine();
 
@@ -640,7 +642,7 @@ float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & r
 	localRay.Transform(myTransform->globalModelMatrix.Inverted());
 	
 
-	return myMesh->IsIntersectedByRay(origin,localRay);
+	return myMesh->IsIntersectedByRay(origin, localRay);
 }
 
 void GameObject::SetGlobalMatrix(const float4x4 & newGlobal)
@@ -728,16 +730,16 @@ void GameObject::CheckDragAndDrop(GameObject * go)
 		if (payload != nullptr) {
 			GameObject* newChild = *reinterpret_cast<GameObject**>(payload->Data);
 
-			GameObject* parent = go;
+			GameObject* myParent = go;
 			//While parent is not root
-			while(parent->UID != 1)
+			while(myParent->UID != 1)
 			{
-				if(parent->UID == newChild->UID)
+				if(myParent->UID == newChild->UID)
 				{
 					LOG("It is not allowed to assign one of your children as a parent.");
 					return;
 				}
-				parent = parent->parent;
+				myParent = myParent->parent;
 			}
 
 			newChild->SetParent(go);

@@ -110,7 +110,7 @@ unsigned int Skybox::LoadCubeMap(const std::vector<std::string> &faces)
 
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{
-		App->texture->LoadSkybox(faces[i].c_str(), directory, i);
+		App->texture->LoadSkybox(faces[i].c_str(), i);
 	}
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

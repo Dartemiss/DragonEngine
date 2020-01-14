@@ -31,15 +31,15 @@ bool ModuleFilesystem::Init()
 		fileExt.erase(0, dotFound + 1);
 		if(fileExt == "fbx")
 		{
-			string path(fullPath);
+			string myPath(fullPath);
 			string file = ComputeName(fullPath);
 
 
-			size_t sizeFile = path.size() - file.size();
-			path = path.substr(0, sizeFile);
+			size_t sizeFile = myPath.size() - file.size();
+			myPath = myPath.substr(0, sizeFile);
 
 			string s;
-			Importer->ImportModel(path.c_str(),file.c_str(),s);
+			Importer->ImportModel(myPath.c_str(),file.c_str(),s);
 			
 		}
 
@@ -90,7 +90,8 @@ bool ModuleFilesystem::Load(const char * path, const char * file, char ** buffer
 	Sint64 res_size = SDL_RWsize(rw);
 	char* res = (char*)malloc(res_size + 1);
 
-	Sint64 nb_read_total = 0, nb_read = 1;
+	Sint64 nb_read_total = 0; 
+	Sint64 nb_read = 1;
 	char* buf = res;
 	while (nb_read_total < res_size && nb_read != 0) {
 		nb_read = SDL_RWread(rw, buf, 1, (res_size - nb_read_total));

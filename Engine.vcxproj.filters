@@ -231,6 +231,9 @@
     <ClCompile Include="ComponentLight.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\Include\Imgui\imgui_stdlib.cpp">
+      <Filter>Libraries\IMGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -679,6 +682,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ComponentLight.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Include\Imgui\imgui_stdlib.h">
+      <Filter>Libraries\IMGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

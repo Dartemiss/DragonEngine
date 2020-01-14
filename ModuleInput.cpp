@@ -77,7 +77,7 @@ update_status ModuleInput::PreUpdate()
 
 
 	SDL_PumpEvents();
-	static SDL_Event event;
+	SDL_Event event;
 
 	while (SDL_PollEvent(&event))
 	{
@@ -171,14 +171,6 @@ update_status ModuleInput::PreUpdate()
 // Called every draw update
 update_status ModuleInput::Update()
 {
-	SDL_PumpEvents();
-	SDL_Event event;
-	SDL_PollEvent(&event);
-	ImGui_ImplSDL2_ProcessEvent(&event);
-	if (event.type == SDL_QUIT)
-		return UPDATE_STOP;
-	if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(App->window->window))
-		return UPDATE_STOP;
 
 	return UPDATE_CONTINUE;
 }
@@ -207,12 +199,12 @@ const int ModuleInput::GetMouseWheel() const
 	return mouse_wheel;
 }
 
-void ModuleInput::DropModelFile(char * dropped_filedir)
+void ModuleInput::DropModelFile(char * myDropped_filedir)
 {
 	LOG("Checking if extension of dropped file is correct.");
 	assert(dropped_filedir != NULL);
-	std::string fileExt(dropped_filedir);
-	std::string filedir(dropped_filedir);
+	std::string fileExt(myDropped_filedir);
+	std::string filedir(myDropped_filedir);
 	std::size_t dotFound = fileExt.find_last_of(".");
 	fileExt.erase(0, dotFound + 1);
 	if(fileExt == "fbx" || fileExt == "FBX")

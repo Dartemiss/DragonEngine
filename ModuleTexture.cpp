@@ -67,7 +67,7 @@ void ModuleTexture::LoadTexture(Texture & texture)
 	texture.id = textureID;
 }
 
-void ModuleTexture::LoadSkybox(const char * path, const std::string & directory, int index) const
+void ModuleTexture::LoadSkybox(const char * path, int index) const
 {
 	Texture skybox;
 	Importer->LoadMaterial(path, skybox);
