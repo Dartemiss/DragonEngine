@@ -316,8 +316,20 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 			if (ImGui::MenuItem("Zom Bunny"))
 			{
-				App->scene->CreateGameObjectZomBunny(this);
+
+				App->scene->CreateGameObjectByName(this, "ZomBunny");
 			}
+
+			if (ImGui::MenuItem("Player"))
+			{
+				App->scene->CreateGameObjectByName(this, "Player");
+			}
+
+			if (ImGui::MenuItem("Drawers"))
+			{
+				App->scene->CreateGameObjectByName(this, "Drawers");
+			}
+			
 
 			ImGui::EndMenu();
 		}

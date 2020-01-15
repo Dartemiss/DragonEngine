@@ -254,13 +254,35 @@ void ModuleScene::CreateGameObjectZomBunny(GameObject * parent)
 	LOG("Creating a Zom Bunny.");
 	std::string defaultName = "ZomBunny";
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
-	LoadModel("../Models/ZomBunny/Zombunny.fbx", newGameObject);
+	LoadModel("Zombunny", newGameObject);
 	++numberOfBakerHouse;
 
 	allGameObjects.insert(newGameObject);
 	dynamicGO.insert(newGameObject);
 	aabbTree->Insert(newGameObject);
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+
+
+	return;
+}
+
+void ModuleScene::CreateGameObjectByName(GameObject * parent, const char* name)
+{
+	if (parent == nullptr)
+	{
+		LOG("ERROR: Parent is nullptr, cannot create gameObject.");
+		return;
+	}
+
+	LOG("Creating a %s.", name);
+	GameObject* newGameObject = CreateGameObject(name, parent);
+	LoadModel(name, newGameObject);
+	++numberOfBakerHouse;
+
+	allGameObjects.insert(newGameObject);
+	dynamicGO.insert(newGameObject);
+	aabbTree->Insert(newGameObject);
+	LOG("%s created with %s as parent.", name, parent->GetName());
 
 
 	return;
