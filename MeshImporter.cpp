@@ -39,7 +39,9 @@ bool MeshImporter::Import(const char * file, const MeshData & mesh, string & out
 	bytes = sizeof(float) * mesh.num_vertices * 2;
 	memcpy(cursor, mesh.texture_coords, bytes);
 
-	return Import(file, data, size, output_file);
+	bool succes = Import(file, data, size, output_file);
+	delete[] data;
+	return succes;
 }
 
 bool MeshImporter::Import(const char * file, const void * buffer, unsigned int size, std::string & output_file)

@@ -303,6 +303,8 @@ void ModelImporter::SaveModelFile(string & output_file)
 	memcpy(cursor, pairData, bytes);
 
 	Import(modelName.c_str(), data, size, output_file);
+
+	delete[] data;
 }
 
 bool ModelImporter::Load(const char* exported_file, ModelData & model)
