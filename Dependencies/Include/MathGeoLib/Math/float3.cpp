@@ -827,6 +827,17 @@ float3 &float3::operator /=(float scalar)
 	return *this;
 }
 
+bool float3::operator==(const float3 & v)
+{
+	// TODO: insertar una instrucción return aquí
+	return (v.x == x) && v.y == y && v.z == z;
+}
+
+bool float3::operator!=(const float3 & v)
+{
+	return !(*this == v);
+}
+
 #ifdef MATH_ENABLE_STL_SUPPORT
 std::ostream &operator <<(std::ostream &out, const float3 &rhs)
 {

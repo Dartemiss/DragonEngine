@@ -381,27 +381,14 @@ void GameObject::UpdateTransform()
 			//AABB Global Update
 			//Compute globalBoundingBox
 
+			AABB auxBox;
+			auxBox.SetNegativeInfinity();
+			auxBox.Enclose(*boundingBox);
+			auxBox.TransformAsAABB(myTransform->globalModelMatrix);
+
+			*globalBoundingBox = auxBox;
 			
-
-			float3 globalPos, globalScale;
-			float3x3 globalRot;
 			
-			myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-
-			float3 newMinPoint = boundingBox->minPoint;
-			newMinPoint.x *= globalScale.x;
-			newMinPoint.y *= globalScale.y;
-			newMinPoint.z *= globalScale.z;
-
-			float3 newMaxPoint = boundingBox->maxPoint;
-			newMaxPoint.x *= globalScale.x;
-			newMaxPoint.y *= globalScale.y;
-			newMaxPoint.z *= globalScale.z;
-
-			globalBoundingBox->minPoint = newMinPoint + globalPos;
-			globalBoundingBox->maxPoint = newMaxPoint + globalPos;
-		
-
 		}
 	}
 }
@@ -418,8 +405,8 @@ std::string GameObject::GetName() const
 
 void GameObject::ComputeAABB()
 {
-	float3 min = float3::zero;
-	float3 max = float3::zero;
+	float3 min = float3(-1,-1,-1);
+	float3 max = float3(1,1,1);
 
 	if(myMesh == nullptr)
 	{
