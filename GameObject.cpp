@@ -329,7 +329,14 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectByName(this, "Drawers");
 			}
-			
+			if(ImGui::MenuItem("Clock"))
+			{
+				App->scene->CreateGameObjectByName(this, "Clock");
+			}
+			if (ImGui::MenuItem("Wall"))
+			{
+				App->scene->CreateGameObjectByName(this, "Wall");
+			}
 
 			ImGui::EndMenu();
 		}
