@@ -136,6 +136,11 @@ void ModelImporter::ProcessMesh(const aiMesh * mesh, const aiScene * scene)
 	meshImporter.Import(meshName.c_str(), meshData, meshOutput);
 	modelData.meshes.push_back(meshOutput);
 
+	//Mesh data have to be deleted
+	delete[] meshData.indices;
+	delete[] meshData.normals;
+	delete[] meshData.positions;
+	delete[] meshData.texture_coords;
 
 	//Process material
 	string materialOutput;
@@ -304,6 +309,10 @@ void ModelImporter::SaveModelFile(string & output_file)
 
 	Import(modelName.c_str(), data, size, output_file);
 
+	delete[] meshNameSizes;
+	delete[] textureNameSizes;
+	delete[] pairData;
+	
 	delete[] data;
 }
 
@@ -341,6 +350,8 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 		model.meshes.push_back(name);
 	}
 
+	delete[] meshSizes;
+
 	cursor += bytes; //Load texture name sizes
 	bytes = sizeof(unsigned int) * texNum;
 	unsigned int * textureSizes = new unsigned int[texNum];
@@ -354,6 +365,8 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 		model.textures.push_back(name);
 	}
 
+	delete[] textureSizes;
+
 	unsigned int * pair = new unsigned int[2]; //Load mesh - texture pairs
 	MeshTexPair pairData;
 	for (unsigned int i = 0; i < pairNum; i++)
@@ -365,6 +378,8 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 		pairData.tex = pair[1];
 		model.pairs.push_back(pairData);
 	}
+
+	delete[] pair;
 
 	delete[] buffer;
 }

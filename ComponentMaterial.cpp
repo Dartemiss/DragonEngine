@@ -52,6 +52,11 @@ ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
 
 ComponentMaterial::~ComponentMaterial()
 {
+	//TODO: check it doesnt delete from moduleTextures too
+	delete diffuseMap;
+	delete specularMap;
+	delete occlusionMap;
+	delete emissiveMap;
 }
 
 void ComponentMaterial::Update()

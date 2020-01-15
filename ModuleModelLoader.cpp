@@ -73,6 +73,11 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 		}
 		else
 			LOG("Error loading model mesh: %s.", modelData.meshes[i].c_str());
+
+		delete[] currentMeshData.indices;
+		delete[] currentMeshData.positions;
+		delete[] currentMeshData.normals;
+		delete[] currentMeshData.texture_coords;
 	}
 
 	for (int i = 0; i < modelData.textures.size(); i++)

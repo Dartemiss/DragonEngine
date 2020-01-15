@@ -27,6 +27,7 @@ ComponentMesh::ComponentMesh(GameObject * go, ComponentMesh * comp)
 
 ComponentMesh::~ComponentMesh()
 {
+	delete mesh;
 }
 
 void ComponentMesh::LoadMesh(Mesh* loadedMesh)
