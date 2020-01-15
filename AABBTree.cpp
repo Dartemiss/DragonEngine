@@ -19,7 +19,8 @@ AABBTree::AABBTree(unsigned initialSize)
 
 AABBTree::~AABBTree()
 {
-
+	nodes.clear();
+	objectNodeIndexMap.clear();
 }
 
 unsigned AABBTree::AllocateNode()

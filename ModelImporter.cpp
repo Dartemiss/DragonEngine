@@ -307,11 +307,11 @@ void ModelImporter::SaveModelFile(string & output_file)
 
 bool ModelImporter::Load(const char* exported_file, ModelData & model)
 {
-	char* buffer;
 
 	string model_file = exported_file; model_file += ".notfbx";
 
-	if (!App->filesystem->Load("../Library/Meshes/", model_file.c_str(), &buffer))
+	char* buffer = App->filesystem->Load("../Library/Meshes/", model_file.c_str());
+	if (buffer == NULL)
 		return false;
 
 	char* cursor = buffer;
@@ -363,4 +363,6 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 		pairData.tex = pair[1];
 		model.pairs.push_back(pairData);
 	}
+
+	delete[] buffer;
 }

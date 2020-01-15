@@ -369,6 +369,8 @@ void SceneLoader::LoadJSONFromFile(const char * filename)
 	fclose(file);
 
 	LoadJSON(json);
+
+	free(json);
 }
 
 void SceneLoader::AddMemberToObjectOrComponent(Value & name, Value & val)

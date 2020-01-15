@@ -121,6 +121,10 @@ bool ModuleScene::CleanUp()
 		delete GO;
 	}
 
+	allGameObjects.clear();
+	dynamicGO.clear();
+	staticGO.clear();
+
 	delete aabbTree;
 	delete root;
 
@@ -448,7 +452,7 @@ void ModuleScene::BuildQuadTree()
 		}
 	}
 
-	timeRecursive = iterative.StopTimer();
+	timeIterative = iterative.StopTimer();
 
 	quadTreeInitialized = true;
 

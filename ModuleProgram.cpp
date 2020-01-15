@@ -89,7 +89,7 @@ unsigned int ModuleProgram::createShader(const char * filename, unsigned int sha
 	unsigned int shaderId = glCreateShader(shaderType);
 	glShaderSource(shaderId, 1, &data, NULL);
 	glCompileShader(shaderId);
-	delete data;
+	delete[] data;
 
 	GLint success = GL_FALSE;
 	int logLength;
@@ -117,7 +117,7 @@ char* ModuleProgram::readFile(const char* file_name) const
 		fseek(file, 0, SEEK_END);
 		int size = ftell(file);
 		rewind(file);
-		result = (char*)malloc(size + 1);
+		result = new char[size + 1];
 		fread(result, 1, size, file);
 		result[size] = 0;
 		fclose(file);

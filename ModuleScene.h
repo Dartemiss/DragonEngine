@@ -91,10 +91,8 @@ public:
 
 	//Timers
 	Timer iterative = Timer();
-	Timer recursive = Timer();
 	Timer aabbTreeTimer = Timer();
 
-	float timeRecursive = 0.0f;
 	float timeIterative = 0.0f;
 	float timeAABBTree = 0.0f;
 
