@@ -35,6 +35,16 @@ update_status ModuleModelLoader::PostUpdate()
 
 bool ModuleModelLoader::CleanUp()
 {
+
+	//It is necessary?
+	for(auto mod : models)
+	{
+		for(auto mesh : mod.Meshes)
+		{
+			delete mesh.first;
+			delete mesh.second;
+		}
+	}
 	models.clear();
 
 	return true;

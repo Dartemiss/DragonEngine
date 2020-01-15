@@ -103,6 +103,14 @@ GameObject::GameObject(const GameObject &go, GameObject* parent)
 
 GameObject::~GameObject()
 {
+	for (auto comp : components)
+	{
+		comp->CleanUp();
+		delete comp;
+	}
+
+	delete boundingBox;
+	delete globalBoundingBox;
 
 }
 
@@ -176,15 +184,6 @@ void GameObject::DeleteGameObject()
 
 void GameObject::CleanUp()
 {
-	for(auto comp : components)
-	{
-		comp->CleanUp();
-		delete comp;
-	}
-	
-	delete boundingBox;
-	delete globalBoundingBox;
-
 	delete this;
 }
 
@@ -350,8 +349,7 @@ void GameObject::DrawCamera()
 	{
 		if(comp->myType == CAMERA)
 		{
-			ComponentCamera* mainCamera = (ComponentCamera*)comp;
-			mainCamera->DrawFrustum();
+			((ComponentCamera*)comp)->DrawFrustum();
 		}
 	}
 }

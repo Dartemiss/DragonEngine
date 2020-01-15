@@ -82,6 +82,7 @@ std::string ModuleFilesystem::ComputeName(const std::string & path) const
 
 char* ModuleFilesystem::Load(const char * path, const char * file) const
 {
+	//Remember to delete memory after using it for avoiding memory leaks
 	string filename = path; filename += file;
 
 	SDL_RWops *rw = SDL_RWFromFile(filename.c_str(), "rb");
