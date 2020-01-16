@@ -341,13 +341,14 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 	unsigned int * meshSizes = new unsigned int[meshNum];
 	memcpy(meshSizes, cursor, bytes);
 
-	char * name = new char;
 	for (unsigned int i = 0; i < meshNum; i++) //For each mesh name size, load its name
 	{
 		cursor += bytes;
 		bytes = meshSizes[i] + 1;
+		char * name = new char[bytes];
 		memcpy(name, cursor, bytes);
 		model.meshes.push_back(name);
+		delete[] name;
 	}
 
 	delete[] meshSizes;
@@ -361,8 +362,10 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 	{
 		cursor += bytes;
 		bytes = textureSizes[i] + 1;
+		char * name = new char[bytes];
 		memcpy(name, cursor, bytes);
 		model.textures.push_back(name);
+		delete[] name;
 	}
 
 	delete[] textureSizes;

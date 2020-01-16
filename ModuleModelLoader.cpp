@@ -37,6 +37,7 @@ bool ModuleModelLoader::CleanUp()
 {
 
 	//It is necessary?
+	
 	for(auto mod : models)
 	{
 		for(auto mesh : mod.Meshes)

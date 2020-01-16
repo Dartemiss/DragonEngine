@@ -660,10 +660,6 @@ void ModuleScene::LoadScene()
 
 	//Remove previous data
 	CleanUp();
-	allGameObjects.clear();
-	staticGO.clear();
-	dynamicGO.clear();
-
 	//Create root
 	root = new GameObject();
 	root->OnLoad(*loader);
