@@ -20,7 +20,7 @@ public:
 
 	void DrawInspector();
 
-	void SetTextures(std::vector<Texture*> & textures);
+	void SetTextures(const std::vector<Texture*> & textures);
 	void SetDrawTextures(const unsigned int program);
 
 	//Saving and loading

@@ -115,8 +115,8 @@ public:
 	GameObject* selectedByHierarchy = nullptr;
 
 	//Mouse Picking
-	LineSegment* CreateRayCast(float3 origin, float3 direction, float maxDistance);
-	GameObject* IntersectRayCast(float3 origin, const LineSegment &ray);
+	LineSegment* CreateRayCast(const float3 &origin, const float3 &direction, float maxDistance) const;
+	GameObject* IntersectRayCast(const float3 &origin, const LineSegment &ray);
 	LineSegment* CreateRayCast(float normalizedX, float normalizedY) const;
 	LineSegment* currentRay = nullptr;
 

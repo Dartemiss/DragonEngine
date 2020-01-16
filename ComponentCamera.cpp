@@ -99,7 +99,7 @@ void ComponentCamera::Rotate(const float dx, const float dy)
 	}
 }
 
-void ComponentCamera::Move(float3 direction)
+void ComponentCamera::Move(const float3 &direction)
 {
 	if (!direction.Equals(float3::zero))
 		frustum->Translate(direction);
@@ -128,7 +128,7 @@ void ComponentCamera::SetFarPlaneDistance(const float farDist)
 	proj = frustum->ProjectionMatrix();
 }
 
-void ComponentCamera::LookAt(const float3 target)
+void ComponentCamera::LookAt(const float3 &target)
 {
 	float3 dir = (target - frustum->pos).Normalized();
 	float3x3 rot = float3x3::LookAt(frustum->front, dir, frustum->up, float3::unitY);

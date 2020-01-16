@@ -13,7 +13,7 @@ GUIConsole::GUIConsole()
 
 void GUIConsole::Clear()
 {
-	bufferConsole.clear(); 
+	//bufferConsole.clear(); 
 }
 
 void GUIConsole::AddLog(const char * log)

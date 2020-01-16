@@ -11,7 +11,7 @@ public:
 	ComponentMesh(GameObject* go, ComponentMesh* comp);
 	~ComponentMesh();
 
-	void LoadMesh(Mesh* mesh);
+	void LoadMesh(Mesh* myMesh);
 	void Draw(const unsigned int program) const;
 
 	float IsIntersectedByRay(const float3 &origin, const LineSegment &ray);

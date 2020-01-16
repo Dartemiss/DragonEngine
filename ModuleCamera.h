@@ -30,13 +30,13 @@ public:
 	void SetAspectRatio();
 	void SetAspectRatio(int newHeight, int newWidth);
 	void Rotate(const float dx, const float dy);
-	void Move(float3 direction);
+	void Move(float3 &direction);
 	void Orbit(const float dx,const float dy);
 	void Zoom(const bool direction);
 	void TranslateCameraToPoint(const float3 &newPos);
 	void SetNearPlaneDistance(const float nearDist);
 	void SetFarPlaneDistance(const float farDist);
-	void LookAt(const float3 target);
+	void LookAt(const float3 &target);
 
 	//Getter Matrix
 	float4x4 GetProjMatrix() const;

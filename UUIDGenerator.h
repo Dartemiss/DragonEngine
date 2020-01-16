@@ -7,7 +7,7 @@ public:
 	UUIDGenerator();
 	~UUIDGenerator();
 
-	unsigned int getUUID();
+	unsigned int getUUID() const;
 };
 
 extern UUIDGenerator * UUIDGen;

@@ -300,7 +300,7 @@ void ModuleRender::DrawGuizmo() const
 	return;
 }
 
-void ModuleRender::DrawAllGameObjects()
+void ModuleRender::DrawAllGameObjects() const
 {
 
 	//unsigned int progModel = App->program->defaultProg;
@@ -358,7 +358,7 @@ void ModuleRender::DrawAllGameObjects()
 	glUseProgram(0);
 }
 
-void ModuleRender::DrawGame()
+void ModuleRender::DrawGame() const
 {
 	unsigned int progModel = App->program->uberProg;
 	glUseProgram(progModel);

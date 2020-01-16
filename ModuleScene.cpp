@@ -215,7 +215,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 	return;
 }
 
-void ModuleScene::CreateEmpty(GameObject* parent)
+void ModuleScene::CreateEmpty(GameObject* parent) 
 {
 	std::string defaultName = "NewGameObject" + std::to_string(numberOfGameObjects + 1);
 	GameObject* empty = CreateGameObject(defaultName.c_str(), parent);
@@ -773,7 +773,7 @@ void ModuleScene::InsertChilds(GameObject * go)
 	return;
 }
 
-LineSegment* ModuleScene::CreateRayCast(float3 origin, float3 direction, float maxDistance)
+LineSegment* ModuleScene::CreateRayCast(const float3 &origin, const float3 &direction, float maxDistance) const
 {
 	Frustum auxFrustum = Frustum();
 	auxFrustum.pos = origin - float3(0.1f,0.1f,0.1f);
@@ -829,7 +829,7 @@ GameObject * ModuleScene::GetRoot() const
 	return root;
 }
 
-GameObject* ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)
+GameObject* ModuleScene::IntersectRayCast(const float3 &origin, const LineSegment &ray)
 {
 	//First get aabb intersection ordered by distance, then compare with aabb that are closer to the closest triangle hit
 	std::map<float, GameObject*> hits;

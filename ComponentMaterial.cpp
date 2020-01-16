@@ -69,7 +69,7 @@ bool ComponentMaterial::CleanUp()
 	return true;
 }
 
-void ComponentMaterial::SetTextures(vector<Texture*> & textures)
+void ComponentMaterial::SetTextures(const vector<Texture*> & textures)
 {
 	//TODO change textures parameter to pointers reference
 	string name;

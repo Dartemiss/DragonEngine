@@ -58,8 +58,8 @@ public:
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
 	void DrawGuizmo() const;
-	void DrawAllGameObjects();
-	void DrawGame();
+	void DrawAllGameObjects() const;
+	void DrawGame() const;
 	
 	//If scene create buffer for scene else create buffer for game window
 	void CreateFrameBuffer(int width, int height, bool scene = true);

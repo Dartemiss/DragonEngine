@@ -28,11 +28,11 @@ public:
 	void SetFOV();
 	void SetAspectRatio(int newHeight, int newWidth);
 	void Rotate(const float dx, const float dy);
-	void Move(float3 direction);
+	void Move(const float3 &direction);
 	void TranslateCameraToPoint(const float3 &newPos);
 	void SetNearPlaneDistance(const float nearDist);
 	void SetFarPlaneDistance(const float farDist);
-	void LookAt(const float3 target);
+	void LookAt(const float3 &target);
 	void ComputeViewMatrix();
 	void ComputeProjMatrix();
 	void DrawInspector();

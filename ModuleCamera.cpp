@@ -199,7 +199,7 @@ void ModuleCamera::Rotate(const float dx, const float dy)
 	return;
 }
 
-void ModuleCamera::Move(float3 direction)
+void ModuleCamera::Move(float3 &direction)
 {
 	if(App->input->GetKey(SDL_SCANCODE_LSHIFT))
 	{
@@ -270,7 +270,7 @@ void ModuleCamera::SetFarPlaneDistance(const float farDist)
 	editorCamera->ComputeProjMatrix();
 }
 
-void ModuleCamera::LookAt(const float3 target)
+void ModuleCamera::LookAt(const float3 &target)
 {
 	float3 dir = (target - editorCamera->frustum->pos).Normalized();
 	float3x3 rot = float3x3::LookAt(editorCamera->frustum->front, dir, editorCamera->frustum->up, float3::unitY);
