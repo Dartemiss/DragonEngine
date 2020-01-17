@@ -61,6 +61,22 @@ bool Application::Init()
 	return ret;
 }
 
+bool Application::Start()
+{
+	uSTimer startTimer;
+	startTimer.StartTimer();
+
+	bool ret = true;
+
+	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+		ret = (*it)->Start();
+
+	float time = startTimer.StopTimer() / 1000.0f;
+	LOG("Total Time of start is: %.5f seconds", time);
+
+	return ret;
+}
+
 update_status Application::Update()
 {
 	//Begining of the frame
