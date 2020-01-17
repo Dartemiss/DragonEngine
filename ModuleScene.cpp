@@ -831,7 +831,7 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 		selectedByHierarchy = selectedGO;
 	}
 
-	dd::arrow(ray.a, ray.b, float3(1, 0, 0),10);
+	//dd::arrow(ray.a, ray.b, float3(1, 0, 0),10);
 
 	return;
 }

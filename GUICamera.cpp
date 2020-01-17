@@ -46,7 +46,7 @@ void GUICamera::Draw(const char * title)
 		ImGui::Checkbox("Show Frustum", &App->renderer->showFrustum);
 		//ImGui::Checkbox("Move Objects", &App->scene->moveObjectsArround);
 
-
+		/*
 		if(ImGui::Button("Generate Cubes"))
 		{
 			App->scene->CreateCubesScript();
@@ -55,11 +55,12 @@ void GUICamera::Draw(const char * title)
 		{
 			App->scene->CreateShapesScript();
 		}
-		if (ImGui::Button("Generate Houses"))
+		
+		if (ImGui::Button("Generate 1000 Houses"))
 		{
 			App->scene->CreateHousesScript();
 		}
-
+		*/
 		ImGui::End();
 
 	}

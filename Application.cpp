@@ -58,7 +58,7 @@ bool Application::Init()
 	float time = initTimer.StopTimer() / 1000.0f;
 	LOG("Total Time of init is: %.5f seconds", time);
 
-	//App->scene->LoadScene();
+	App->scene->LoadScene();
 
 	return ret;
 }

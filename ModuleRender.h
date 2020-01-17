@@ -68,7 +68,7 @@ public:
 
 	//Quadtree variables
 	bool showQuadTree = false;
-	bool showAABBTree = true;
+	bool showAABBTree = false;
 	bool showFrustum = true;
 	bool showGrid = false;
 	bool antialiasing = false;

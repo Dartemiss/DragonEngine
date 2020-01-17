@@ -332,12 +332,6 @@ void GameObject::DrawHierarchy(GameObject * selected)
 				App->scene->CreateGameObjectBakerHouse(this);
 			}
 
-			if (ImGui::MenuItem("Zom Bunny"))
-			{
-
-				App->scene->CreateGameObjectByName(this, "ZomBunny");
-			}
-
 			if (ImGui::MenuItem("Player"))
 			{
 				App->scene->CreateGameObjectByName(this, "Player");
@@ -376,10 +370,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectByName(this, "Firetruck");
 			}
-			if (ImGui::MenuItem("Hellephant"))
-			{
-				App->scene->CreateGameObjectByName(this, "Hellephant");
-			}
+
 			if (ImGui::MenuItem("SpinningTop"))
 			{
 				App->scene->CreateGameObjectByName(this, "SpinningTop");
