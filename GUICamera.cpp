@@ -28,18 +28,8 @@ void GUICamera::Draw(const char * title)
 		ImGui::Checkbox("Show QuadTree", &App->renderer->showQuadTree); 
 		ImGui::Checkbox("Show AABBTree", &App->renderer->showAABBTree);
 		ImGui::Checkbox("Show Frustum", &App->renderer->showFrustum);
-		ImGui::Checkbox("Frusum Culling", &App->renderer->frustumCullingIsActivated);
-		ImGui::Checkbox("Move Objects", &App->scene->moveObjectsArround);
+		//ImGui::Checkbox("Move Objects", &App->scene->moveObjectsArround);
 
-		if(ImGui::Button("Build QuadTree"))
-		{
-			App->scene->BuildQuadTree();
-		}
-
-		if (ImGui::Button("Build AABBTree"))
-		{
-			App->scene->BuildAABBTree();
-		}
 
 		if(ImGui::Button("Generate Cubes"))
 		{
