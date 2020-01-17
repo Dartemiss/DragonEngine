@@ -29,7 +29,7 @@ ModuleIMGUI::~ModuleIMGUI()
 {
 }
 
-bool ModuleIMGUI::Init()
+bool ModuleIMGUI::Start()
 {
 	ImGui::CreateContext();
 	const char* glsl_version = "#version 330";

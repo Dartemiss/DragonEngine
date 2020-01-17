@@ -45,7 +45,7 @@ ModuleScene::~ModuleScene()
 {
 }
 
-bool ModuleScene::Init()
+bool ModuleScene::Start()
 {
 	aabbTree = new AABBTree(10);
 

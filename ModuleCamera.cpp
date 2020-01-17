@@ -27,9 +27,8 @@ ModuleCamera::~ModuleCamera()
 {
 }
 
-bool ModuleCamera::Init()
+bool ModuleCamera::Start()
 {
-
 	editorCamera = new ComponentCamera(App->scene->GetRoot());
 	editorCamera->SetFarPlaneDistance(300.0f);
 

@@ -13,27 +13,6 @@
 using namespace std;
 
 
-bool ModuleModelLoader::Init()
-{
-
-	return true;
-}
-
-update_status ModuleModelLoader::PreUpdate()
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleModelLoader::Update()
-{
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleModelLoader::PostUpdate()
-{
-	return UPDATE_CONTINUE;
-}
-
 bool ModuleModelLoader::CleanUp()
 {
 	models.clear();

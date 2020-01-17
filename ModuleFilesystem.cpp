@@ -17,7 +17,7 @@ ModuleFilesystem::~ModuleFilesystem()
 {
 }
 
-bool ModuleFilesystem::Init()
+bool ModuleFilesystem::Start()
 {
 	LOG("Import all files on directory assets into own binary file");
 	//Import all files on directory assets into own binary file

@@ -112,6 +112,11 @@ bool ModuleRender::Init()
 	//Debugging
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 
+	return true;
+}
+
+bool ModuleRender::Start()
+{
 	App->window->glcontext = SDL_GL_CreateContext(App->window->window);
 
 	GLenum err = glewInit();
@@ -139,12 +144,9 @@ bool ModuleRender::Init()
 	glDebugMessageCallback(&OurOpenGLErrorFunction, nullptr); // sets the callback
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true); //filters notifications
 
-
-
 	SDL_GetWindowSize(App->window->window,
 		&width,
 		&height);
-
 
 	//Project view model matrix and prog
 

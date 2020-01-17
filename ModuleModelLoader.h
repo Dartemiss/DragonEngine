@@ -25,10 +25,6 @@ public:
 	ModuleModelLoader() = default;
 	~ModuleModelLoader() = default;
 
-	bool Init();
-	update_status PreUpdate();
-	update_status Update();
-	update_status PostUpdate();
 	bool CleanUp();
 
 	void LoadModel(const std::string &path, Model& model);

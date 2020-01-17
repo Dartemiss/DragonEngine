@@ -9,7 +9,7 @@ class ModuleFilesystem : public Module
 public:
 	ModuleFilesystem();
 	~ModuleFilesystem();
-	bool Init();
+	bool Start();
 
 	std::string ComputeName(const std::string &path) const;
 
