@@ -214,7 +214,7 @@ void AABBTree::FixUpwardsTree(unsigned treeNodeIndex)
 		treeNodeIndex = treeNode.parentNodeIndex;
 
 
-		if (treeNode.parentNodeIndex == treeNode.leftNodeIndex || treeNode.parentNodeIndex == treeNode.rightNodeIndex)
+		if (treeNode.parentNodeIndex == treeNode.leftNodeIndex || treeNode.parentNodeIndex == treeNode.rightNodeIndex || treeNode.leftNodeIndex == treeNode.rightNodeIndex)
 		{
 			return;
 		}

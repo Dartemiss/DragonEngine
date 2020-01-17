@@ -62,6 +62,7 @@ public:
 	std::set<GameObject*> dynamicGO;
 	bool showHierarchy = true;
 	bool showInspector = true;
+	std::set<unsigned int> UIDs;
 
 	//Game's Main Camera Object
 	GameObject* mainCamera = nullptr;

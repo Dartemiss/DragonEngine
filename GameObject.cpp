@@ -32,7 +32,17 @@ GameObject::GameObject(const char * name)
 {
 	this->name = name;
 	CreateComponent(TRANSFORM);
-	this->UID = UUIDGen->getUUID();
+	bool validUID = false;
+	//Ensure that UID is unique
+	while(!validUID)
+	{
+		this->UID = UUIDGen->getUUID();
+		if(App->scene->UIDs.find(UID) == App->scene->UIDs.end())
+		{
+			App->scene->UIDs.insert(UID);
+			validUID = true;
+		}
+	}
 	boundingBox = new AABB(myTransform->position - float3(1, 1, 1), myTransform->position + float3(1, 1, 1));
 	globalBoundingBox = new AABB(*boundingBox);
 
@@ -296,6 +306,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 		if (ImGui::BeginMenu("Create 3D Object"))
 		{
+			/*
 			if(ImGui::MenuItem("Cube"))
 			{
 				App->scene->CreateGameObjectShape(this, CUBE);
@@ -314,7 +325,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectShape(this, TORUS);
 			}
-
+			*/
 			if (ImGui::MenuItem("Baker House"))
 			{
 				App->scene->CreateGameObjectBakerHouse(this);
@@ -335,7 +346,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectByName(this, "Drawers");
 			}
-			if(ImGui::MenuItem("Clock"))
+			if (ImGui::MenuItem("Clock"))
 			{
 				App->scene->CreateGameObjectByName(this, "Clock");
 			}
@@ -359,6 +370,24 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectByName(this, "Robot");
 			}
+
+			if (ImGui::MenuItem("Firetruck"))
+			{
+				App->scene->CreateGameObjectByName(this, "Firetruck");
+			}
+			if (ImGui::MenuItem("Hellephant"))
+			{
+				App->scene->CreateGameObjectByName(this, "Hellephant");
+			}
+			if (ImGui::MenuItem("SpinningTop"))
+			{
+				App->scene->CreateGameObjectByName(this, "SpinningTop");
+			}
+			if (ImGui::MenuItem("Stool"))
+			{
+				App->scene->CreateGameObjectByName(this, "Stool");
+			}
+
 
 			ImGui::EndMenu();
 		}
