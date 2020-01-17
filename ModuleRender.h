@@ -86,6 +86,7 @@ public:
 	ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
 
 	bool isGamePlaying = false;
+	ComponentCamera* gameCamera = nullptr;
 
 private:
 	void* context;
@@ -110,7 +111,6 @@ private:
 	unsigned int sceneTexture = 0;
 	unsigned int gameTexture = 0;
 	
-	ComponentCamera* gameCamera = nullptr;
 	
 	//Skybox
 	Skybox* skybox = nullptr;

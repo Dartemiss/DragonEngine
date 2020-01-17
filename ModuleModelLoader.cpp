@@ -42,7 +42,10 @@ bool ModuleModelLoader::CleanUp()
 	{
 		for(auto mesh : mod.Meshes)
 		{
-			delete mesh.first;
+			if(mesh.first->vertices.size() != 0 && mesh.first->indices.size() != 0)
+			{
+				delete mesh.first;
+			}
 			delete mesh.second;
 		}
 	}
@@ -475,7 +478,7 @@ void ModuleModelLoader::ProcessMeshData(const MeshData & data, Mesh & mesh)
 
 		mesh.vertices.push_back(vertex);
 	}
-	//TODO: fix error
+
 	for (unsigned int i = 0; i < data.num_indices; i++)
 	{
 		mesh.indices.push_back(data.indices[i]);

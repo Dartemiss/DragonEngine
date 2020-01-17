@@ -20,18 +20,7 @@ Skybox::Skybox()
 			"skybox_front",
 			"skybox_back"
 	};
-	/*
-	std::vector<std::string> faces
-	{
-			"bluefreeze_lf.tga",
-			"bluefreeze_rt.tga",
-			"bluefreeze_up.tga",
-			"bluefreeze_dn.tga",
-			"bluefreeze_ft.tga",
-			"bluefreeze_bk.tga"
 
-	};
-	*/
 	//Load default Skybox
 	cubemapTexture = LoadCubeMap(faces);
 

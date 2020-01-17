@@ -53,6 +53,14 @@ bool ModuleScene::Init()
 	mainCamera = CreateGameObject("Main Camera", root);
 	mainCamera->CreateComponent(CAMERA);
 
+	for(auto com : mainCamera->components)
+	{
+		if(com->myType == CAMERA)
+		{
+			((ComponentCamera*)com)->isMainCamera = true;
+		}
+	}
+	
 	allGameObjects.insert(mainCamera);
 	dynamicGO.insert(mainCamera);
 	aabbTree->Insert(mainCamera);

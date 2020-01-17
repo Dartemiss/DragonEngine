@@ -212,6 +212,12 @@ void AABBTree::FixUpwardsTree(unsigned treeNodeIndex)
 		treeNode.aabb = MergeAABB(rightNode.aabb, leftNode.aabb);
 
 		treeNodeIndex = treeNode.parentNodeIndex;
+
+
+		if (treeNode.parentNodeIndex == treeNode.leftNodeIndex || treeNode.parentNodeIndex == treeNode.rightNodeIndex)
+		{
+			return;
+		}
 	}
 
 	return;

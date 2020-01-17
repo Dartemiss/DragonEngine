@@ -86,6 +86,7 @@ public:
 	float3 FarTopRight;
 	float3 FarBottomLeft;
 	float3 FarBottomRight;
+	bool isMainCamera = false;
 
 private:
 	bool isPerspective = true;

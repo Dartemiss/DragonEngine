@@ -156,7 +156,7 @@ void GameObject::SetParent(GameObject * newParent)
 
 void GameObject::RemoveChildren(GameObject * child)
 {
-
+	//TODO: crash when deleting player
 	if(!children.empty())
 	{
 		children.erase(std::find(children.begin(), children.end(), child));
@@ -167,6 +167,12 @@ void GameObject::RemoveChildren(GameObject * child)
 
 void GameObject::DeleteGameObject()
 {
+	if (UID == 1)
+	{
+		LOG("Cannot delete root STOP!");
+		return;
+	}
+
 	parent->RemoveChildren(this);
 	App->scene->RemoveGameObject(this);
 	for(auto ch : children)
@@ -336,6 +342,22 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			if (ImGui::MenuItem("Wall"))
 			{
 				App->scene->CreateGameObjectByName(this, "Wall");
+			}
+			if (ImGui::MenuItem("Dollhouse"))
+			{
+				App->scene->CreateGameObjectByName(this, "Dollhouse");
+			}
+			if (ImGui::MenuItem("Floor"))
+			{
+				App->scene->CreateGameObjectByName(this, "Floor");
+			}
+			if (ImGui::MenuItem("Hearse"))
+			{
+				App->scene->CreateGameObjectByName(this, "Hearse");
+			}
+			if (ImGui::MenuItem("Robot"))
+			{
+				App->scene->CreateGameObjectByName(this, "Robot");
 			}
 
 			ImGui::EndMenu();
