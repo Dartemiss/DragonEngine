@@ -758,8 +758,10 @@ void ModuleScene::DuplicateGameObject(GameObject * go)
 	go->parent->children.push_back(duplicatedGO);
 	++go->numberOfCopies;
 
-	allGameObjects.insert(duplicatedGO);
 	//Add all childs to the scene
+	allGameObjects.insert(duplicatedGO);
+	dynamicGO.insert(duplicatedGO);
+	aabbTree->Insert(duplicatedGO);
 
 	InsertChilds(duplicatedGO);
 
@@ -774,6 +776,8 @@ void ModuleScene::InsertChilds(GameObject * go)
 	for(auto ch : go->children)
 	{
 		allGameObjects.insert(ch);
+		dynamicGO.insert(ch);
+		aabbTree->Insert(ch);
 		InsertChilds(ch);
 	}
 
