@@ -24,6 +24,7 @@ Skybox::Skybox()
 			"skybox_back"
 	};
 
+
 	//Load default Skybox
 	cubemapTexture = LoadCubeMap(faces);
 

@@ -253,7 +253,7 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	allGameObjects.insert(newGameObject);
 	dynamicGO.insert(newGameObject);
 	aabbTree->Insert(newGameObject);
-	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName().c_str());
 	
 
 	return;
@@ -298,7 +298,7 @@ void ModuleScene::CreateGameObjectByName(GameObject * parent, const char* name)
 	allGameObjects.insert(newGameObject);
 	dynamicGO.insert(newGameObject);
 	aabbTree->Insert(newGameObject);
-	LOG("%s created with %s as parent.", name, parent->GetName());
+	LOG("%s created with %s as parent.", name, parent->GetName().c_str());
 
 
 	return;

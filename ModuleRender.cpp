@@ -27,7 +27,7 @@
 #include "MathGeoLib/Geometry/Frustum.h"
 #include <math.h>
 #include "MathGeoLib/Math/float4.h"
-#include "Brofiler/Brofiler.h"
+//#include "Brofiler/Brofiler.h"
 #include "ImGuizmo/ImGuizmo.h"
 #include "FontAwesome/IconsFontAwesome5.h"
 #include "FontAwesome/IconsFontAwesome5Brands.h"
@@ -187,7 +187,7 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 	//Use this line to compute information about this function
-	BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
+	//BROFILER_CATEGORY("Update", Profiler::Color::Orchid);
 	
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0, 1, 0, 1));
