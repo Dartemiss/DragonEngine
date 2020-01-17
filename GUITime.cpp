@@ -34,10 +34,14 @@ void GUITime::Draw(const char * title)
 		ImGui::Text("FPS: %d", App->timemanager->FPS); ImGui::SameLine();
 		ImGui::Text("Frame Count: %d", App->timemanager->frameCount);
 
+		ImGui::Text("Render Time: %.3f", App->renderer->timeForRendering);
+
 		ImGui::Checkbox("Fix FPS", &App->timemanager->fixFPS);
 		ImGui::SliderInt("FPS", &App->timemanager->fixedFPS, 10, 60);
 
 		ImGui::Text("Time per frame (before waiting): %.5f (ms)", App->timemanager->GetTimeBeforeVsync());
+
+
 
 
 		if(ImGui::Checkbox("Vsync",&vsyncActive))
