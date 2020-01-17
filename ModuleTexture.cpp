@@ -71,12 +71,15 @@ void ModuleTexture::LoadTexture(Texture & texture)
 	texture.id = textureID;
 }
 
-void ModuleTexture::LoadSkybox(const char * path, int index, unsigned int &image) const
+void ModuleTexture::LoadSkybox(const char * path, int index) const
 {
 	Texture skybox;
+	unsigned int image;
 	Importer->materialImp->LoadSkyBox(path, skybox, image);
 
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + index, 0, GL_RGBA, skybox.width, skybox.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, skybox.data);
+
+	iluDeleteImage(image);
 
 	return;
 }

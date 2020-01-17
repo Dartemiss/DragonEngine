@@ -20,7 +20,6 @@ public:
 	unsigned int skyboxVAO = 0;
 	unsigned int skyboxVBO = 0;
 
-	std::vector<unsigned int> images;
 	
 };
 
