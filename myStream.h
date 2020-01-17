@@ -26,7 +26,7 @@ public:
 		std::size_t found = str.find_first_of("%\\");
 		while (found != std::string::npos)
 		{
-			str[found] = '%\\';
+			str[found] = (char)'%\\';
 			found = str.find_first_of("%\\", found + 1);
 		}
 

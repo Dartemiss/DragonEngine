@@ -385,4 +385,6 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 	delete[] pair;
 
 	delete[] buffer;
+
+	return true;
 }

@@ -77,7 +77,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 	MeshData currentMeshData;
 	vector<Texture> textures;
 	
-	for (int i = 0; i < modelData.meshes.size(); i++)
+	for (unsigned int i = 0; i < modelData.meshes.size(); i++)
 	{
 		Mesh currentMesh;
 		if (Importer->LoadMesh(modelData.meshes[i].c_str(), currentMeshData))
@@ -94,7 +94,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 		delete[] currentMeshData.texture_coords;
 	}
 
-	for (int i = 0; i < modelData.textures.size(); i++)
+	for (unsigned int i = 0; i < modelData.textures.size(); i++)
 	{
 		Texture currentTexture;
 		if (Importer->LoadMaterial(modelData.textures[i].c_str(), currentTexture))
@@ -109,7 +109,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 	MeshTexPair pair;
 	Mesh * newMesh;
 	unsigned lastMeshIndex = 0;
-	for (int i = 0; i < modelData.pairs.size(); i++)
+	for (unsigned int i = 0; i < modelData.pairs.size(); i++)
 	{
 		pair = modelData.pairs[i];
 
