@@ -13,7 +13,7 @@ GUIConsole::GUIConsole()
 
 void GUIConsole::Clear()
 {
-	bufferConsole.clear(); 
+	//bufferConsole.clear(); 
 }
 
 void GUIConsole::AddLog(const char * log)
@@ -21,7 +21,7 @@ void GUIConsole::AddLog(const char * log)
 	bufferConsole.appendf(log);
 }
 
-void GUIConsole::Draw(const char * title)
+void GUIConsole::Draw()
 {
 	if (isEnabled) 
 	{

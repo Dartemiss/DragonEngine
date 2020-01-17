@@ -21,7 +21,7 @@ public:
 	
 	void AddLog(const char* log);
 
-	void Draw(const char* title);
+	void Draw();
 
 	//Variables
 	bool firstTime = true;

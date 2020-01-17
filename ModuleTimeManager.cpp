@@ -112,6 +112,16 @@ float ModuleTimeManager::GetRealDeltaTime() const
 	return realDeltaTime;
 }
 
+float ModuleTimeManager::GetTimeBeforeVsync() const
+{
+	return timeBeforeVsync;
+}
+
+void ModuleTimeManager::ComputeTimeBeforeVsync()
+{
+	timeBeforeVsync = realTimer->ReadTimer() - initialRealFrameTime;
+}
+
 void ModuleTimeManager::PauseGame()
 {
 	if(isPlaying)

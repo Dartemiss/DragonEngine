@@ -12,7 +12,7 @@ UUIDGenerator::~UUIDGenerator()
 {
 }
 
-unsigned int UUIDGenerator::getUUID()
+unsigned int UUIDGenerator::getUUID() const
 {
 	unsigned int UUID = pcg32_random();
 	while (UUID == 0)

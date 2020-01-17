@@ -19,6 +19,7 @@ public:
 
 	unsigned int skyboxVAO = 0;
 	unsigned int skyboxVBO = 0;
+
 	
 };
 

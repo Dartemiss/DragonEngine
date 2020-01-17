@@ -155,6 +155,9 @@ public:
 	/// Divides this vector by a scalar, in-place. [similarOverload: operator+=] [hideIndex]
 	/** @return A reference to this. */
 	float3 &operator /=(float scalar);
+	/// Returns a boolen true if v is equal to this float3
+	bool operator ==(const float3 &v);
+	bool operator !=(const float3 &v);
 
 #ifdef MATH_ENABLE_UNCOMMON_OPERATIONS
 	float3 operator *(const float3 &vector) const { return this->Mul(vector); }

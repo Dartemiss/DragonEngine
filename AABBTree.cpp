@@ -19,7 +19,8 @@ AABBTree::AABBTree(unsigned initialSize)
 
 AABBTree::~AABBTree()
 {
-
+	nodes.clear();
+	objectNodeIndexMap.clear();
 }
 
 unsigned AABBTree::AllocateNode()
@@ -211,6 +212,12 @@ void AABBTree::FixUpwardsTree(unsigned treeNodeIndex)
 		treeNode.aabb = MergeAABB(rightNode.aabb, leftNode.aabb);
 
 		treeNodeIndex = treeNode.parentNodeIndex;
+
+
+		if (treeNode.parentNodeIndex == treeNode.leftNodeIndex || treeNode.parentNodeIndex == treeNode.rightNodeIndex || treeNode.leftNodeIndex == treeNode.rightNodeIndex)
+		{
+			return;
+		}
 	}
 
 	return;

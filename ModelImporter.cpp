@@ -136,6 +136,11 @@ void ModelImporter::ProcessMesh(const aiMesh * mesh, const aiScene * scene)
 	meshImporter.Import(meshName.c_str(), meshData, meshOutput);
 	modelData.meshes.push_back(meshOutput);
 
+	//Mesh data have to be deleted
+	delete[] meshData.indices;
+	delete[] meshData.normals;
+	delete[] meshData.positions;
+	delete[] meshData.texture_coords;
 
 	//Process material
 	string materialOutput;
@@ -200,11 +205,11 @@ void ModelImporter::SearchTextureByType(const aiMaterial * material, const aiTex
 		textureName = textureName.substr(0, lastindex) + typeName;
 
 		bool skip = false;
-		for (unsigned int i = 0; i < modelData.textures.size(); i++)
+		for (unsigned int j = 0; j < modelData.textures.size(); j++)
 		{
-			if (strcmp(modelData.textures[i].c_str(), textureName.c_str()) == 0)
+			if (strcmp(modelData.textures[j].c_str(), textureName.c_str()) == 0)
 			{
-				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = i + 1;
+				MeshTexPair pair; pair.mesh = currentMeshCount; pair.tex = j + 1;
 				modelData.pairs.push_back(pair);
 				skip = true;
 				break;
@@ -303,15 +308,21 @@ void ModelImporter::SaveModelFile(string & output_file)
 	memcpy(cursor, pairData, bytes);
 
 	Import(modelName.c_str(), data, size, output_file);
+
+	delete[] meshNameSizes;
+	delete[] textureNameSizes;
+	delete[] pairData;
+	
+	delete[] data;
 }
 
 bool ModelImporter::Load(const char* exported_file, ModelData & model)
 {
-	char* buffer;
 
 	string model_file = exported_file; model_file += ".notfbx";
 
-	if (!App->filesystem->Load("../Library/Meshes/", model_file.c_str(), &buffer))
+	char* buffer = App->filesystem->Load("../Library/Meshes/", model_file.c_str());
+	if (buffer == NULL)
 		return false;
 
 	char* cursor = buffer;
@@ -330,14 +341,17 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 	unsigned int * meshSizes = new unsigned int[meshNum];
 	memcpy(meshSizes, cursor, bytes);
 
-	char * name = new char;
 	for (unsigned int i = 0; i < meshNum; i++) //For each mesh name size, load its name
 	{
 		cursor += bytes;
 		bytes = meshSizes[i] + 1;
+		char * name = new char[bytes];
 		memcpy(name, cursor, bytes);
 		model.meshes.push_back(name);
+		delete[] name;
 	}
+
+	delete[] meshSizes;
 
 	cursor += bytes; //Load texture name sizes
 	bytes = sizeof(unsigned int) * texNum;
@@ -348,9 +362,13 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 	{
 		cursor += bytes;
 		bytes = textureSizes[i] + 1;
+		char * name = new char[bytes];
 		memcpy(name, cursor, bytes);
 		model.textures.push_back(name);
+		delete[] name;
 	}
+
+	delete[] textureSizes;
 
 	unsigned int * pair = new unsigned int[2]; //Load mesh - texture pairs
 	MeshTexPair pairData;
@@ -363,4 +381,10 @@ bool ModelImporter::Load(const char* exported_file, ModelData & model)
 		pairData.tex = pair[1];
 		model.pairs.push_back(pairData);
 	}
+
+	delete[] pair;
+
+	delete[] buffer;
+
+	return true;
 }

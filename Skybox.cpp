@@ -6,6 +6,9 @@
 #include "ModuleCamera.h"
 #include "ComponentCamera.h"
 #include "MathGeoLib/Math/float4.h"
+#include <DevIL/il.h>
+#include <DevIL/ilu.h>
+#include <DevIL/ilut.h>
 
 Skybox::Skybox()
 {
@@ -13,25 +16,15 @@ Skybox::Skybox()
 	
 	std::vector<std::string> faces
 	{
-			"right.jpg",
-			"left.jpg",
-			"top.jpg",
-			"bottom.jpg",
-			"front.jpg",
-			"back.jpg"
+			"skybox_right",
+			"skybox_left",
+			"skybox_top",
+			"skybox_bottom",
+			"skybox_front",
+			"skybox_back"
 	};
-	/*
-	std::vector<std::string> faces
-	{
-			"bluefreeze_lf.tga",
-			"bluefreeze_rt.tga",
-			"bluefreeze_up.tga",
-			"bluefreeze_dn.tga",
-			"bluefreeze_ft.tga",
-			"bluefreeze_bk.tga"
 
-	};
-	*/
+
 	//Load default Skybox
 	cubemapTexture = LoadCubeMap(faces);
 
@@ -100,6 +93,7 @@ Skybox::~Skybox()
 	glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &skyboxVBO);
 	glDeleteTextures(1, &cubemapTexture);
+
 }
 
 unsigned int Skybox::LoadCubeMap(const std::vector<std::string> &faces)
@@ -110,7 +104,7 @@ unsigned int Skybox::LoadCubeMap(const std::vector<std::string> &faces)
 
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{
-		App->texture->LoadSkybox(faces[i].c_str(), directory, i);
+		App->texture->LoadSkybox(faces[i].c_str(), i);
 	}
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

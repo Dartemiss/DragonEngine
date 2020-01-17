@@ -13,7 +13,7 @@ public:
 
 	std::string ComputeName(const std::string &path) const;
 
-	bool Load(const char* path, const char* file, char** buffer) const;
+	char* Load(const char* path, const char* file) const;
 	bool Save(const char* path, const char* file, const void* buffer, unsigned int size, bool append = false) const;
 	bool Remove(const char* file);
 	bool Exists(const char* file) const;

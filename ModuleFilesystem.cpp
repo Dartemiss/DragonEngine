@@ -31,15 +31,15 @@ bool ModuleFilesystem::Init()
 		fileExt.erase(0, dotFound + 1);
 		if(fileExt == "fbx")
 		{
-			string path(fullPath);
+			string myPath(fullPath);
 			string file = ComputeName(fullPath);
 
 
-			size_t sizeFile = path.size() - file.size();
-			path = path.substr(0, sizeFile);
+			size_t sizeFile = myPath.size() - file.size();
+			myPath = myPath.substr(0, sizeFile);
 
 			string s;
-			Importer->ImportModel(path.c_str(),file.c_str(),s);
+			Importer->ImportModel(myPath.c_str(),file.c_str(),s);
 			
 		}
 
@@ -80,17 +80,20 @@ std::string ModuleFilesystem::ComputeName(const std::string & path) const
 }
 
 
-bool ModuleFilesystem::Load(const char * path, const char * file, char ** buffer) const
+char* ModuleFilesystem::Load(const char * path, const char * file) const
 {
+	//Remember to delete memory after using it for avoiding memory leaks
 	string filename = path; filename += file;
 
 	SDL_RWops *rw = SDL_RWFromFile(filename.c_str(), "rb");
 	if (rw == NULL) return NULL;
 
 	Sint64 res_size = SDL_RWsize(rw);
-	char* res = (char*)malloc(res_size + 1);
+	//Replace malloc for new, does the same job but better (free doesn't call destructors)
+	char* res = new char[res_size + 1];
 
-	Sint64 nb_read_total = 0, nb_read = 1;
+	Sint64 nb_read_total = 0; 
+	Sint64 nb_read = 1;
 	char* buf = res;
 	while (nb_read_total < res_size && nb_read != 0) {
 		nb_read = SDL_RWread(rw, buf, 1, (res_size - nb_read_total));
@@ -99,14 +102,13 @@ bool ModuleFilesystem::Load(const char * path, const char * file, char ** buffer
 	}
 	SDL_RWclose(rw);
 	if (nb_read_total != res_size) {
-		free(res);
+		delete[] res;
 		return NULL;
 	}
 
 	res[nb_read_total] = '\0';
 	
-	*buffer = res;
-	return 1;
+	return res;
 }
 
 bool ModuleFilesystem::Save(const char * path, const char * file, const void * buffer, unsigned int size, bool append) const
@@ -126,6 +128,7 @@ bool ModuleFilesystem::Save(const char * path, const char * file, const void * b
 
 	if (nb_write_total != size)
 		return NULL;
+
 
 	return 1;
 }
@@ -153,10 +156,12 @@ bool ModuleFilesystem::IsDirectory(const char * directory) const
 
 bool ModuleFilesystem::Copy(const char * source, const char * destination)
 {
-	char** buffer = new char*;
-	if (!Load("", source, buffer))
+	char* buffer = Load("", source);
+	if(buffer == NULL)
 		return NULL;
 
-	size_t len = SDL_strlen(*buffer);
-	return Save("", destination, *buffer, len, false);
+	size_t len = SDL_strlen(buffer);
+	bool succes = Save("", destination, buffer, len, false);
+	delete[] buffer;
+	return succes;
 }

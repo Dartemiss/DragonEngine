@@ -47,7 +47,7 @@ public:
 
 	//Iterative
 	void ClearIterative();
-	bool InsertIterative(const std::vector<Node*> &posibleNodes,GameObject* go);
+	bool InsertIterative(const std::vector<Node*> &posibleNodes, GameObject* go);
 	bool IsWithinQuadrant(const AABB* quad, const AABB* go) const;
 	void SubdivideIterative(Node* node, GameObject* go);
 	void DrawIterative() const;

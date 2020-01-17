@@ -53,6 +53,14 @@ bool ModuleScene::Init()
 	mainCamera = CreateGameObject("Main Camera", root);
 	mainCamera->CreateComponent(CAMERA);
 
+	for(auto com : mainCamera->components)
+	{
+		if(com->myType == CAMERA)
+		{
+			((ComponentCamera*)com)->isMainCamera = true;
+		}
+	}
+	
 	allGameObjects.insert(mainCamera);
 	dynamicGO.insert(mainCamera);
 	aabbTree->Insert(mainCamera);
@@ -121,6 +129,10 @@ bool ModuleScene::CleanUp()
 		delete GO;
 	}
 
+	allGameObjects.clear();
+	dynamicGO.clear();
+	staticGO.clear();
+
 	delete aabbTree;
 	delete root;
 
@@ -160,7 +172,7 @@ GameObject * ModuleScene::CreateGameObject(GameObject * go)
 {
 	GameObject* gameObject = new GameObject(*go);
 
-	return nullptr;
+	return gameObject;
 }
 
 void ModuleScene::LoadModel(const char * path, GameObject* parent)
@@ -176,17 +188,25 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 
 	LOG("For each mesh of the model we create a gameObject.");
 	
-	for (multimap<Mesh*, Texture*>::iterator it = modelLoaded.Meshes.begin(); it != modelLoaded.Meshes.end(); ++it)
+	for (multimap<Mesh*, Texture*>::iterator it = modelLoaded.Meshes.begin(); it != modelLoaded.Meshes.end();)
 	{
 		std::string newName = name + std::to_string(numObject);
 		GameObject* newMeshObject = CreateGameObject(newName.c_str(), parent);
 		ComponentMesh* myMeshCreated = (ComponentMesh*)newMeshObject->CreateComponent(MESH);
 		ComponentMaterial* myMaterialCreated = (ComponentMaterial*)newMeshObject->CreateComponent(MATERIAL);
 
-
-		myMeshCreated->LoadMesh(it->first);
 		vector<Texture*> textures;
+		myMeshCreated->LoadMesh(it->first);
 		textures.push_back(it->second);
+
+		++it;
+
+		while (it != modelLoaded.Meshes.end() && it->first->name == myMeshCreated->mesh->name)
+		{
+			textures.push_back(it->second);
+			++it;
+		}
+
 		myMaterialCreated->SetTextures(textures);
 		newMeshObject->ComputeAABB();
 		allGameObjects.insert(newMeshObject);
@@ -203,7 +223,7 @@ void ModuleScene::LoadModel(const char * path, GameObject* parent)
 	return;
 }
 
-void ModuleScene::CreateEmpty(GameObject* parent)
+void ModuleScene::CreateEmpty(GameObject* parent) 
 {
 	std::string defaultName = "NewGameObject" + std::to_string(numberOfGameObjects + 1);
 	GameObject* empty = CreateGameObject(defaultName.c_str(), parent);
@@ -233,7 +253,7 @@ void ModuleScene::CreateGameObjectBakerHouse(GameObject * parent)
 	allGameObjects.insert(newGameObject);
 	dynamicGO.insert(newGameObject);
 	aabbTree->Insert(newGameObject);
-	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName().c_str());
 	
 
 	return;
@@ -250,13 +270,35 @@ void ModuleScene::CreateGameObjectZomBunny(GameObject * parent)
 	LOG("Creating a Zom Bunny.");
 	std::string defaultName = "ZomBunny";
 	GameObject* newGameObject = CreateGameObject(defaultName.c_str(), parent);
-	LoadModel("../Models/ZomBunny/Zombunny.fbx", newGameObject);
+	LoadModel("Zombunny", newGameObject);
 	++numberOfBakerHouse;
 
 	allGameObjects.insert(newGameObject);
 	dynamicGO.insert(newGameObject);
 	aabbTree->Insert(newGameObject);
 	LOG("%s created with %s as parent.", defaultName.c_str(), parent->GetName());
+
+
+	return;
+}
+
+void ModuleScene::CreateGameObjectByName(GameObject * parent, const char* name)
+{
+	if (parent == nullptr)
+	{
+		LOG("ERROR: Parent is nullptr, cannot create gameObject.");
+		return;
+	}
+
+	LOG("Creating a %s.", name);
+	GameObject* newGameObject = CreateGameObject(name, parent);
+	LoadModel(name, newGameObject);
+	++numberOfBakerHouse;
+
+	allGameObjects.insert(newGameObject);
+	dynamicGO.insert(newGameObject);
+	aabbTree->Insert(newGameObject);
+	LOG("%s created with %s as parent.", name, parent->GetName().c_str());
 
 
 	return;
@@ -448,7 +490,7 @@ void ModuleScene::BuildQuadTree()
 		}
 	}
 
-	timeRecursive = iterative.StopTimer();
+	timeIterative = iterative.StopTimer();
 
 	quadTreeInitialized = true;
 
@@ -626,10 +668,6 @@ void ModuleScene::LoadScene()
 
 	//Remove previous data
 	CleanUp();
-	allGameObjects.clear();
-	staticGO.clear();
-	dynamicGO.clear();
-
 	//Create root
 	root = new GameObject();
 	root->OnLoad(*loader);
@@ -682,6 +720,8 @@ void ModuleScene::LoadScene()
 	//Build QuadTree
 	BuildQuadTree();
 
+	delete loader;
+
 }
 
 void ModuleScene::PasteGameObject(GameObject * go)
@@ -718,8 +758,10 @@ void ModuleScene::DuplicateGameObject(GameObject * go)
 	go->parent->children.push_back(duplicatedGO);
 	++go->numberOfCopies;
 
-	allGameObjects.insert(duplicatedGO);
 	//Add all childs to the scene
+	allGameObjects.insert(duplicatedGO);
+	dynamicGO.insert(duplicatedGO);
+	aabbTree->Insert(duplicatedGO);
 
 	InsertChilds(duplicatedGO);
 
@@ -734,6 +776,8 @@ void ModuleScene::InsertChilds(GameObject * go)
 	for(auto ch : go->children)
 	{
 		allGameObjects.insert(ch);
+		dynamicGO.insert(ch);
+		aabbTree->Insert(ch);
 		InsertChilds(ch);
 	}
 
@@ -741,7 +785,7 @@ void ModuleScene::InsertChilds(GameObject * go)
 	return;
 }
 
-LineSegment* ModuleScene::CreateRayCast(float3 origin, float3 direction, float maxDistance)
+LineSegment* ModuleScene::CreateRayCast(const float3 &origin, const float3 &direction, float maxDistance) const
 {
 	Frustum auxFrustum = Frustum();
 	auxFrustum.pos = origin - float3(0.1f,0.1f,0.1f);
@@ -769,7 +813,9 @@ LineSegment* ModuleScene::CreateRayCast(float normalizedX, float normalizedY) co
 
 void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 {
-	float2 mouse((float*)& App->input->GetMousePosition());
+	float2 mouse(App->input->GetMousePosition().x, App->input->GetMousePosition().y);
+	//Move offset for cursor being on top of mouse
+	mouse += offset;
 	float normalizedX, normalizedY;
 	//Start is position of scene imgui window and stop is scene imgui window + width/heigth of scene imgui window size
 	normalizedX = mapValues(mouse.x, posWindow.x, posWindow.x + sizeWindow.x, -1, 1);
@@ -785,7 +831,7 @@ void ModuleScene::PickObject(const ImVec2 &sizeWindow, const ImVec2 &posWindow)
 		selectedByHierarchy = selectedGO;
 	}
 
-	
+	//dd::arrow(ray.a, ray.b, float3(1, 0, 0),10);
 
 	return;
 }
@@ -795,7 +841,7 @@ GameObject * ModuleScene::GetRoot() const
 	return root;
 }
 
-GameObject* ModuleScene::IntersectRayCast(float3 origin, const LineSegment &ray)
+GameObject* ModuleScene::IntersectRayCast(const float3 &origin, const LineSegment &ray)
 {
 	//First get aabb intersection ordered by distance, then compare with aabb that are closer to the closest triangle hit
 	std::map<float, GameObject*> hits;

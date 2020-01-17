@@ -14,7 +14,7 @@ struct MeshData;
 
 struct Model
 {
-	std::map<Mesh*, Texture*> Meshes;
+	std::multimap<Mesh*, Texture*> Meshes;
 	std::string Name = "";
 	//TODO: add count of similar models to track delete and remove data?
 };

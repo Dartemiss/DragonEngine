@@ -27,6 +27,8 @@ public:
 	float GetRealGameTime() const;
 	float GetDeltaTime() const;
 	float GetRealDeltaTime() const;
+	float GetTimeBeforeVsync() const;
+	void ComputeTimeBeforeVsync();
 	void PauseGame();
 	void ExecuteNextFrames(int numberFrames);
 	void Wait(float timeToWait);
@@ -34,6 +36,7 @@ public:
 
 	//Variables
 	long long frameCount = 0;
+	float timeBeforeVsync = 0.0f;
 	int FPS = 60;
 	int fixedFPS = 60;
 	float timeScale = 1.0f;

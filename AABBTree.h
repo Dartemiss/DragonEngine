@@ -48,7 +48,7 @@ public:
 	unsigned rootNodeIndex = AABB_NULL_NODE;
 	unsigned allocatedNodeCount = 0;
 	unsigned nextFreeNodeIndex = 0;
-	unsigned nodeCapacity;
+	unsigned nodeCapacity = 0;
 	unsigned growthSize = 10;
 
 

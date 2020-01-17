@@ -15,7 +15,6 @@ using namespace std;
 
 bool ModuleModelLoader::Init()
 {
-
 	return true;
 }
 
@@ -36,6 +35,20 @@ update_status ModuleModelLoader::PostUpdate()
 
 bool ModuleModelLoader::CleanUp()
 {
+
+	//It is necessary?
+	
+	for(auto mod : models)
+	{
+		for(auto mesh : mod.Meshes)
+		{
+			if(mesh.first->vertices.size() != 0 && mesh.first->indices.size() != 0)
+			{
+				delete mesh.first;
+			}
+			delete mesh.second;
+		}
+	}
 	models.clear();
 
 	return true;
@@ -64,7 +77,7 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 	MeshData currentMeshData;
 	vector<Texture> textures;
 	
-	for (int i = 0; i < modelData.meshes.size(); i++)
+	for (unsigned int i = 0; i < modelData.meshes.size(); i++)
 	{
 		Mesh currentMesh;
 		if (Importer->LoadMesh(modelData.meshes[i].c_str(), currentMeshData))
@@ -74,9 +87,14 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 		}
 		else
 			LOG("Error loading model mesh: %s.", modelData.meshes[i].c_str());
+
+		delete[] currentMeshData.indices;
+		delete[] currentMeshData.positions;
+		delete[] currentMeshData.normals;
+		delete[] currentMeshData.texture_coords;
 	}
 
-	for (int i = 0; i < modelData.textures.size(); i++)
+	for (unsigned int i = 0; i < modelData.textures.size(); i++)
 	{
 		Texture currentTexture;
 		if (Importer->LoadMaterial(modelData.textures[i].c_str(), currentTexture))
@@ -89,26 +107,49 @@ void ModuleModelLoader::LoadModel(const string &path, Model &model)
 	}
 
 	MeshTexPair pair;
-	for (int i = 0; i < modelData.pairs.size(); i++)
+	Mesh * newMesh;
+	unsigned lastMeshIndex = 0;
+	for (unsigned int i = 0; i < modelData.pairs.size(); i++)
 	{
 		pair = modelData.pairs[i];
 
-		Mesh * newMesh = new Mesh();
-		newMesh->vertices = meshes[pair.mesh - 1].vertices;
-		newMesh->indices = meshes[pair.mesh - 1].indices;
-		newMesh->name = meshes[pair.mesh - 1].name;
-		newMesh->setupMesh();
+		if (pair.mesh != lastMeshIndex)
+		{
+			newMesh = new Mesh();
+			newMesh->vertices = meshes[pair.mesh - 1].vertices;
+			newMesh->indices = meshes[pair.mesh - 1].indices;
+			newMesh->name = meshes[pair.mesh - 1].name;
+			newMesh->setupMesh();
+
+			lastMeshIndex = pair.mesh;
+		}
 
 		Texture * newTex = new Texture();
-		newMesh->vertices = meshes[pair.mesh - 1].vertices;
-		newTex->id = textures[pair.tex - 1].id;
-		newTex->width = textures[pair.tex - 1].width;
-		newTex->height = textures[pair.tex - 1].height;
-		newTex->depth = textures[pair.tex - 1].depth;
-		newTex->format = textures[pair.tex - 1].format;
-		newTex->data = textures[pair.tex - 1].data;
-		newTex->type = textures[pair.tex - 1].type;
-		newTex->path = textures[pair.tex - 1].path;
+		if (pair.tex == 0)
+		{
+			Texture fallback = App->texture->white_fallback;
+
+			newTex->id = fallback.id;
+			newTex->width = fallback.width;
+			newTex->height = fallback.height;
+			newTex->depth = fallback.depth;
+			newTex->format = fallback.format;
+			newTex->data = fallback.data;
+			newTex->type = fallback.type;
+			newTex->path = fallback.path;
+		}
+
+		else
+		{
+			newTex->id = textures[pair.tex - 1].id;
+			newTex->width = textures[pair.tex - 1].width;
+			newTex->height = textures[pair.tex - 1].height;
+			newTex->depth = textures[pair.tex - 1].depth;
+			newTex->format = textures[pair.tex - 1].format;
+			newTex->data = textures[pair.tex - 1].data;
+			newTex->type = textures[pair.tex - 1].type;
+			newTex->path = textures[pair.tex - 1].path;
+		}
 
 		model.Meshes.emplace(newMesh, newTex);
 	}

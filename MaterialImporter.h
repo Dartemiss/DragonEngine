@@ -13,6 +13,7 @@ public:
 	bool Import(const char* path, const char* file, std::string& output_file);
 	bool Import(const char* file, const void* buffer, unsigned int size, std::string& output_file);
 	bool Load(const char* exported_file, Texture& resource);
+	bool LoadSkyBox(const char* exported_file, Texture& resource, unsigned int &im);
 	//bool LoadCheckers(Texture* resource);
 };
 

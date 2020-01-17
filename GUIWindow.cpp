@@ -48,6 +48,7 @@ void GUIWindow::Draw(const char * title)
 				case 0: ImGui::StyleColorsClassic(); break;
 				case 1: ImGui::StyleColorsDark(); break;
 				case 2: ImGui::StyleColorsLight(); break;
+				default: break;
 			}
 			
 		}
@@ -69,36 +70,6 @@ void GUIWindow::Draw(const char * title)
 			
 
 		SDL_SetWindowBrightness(window, actualBright);
-
-
-		if(ImGui::CollapsingHeader("Framerate"))
-		{
-			ImGui::Text("Application average %.3f ms/frame (%d FPS)", 1000.0f / App->timemanager->FPS, App->timemanager->FPS);
-			char title[25];
-			if (fps_log.size() > 0)
-			{
-				sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);;
-				ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-			}
-
-			if (ms_log.size() > 0)
-			{
-				sprintf_s(title, 25, "Miliseconds %0.1f", ms_log[ms_log.size() - 1]);;
-				ImGui::PlotHistogram("##milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
-			}
-
-			if (fpsTimer.ReadTimer() > 1000)
-			{
-				fpsTimer.StopTimer();
-				fps_log.push_back((float)App->timemanager->FPS);
-				ms_log.push_back(1000.0f / App->timemanager->FPS);
-				fpsTimer.StartTimer();
-			}
-			previousTime = currentTime;
-			currentTime = (float)SDL_GetTicks();
-			deltaTime = currentTime - previousTime;
-			timeCounter += deltaTime;
-		}
 
 		if (ImGui::CollapsingHeader("Hardware"))
 		{
@@ -195,45 +166,6 @@ void GUIWindow::Draw(const char * title)
 			ImGui::Text("%d(Mb)", (total_mem_kb / 1000) - (cur_avail_mem_kb / 1000));
 
 
-		}
-		if (ImGui::CollapsingHeader("Texture Data"))
-		{
-			//TODO: redo texture data
-			/*for (auto texInfo : App->texture->textures_loaded)
-			{
-				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Path: "); ImGui::SameLine();
-				ImGui::Text("%s", texInfo.path.c_str());
-
-				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Width: "); ImGui::SameLine();
-				ImGui::Text("%d(Bytes)", texInfo.width);
-
-				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Height: "); ImGui::SameLine();
-				ImGui::Text("%d(Bytes)", texInfo.width);
-
-
-				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Depth: "); ImGui::SameLine();
-				ImGui::Text("%d", texInfo.depth);
-
-				ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Texture Format: "); ImGui::SameLine();
-				if (texInfo.format == IL_TYPE_UNKNOWN)
-				{
-					ImGui::Text("Unknown");
-				}
-				else if (texInfo.format == IL_PNG)
-				{
-					ImGui::Text("PNG");
-				}
-				else if (texInfo.format == IL_JPG)
-				{
-					ImGui::Text("JPG");
-				}
-				else if (texInfo.format == IL_DDS)
-				{
-					ImGui::Text("DDS");
-				}
-
-				ImGui::Separator();
-			}*/
 		}
 
 

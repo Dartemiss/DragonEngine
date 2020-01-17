@@ -17,9 +17,7 @@ Mesh::Mesh(const vector<Vertex>& vertices, const vector<unsigned int>& indices)
 
 Mesh::~Mesh()
 {
-	vertices.clear();
-	indices.clear();
-
+	//TODO: why is this deleted 4719247194719847198 times
 	glDeleteBuffers(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &EBO);

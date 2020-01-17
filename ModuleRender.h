@@ -48,8 +48,6 @@ public:
 
 	float aspect = 1.0f;
 
-	float4x4 model = float4x4::zero;
-
 	bool showBoundingBox = true;
 	bool showSkybox = false;
 
@@ -61,8 +59,8 @@ public:
 	//void OurOpenGLErrorFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	//Draw
 	void DrawGuizmo() const;
-	void DrawAllGameObjects();
-	void DrawGame();
+	void DrawAllGameObjects() const;
+	void DrawGame() const;
 	
 	//If scene create buffer for scene else create buffer for game window
 	void CreateFrameBuffer(int width, int height, bool scene = true);
@@ -71,7 +69,7 @@ public:
 
 	//Quadtree variables
 	bool showQuadTree = false;
-	bool showAABBTree = true;
+	bool showAABBTree = false;
 	bool showFrustum = true;
 	bool showGrid = false;
 	bool antialiasing = false;
@@ -89,7 +87,13 @@ public:
 	ImGuizmo::MODE currentMode = ImGuizmo::WORLD;
 
 	bool isGamePlaying = false;
+  
+	ComponentCamera* gameCamera = nullptr;
+
+	//Skybox
+	Skybox* skybox = nullptr;
 	float timeForRendering = 0.0f;
+
 
 private:
 	void* context;
@@ -114,11 +118,7 @@ private:
 
 	unsigned int sceneTexture = 0;
 	unsigned int gameTexture = 0;
-	
-	ComponentCamera* gameCamera = nullptr;
-	
-	//Skybox
-	Skybox* skybox = nullptr;
+
 
 	//Methods
 	void DrawDebug() const;

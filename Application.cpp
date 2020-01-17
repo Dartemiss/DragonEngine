@@ -14,7 +14,7 @@
 #include "ModuleDebugDraw.h"
 #include "Timer.h"
 #include "uSTimer.h"
-#include "Brofiler/Brofiler.h"
+//#include "Brofiler/Brofiler.h"
 
 using namespace std;
 
@@ -58,13 +58,15 @@ bool Application::Init()
 	float time = initTimer.StopTimer() / 1000.0f;
 	LOG("Total Time of init is: %.5f seconds", time);
 
+	App->scene->LoadScene();
+
 	return ret;
 }
 
 update_status Application::Update()
 {
 	//Begining of the frame
-	BROFILER_FRAME("Mainframe");
+	//BROFILER_FRAME("Mainframe");
 	update_status ret = UPDATE_CONTINUE;
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)

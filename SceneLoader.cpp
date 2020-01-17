@@ -307,12 +307,12 @@ bool SceneLoader::SetCurrentObject(unsigned int parentUID)
 
 	for (SizeType i = 0; i < gameObjects.Size(); ++i)
 	{
-		Value & currentObject = gameObjects[i];
-		assert(currentObject.HasMember("parentUID"));
+		Value &myCurrentObject = gameObjects[i];
+		assert(myCurrentObject.HasMember("parentUID"));
 
-		if (currentObject["parentUID"].GetUint() == parentUID)
+		if (myCurrentObject["parentUID"].GetUint() == parentUID)
 		{
-			this->currentObject = currentObject;
+			this->currentObject = myCurrentObject;
 			gameObjects.Erase(gameObjects.Begin() + i);
 			currentComponent.SetNull();
 			return true;
@@ -369,6 +369,8 @@ void SceneLoader::LoadJSONFromFile(const char * filename)
 	fclose(file);
 
 	LoadJSON(json);
+
+	free(json);
 }
 
 void SceneLoader::AddMemberToObjectOrComponent(Value & name, Value & val)

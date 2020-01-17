@@ -15,12 +15,13 @@
 #include "Imgui/imgui_impl_sdl.h"
 #include "Imgui/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
-#include "imgui/imgui_stdlib.h"
+#include "Imgui/imgui_stdlib.h"
 #include "MathGeoLib/Geometry/LineSegment.h"
 #include "debugdraw.h"
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
 #include "FontAwesome/IconsFontAwesome5.h"
+#include <set>
 
 using namespace std;
 
@@ -32,7 +33,17 @@ GameObject::GameObject(const char * name)
 {
 	this->name = name;
 	CreateComponent(TRANSFORM);
-	this->UID = UUIDGen->getUUID();
+	bool validUID = false;
+	//Ensure that UID is unique
+	while(!validUID && name != "World")
+	{
+		this->UID = UUIDGen->getUUID();
+		if(App->scene->UIDs.find(UID) == App->scene->UIDs.end())
+		{
+			App->scene->UIDs.insert(UID);
+			validUID = true;
+		}
+	}
 	boundingBox = new AABB(myTransform->position - float3(1, 1, 1), myTransform->position + float3(1, 1, 1));
 	globalBoundingBox = new AABB(*boundingBox);
 
@@ -103,6 +114,14 @@ GameObject::GameObject(const GameObject &go, GameObject* parent)
 
 GameObject::~GameObject()
 {
+	for (auto comp : components)
+	{
+		comp->CleanUp();
+		delete comp;
+	}
+
+	delete boundingBox;
+	delete globalBoundingBox;
 
 }
 
@@ -148,7 +167,7 @@ void GameObject::SetParent(GameObject * newParent)
 
 void GameObject::RemoveChildren(GameObject * child)
 {
-
+	//TODO: crash when deleting player
 	if(!children.empty())
 	{
 		children.erase(std::find(children.begin(), children.end(), child));
@@ -159,6 +178,12 @@ void GameObject::RemoveChildren(GameObject * child)
 
 void GameObject::DeleteGameObject()
 {
+	if (UID == 1)
+	{
+		LOG("Cannot delete root STOP!");
+		return;
+	}
+
 	parent->RemoveChildren(this);
 	App->scene->RemoveGameObject(this);
 	for(auto ch : children)
@@ -176,15 +201,6 @@ void GameObject::DeleteGameObject()
 
 void GameObject::CleanUp()
 {
-	for(auto comp : components)
-	{
-		comp->CleanUp();
-		delete comp;
-	}
-	
-	delete boundingBox;
-	delete globalBoundingBox;
-
 	delete this;
 }
 
@@ -291,6 +307,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 
 		if (ImGui::BeginMenu("Create 3D Object"))
 		{
+			/*
 			if(ImGui::MenuItem("Cube"))
 			{
 				App->scene->CreateGameObjectShape(this, CUBE);
@@ -309,16 +326,60 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectShape(this, TORUS);
 			}
-
+			*/
 			if (ImGui::MenuItem("Baker House"))
 			{
 				App->scene->CreateGameObjectBakerHouse(this);
 			}
 
-			if (ImGui::MenuItem("Zom Bunny"))
+			if (ImGui::MenuItem("Player"))
 			{
-				App->scene->CreateGameObjectZomBunny(this);
+				App->scene->CreateGameObjectByName(this, "Player");
 			}
+
+			if (ImGui::MenuItem("Drawers"))
+			{
+				App->scene->CreateGameObjectByName(this, "Drawers");
+			}
+			if (ImGui::MenuItem("Clock"))
+			{
+				App->scene->CreateGameObjectByName(this, "Clock");
+			}
+			if (ImGui::MenuItem("Wall"))
+			{
+				App->scene->CreateGameObjectByName(this, "Wall");
+			}
+			if (ImGui::MenuItem("Dollhouse"))
+			{
+				App->scene->CreateGameObjectByName(this, "Dollhouse");
+			}
+			if (ImGui::MenuItem("Floor"))
+			{
+				App->scene->CreateGameObjectByName(this, "Floor");
+			}
+			if (ImGui::MenuItem("Hearse"))
+			{
+				App->scene->CreateGameObjectByName(this, "Hearse");
+			}
+			if (ImGui::MenuItem("Robot"))
+			{
+				App->scene->CreateGameObjectByName(this, "Robot");
+			}
+
+			if (ImGui::MenuItem("Firetruck"))
+			{
+				App->scene->CreateGameObjectByName(this, "Firetruck");
+			}
+
+			if (ImGui::MenuItem("SpinningTop"))
+			{
+				App->scene->CreateGameObjectByName(this, "SpinningTop");
+			}
+			if (ImGui::MenuItem("Stool"))
+			{
+				App->scene->CreateGameObjectByName(this, "Stool");
+			}
+
 
 			ImGui::EndMenu();
 		}
@@ -350,8 +411,7 @@ void GameObject::DrawCamera()
 	{
 		if(comp->myType == CAMERA)
 		{
-			ComponentCamera* mainCamera = (ComponentCamera*)comp;
-			mainCamera->DrawFrustum();
+			((ComponentCamera*)comp)->DrawFrustum();
 		}
 	}
 }
@@ -371,24 +431,14 @@ void GameObject::UpdateTransform()
 			//AABB Global Update
 			//Compute globalBoundingBox
 
-			float3 globalPos, globalScale;
-			float3x3 globalRot;
+			AABB auxBox;
+			auxBox.SetNegativeInfinity();
+			auxBox.Enclose(*boundingBox);
+			auxBox.TransformAsAABB(myTransform->globalModelMatrix);
+
+			*globalBoundingBox = auxBox;
 			
-			myTransform->globalModelMatrix.Decompose(globalPos, globalRot, globalScale);
-
-			float3 newMinPoint = boundingBox->minPoint;
-			newMinPoint.x *= globalScale.x;
-			newMinPoint.y *= globalScale.y;
-			newMinPoint.z *= globalScale.z;
-
-			float3 newMaxPoint = boundingBox->maxPoint;
-			newMaxPoint.x *= globalScale.x;
-			newMaxPoint.y *= globalScale.y;
-			newMaxPoint.z *= globalScale.z;
-
-			globalBoundingBox->minPoint = newMinPoint + globalPos;
-			globalBoundingBox->maxPoint = newMaxPoint + globalPos;
-
+			
 		}
 	}
 }
@@ -405,8 +455,8 @@ std::string GameObject::GetName() const
 
 void GameObject::ComputeAABB()
 {
-	float3 min = float3::zero;
-	float3 max = float3::zero;
+	float3 min = float3(-1,-1,-1);
+	float3 max = float3(1,1,1);
 
 	if(myMesh == nullptr)
 	{
@@ -495,10 +545,9 @@ void GameObject::Draw(const unsigned int program, bool isGamePlaying, bool drawA
 			myLight->Draw();
 	}
 
-	if (!isGamePlaying)
+	if (!isGamePlaying && isParentOfMeshes && boundingBox != nullptr && drawAABB)
 	{
-		if (isParentOfMeshes && boundingBox != nullptr && drawAABB)
-			DrawAABB();
+		DrawAABB();
 	}
 
 	if(myMesh != nullptr)
@@ -521,7 +570,7 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	//ImGui::InputText("##Name", &name);
+	ImGui::InputText("Name", &name);
 
 	ImGui::SameLine();
 
@@ -627,6 +676,7 @@ void GameObject::OnLoad(SceneLoader & loader)
 		component->OnLoad(loader);
 	}
 
+	App->scene->UIDs.insert(UID);
 	return;
 }
 
@@ -640,7 +690,7 @@ float GameObject::IsIntersectedByRay(const float3 &origin, const LineSegment & r
 	localRay.Transform(myTransform->globalModelMatrix.Inverted());
 	
 
-	return myMesh->IsIntersectedByRay(origin,localRay);
+	return myMesh->IsIntersectedByRay(origin, localRay);
 }
 
 void GameObject::SetGlobalMatrix(const float4x4 & newGlobal)
@@ -728,16 +778,16 @@ void GameObject::CheckDragAndDrop(GameObject * go)
 		if (payload != nullptr) {
 			GameObject* newChild = *reinterpret_cast<GameObject**>(payload->Data);
 
-			GameObject* parent = go;
+			GameObject* myParent = go;
 			//While parent is not root
-			while(parent->UID != 1)
+			while(myParent->UID != 1)
 			{
-				if(parent->UID == newChild->UID)
+				if(myParent->UID == newChild->UID)
 				{
 					LOG("It is not allowed to assign one of your children as a parent.");
 					return;
 				}
-				parent = parent->parent;
+				myParent = myParent->parent;
 			}
 
 			newChild->SetParent(go);

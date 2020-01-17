@@ -73,7 +73,7 @@ update_status ModuleIMGUI::PreUpdate()
 update_status ModuleIMGUI::Update()
 {
 	guiWindow.Draw("Window Configuration");
-	console.Draw("Console");
+	console.Draw();
 	about.Draw("About");
 	guiCamera.Draw("Camera Settings");
 	timeManager.Draw("Timers");

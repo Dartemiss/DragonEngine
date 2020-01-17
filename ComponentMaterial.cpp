@@ -16,12 +16,12 @@ ComponentMaterial::ComponentMaterial(GameObject* go)
 	whiteFallbackTexture = App->texture->getWhiteFallbackTexture();
 	whitefallbackColor = float4(1, 1, 1, 1);
 
-	kDiffuse = 0.8;
-	kSpecular = 0.1;
-	kAmbient = 0.2;
-	shininess = 5;
+	kDiffuse = 0.8f;
+	kSpecular = 0.1f;
+	kAmbient = 0.2f;
+	shininess = 5.0f;
 
-	diffuseColor = float4(0.6, 0.6, 0.6, 1);
+	diffuseColor = float4(0.6f, 0.6f, 0.6f, 1.0f);
 	specularColor = float3(1, 1, 1);
 	emissiveColor = float3(0, 0, 0);
 }
@@ -30,7 +30,6 @@ ComponentMaterial::ComponentMaterial(GameObject * go, ComponentMaterial * comp)
 {
 	myGameObject = go;
 	myType = MATERIAL;
-	//TODO: When this component is done this method have to copy all comp relevant data to this object
 
 	this->kDiffuse = comp->kDiffuse;
 	this->kAmbient = comp->kAmbient;
@@ -67,10 +66,10 @@ void ComponentMaterial::Update()
 
 bool ComponentMaterial::CleanUp()
 {
-	return false;
+	return true;
 }
 
-void ComponentMaterial::SetTextures(vector<Texture*> & textures)
+void ComponentMaterial::SetTextures(const vector<Texture*> & textures)
 {
 	//TODO change textures parameter to pointers reference
 	string name;

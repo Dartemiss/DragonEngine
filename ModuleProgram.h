@@ -17,19 +17,10 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	void SetUpUniformsBuffer();
-
 	//Programs
+	unsigned int uberProg = 0;
 	unsigned int defaultProg = 0;
 	unsigned int skyboxProg = 0;
-	unsigned int uniformsBuffer = 0;
-
-	unsigned int flatLighting = 0;
-	unsigned int gouraudLighting = 0;
-	unsigned int phongLighting = 0;
-	unsigned int blinnLighting = 0;
-
-	unsigned int uber = 0;
 
 private:
 	unsigned int createProgramWithShaders(const char * vertexShader, const char * fragmentShader) const;

@@ -7,6 +7,7 @@
 #include "Timer.h"
 #include "Point.h"
 #include "imgui/imgui.h"
+#include "MathGeoLib/Math/float2.h"
 #include <set>
 
 class MyQuadTree;
@@ -45,6 +46,7 @@ public:
 	void CreateEmpty(GameObject* parent);
 	void CreateGameObjectBakerHouse(GameObject* parent);
 	void CreateGameObjectZomBunny(GameObject* parent);
+	void CreateGameObjectByName(GameObject* parent, const char* name);
 	void CreateGameObjectShape(GameObject* parent, ShapeType shape);
 
 	//Delete
@@ -60,6 +62,7 @@ public:
 	std::set<GameObject*> dynamicGO;
 	bool showHierarchy = true;
 	bool showInspector = true;
+	std::set<unsigned int> UIDs;
 
 	//Game's Main Camera Object
 	GameObject* mainCamera = nullptr;
@@ -90,10 +93,8 @@ public:
 
 	//Timers
 	Timer iterative = Timer();
-	Timer recursive = Timer();
 	Timer aabbTreeTimer = Timer();
 
-	float timeRecursive = 0.0f;
 	float timeIterative = 0.0f;
 	float timeAABBTree = 0.0f;
 
@@ -115,8 +116,8 @@ public:
 	GameObject* selectedByHierarchy = nullptr;
 
 	//Mouse Picking
-	LineSegment* CreateRayCast(float3 origin, float3 direction, float maxDistance);
-	GameObject* IntersectRayCast(float3 origin, const LineSegment &ray);
+	LineSegment* CreateRayCast(const float3 &origin, const float3 &direction, float maxDistance) const;
+	GameObject* IntersectRayCast(const float3 &origin, const LineSegment &ray);
 	LineSegment* CreateRayCast(float normalizedX, float normalizedY) const;
 	LineSegment* currentRay = nullptr;
 
@@ -136,6 +137,7 @@ private:
 	unsigned int numberOfTorus = 0;
 	unsigned int numberOfCylinder = 0;
 
+	float2 offset = float2(-5.0f, -25.0f);
 
 	
 	

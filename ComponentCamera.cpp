@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "ModuleRender.h"
 #include "GameObject.h"
 #include "SceneLoader.h"
 #include <math.h>
@@ -99,7 +100,7 @@ void ComponentCamera::Rotate(const float dx, const float dy)
 	}
 }
 
-void ComponentCamera::Move(float3 direction)
+void ComponentCamera::Move(const float3 &direction)
 {
 	if (!direction.Equals(float3::zero))
 		frustum->Translate(direction);
@@ -128,7 +129,7 @@ void ComponentCamera::SetFarPlaneDistance(const float farDist)
 	proj = frustum->ProjectionMatrix();
 }
 
-void ComponentCamera::LookAt(const float3 target)
+void ComponentCamera::LookAt(const float3 &target)
 {
 	float3 dir = (target - frustum->pos).Normalized();
 	float3x3 rot = float3x3::LookAt(frustum->front, dir, frustum->up, float3::unitY);
@@ -237,7 +238,9 @@ bool ComponentCamera::SideOfPlane(const float3 &point, const Plane &plane) const
 
 void ComponentCamera::OnSave(SceneLoader & loader)
 {
+	//TODO: fix camera loading when saved
 	loader.AddUnsignedInt("Type", myType);
+	loader.AddUnsignedInt("isMainCamera", isMainCamera);
 
 	loader.AddUnsignedInt("Frustum Type", frustum->type);
 	loader.AddVec3f("Position", frustum->pos);
@@ -252,6 +255,7 @@ void ComponentCamera::OnSave(SceneLoader & loader)
 void ComponentCamera::OnLoad(SceneLoader & loader)
 {
 	frustum = new Frustum();
+	isMainCamera = loader.GetUnsignedInt("isMainCamera", isMainCamera);
 
 	frustum->type = (FrustumType)loader.GetUnsignedInt("Frustum Type", FrustumType::PerspectiveFrustum);
 	frustum->pos = loader.GetVec3f("Position", float3::zero);
@@ -264,6 +268,11 @@ void ComponentCamera::OnLoad(SceneLoader & loader)
 
 	proj = frustum->ProjectionMatrix();
 	view = frustum->ViewMatrix();
+
+	if(isMainCamera)
+	{
+		App->renderer->gameCamera = this;
+	}
 }
 
 void ComponentCamera::DrawFrustum()

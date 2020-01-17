@@ -29,10 +29,10 @@ public:
 	bool LoadMesh(const char* exported_file, MeshData & mesh);
 	bool LoadMaterial(const char* exported_file, Texture & material);
 
+	MaterialImporter * materialImp;
 private:
 	ModelImporter * modelImp;
 	MeshImporter * meshImp;
-	MaterialImporter * materialImp;
 };
 
 extern SceneImporter* Importer;
