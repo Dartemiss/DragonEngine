@@ -236,7 +236,10 @@ update_status ModuleRender::Update()
 
 update_status ModuleRender::PostUpdate()
 {
+	App->timemanager->ComputeTimeBeforeVsync();
+
 	SDL_GL_SwapWindow(App->window->window);
+
 	++App->timemanager->frameCount;
 	App->timemanager->FinalDeltaTimes();
 	App->timemanager->InitDeltaTimes();
