@@ -6,6 +6,9 @@
 #include "ModuleCamera.h"
 #include "ComponentCamera.h"
 #include "MathGeoLib/Math/float4.h"
+#include <DevIL/il.h>
+#include <DevIL/ilu.h>
+#include <DevIL/ilut.h>
 
 Skybox::Skybox()
 {
@@ -20,6 +23,11 @@ Skybox::Skybox()
 			"skybox_front",
 			"skybox_back"
 	};
+
+	for(int i = 0; i < 6;++i)
+	{
+		images.push_back(i);
+	}
 
 	//Load default Skybox
 	cubemapTexture = LoadCubeMap(faces);
@@ -89,6 +97,11 @@ Skybox::~Skybox()
 	glDeleteVertexArrays(1, &skyboxVAO);
 	glDeleteBuffers(1, &skyboxVBO);
 	glDeleteTextures(1, &cubemapTexture);
+
+	for (int i = 0; i < 6; ++i)
+	{
+		iluDeleteImage(images[i]);
+	}
 }
 
 unsigned int Skybox::LoadCubeMap(const std::vector<std::string> &faces)
@@ -99,7 +112,7 @@ unsigned int Skybox::LoadCubeMap(const std::vector<std::string> &faces)
 
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{
-		App->texture->LoadSkybox(faces[i].c_str(), i);
+		App->texture->LoadSkybox(faces[i].c_str(), i, images[i]);
 	}
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -157,7 +157,7 @@ bool ModuleRender::Init()
 
 	//Skybox
 
-	skybox = new Skybox();
+	//skybox = new Skybox();
 
 	//TODO: move to texture Start
 	App->texture->LoadWhiteFallbackTexture();

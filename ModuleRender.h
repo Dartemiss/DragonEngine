@@ -88,6 +88,9 @@ public:
 	bool isGamePlaying = false;
 	ComponentCamera* gameCamera = nullptr;
 
+	//Skybox
+	Skybox* skybox = nullptr;
+
 private:
 	void* context;
 
@@ -110,10 +113,7 @@ private:
 
 	unsigned int sceneTexture = 0;
 	unsigned int gameTexture = 0;
-	
-	
-	//Skybox
-	Skybox* skybox = nullptr;
+
 
 	//Methods
 	void DrawDebug() const;

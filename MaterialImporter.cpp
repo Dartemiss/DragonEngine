@@ -121,3 +121,34 @@ bool MaterialImporter::Load(const char * exported_file, Texture & resource)
 
 	return true;
 }
+
+bool MaterialImporter::LoadSkyBox(const char * exported_file, Texture & resource, unsigned int &im)
+{
+	ILuint image;
+	ilGenImages(1, &image);
+	ilBindImage(image);
+
+	string filepath = "../Library/Materials/"; filepath += exported_file; filepath += ".dds";
+	bool isLoaded = ilLoad(IL_DDS, filepath.c_str());
+
+	if (!isLoaded)
+	{
+		LOG("Error loading material %s from library", exported_file);
+		return false;
+	}
+
+	resource.width = ilGetInteger(IL_IMAGE_WIDTH);
+	resource.height = ilGetInteger(IL_IMAGE_HEIGHT);
+	resource.depth = ilGetInteger(IL_IMAGE_DEPTH);
+	resource.format = ilDetermineType(exported_file);
+	resource.data = ilGetData();
+	resource.path = exported_file;
+
+	resource.type = exported_file;
+	size_t lastindex = resource.type.find_last_of("_");
+	resource.type = resource.type.substr(lastindex);
+
+	im = image;
+
+	return true;
+}

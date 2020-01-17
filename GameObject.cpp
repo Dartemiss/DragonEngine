@@ -21,6 +21,7 @@
 #include "UUIDGenerator.h"
 #include "SceneLoader.h"
 #include "FontAwesome/IconsFontAwesome5.h"
+#include <set>
 
 using namespace std;
 
@@ -34,7 +35,7 @@ GameObject::GameObject(const char * name)
 	CreateComponent(TRANSFORM);
 	bool validUID = false;
 	//Ensure that UID is unique
-	while(!validUID)
+	while(!validUID && name != "World")
 	{
 		this->UID = UUIDGen->getUUID();
 		if(App->scene->UIDs.find(UID) == App->scene->UIDs.end())
