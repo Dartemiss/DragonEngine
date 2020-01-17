@@ -685,6 +685,7 @@ void GameObject::OnLoad(SceneLoader & loader)
 		component->OnLoad(loader);
 	}
 
+	App->scene->UIDs.insert(UID);
 	return;
 }
 
