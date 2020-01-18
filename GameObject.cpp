@@ -331,7 +331,10 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectBakerHouse(this);
 			}
-
+			if (ImGui::MenuItem("ZomBunny"))
+			{
+				App->scene->CreateGameObjectByName(this, "ZomBunny");
+			}
 			if (ImGui::MenuItem("Player"))
 			{
 				App->scene->CreateGameObjectByName(this, "Player");
@@ -379,6 +382,7 @@ void GameObject::DrawHierarchy(GameObject * selected)
 			{
 				App->scene->CreateGameObjectByName(this, "Stool");
 			}
+			
 
 
 			ImGui::EndMenu();
