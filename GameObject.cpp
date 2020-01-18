@@ -570,7 +570,7 @@ void GameObject::DrawInspector(bool &showInspector)
 
 	ImGui::Checkbox("", &isEnabled); ImGui::SameLine();
 	
-	ImGui::InputText("Name", &name);
+	ImGui::InputText("##Name", &name);
 
 	ImGui::SameLine();
 
