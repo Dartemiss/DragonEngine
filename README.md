@@ -2,7 +2,7 @@
 
 ## What is Dragon Engine?
 - Game Engine developed with C++.
-- Libraries used: [SDL 2.0](https://www.libsdl.org/), [glew 2.1.0](http://glew.sourceforge.net/), [MathGeoLib 3.0.0](https://github.com/juj/MathGeoLib/), [Dear ImGui 1.73](https://github.com/ocornut/imgui/), [DevIL 1.8](http://openil.sourceforge.net/), [assimp 5.0](https://github.com/assimp/assimp/) and [OpenGL](https://www.opengl.org/). 
+- Libraries used: [SDL 2.0](https://www.libsdl.org/), [glew 2.1.0](http://glew.sourceforge.net/), [MathGeoLib 3.0.0](https://github.com/juj/MathGeoLib/), [Dear ImGui 1.73](https://github.com/ocornut/imgui/), [DevIL 1.8](http://openil.sourceforge.net/), [assimp 5.0](https://github.com/assimp/assimp/), [OpenGL](https://www.opengl.org/), [Brofiler](https://github.com/bombomby/optick/), [Font Awersome 5.12.0](https://github.com/juliettef/IconFontCppHeaders/), [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo/), [PCG Minimal C 0.9](http://www.pcg-random.org/) and [Rapidjson 1.1.0](https://github.com/Tencent/rapidjson/).
 
 - Project developed for [UPC programming AAA videogames master's degree](https://www.talent.upc.edu/ing/estudis/formacio/curs/201200/master-degree-advanced-programming-aaa-videogames/).
 
@@ -45,5 +45,26 @@ click on the menu bar on `View` and then on `Camera`.
 
 - For showing model information and more accurate texture information of the current loaded textures,
 click on the menu bar on `View` and then on `Properties`.
+
+## Work Division
+### Enrique González
+- Original version of the model viewer.
+- Framerate.
+- Frustum culling.
+- Scene Management.
+- Quadtree and aabbtree.
+- Profiling.
+- Mouse picking.
+- Aabbtree for dynamic objects and Quadtree for static objects.
+- Prepare scene.
+
+### Jordi Romagosa
+- Shaders and Lighting.
+- Binary file importing and loading.
+- Filesystem.
+- Scene serialization.
+- Materials.
+- Realtime lighting.
+- Help with scene preparation, importing ZomBunny after detecting error with .fbx.
 
 Enjoy! :)
