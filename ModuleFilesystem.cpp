@@ -39,7 +39,7 @@ bool ModuleFilesystem::Init()
 			myPath = myPath.substr(0, sizeFile);
 
 			string s;
-			Importer->ImportModel(myPath.c_str(),file.c_str(),s);
+			//If artist put right paths of textures then import everything fromo here 
 			
 		}
 
