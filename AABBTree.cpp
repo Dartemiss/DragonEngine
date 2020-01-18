@@ -155,11 +155,12 @@ void AABBTree::InsertLeaf(unsigned leafNodeIndex)
 
 	// the leafs sibling is going to be the node we found above and we are going to create a new
 	// parent node and attach the leaf and this item
+
+	unsigned newParentIndex = AllocateNode();
+	NodeAABB& newParent = nodes[newParentIndex];
 	unsigned leafSiblingIndex = treeNodeIndex;
 	NodeAABB& leafSibling = nodes[leafSiblingIndex];
 	unsigned oldParentIndex = leafSibling.parentNodeIndex;
-	unsigned newParentIndex = AllocateNode();
-	NodeAABB& newParent = nodes[newParentIndex];
 	newParent.parentNodeIndex = oldParentIndex;
 	newParent.aabb = MergeAABB(leafNode.aabb, leafSibling.aabb); // the new parents aabb is the leaf aabb combined with it's siblings aabb
 	newParent.leftNodeIndex = leafSiblingIndex;
@@ -399,6 +400,60 @@ void AABBTree::UpdateLeaf(unsigned leafNodeIndex, const AABB & newAaab)
 	InsertLeaf(leafNodeIndex);
 	
 	return;
+}
+
+bool AABBTree::ValidNodeLeaf(unsigned leafNodeIndex)
+{
+	NodeAABB& leafNode = nodes[leafNodeIndex];
+	//assert(leafNode.isLeaf());
+
+	std::stack<NodeAABB> nodeStack;
+	nodeStack.push(nodes[rootNodeIndex]);
+	int counter = 0;
+	std::stack<unsigned>nodeIndexes; 
+	nodeIndexes.push(rootNodeIndex);
+	while (!nodeStack.empty())
+	{
+		NodeAABB node = nodeStack.top();
+		nodeStack.pop();
+
+
+
+		if (node.leftNodeIndex == leafNodeIndex)
+		{
+			++counter;
+			if (leafNode.parentNodeIndex != nodeIndexes.top())
+				return false;
+
+		}
+
+		if (node.rightNodeIndex == leafNodeIndex)
+		{
+			++counter;
+			if (leafNode.parentNodeIndex != nodeIndexes.top())
+				return false;
+		}
+
+		nodeIndexes.pop();
+
+		if (node.leftNodeIndex != AABB_NULL_NODE)
+		{
+			nodeStack.push(nodes[node.leftNodeIndex]);
+			nodeIndexes.push(node.leftNodeIndex);
+		}
+		if (node.rightNodeIndex != AABB_NULL_NODE)
+		{
+			nodeStack.push(nodes[node.rightNodeIndex]);
+			nodeIndexes.push(node.rightNodeIndex);
+		}
+
+
+	}
+
+	if (counter > 1)
+		return false;
+
+	return true;
 }
 
 AABB AABBTree::MergeAABB(const AABB &first, const AABB &second) const

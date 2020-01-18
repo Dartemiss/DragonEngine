@@ -63,6 +63,8 @@ private:
 	void FixUpwardsTree(unsigned treeNodeIndex);
 	void RemoveLeaf(unsigned leafNodeIndex);
 	void UpdateLeaf(unsigned leafNodeIndex, const AABB& newAaab);
+
+	bool ValidNodeLeaf(unsigned leafNodeIndex);
 };
 
 #endif __AABBTree_H__
