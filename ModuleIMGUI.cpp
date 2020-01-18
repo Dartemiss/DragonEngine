@@ -138,11 +138,6 @@ update_status ModuleIMGUI::Update()
 				guiCamera.ToggleEnable();
 			}
 
-			if(ImGui::MenuItem("Properties"))
-			{
-				inspector.ToggleEnable();
-			}
-
 			if(ImGui::MenuItem("Show Hierarchy"))
 			{
 				App->scene->showHierarchy = true;

@@ -33,6 +33,14 @@
 
 - Dragging and Dropping an fbx to the scene will load the model with their textures.
 
+- Click over an object to selected or click its name on hierarchy.
+
+- Modify transform from inspector or using Guizmos.
+
+- Save and Load Scene from GUI tab Scene.
+
+- Press the play button to active game time and see the main camera perspective
+
 - Pressing `ESC` will quit the app.
 
 ## GUI
@@ -40,26 +48,31 @@
 
 - For showing the console click on the menu bar on `Debug` and then on `Console`.
 
-- For showing information about variables of the window, framerate, hardware, information about all the textures
-loaded or OpenGL and Input options click on the menu bar `View` and then on Window.
+- For showing information about variables of the window, hardware and Input options click on the menu bar `View` and then on Window.
 
-- For showing the camera position, change the vertical fov and enable and disable the boundig box drawing
+- For showing the camera position, change the vertical fov and enable and disable the boundig box drawing or show quadtree,aabbTree,Skybox,grid or frustum
 click on the menu bar on `View` and then on `Camera`.
 
 - For showing model information and more accurate texture information of the current loaded textures,
 click on the menu bar on `View` and then on `Properties`.
 
 ## Work Division
-### Enrique González
+### Enrique González Sequeira
 - Original version of the model viewer.
-- Framerate.
+- Framerate,timers, game and real time management.
 - Frustum culling.
 - Scene Management.
 - Quadtree and aabbtree.
 - Profiling.
 - Mouse picking.
+- Guizmos
 - Aabbtree for dynamic objects and Quadtree for static objects.
 - Prepare scene.
+- Play, stop, pause game
+- Skybox
+- Debug Draw
+- Shapes
+- UI
 
 ### Jordi Romagosa
 - Shaders and Lighting.
