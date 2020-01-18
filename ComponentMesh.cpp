@@ -50,7 +50,12 @@ float ComponentMesh::IsIntersectedByRay(const float3 &origin ,const LineSegment 
 		Triangle tri = Triangle(mesh->vertices[mesh->indices[i]].Position, mesh->vertices[mesh->indices[i+1]].Position, mesh->vertices[mesh->indices[i+2]].Position);
 		if(tri.Intersects(ray))
 		{
-			minDist = tri.Distance(origin);
+			//If first time assign otherwise only assign if lesser
+			float dist = tri.Distance(origin);
+			if (minDist == -1.0f)
+				minDist = dist;
+			else if (dist < minDist)
+				minDist = dist;
 		}
 	}
 

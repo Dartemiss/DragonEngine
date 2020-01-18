@@ -427,3 +427,92 @@ void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB* bb
 	return;
 }
 
+void MyQuadTree::GetIntersection(std::set<GameObject*>& intersectionGO,const  LineSegment * ray)
+{
+	if (nodes[0]->isLeaf)
+	{
+		for (auto go : nodes[0]->gameObjects)
+		{
+			intersectionGO.insert(go);
+		}
+
+		return;
+	}
+
+	Node* current = nullptr;
+	Node* previous = nullptr;
+
+	std::stack<int> indexes;
+	std::stack<Node*> stackOfNodes;
+	current = nodes[0];
+	indexes.push(0);
+	stackOfNodes.push(current);
+	int times = 0;
+	while (true)
+	{
+		++times;
+		if (ray->Intersects(*current->quadrant))
+		{
+			if (current->isLeaf)
+			{
+				for (auto go : current->gameObjects)
+				{
+					intersectionGO.insert(go);
+				}
+
+
+				int index = indexes.top() + 1;
+				indexes.pop();
+				indexes.push(index);
+
+				current = previous->children[index];
+
+				if (index == 3)
+				{
+					indexes.pop();
+					stackOfNodes.pop();
+					if (!stackOfNodes.empty())
+						previous = stackOfNodes.top();
+				}
+			}
+			else
+			{
+				indexes.push(0);
+				previous = current;
+				stackOfNodes.push(previous);
+				current = previous->children[0];
+			}
+
+
+
+		}
+		else
+		{
+			int index = indexes.top() + 1;
+			indexes.pop();
+			indexes.push(index);
+			current = previous->children[index];
+
+			if (index == 3)
+			{
+				indexes.pop();
+				stackOfNodes.pop();
+				if (!stackOfNodes.empty())
+					previous = stackOfNodes.top();
+			}
+
+		}
+
+
+		if (indexes.size() == 0 || stackOfNodes.size() == 0)
+		{
+			//LOG("Times checked: %d", times);
+			return;
+		}
+
+
+	}
+
+	return;
+}
+

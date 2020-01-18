@@ -21,12 +21,12 @@
 #include "MathGeoLib/Geometry/LineSegment.h"
 #include "MathGeoLib/Geometry/Plane.h"
 #include "debugdraw.h"
-
 #include <random>
 #include "SceneLoader.h"
 #include <queue>
 #include <string>
 #include <map>
+#include <limits>
 #include "FontAwesome/IconsFontAwesome5.h"
 
 
@@ -846,9 +846,20 @@ GameObject* ModuleScene::IntersectRayCast(const float3 &origin, const LineSegmen
 	//First get aabb intersection ordered by distance, then compare with aabb that are closer to the closest triangle hit
 	std::map<float, GameObject*> hits;
 
-	for(auto go : allGameObjects)
+	std::set<GameObject*> possibleDynamicGO;
+	std::set<GameObject*> possibleStaticGO;
+	aabbTree->GetIntersection(possibleDynamicGO, &ray);
+	if (quadtreeIsComputed)
 	{
-		if(go->globalBoundingBox != nullptr)
+		quadtree->GetIntersection(possibleStaticGO, &ray);
+	}
+
+	std::set<GameObject*> possibleGO = possibleDynamicGO;
+	possibleGO.insert(possibleStaticGO.begin(), possibleStaticGO.end());
+
+	for(auto go : possibleGO)
+	{
+		if(go->globalBoundingBox != nullptr && go->myMesh != nullptr)
 		{
 			bool hit = ray.Intersects(*go->globalBoundingBox);
 			if(hit)
@@ -864,26 +875,23 @@ GameObject* ModuleScene::IntersectRayCast(const float3 &origin, const LineSegmen
 	if (hits.size() == 0)
 		return nullptr;
 
-	float minDistTriangle = hits.rbegin()->first + 1.0f;
+	float minDistTriangle = std::numeric_limits<float>::infinity();;
 	GameObject* hitGO = nullptr;
 	bool isHit = false;
 	
 	//Until first hit with triangle check all gameObjects by order
 	for(const auto& it : hits)
 	{
-		if(it.first < minDistTriangle)
-		{
-			//If hitDist is -1.0f then ray doesn't intersect any triangle
-			float hitDist = it.second->IsIntersectedByRay(origin, ray);
-			if (hitDist != -1.0f)
-			{
-				isHit = true;
-				minDistTriangle = hitDist;
-				hitGO = it.second;
-			}
-			
-		}
 
+		//If hitDist is -1.0f then ray doesn't intersect any triangle
+		float hitDist = it.second->IsIntersectedByRay(origin, ray);
+		if (hitDist != -1.0f && hitDist < minDistTriangle)
+		{
+			minDistTriangle = hitDist;
+			hitGO = it.second;
+		}
+			
+		
 	}
 
 	return hitGO;

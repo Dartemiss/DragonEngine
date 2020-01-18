@@ -322,6 +322,40 @@ void AABBTree::GetIntersection(std::set<GameObject*>& intersectionGO, AABB * bbo
 	return;
 }
 
+void AABBTree::GetIntersection(std::set<GameObject*>& intersectionGO, const LineSegment * ray)
+{
+	//DFS simulating recursivity using stack
+
+	std::stack<unsigned> stack;
+	stack.push(rootNodeIndex);
+	while (!stack.empty())
+	{
+		unsigned nodeIndex = stack.top();
+		stack.pop();
+
+		if (nodeIndex == AABB_NULL_NODE)
+			continue;
+
+		const NodeAABB& node = nodes[nodeIndex];
+		if (ray->Intersects(node.aabb))
+		{
+			if (node.isLeaf())
+			{
+				intersectionGO.insert(node.go);
+			}
+			else
+			{
+				stack.push(node.leftNodeIndex);
+				stack.push(node.rightNodeIndex);
+			}
+		}
+	}
+
+	return;
+}
+
+
+
 void AABBTree::Draw() const
 {
 

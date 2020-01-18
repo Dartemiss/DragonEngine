@@ -3,6 +3,7 @@
 
 #include "Globals.h"
 #include "MathGeoLib/Geometry/AABB.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
 #include "GameObject.h"
 #include <vector>
 #include <set>
@@ -10,6 +11,7 @@
 
 
 #define AABB_NULL_NODE 0xffffffff
+
 
 struct NodeAABB
 {
@@ -38,6 +40,7 @@ public:
 	void UpdateObject(GameObject* go);
 
 	void GetIntersection(std::set<GameObject*> &intersectionGO, AABB* bbox);
+	void GetIntersection(std::set<GameObject*> &intersectionGO, const LineSegment* ray);
 	
 	void Draw() const;
 
@@ -63,3 +66,4 @@ private:
 };
 
 #endif __AABBTree_H__
+

@@ -5,6 +5,8 @@
 #include <vector>
 #include <set>
 #include "MathGeoLib/Geometry/AABB.h"
+#include "MathGeoLib/Geometry/LineSegment.h"
+
 
 const int BUCKET_CAPACITY = 2;
 
@@ -53,8 +55,8 @@ public:
 	void DrawIterative() const;
 	bool GameObjectIsRepeated(const std::vector<GameObject*> &gameObjects, GameObject* go);
 	void GetIntersection(std::set<GameObject*> &intersectionGO, AABB* bbox);
+	void GetIntersection(std::set<GameObject*> &intersectionGO, const LineSegment* bbox);
 
-	//void CollectIntersect(std::vector<GameObject*>&, PRIMITIVE);
 
 	//Limits of the quadtree
 	AABB limits;
