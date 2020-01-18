@@ -255,7 +255,7 @@ update_status ModuleRender::PostUpdate()
 // Called before quitting
 bool ModuleRender::CleanUp()
 {
-	delete gameCamera;
+
 	delete timeRender;
 
 	LOG("Destroying renderer");
