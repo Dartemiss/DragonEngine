@@ -51,6 +51,11 @@ public:
 	{
 		return mouse_buttons[id - 1];
 	}
+	void SetMouseButton(int id)
+	{
+		mouse_buttons[id - 1] = KEY_IDLE;
+		return;
+	}
 
 	bool GetWindowEvent(EventWindow code) const;
 	// Get mouse / axis position

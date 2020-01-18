@@ -846,6 +846,8 @@ GameObject* ModuleScene::IntersectRayCast(const float3 &origin, const LineSegmen
 	//First get aabb intersection ordered by distance, then compare with aabb that are closer to the closest triangle hit
 	std::map<float, GameObject*> hits;
 
+	/*
+	//Posible future optimization
 	std::set<GameObject*> possibleDynamicGO;
 	std::set<GameObject*> possibleStaticGO;
 	aabbTree->GetIntersection(possibleDynamicGO, &ray);
@@ -856,8 +858,9 @@ GameObject* ModuleScene::IntersectRayCast(const float3 &origin, const LineSegmen
 
 	std::set<GameObject*> possibleGO = possibleDynamicGO;
 	possibleGO.insert(possibleStaticGO.begin(), possibleStaticGO.end());
+	*/
 
-	for(auto go : possibleGO)
+	for(auto go : allGameObjects)
 	{
 		if(go->globalBoundingBox != nullptr && go->myMesh != nullptr)
 		{

@@ -558,6 +558,7 @@ void ModuleRender::Pick() const
 		ImVec2 size = ImGui::GetWindowSize();
 		App->scene->PickObject(size, pos);
 
+		App->input->SetMouseButton(SDL_BUTTON_LEFT);
 	}
 
 	return;
