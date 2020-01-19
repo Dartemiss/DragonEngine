@@ -94,6 +94,8 @@ public:
 	Skybox* skybox = nullptr;
 	float timeForRendering = 0.0f;
 
+	bool showBothSceneGame = false;
+
 
 private:
 	void* context;

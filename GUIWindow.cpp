@@ -57,6 +57,8 @@ void GUIWindow::Draw(const char * title)
 		ImGui::SliderInt("Width", &App->window->width, 1, 2500, "%d");
 		ImGui::SliderInt("Height", &App->window->height, 1, 2500, "%d");
 
+		ImGui::Checkbox("See Scene and Game together", &App->renderer->showBothSceneGame);
+
 		if (App->window->resizable)
 		{	
 			SDL_SetWindowSize(window, App->window->width, App->window->height);

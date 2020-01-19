@@ -208,28 +208,37 @@ update_status ModuleRender::Update()
 	//Draw Scene and Game Windows
 	if (ImGui::Begin("MainView", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar))
 	{
-		ImGui::BeginTabBar("");
+		if (!showBothSceneGame)
+		{
+			ImGui::BeginTabBar("");
 
-		if (ImGui::BeginTabItem(ICON_FA_BUILDING " Scene") && !isGamePlaying)
+			if (ImGui::BeginTabItem(ICON_FA_BUILDING " Scene") && !isGamePlaying)
+			{
+				DrawSceneBuffer();
+				ImGui::EndTabItem();
+			}
+
+			
+			if (isGamePlaying || ImGui::BeginTabItem(ICON_FA_GAMEPAD  " Game"))
+			{
+				DrawGameBuffer();
+				ImGui::EndTabItem();
+			}
+
+			ImGui::EndTabBar();
+		}
+		else 
 		{
 			DrawSceneBuffer();
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem(ICON_FA_GAMEPAD  " Game") || isGamePlaying)
-		{
 			DrawGameBuffer();
-			ImGui::EndTabItem();
 		}
-
-		ImGui::EndTabBar();
-
 		//Draw Scene or game depending
 
 		//Draw Buttons
 		App->imgui->DrawPlayPauseButtons();
 
 	}
+
 	ImGui::End();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
@@ -628,7 +637,7 @@ void ModuleRender::DrawSceneBuffer()
 		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight)
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, (showBothSceneGame) ? App->window->height * App->imgui->sceneSizeRatioHeight * 0.5f : App->window->height * App->imgui->sceneSizeRatioHeight)
 	);
 	ImGui::Begin("Scene", &isEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 	App->camera->SceneNotActive = ImGui::IsWindowFocused();
@@ -669,12 +678,10 @@ void ModuleRender::DrawGameBuffer()
 	bool gameIsEnabled = true;
 
 	ImGui::SetNextWindowPos(
-		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, App->window->height * App->imgui->scenePosRatioHeight),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->scenePosRatioWidth, (showBothSceneGame) ? (App->window->height * App->imgui->scenePosRatioHeight) + (App->window->height * App->imgui->sceneSizeRatioHeight * 0.5f) : App->window->height * App->imgui->scenePosRatioHeight)
 	);
 	ImGui::SetNextWindowSize(
-		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, App->window->height * App->imgui->sceneSizeRatioHeight),
-		ImGuiCond_Once
+		ImVec2(App->window->width * App->imgui->sceneSizeRatioWidth, (showBothSceneGame) ? App->window->height * App->imgui->sceneSizeRatioHeight * 0.5f : App->window->height * App->imgui->sceneSizeRatioHeight)
 	);
 	//Game Window
 	ImGui::Begin(" Game", &gameIsEnabled, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
