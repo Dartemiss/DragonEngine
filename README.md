@@ -43,6 +43,8 @@
 
 - Pressing `ESC` will quit the app.
 
+- Static objects are inserted on a quadtree and can't be transformed. Dynamic objects can be transformed and are inserted on an aabbTree
+
 ## GUI
 - For knowing more about the project click on the menu bar on `Help` and then `About`.
 
