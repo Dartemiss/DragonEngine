@@ -56,6 +56,8 @@ click on the menu bar on `View` and then on `Camera`.
 - For showing model information and more accurate texture information of the current loaded textures,
 click on the menu bar on `View` and then on `Properties`.
 
+- Change view of the UI Scene and Game seeing both at the same time going to `Window` and check: `See Scene and Game together`
+
 ## Work Division
 ### Enrique González Sequeira
 - Original version of the model viewer.
